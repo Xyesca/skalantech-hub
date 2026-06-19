@@ -1,0 +1,16 @@
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+  <div class="admin-sidebar__brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>
+    <span>Skalantech</span>
+  </div>
+  <nav>
+    <a href="{{ url_for('admin_settings') }}" class="{% if request.path == url_for('admin_settings') %}is-active{% endif %}">Einstellungen</a>
+    <a href="{{ url_for('admin_links') }}" class="{% if request.path == url_for('admin_links') %}is-active{% endif %}">Links</a>
+    <a href="{{ url_for('admin_projects') }}" class="{% if request.path == url_for('admin_projects') %}is-active{% endif %}">Projekte</a>
+  </nav>
+  <div class="admin-sidebar__footer">
+    <a href="{{ url_for('index') }}" target="_blank">← Seite ansehen</a>
+    <a href="{{ url_for('logout') }}">Abmelden</a>
+  </div>
+</div>

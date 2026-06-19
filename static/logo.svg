@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" fill="none">
+  <defs>
+    <linearGradient id="cu" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c9824a"/>
+      <stop offset="100%" stop-color="#e8a06a"/>
+    </linearGradient>
+    <linearGradient id="cy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5eead4"/>
+      <stop offset="100%" stop-color="#3bc9b5"/>
+    </linearGradient>
+    <filter id="glo">
+      <feGaussianBlur stdDeviation="1.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Hexagon Netzwerk-Icon -->
+  <!-- Zentrum -->
+  <circle cx="60" cy="55" r="5" fill="url(#cy)" opacity="0.9"/>
+
+  <!-- Ring 1 (direkte Verbindungen) -->
+  <!-- oben -->
+  <line x1="60" y1="55" x2="60" y2="30" stroke="url(#cy)" stroke-width="1.2" opacity="0.5"/>
+  <polygon points="60,22 68,28 68,38 60,42 52,38 52,28" stroke="url(#cu)" stroke-width="1.8" fill="none" filter="url(#glo)"/>
+
+  <!-- rechts oben -->
+  <line x1="60" y1="55" x2="80" y2="42" stroke="url(#cy)" stroke-width="1.2" opacity="0.5"/>
+  <polygon points="86,37 94,43 94,53 86,57 78,53 78,43" stroke="url(#cu)" stroke-width="1.8" fill="none"/>
+
+  <!-- rechts unten -->
+  <line x1="60" y1="55" x2="76" y2="72" stroke="url(#cy)" stroke-width="1.2" opacity="0.5"/>
+  <polygon points="82,68 89,74 89,84 82,88 75,84 75,74" stroke="url(#cu)" stroke-width="1.8" fill="none"/>
+
+  <!-- links unten -->
+  <line x1="60" y1="55" x2="44" y2="72" stroke="url(#cy)" stroke-width="1.2" opacity="0.5"/>
+  <polygon points="38,68 45,74 45,84 38,88 31,84 31,74" stroke="url(#cu)" stroke-width="1.8" fill="none"/>
+
+  <!-- links oben -->
+  <line x1="60" y1="55" x2="40" y2="42" stroke="url(#cy)" stroke-width="1.2" opacity="0.5"/>
+  <polygon points="34,37 42,43 42,53 34,57 26,53 26,43" stroke="url(#cu)" stroke-width="1.8" fill="none"/>
+
+  <!-- Ring 2 (äußere Knoten) -->
+  <circle cx="60" cy="16" r="2.5" fill="url(#cy)" opacity="0.6"/>
+  <circle cx="92" cy="40" r="2.5" fill="url(#cy)" opacity="0.6"/>
+  <circle cx="86" cy="90" r="2.5" fill="url(#cy)" opacity="0.6"/>
+  <circle cx="32" cy="90" r="2.5" fill="url(#cy)" opacity="0.6"/>
+  <circle cx="28" cy="40" r="2.5" fill="url(#cy)" opacity="0.6"/>
+
+  <!-- Verbindungen Ring 1 → Ring 2 -->
+  <line x1="60" y1="22" x2="60" y2="16" stroke="url(#cy)" stroke-width="0.8" opacity="0.3"/>
+  <line x1="92" y1="40" x2="86" y2="43" stroke="url(#cy)" stroke-width="0.8" opacity="0.3"/>
+  <line x1="86" y1="90" x2="82" y2="84" stroke="url(#cy)" stroke-width="0.8" opacity="0.3"/>
+  <line x1="32" y1="90" x2="38" y2="84" stroke="url(#cy)" stroke-width="0.8" opacity="0.3"/>
+  <line x1="28" y1="40" x2="34" y2="43" stroke="url(#cy)" stroke-width="0.8" opacity="0.3"/>
+
+  <!-- SKALANTECH Text -->
+  <text x="140" y="48" fill="url(#cu)" font-family="'Space Grotesk','Segoe UI',sans-serif" font-size="38" font-weight="700" letter-spacing="5">SKALANTECH</text>
+
+  <!-- Tagline -->
+  <text x="140" y="72" fill="#8b93a7" font-family="'JetBrains Mono','Consolas',monospace" font-size="12" letter-spacing="3.5">DIGITAL INFRASTRUCTURE</text>
+
+  <!-- Status Dot -->
+  <circle cx="140" cy="90" r="3" fill="#5eead4" opacity="0.8"/>
+  <text x="150" y="94" fill="#5eead4" font-family="'JetBrains Mono','Consolas',monospace" font-size="10" letter-spacing="2">ONLINE</text>
+</svg>

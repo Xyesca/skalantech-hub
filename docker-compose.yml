@@ -1,0 +1,19 @@
+services:
+  skalantech:
+    build: .
+    container_name: skalantech
+    restart: unless-stopped
+    expose:
+      - "5000"
+    volumes:
+      - ./instance:/app/instance
+      - ./static/uploads:/app/static/uploads
+      - ./.env:/app/.env:ro
+    environment:
+      - PORT=5000
+    networks:
+      - apps_default
+
+networks:
+  apps_default:
+    external: true
