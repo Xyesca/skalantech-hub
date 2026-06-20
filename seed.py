@@ -1,6 +1,7 @@
 """Skalantech Hub — Seed initial data"""
 import sys
-sys.path.insert(0, '/root/skalantech')
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
 from app import app, db
 from models import Settings, Link, Project
 
