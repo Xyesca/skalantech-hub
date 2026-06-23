@@ -1271,6 +1271,96 @@ img { max-width: 100%; display: block; }
 }
 
 /* ==========================================================================
+   Scroll Effects — Progress Bar, Nav Active, Card Glow
+   ========================================================================== */
+
+/* Reading Progress Bar */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 999;
+  background: linear-gradient(90deg, #00a6ff, #b366ff, #00ff88);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+/* Nav Active State */
+.nav--active {
+  color: var(--cyber) !important;
+  background: rgba(0, 166, 255, 0.08) !important;
+}
+
+/* Project Card Glow on Scroll Visibility */
+.project-card-v2 {
+  transition: box-shadow 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+.project-card-v2.card-glow-visible {
+  animation: card-glow-in 0.8s var(--ease-out) forwards;
+}
+@keyframes card-glow-in {
+  0% {
+    box-shadow: 0 0 20px rgba(0, 166, 255, 0.05);
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.project-card-v2--cyber.card-glow-visible {
+  box-shadow: 0 0 30px rgba(0, 166, 255, 0.12);
+  border-color: rgba(0, 166, 255, 0.35);
+}
+.project-card-v2--matrix.card-glow-visible {
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.12);
+  border-color: rgba(0, 255, 136, 0.35);
+}
+.project-card-v2--plasma.card-glow-visible {
+  box-shadow: 0 0 30px rgba(179, 102, 255, 0.12);
+  border-color: rgba(179, 102, 255, 0.35);
+}
+
+/* Section Background Parallax Shift */
+.section--dark {
+  background-size: 200% 100%;
+  transition: background-position 0.1s linear;
+}
+
+/* Stagger Grid Items — initial hidden state handled by data-reveal */
+[data-stagger] {
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+[data-stagger].is-visible {
+  opacity: 1;
+  transform: translateY(0) translateX(0) scale(1) !important;
+}
+[data-stagger][data-reveal="left"] {
+  transform: translateX(-30px);
+}
+[data-stagger][data-reveal="right"] {
+  transform: translateX(30px);
+}
+[data-stagger][data-reveal="up"] {
+  transform: translateY(24px);
+}
+[data-stagger][data-reveal="scale"] {
+  transform: scale(0.95);
+}
+
+/* Scroll-triggered Hero parallax transition */
+.hero__bg-img {
+  will-change: transform, opacity;
+}
+
+/* ==========================================================================
    Auth (Login)
    ========================================================================== */
 .auth-shell {
