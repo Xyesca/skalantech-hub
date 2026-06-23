@@ -16,6 +16,13 @@ def login_required(view):
 def add_security_headers(response: Response) -> Response:
     """After-request hook that hardens every HTTP response."""
     h = response.headers
+
+    # ── Anti-Cache: Browser soll NIE alte Versionen anzeigen ──────────────
+    h["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+    h["Pragma"] = "no-cache"
+    h["Expires"] = "0"
+
+    # ── Security Header ───────────────────────────────────────────────────
     h["X-Content-Type-Options"] = "nosniff"
     h["X-Frame-Options"] = "SAMEORIGIN"
     h["X-XSS-Protection"] = "1; mode=block"
