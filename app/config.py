@@ -33,6 +33,7 @@ class ProductionConfig(BaseConfig):
         or f"sqlite:///{BASE_DIR / 'instance' / 'app.db'}"
     )
     SESSION_COOKIE_SECURE = True
+    SEND_FILE_MAX_AGE_DEFAULT = 0  # No cache — so updates appear instantly
 
 
 class DevelopmentConfig(BaseConfig):
