@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" fill="none">
   <defs>
     <linearGradient id="cu" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#c9824a"/>
-      <stop offset="100%" stop-color="#e8a06a"/>
+      <stop offset="0%" stop-color="#b366ff"/>
+      <stop offset="100%" stop-color="#d18aff"/>
     </linearGradient>
     <linearGradient id="cy" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#5eead4"/>
-      <stop offset="100%" stop-color="#3bc9b5"/>
+      <stop offset="0%" stop-color="#00a6ff"/>
+      <stop offset="100%" stop-color="#0088dd"/>
     </linearGradient>
     <filter id="glo">
       <feGaussianBlur stdDeviation="1.5" result="b"/>
@@ -60,6 +60,6 @@
   <text x="140" y="72" fill="#8b93a7" font-family="'JetBrains Mono','Consolas',monospace" font-size="12" letter-spacing="3.5">DIGITAL INFRASTRUCTURE</text>
 
   <!-- Status Dot -->
-  <circle cx="140" cy="90" r="3" fill="#5eead4" opacity="0.8"/>
-  <text x="150" y="94" fill="#5eead4" font-family="'JetBrains Mono','Consolas',monospace" font-size="10" letter-spacing="2">ONLINE</text>
+  <circle cx="140" cy="90" r="3" fill="#00a6ff" opacity="0.8"/>
+  <text x="150" y="94" fill="#00a6ff" font-family="'JetBrains Mono','Consolas',monospace" font-size="10" letter-spacing="2">ONLINE</text>
 </svg>
