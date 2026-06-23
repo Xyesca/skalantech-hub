@@ -1,229 +1,480 @@
-{% extends "base.html" %}
-{% block title %}{{ settings.name }}{% endblock %}
-{% block description %}{{ settings.tagline }}{% endblock %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{{ settings.name }} · IT Infrastructure · Cloud · AI Agents</title>
+<meta name="description" content="{{ settings.tagline or 'Xavier Escalante — IT-Infrastruktur, Cloud Engineering, AI Agents & Automatisierung. Moderne IT-Lösungen aus Leidenschaft.' }}">
+<meta name="keywords" content="Xavier Escalante, IT Infrastructure, Cloud Engineer, AI Agents, Automation, Skalantech, DevOps">
+<meta property="og:title" content="{{ settings.name }} · IT Infrastructure · Cloud · AI Agents">
+<meta property="og:description" content="{{ settings.tagline }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://skalantech.store">
+<meta property="og:image" content="https://skalantech.store/static/logo.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
 
-{% block body %}
-<!-- ═══ Toast Notifications ═══════════════════════════════════════════ -->
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="#hero" class="nav__brand">
+      <img src="{{ url_for('static', filename='uploads/logo.svg') }}" alt="Skalantech" class="nav__logo">
+    </a>
+    <div class="nav__links">
+      <a href="#about">Über mich</a>
+      <a href="#projects">Projekte</a>
+      <a href="#stack">Skills</a>
+      <a href="#contact">Kontakt</a>
+      <a href="{{ url_for('auth.login') }}" class="nav__lock" aria-label="Admin">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      </a>
+    </div>
+    <button class="nav__toggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Flash Messages -->
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
-<div class="toast-stack" id="toast-stack">
+<div class="flash-stack" id="flash-stack">
   {% for category, message in messages %}
-  <div class="toast toast--{{ category }}">
-    <span class="toast__text">{{ message }}</span>
-  </div>
+  <div class="flash flash--{{ category }}">{{ message }}</div>
   {% endfor %}
 </div>
+<script>setTimeout(()=>{const s=document.getElementById('flash-stack');if(s)s.remove()},5000)</script>
 {% endif %}
 {% endwith %}
 
-<!-- ═══ HERO (Holographic & Cinematic) ════════════════════════════════ -->
-<section class="hero hero--sci-fi" id="hero">
-  <!-- The generated futuristic background -->
-  <div class="hero__media">
-    <div class="hero__bg-wrap">
-      {% if settings.hero_type == "image" and settings.hero_path %}
-      <img class="hero__bg" src="{{ url_for('public.uploaded_file', filename=settings.hero_path) }}" alt="">
-      {% elif settings.hero_type == "video" and settings.hero_path %}
-      <video class="hero__bg" autoplay muted loop playsinline>
-        <source src="{{ url_for('public.uploaded_file', filename=settings.hero_path) }}" type="video/mp4">
-      </video>
-      {% else %}
-      <img class="hero__bg" src="{{ url_for('static', filename='img/hero_bg.png') }}" alt="Futuristic Tech Core">
-      {% endif %}
-      <div class="hero__overlay-grid"></div>
-    </div>
+<!-- ============================================================ -->
+<!-- HERO — 2-Column: Name + Terminal -->
+<!-- ============================================================ -->
+<section class="hero scanline" id="hero">
+  <div class="hero__bg">
+    <img src="{{ url_for('static', filename='uploads/hero-bg.jpg') }}" alt="" class="hero__bg-img" loading="lazy">
+    <div class="hero__gradient"></div>
+    <div class="hero__overlay"></div>
+    <div class="hero__grid"></div>
   </div>
+  <div class="hero__glow hero__glow--1"></div>
+  <div class="hero__glow hero__glow--2"></div>
 
-  <!-- Interactive Data Streams (via JS particles) -->
-  <canvas class="hero__particles" id="hero-particles"></canvas>
-
-  <div class="hero__content-split fade-in">
-    <!-- Left: Identity -->
-    <div class="hero__identity">
-      <div class="badge badge--cyber">
-        <span class="pulse-dot"></span>
-        <span>SYSTEM.ONLINE // {{ settings.location | default('GLOBAL') }}</span>
+  <div class="hero__content">
+    <!-- Left Column -->
+    <div class="hero__left">
+      <div class="hero__chip" data-reveal="up">
+        <span class="status-dot"></span>
+        Remote · {{ settings.location or 'Köln' }}
       </div>
-      <h1 class="hero__title gradient-text glitch-effect" data-text="{{ settings.name }}">{{ settings.name }}</h1>
-      <p class="hero__tagline">{{ settings.tagline }}</p>
-      
-      <div class="hero__profiles">
-        <a href="https://github.com/Xyesca" target="_blank" rel="noopener" class="profile-chip">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.13-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.78 1.2 1.78 1.2 1.03 1.78 2.71 1.26 3.37.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a10.9 10.9 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .31.21.67.8.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
-          GitHub
+
+      <h1 class="hero__title" data-reveal="up">
+        Xavier<br>
+        <span class="hero__title--accent">Escalante</span>
+      </h1>
+
+      <p class="hero__subtitle" data-reveal="up">
+        IT Infrastructure &amp; AI Automation Engineer
+      </p>
+
+      <div class="hero__actions" data-reveal="up">
+        <a href="#projects" class="btn btn--primary">
+          Projekte ansehen
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </a>
-        <a href="https://linkedin.com/in/Xyesca" target="_blank" rel="noopener" class="profile-chip">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener" class="btn btn--ghost">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
           LinkedIn
         </a>
       </div>
     </div>
 
-    <!-- Right: Terminal Mockup -->
-    <div class="hero__terminal tilt-card">
-      <div class="terminal__header">
-        <div class="terminal__dots"><span></span><span></span><span></span></div>
-        <div class="terminal__title">sys@skalantech: ~</div>
-      </div>
-      <div class="terminal__body">
-        <p class="cmd"><span class="prompt">$</span> init_env --mode=production</p>
-        <p class="output glow">Initializing Skalantech Core...</p>
-        <p class="output glow">[OK] Cloud Infrastructure Verified</p>
-        <p class="output glow">[OK] AI Agents Deployed</p>
-        <p class="cmd mt-2"><span class="prompt">$</span> load_skills</p>
-        <div class="skill-tags">
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">Docker</span>
-          <span class="skill-tag">Kubernetes</span>
-          <span class="skill-tag">n8n</span>
-          <span class="skill-tag">AWS</span>
-          <span class="skill-tag">CI/CD</span>
+    <!-- Right Column: Terminal Window -->
+    <div class="hero__right" data-reveal="up">
+      <div class="terminal-window">
+        <div class="terminal-window__header">
+          <span class="terminal-window__dot terminal-window__dot--red"></span>
+          <span class="terminal-window__dot terminal-window__dot--yellow"></span>
+          <span class="terminal-window__dot terminal-window__dot--green"></span>
+          <span class="terminal-window__title">skalantech — system monitor</span>
+          <span class="terminal-window__live">
+            <span class="terminal-window__live-dot"></span>
+            LIVE
+          </span>
         </div>
-        <p class="cmd mt-2 blink"><span class="prompt">$</span> <span class="cursor">_</span></p>
+        <div class="terminal-window__body" id="terminal-body"></div>
       </div>
     </div>
   </div>
 
-  <div class="hero__scroll-wrap">
-    <div class="scroll-indicator"><span></span></div>
+  <a href="#about" class="hero__scroll">
+    <span></span>
+  </a>
+</section>
+
+<!-- ============================================================ -->
+<!-- ABOUT — Avatar + Bio | System Stats Terminal -->
+<!-- ============================================================ -->
+<section class="section" id="about">
+  <div class="section__inner">
+    <div class="section__header" data-reveal="up">
+      <span class="section__label">Über mich</span>
+      <h2 class="section__title">IT-Infrastruktur mit <span class="text-gradient-cyber">KI-Power</span></h2>
+    </div>
+
+    <div class="about-v2" data-reveal="up">
+      <!-- Left: Avatar + Bio -->
+      <div class="about-v2__bio glass-strong">
+        <div class="about-v2__avatar-wrap">
+          <svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="38" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"/><text x="40" y="46" text-anchor="middle" fill="var(--cyber)" font-family="var(--font-display)" font-size="28" font-weight="700">XE</text></svg>
+          <div class="about-v2__status" title="Online"></div>
+        </div>
+        <div class="about-v2__text">
+          <p>Hallo, ich bin <strong>Xavier Escalante</strong> — <strong>IT-Systemadministrator</strong> aus Köln mit über <strong>7 Jahren Erfahrung</strong> in der Planung, Implementierung und Wartung komplexer IT-Infrastrukturen.</p>
+          <p>Meine Spezialgebiete: <strong>Microsoft 365</strong>, <strong>VMware</strong>, <strong>Hyper-V</strong>, <strong>Active Directory</strong> und <strong>Cloud-Technologien</strong> — kombiniert mit moderner <strong>Automatisierung</strong> durch PowerShell, Python und n8n.</p>
+          <p>Ich liebe es, Systeme nicht nur am Laufen zu halten, sondern sie <strong>intelligent</strong> zu machen — mit AI Agents, selbstheilenden Workflows und smarter Dokumentation.</p>
+        </div>
+      </div>
+
+      <!-- Right: System Stats Terminal Panel -->
+      <div class="about-v2__stats glass-strong grid-bg">
+        <div class="about-v2__stats-header">
+          <span class="about-v2__stats-dot about-v2__stats-dot--red"></span>
+          <span class="about-v2__stats-dot about-v2__stats-dot--yellow"></span>
+          <span class="about-v2__stats-dot about-v2__stats-dot--green"></span>
+          <span class="about-v2__stats-title">system_stats.sh</span>
+        </div>
+        <div class="about-v2__stats-body">
+          <div class="sys-stat">
+            <span class="sys-stat__icon">🗓</span>
+            <span class="sys-stat__label">IT-Erfahrung</span>
+            <span class="sys-stat__value kpi-counter" data-target="7" data-suffix="+">0+</span>
+            <span class="sys-stat__unit">Jahre</span>
+          </div>
+          <div class="sys-stat">
+            <span class="sys-stat__icon">⚡</span>
+            <span class="sys-stat__label">Workflows</span>
+            <span class="sys-stat__value kpi-counter" data-target="50" data-suffix="+">0+</span>
+            <span class="sys-stat__unit">automatisiert</span>
+          </div>
+          <div class="sys-stat">
+            <span class="sys-stat__icon">🤖</span>
+            <span class="sys-stat__label">AI Agents</span>
+            <span class="sys-stat__value kpi-counter" data-target="20" data-suffix="+">0+</span>
+            <span class="sys-stat__unit">aktiv</span>
+          </div>
+          <div class="sys-stat">
+            <span class="sys-stat__icon">🔓</span>
+            <span class="sys-stat__label">Open Source</span>
+            <span class="sys-stat__value kpi-counter" data-target="100" data-suffix="%">0%</span>
+            <span class="sys-stat__unit"></span>
+          </div>
+          <div class="sys-stat">
+            <span class="sys-stat__icon">🐳</span>
+            <span class="sys-stat__label">Docker</span>
+            <span class="sys-stat__value kpi-counter" data-target="14" data-suffix="">0</span>
+            <span class="sys-stat__unit">Container</span>
+          </div>
+          <div class="sys-stat">
+            <span class="sys-stat__icon">🌐</span>
+            <span class="sys-stat__label">Subdomains</span>
+            <span class="sys-stat__value kpi-counter" data-target="5" data-suffix="">0</span>
+            <span class="sys-stat__unit">aktiv</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ═══ LINKS / VERBINDUNGEN (Holographic Nodes) ═════════════════════ -->
-{% if links %}
-<section class="section section--links" data-reveal>
-  <div class="section__header">
-    <div class="badge badge--cyber"><span class="pulse-dot"></span> NEURAL NET</div>
-  </div>
-  <div class="node-rail">
-    <div class="node-rail__line"></div>
-    <div class="node-rail__items">
-      {% for link in links %}
-      <a href="{{ link.url }}" class="node node--holo" target="_blank" rel="noopener" style="--i:{{ loop.index0 }}">
-        <div class="node__glow-border">
-          <span class="node__icon">{{ icon_svg(link.platform) }}</span>
+<!-- ============================================================ -->
+<!-- STACK — Core Infrastructure | AI/Automation -->
+<!-- ============================================================ -->
+<section class="section section--dark" id="stack">
+  <div class="section__inner">
+    <div class="section__header" data-reveal="up">
+      <span class="section__label">Technologien</span>
+      <h2 class="section__title">Mein <span class="text-gradient-cyber">Tech Stack</span></h2>
+    </div>
+
+    <div class="stack-grid">
+      <!-- Core Infrastructure -->
+      <div class="stack-card glass" data-reveal="up">
+        <h3 class="stack-card__title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+          Core Infrastructure
+        </h3>
+        <div class="stack-card__items">
+          <span class="stack-pill"><span class="stack-pill__dot"></span>Microsoft 365</span>
+          <span class="stack-pill"><span class="stack-pill__dot"></span>Azure</span>
+          <span class="stack-pill"><span class="stack-pill__dot"></span>VMware</span>
+          <span class="stack-pill"><span class="stack-pill__dot"></span>Hyper-V</span>
+          <span class="stack-pill"><span class="stack-pill__dot"></span>Windows Server</span>
+          <span class="stack-pill"><span class="stack-pill__dot"></span>Active Directory</span>
+          <span class="stack-pill"><span class="stack-pill__dot"></span>Linux</span>
         </div>
-        <span class="node__label">{{ link.label }}</span>
-      </a>
+      </div>
+
+      <!-- AI/Automation -->
+      <div class="stack-card glass" data-reveal="up">
+        <h3 class="stack-card__title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          AI &amp; Automation
+        </h3>
+        <div class="stack-card__items">
+          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>AI Agents</span>
+          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>LLMs / RAG</span>
+          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>OpenAI APIs</span>
+          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>n8n / Make</span>
+          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>Python</span>
+          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>PowerShell</span>
+          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>Bash</span>
+          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>Docker</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PROJECTS — Visual Cards with Tech Tags & Glow -->
+<!-- ============================================================ -->
+<section class="section" id="projects">
+  <div class="section__inner">
+    <div class="section__header" data-reveal="up">
+      <span class="section__label">Projekte</span>
+      <h2 class="section__title">Was ich <span class="text-gradient-cyber">baue</span></h2>
+    </div>
+
+    {% if projects %}
+    <div class="project-grid">
+      {% set tones = ['cyber', 'matrix', 'plasma'] %}
+      {% for project in projects %}
+      <article class="project-card-v2 project-card-v2--{{ tones[loop.index0 % 3] }}" data-reveal="up">
+        <div class="project-card-v2__color-bar"></div>
+        <div class="project-card-v2__inner glass">
+          <div class="project-card-v2__icon-wrap">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5">
+              {% if 'Dashboard' in project.title or 'Hub' in project.title %}
+              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+              {% elif 'Automation' in project.title or 'n8n' in project.title or 'Workflow' in project.title %}
+              <path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="10" cy="18" r="1.5"/>
+              {% elif 'Agent' in project.title and 'Job' in project.title %}
+              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              {% elif 'Agent' in project.title or 'Hermes' in project.title %}
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+              {% elif 'DeepDive' in project.title %}
+              <polygon points="5 3 19 12 5 21 5 3"/>
+              {% elif 'Homelab' in project.title or 'Cluster' in project.title %}
+              <rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/>
+              {% else %}
+              <rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/>
+              {% endif %}
+            </svg>
+          </div>
+          <h3 class="project-card-v2__title">{{ project.title }}</h3>
+          {% if project.description %}
+          <p class="project-card-v2__desc">{{ project.description }}</p>
+          {% endif %}
+          {% if project.url %}
+          <a href="{{ project.url }}" class="project-card-v2__link" target="_blank" rel="noopener">
+            Projekt öffnen
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l10-10M7 7h10v10"/></svg>
+          </a>
+          {% endif %}
+        </div>
+      </article>
       {% endfor %}
     </div>
-  </div>
-</section>
-{% endif %}
-
-<!-- ═══ PROJECTS & APPS (Sci-Fi Cards) ═══════════════════════════════ -->
-{% if projects %}
-<section class="section section--projects" data-reveal>
-  <div class="section__header">
-    <div class="badge badge--cyber"><span class="pulse-dot"></span> DEPLOYED APPS</div>
-  </div>
-  <div class="project-grid">
-    {% for project in projects %}
-    <article class="project-card glass hover-edge-glow" style="--i:{{ loop.index0 }}">
-      <div class="project-card__media">
-        {% if project.image_path %}
-        <img src="{{ url_for('public.uploaded_file', filename=project.image_path) }}" alt="{{ project.title }}" loading="lazy">
-        {% else %}
-        <div class="project-card__placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" width="32" height="32"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+    {% else %}
+    <div class="project-grid">
+      <article class="project-card-v2 project-card-v2--cyber" data-reveal="up">
+        <div class="project-card-v2__color-bar"></div>
+        <div class="project-card-v2__inner glass">
+          <div class="project-card-v2__icon-wrap">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+          <h3 class="project-card-v2__title">DeepDive</h3>
+          <p class="project-card-v2__desc">YouTube zu KI-Analyse in Sekunden. Transkribieren, zusammenfassen, exportieren.</p>
+          <a href="https://deepdive.skalantech.store" class="project-card-v2__link" target="_blank" rel="noopener">
+            Projekt öffnen
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l10-10M7 7h10v10"/></svg>
+          </a>
         </div>
-        {% endif %}
-        <div class="project-card__overlay"></div>
-      </div>
-      <div class="project-card__body">
-        <h3>{{ project.title }}</h3>
-        {% if project.description %}<p>{{ project.description }}</p>{% endif %}
-        {% if project.url %}
-        <a href="{{ project.url }}" class="project-card__link cyber-link" target="_blank" rel="noopener">
-          <span>{{ project.url.split('//')[-1].split('/')[0] }}</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-        </a>
-        {% endif %}
-      </div>
-    </article>
-    {% endfor %}
-  </div>
-</section>
-{% endif %}
-
-<!-- ═══ ABOUT ════════════════════════════════════════════════════════ -->
-{% if settings.about %}
-<section class="section section--about" data-reveal>
-  <div class="section__header">
-    <div class="badge badge--cyber"><span class="pulse-dot"></span> DATA LOG</div>
-  </div>
-  <div class="about-card glass hover-edge-glow">
-    <div class="about-text">{{ settings.about }}</div>
-  </div>
-</section>
-{% endif %}
-
-<!-- ═══ CONTACT ══════════════════════════════════════════════════════ -->
-<section class="section section--dark" id="contact">
-  <div class="section__header" data-reveal>
-    <div class="badge badge--cyber"><span class="pulse-dot"></span> SECURE CHANNEL</div>
-    <h2 class="hero__title" style="font-size: 2.5rem; margin-top: 1rem;">Lass uns <span class="gradient-text">vernetzen</span></h2>
-    <div class="section-divider"></div>
-  </div>
-
-  <div class="contact-grid" data-reveal>
-    <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener" class="contact-card glass hover-edge-glow">
-      <div class="contact-card__icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-      </div>
-      <h4>LinkedIn</h4>
-      <p>Berufliches Netzwerk</p>
-      <span class="contact-card__action">Verbinden →</span>
-    </a>
-
-    <a href="https://github.com/Xyesca" target="_blank" rel="noopener" class="contact-card glass hover-edge-glow">
-      <div class="contact-card__icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.13-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.78 1.2 1.78 1.2 1.03 1.78 2.71 1.26 3.37.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a10.9 10.9 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .31.21.67.8.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
-      </div>
-      <h4>GitHub</h4>
-      <p>Open Source Projekte</p>
-      <span class="contact-card__action">Folgen →</span>
-    </a>
-
-    <a href="mailto:xyesca@gmx.de" class="contact-card glass hover-edge-glow">
-      <div class="contact-card__icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </div>
-      <h4>E-Mail</h4>
-      <p>Direkter Kontakt</p>
-      <span class="contact-card__action">Schreiben →</span>
-    </a>
-  </div>
-
-  <div class="contact-terminal glass" data-reveal>
-    <div class="contact-terminal__header">
-      <div class="terminal__dots"><span></span><span></span><span></span></div>
-      <div class="terminal__title" style="flex:1;text-align:center;">send_message.sh</div>
+      </article>
+      <article class="project-card-v2 project-card-v2--matrix" data-reveal="up">
+        <div class="project-card-v2__color-bar"></div>
+        <div class="project-card-v2__inner glass">
+          <div class="project-card-v2__icon-wrap">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 class="project-card-v2__title">AI Job Agent</h3>
+          <p class="project-card-v2__desc">Sucht Stellenangebote, analysiert Anforderungen und erstellt automatisch personalisierte Bewerbungen mit KI.</p>
+        </div>
+      </article>
+      <article class="project-card-v2 project-card-v2--plasma" data-reveal="up">
+        <div class="project-card-v2__color-bar"></div>
+        <div class="project-card-v2__inner glass">
+          <div class="project-card-v2__icon-wrap">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg>
+          </div>
+          <h3 class="project-card-v2__title">Homelab</h3>
+          <p class="project-card-v2__desc">Moderne Lern- und Entwicklungsumgebung mit Docker-Swarm, Kubernetes und Monitoring auf dem VPS.</p>
+        </div>
+      </article>
     </div>
-    <form class="contact-terminal__form" method="POST" action="{{ url_for('public.contact') }}">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <label>NAME_OR_ALIAS</label>
-      <input type="text" name="name" placeholder="John Doe" required>
-      <label>REPLY_TO (EMAIL)</label>
-      <input type="email" name="email" placeholder="john@example.com" required>
-      <label>PAYLOAD (MESSAGE)</label>
-      <textarea name="message" placeholder="Initializing contact sequence..." required></textarea>
-      <button type="submit" class="btn btn--primary" style="align-self: flex-start;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-        Execute Send
-      </button>
-      <div class="contact-terminal__prompt blink">Awaiting input <span class="cursor">_</span></div>
-    </form>
+    {% endif %}
   </div>
 </section>
 
-<!-- ═══ FOOTER ═══════════════════════════════════════════════════════ -->
-<footer class="site-footer">
+<!-- ============================================================ -->
+<!-- LIVE SERVICES BAR -->
+<!-- ============================================================ -->
+<section class="section" id="services" style="padding-top:0;">
+  <div class="section__inner">
+    <div class="section__header" data-reveal="up" style="margin-bottom:1.5rem;">
+      <span class="section__label">Live Services</span>
+      <h2 class="section__title" style="font-size:1.6rem;">Aktuell <span class="text-gradient-matrix">online</span></h2>
+    </div>
+    <div class="service-bar" data-reveal="up">
+      <span class="service-pill"><span class="service-pill__dot"></span>DeepDive</span>
+      <span class="service-pill"><span class="service-pill__dot"></span>Hermes Agent</span>
+      <span class="service-pill"><span class="service-pill__dot"></span>n8n</span>
+      <span class="service-pill"><span class="service-pill__dot"></span>Docker</span>
+      <span class="service-pill"><span class="service-pill__dot"></span>Caddy</span>
+      <span class="service-pill"><span class="service-pill__dot"></span>CrowdSec</span>
+      <span class="service-pill"><span class="service-pill__dot"></span>Tailscale</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CONTACT — Terminal Styled -->
+<!-- ============================================================ -->
+<section class="section section--dark" id="contact">
+  <div class="section__inner">
+    <div class="section__header" data-reveal="up">
+      <span class="section__label">Kontakt</span>
+      <h2 class="section__title">Lass uns <span class="text-gradient-cyber">vernetzen</span></h2>
+    </div>
+
+    <div class="contact-grid" data-reveal="up">
+      <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener" class="contact-card glass">
+        <div class="contact-card__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+        </div>
+        <h4>LinkedIn</h4>
+        <p>Berufliches Netzwerk</p>
+        <span class="contact-card__action">Verbinden →</span>
+      </a>
+
+      <a href="https://github.com/Xyesca" target="_blank" rel="noopener" class="contact-card glass">
+        <div class="contact-card__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.13-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.78 1.2 1.78 1.2 1.03 1.78 2.71 1.26 3.37.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a10.9 10.9 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .31.21.67.8.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+        </div>
+        <h4>GitHub</h4>
+        <p>Open Source Projekte</p>
+        <span class="contact-card__action">Folgen →</span>
+      </a>
+
+      <a href="mailto:xyesca1989@googlemail.com" class="contact-card glass">
+        <div class="contact-card__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <h4>E-Mail</h4>
+        <p>Direkter Kontakt</p>
+        <span class="contact-card__action">Schreiben →</span>
+      </a>
+    </div>
+
+    <div class="contact-terminal glass" data-reveal="up">
+      <div class="contact-terminal__header">
+        <span class="terminal-window__dot terminal-window__dot--red"></span>
+        <span class="terminal-window__dot terminal-window__dot--yellow"></span>
+        <span class="terminal-window__dot terminal-window__dot--green"></span>
+        <span class="terminal-window__title" style="flex:1;text-align:center;">new_message.sh</span>
+      </div>
+      <form class="contact-terminal__form" method="POST" action="{{ url_for('public.contact') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Name</label>
+        <input type="text" name="name" placeholder="Max Mustermann" required>
+        <label>E-Mail</label>
+        <input type="email" name="email" placeholder="max@example.com" required>
+        <label>Nachricht</label>
+        <textarea name="message" placeholder="Deine Nachricht..." required></textarea>
+        <button type="submit" class="btn btn--primary">
+          Senden
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+        <div class="contact-terminal__prompt">Bereit für eingehende Verbindungen...</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
   <div class="footer__inner">
-    <span class="footer__text">SYSTEM: {{ settings.name }} // STATUS: SECURE</span>
-    <a href="{{ url_for('auth.login') }}" class="footer__lock" aria-label="Admin Login">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>
-    </a>
+    <div class="footer__brand">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7" opacity="0.4"/><circle cx="12" cy="12" r="11" opacity="0.2"/></svg>
+      <span>Skalantech</span>
+    </div>
+    <div class="footer__links">
+      <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/Xyesca" target="_blank" rel="noopener">GitHub</a>
+      <a href="{{ url_for('auth.login') }}">Admin</a>
+    </div>
+    <div class="footer__copy">
+      <span>{{ settings.name }} · {{ settings.location or 'Köln' }}</span>
+      <span class="footer__tagline">Turning ideas into intelligent systems.</span>
+    </div>
   </div>
 </footer>
-{% endblock %}
+
+<!-- Scroll Animations & Terminal Script -->
+<script src="{{ url_for('static', filename='js/terminal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/kpi-counter.js') }}"></script>
+<script>
+// Mobile Nav Toggle
+document.querySelector('.nav__toggle').addEventListener('click', function() {
+  document.querySelector('.nav__links').classList.toggle('is-open');
+  this.classList.toggle('is-active');
+});
+
+// Nav Background on Scroll
+window.addEventListener('scroll', function() {
+  const nav = document.getElementById('nav');
+  nav.classList.toggle('is-scrolled', window.scrollY > 50);
+});
+
+// Smooth Scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelector('.nav__links').classList.remove('is-open');
+    }
+  });
+});
+
+// Scroll Reveal using IntersectionObserver
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
