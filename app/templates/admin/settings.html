@@ -1,0 +1,91 @@
+{% extends "admin/base.html" %}
+{% block title %}Einstellungen{% endblock %}
+
+{% block content %}
+<div class="admin-page">
+  <div class="admin-page__header">
+    <h1 class="admin-page__title">Einstellungen</h1>
+    <p class="admin-page__subtitle">Name, Tagline, About-Text und Hero-Medium verwalten.</p>
+  </div>
+
+  <!-- ═══ Profil ═════════════════════════════════════════════════════ -->
+  <form method="POST" enctype="multipart/form-data" class="admin-card">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="admin-card__header"><h2>Profil</h2></div>
+    <div class="admin-card__body">
+      <div class="form-row">
+        <div class="field">
+          <label for="s-name">Name</label>
+          <input type="text" id="s-name" name="name" value="{{ settings.name }}" maxlength="120">
+        </div>
+        <div class="field">
+          <label for="s-location">Standort</label>
+          <input type="text" id="s-location" name="location" value="{{ settings.location }}" maxlength="120">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="s-tagline">Tagline</label>
+        <input type="text" id="s-tagline" name="tagline" value="{{ settings.tagline }}" maxlength="240" placeholder="Kurze Beschreibung deiner digitalen Welt">
+      </div>
+
+      <div class="field">
+        <label for="s-about">About-Text</label>
+        <textarea id="s-about" name="about" rows="5" placeholder="Erzähle über dich und deine Arbeit...">{{ settings.about }}</textarea>
+      </div>
+
+      <div class="field">
+        <label>Hero-Medium (Hintergrund-Bild/Video)</label>
+        {% if settings.hero_path %}
+        <div class="hero-preview">
+          {% if settings.hero_type == "video" %}
+          <video src="{{ url_for('public.uploaded_file', filename=settings.hero_path) }}" muted autoplay loop></video>
+          {% else %}
+          <img src="{{ url_for('public.uploaded_file', filename=settings.hero_path) }}" alt="">
+          {% endif %}
+        </div>
+        <label class="checkbox">
+          <input type="checkbox" name="remove_hero" value="1">
+          <span>Aktuelles Medium entfernen</span>
+        </label>
+        {% endif %}
+        <input type="file" name="hero_file" accept="image/png,image/jpeg,image/gif,image/webp,video/mp4,video/webm">
+        <p class="field-hint">Empfohlen: 1920×1080, max. 50 MB. Unterstützt PNG, JPG, WebP, MP4, WebM.</p>
+      </div>
+    </div>
+    <div class="admin-card__footer">
+      <button type="submit" class="btn btn--primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+        Speichern
+      </button>
+    </div>
+  </form>
+
+  <!-- ═══ Passwort ═══════════════════════════════════════════════════ -->
+  <form method="POST" action="{{ url_for('admin.change_password') }}" class="admin-card">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="admin-card__header"><h2>Passwort ändern</h2></div>
+    <div class="admin-card__body">
+      <div class="field">
+        <label for="pw-current">Aktuelles Passwort</label>
+        <input type="password" id="pw-current" name="current_password" required autocomplete="current-password">
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="pw-new">Neues Passwort</label>
+          <input type="password" id="pw-new" name="new_password" required minlength="8" autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label for="pw-confirm">Bestätigen</label>
+          <input type="password" id="pw-confirm" name="confirm_password" required minlength="8" autocomplete="new-password">
+        </div>
+      </div>
+    </div>
+    <div class="admin-card__footer">
+      <button type="submit" class="btn btn--primary">Passwort ändern</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

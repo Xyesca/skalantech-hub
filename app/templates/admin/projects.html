@@ -1,0 +1,150 @@
+{% extends "admin/base.html" %}
+{% block title %}Projekte{% endblock %}
+
+{% block content %}
+<div class="admin-page">
+  <div class="admin-page__header">
+    <h1 class="admin-page__title">Projekte &amp; Apps</h1>
+    <p class="admin-page__subtitle">Deine Apps, Projekte und Dienste — werden auf der Startseite angezeigt.</p>
+  </div>
+
+  <!-- ═══ Neues Projekt ══════════════════════════════════════════════ -->
+  <form method="POST" enctype="multipart/form-data" class="admin-card">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="admin-card__header"><h2>Neues Projekt</h2></div>
+    <div class="admin-card__body">
+      <div class="field">
+        <label for="p-title">Titel</label>
+        <input type="text" id="p-title" name="title" placeholder="DeepDive" required>
+      </div>
+      <div class="field">
+        <label for="p-desc">Beschreibung</label>
+        <textarea id="p-desc" name="description" rows="2" placeholder="Kurzbeschreibung des Projekts..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="p-url">URL</label>
+          <input type="url" id="p-url" name="url" placeholder="https://deepdive.skalantech.store">
+        </div>
+        <div class="field field--narrow">
+          <label for="p-pos">Position</label>
+          <input type="number" id="p-pos" name="position" value="0" min="0">
+        </div>
+      </div>
+      <div class="field">
+        <label for="p-image">Bild</label>
+        <input type="file" id="p-image" name="image" accept="image/png,image/jpeg,image/gif,image/webp">
+        <p class="field-hint">Empfohlen: 16:10, max. 50 MB.</p>
+      </div>
+    </div>
+    <div class="admin-card__footer">
+      <button type="submit" class="btn btn--primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg>
+        Hinzufügen
+      </button>
+    </div>
+  </form>
+
+  <!-- ═══ Projekt-Grid ═══════════════════════════════════════════════ -->
+  {% if projects %}
+  <div class="admin-grid">
+    {% for project in projects %}
+    <div class="admin-grid__item {% if not project.visible %}is-hidden{% endif %}">
+      {% if project.image_path %}
+      <img class="admin-grid__thumb" src="{{ url_for('public.uploaded_file', filename=project.image_path) }}" alt="" loading="lazy">
+      {% else %}
+      <div class="admin-grid__thumb admin-grid__thumb--empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" width="28" height="28"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      </div>
+      {% endif %}
+      <h3 class="admin-grid__title">{{ project.title }}</h3>
+      <p class="admin-grid__desc">{{ project.description[:100] }}{% if project.description|length > 100 %}…{% endif %}</p>
+      <div class="admin-grid__actions">
+        <button class="btn btn--ghost btn--small" onclick="openEditProject({{ project.id }}, '{{ project.title|e }}', `{{ project.description|e }}`, '{{ project.url }}', {{ project.position }})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Bearbeiten
+        </button>
+        <form method="POST" action="{{ url_for('admin.projects_toggle', project_id=project.id) }}" class="inline-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn--ghost btn--small">
+            {% if project.visible %}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            {% else %}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg>
+            {% endif %}
+          </button>
+        </form>
+        <form method="POST" action="{{ url_for('admin.projects_delete', project_id=project.id) }}" class="inline-form" onsubmit="return confirm('Projekt löschen?')">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn--ghost btn--small btn--danger-hover">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    <p>Noch keine Projekte. Füge das erste hinzu.</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- ═══ Edit Modal ════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="edit-modal">
+  <div class="modal glass">
+    <div class="modal__header">
+      <h3>Projekt bearbeiten</h3>
+      <button class="modal__close" onclick="closeModal('edit-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form method="POST" id="edit-form" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="modal__body">
+        <div class="field">
+          <label for="ep-title">Titel</label>
+          <input type="text" id="ep-title" name="title" required>
+        </div>
+        <div class="field">
+          <label for="ep-desc">Beschreibung</label>
+          <textarea id="ep-desc" name="description" rows="2"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="ep-url">URL</label>
+            <input type="url" id="ep-url" name="url">
+          </div>
+          <div class="field field--narrow">
+            <label for="ep-pos">Position</label>
+            <input type="number" id="ep-pos" name="position" min="0">
+          </div>
+        </div>
+        <div class="field">
+          <label for="ep-image">Neues Bild (optional)</label>
+          <input type="file" id="ep-image" name="image" accept="image/png,image/jpeg,image/gif,image/webp">
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button type="submit" class="btn btn--primary">Speichern</button>
+        <button type="button" class="btn btn--ghost" onclick="closeModal('edit-modal')">Abbrechen</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function openEditProject(id, title, desc, url, pos) {
+  document.getElementById('edit-form').action = '/admin/projects/' + id + '/edit';
+  document.getElementById('ep-title').value = title;
+  document.getElementById('ep-desc').value = desc;
+  document.getElementById('ep-url').value = url;
+  document.getElementById('ep-pos').value = pos;
+  openModal('edit-modal');
+}
+</script>
+{% endblock %}

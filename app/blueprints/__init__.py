@@ -1,0 +1,1 @@
+# Skalantech Hub — Blueprints package

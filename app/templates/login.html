@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Login · Skalantech{% endblock %}
+
+{% block body %}
+<div class="auth-shell">
+  <canvas class="hero__particles" id="hero-particles"></canvas>
+
+  <div class="auth-card glass">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="flash flash--{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div class="auth-card__header">
+      <div class="badge badge--glow">
+        <span class="pulse-dot"></span>
+        <span>SKALANTECH</span>
+      </div>
+      <h1>Admin Login</h1>
+    </div>
+
+    <form method="POST" class="auth-form" id="login-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <div class="field">
+        <label for="username">Benutzername</label>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="username" name="username" autocomplete="username" required autofocus placeholder="Benutzername">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Passwort</label>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="password" name="password" autocomplete="current-password" required placeholder="Passwort">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn--primary btn--block" id="login-btn">
+        <span class="btn__text">Anmelden</span>
+        <span class="btn__loader" hidden>
+          <svg class="spinner" viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="31.4" stroke-linecap="round"/></svg>
+        </span>
+      </button>
+    </form>
+
+    <a href="{{ url_for('public.index') }}" class="auth-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Zurück zur Startseite
+    </a>
+  </div>
+</div>
+{% endblock %}

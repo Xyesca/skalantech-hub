@@ -1,12 +1,19 @@
-"""Skalantech Hub — Seed initial data"""
-import sys
+"""Skalantech Hub — Seed initial data (updated for new structure)."""
+import os, sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent))
-from app import app, db
-from models import Settings, Link, Project
+
+from dotenv import load_dotenv
+load_dotenv()
+
+from app import create_app
+from app.extensions import db
+from app.models import Settings, Link, Project
+
+app = create_app(os.environ.get("FLASK_ENV", "production"))
 
 with app.app_context():
-    # Settings
     s = Settings.get()
     s.name = "Skalantech"
     s.tagline = "Digitale Infrastruktur · Cloud Engineering · KI-Automation"
@@ -16,11 +23,10 @@ with app.app_context():
         "Cloud und KI-Automation.\n\n"
         "Skalantech ist meine digitale Plattform: Hier findet ihr meine Projekte, "
         "Tools und Dienste — von DeepDive (YouTube zu KI-Analyse) bis zu "
-        "massgeschneiderten Automationsloesungen.\n\n"
-        "Alles selbst gehostet, Open-Source-first, designed fuer Performanz."
+        "maßgeschneiderten Automationslösungen.\n\n"
+        "Alles selbst gehostet, Open-Source-first, designed für Performanz."
     )
 
-    # Links (Subdomains + Social)
     links = [
         ("DeepDive", "https://deepdive.skalantech.store", "app", 0),
         ("n8n", "https://n8n.skalantech.store", "app", 1),
@@ -32,10 +38,9 @@ with app.app_context():
         if not Link.query.filter_by(url=url).first():
             db.session.add(Link(label=label, url=url, platform=platform, position=pos, visible=True))
 
-    # Projects
     projects = [
         ("DeepDive", "YouTube zu KI-Analyse in Sekunden. Transkribieren, zusammenfassen, exportieren.", "https://deepdive.skalantech.store", 0),
-        ("Skalantech Hub", "Diese Seite — persoenliche Visitenkarte mit Admin-Dashboard, selbst gehostet.", "https://skalantech.store", 1),
+        ("Skalantech Hub", "Persönliche Visitenkarte mit Admin-Dashboard, selbst gehostet.", "https://skalantech.store", 1),
         ("Hermes Agent", "KI-Agenten-Framework — konfigurierbar, erweiterbar, multi-provider.", "https://github.com/NousResearch/hermes-agent", 2),
     ]
     for title, desc, url, pos in projects:
@@ -43,4 +48,4 @@ with app.app_context():
             db.session.add(Project(title=title, description=desc, url=url, position=pos, visible=True))
 
     db.session.commit()
-    print("Seed data inserted successfully")
+    print("✓ Seed data inserted successfully")
