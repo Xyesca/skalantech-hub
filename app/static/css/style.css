@@ -416,20 +416,98 @@ img { max-width: 100%; display: block; }
 .hero__glow {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(100px);
   pointer-events: none;
+  z-index: 0;
 }
 .hero__glow--1 {
-  width: 400px; height: 400px;
-  background: rgba(0, 166, 255, 0.05);
-  top: -100px; left: -100px;
+  width: 600px; height: 600px;
+  background: rgba(0, 166, 255, 0.08);
+  top: -150px; left: -150px;
   animation: float-slow 8s ease-in-out infinite;
 }
 .hero__glow--2 {
-  width: 350px; height: 350px;
-  background: rgba(179, 102, 255, 0.04);
-  bottom: -100px; right: -100px;
+  width: 500px; height: 500px;
+  background: rgba(179, 102, 255, 0.07);
+  bottom: -120px; right: -120px;
   animation: float-slow 10s ease-in-out infinite reverse;
+}
+.hero__glow--3 {
+  width: 350px; height: 350px;
+  background: rgba(0, 255, 136, 0.05);
+  top: 40%; left: 60%;
+  animation: float-slow 12s ease-in-out infinite;
+}
+
+/* Mouse-Tracking Cursor Glow */
+.hero__glow--cursor {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle at center, rgba(0, 166, 255, 0.12) 0%, rgba(179, 102, 255, 0.06) 40%, transparent 70%);
+  filter: blur(40px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  transform: translate(-50%, -50%);
+  top: var(--my, -100%);
+  left: var(--mx, -100%);
+}
+.hero:hover .hero__glow--cursor {
+  opacity: 1;
+}
+
+/* Floating Geometric Shapes */
+.hero__geom {
+  position: absolute;
+  border-radius: var(--radius);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+.hero__geom--1 {
+  width: 60px; height: 60px;
+  border: 1.5px solid rgba(0, 166, 255, 0.12);
+  top: 15%; left: 10%;
+  animation: geom-float-1 14s ease-in-out infinite;
+}
+.hero__geom--2 {
+  width: 40px; height: 40px;
+  border: 1.5px solid rgba(179, 102, 255, 0.1);
+  top: 60%; left: 80%;
+  transform: rotate(45deg);
+  animation: geom-float-2 12s ease-in-out infinite;
+}
+.hero__geom--3 {
+  width: 30px; height: 30px;
+  background: rgba(0, 255, 136, 0.04);
+  border: 1px solid rgba(0, 255, 136, 0.1);
+  top: 80%; left: 25%;
+  border-radius: 50%;
+  animation: geom-float-3 16s ease-in-out infinite;
+}
+.hero__geom--4 {
+  width: 50px; height: 50px;
+  border: 1.5px solid rgba(0, 166, 255, 0.08);
+  top: 25%; left: 75%;
+  border-radius: 50%;
+  animation: geom-float-4 18s ease-in-out infinite;
+}
+
+@keyframes geom-float-1 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-20px) rotate(120deg); }
+  66% { transform: translateY(10px) rotate(240deg); }
+}
+@keyframes geom-float-2 {
+  0%, 100% { transform: translateY(0) rotate(45deg); }
+  50% { transform: translateY(-25px) rotate(225deg); }
+}
+@keyframes geom-float-3 {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-15px) scale(1.3); }
+}
+@keyframes geom-float-4 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(15px, -20px) scale(0.8); }
+  75% { transform: translate(-10px, 15px) scale(1.2); }
 }
 
 /* Hero 2-Column Layout */
@@ -1151,6 +1229,7 @@ img { max-width: 100%; display: block; }
   .hero__title {
     font-size: clamp(2rem, 8vw, 3rem);
   }
+  .hero__geom { display: none; }
 }
 
 @media (max-width: 760px) {
@@ -1486,11 +1565,13 @@ img { max-width: 100%; display: block; }
   position: relative;
   border-radius: var(--radius);
   overflow: visible;
-  transition: transform 0.3s var(--ease-out);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: box-shadow 0.3s var(--ease-out);
 }
 
 .project-card-v2:hover {
-  transform: translateY(-6px);
+  /* transform handled by vanilla-tilt.js */
 }
 
 .project-card-v2__color-bar {
@@ -1579,7 +1660,7 @@ img { max-width: 100%; display: block; }
 }
 
 .project-card-v2:hover .project-card-v2__icon-wrap {
-  transform: scale(1.08);
+  /* scale handled by vanilla-tilt.js */
 }
 
 .project-card-v2--cyber:hover .project-card-v2__icon-wrap {

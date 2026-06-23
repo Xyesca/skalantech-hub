@@ -23,7 +23,7 @@ def add_security_headers(response: Response) -> Response:
     h["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
     h["Content-Security-Policy"] = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline'; "
+        "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         "font-src 'self' https://fonts.gstatic.com; "
         "img-src 'self' data: blob:; "
