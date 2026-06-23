@@ -2,8 +2,9 @@
 import os
 import secrets
 
-from flask import Flask
+from flask import Flask, flash, redirect, request, url_for
 from markupsafe import Markup
+from flask_wtf.csrf import CSRFError
 
 from app.config import config_map
 from app.extensions import db, csrf, limiter
@@ -40,6 +41,12 @@ def create_app(config_name: str | None = None) -> Flask:
 
     # ── Security headers on every response ────────────────────────────────
     app.after_request(add_security_headers)
+
+    # ── CSRF error handler ────────────────────────────────────────────────
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error(e: CSRFError):
+        flash("Sitzung abgelaufen. Bitte Seite neu laden.", "error")
+        return redirect(request.referrer or url_for("public.index")), 400
 
     # ── Template globals ──────────────────────────────────────────────────
     @app.template_global()

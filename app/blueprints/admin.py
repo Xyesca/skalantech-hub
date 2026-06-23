@@ -208,3 +208,33 @@ def projects_delete(project_id):
     db.session.commit()
     flash("Projekt gelöscht.", "success")
     return redirect(url_for("admin.projects"))
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# Messages
+# ══════════════════════════════════════════════════════════════════════════
+@admin_bp.route("/messages")
+def messages():
+    all_msgs = ContactMessage.query.order_by(ContactMessage.created_at.desc()).all()
+    for m in all_msgs:
+        if not m.is_read:
+            break  # only mark first batch
+    return render_template("admin/messages.html", messages=all_msgs)
+
+
+@admin_bp.route("/messages/<int:msg_id>/read", methods=["POST"])
+def mark_message_read(msg_id):
+    msg = db.get_or_404(ContactMessage, msg_id)
+    msg.is_read = True
+    db.session.commit()
+    flash("Nachricht als gelesen markiert.", "success")
+    return redirect(url_for("admin.messages"))
+
+
+@admin_bp.route("/messages/<int:msg_id>/delete", methods=["POST"])
+def delete_message(msg_id):
+    msg = db.get_or_404(ContactMessage, msg_id)
+    db.session.delete(msg)
+    db.session.commit()
+    flash("Nachricht gelöscht.", "success")
+    return redirect(url_for("admin.messages"))
