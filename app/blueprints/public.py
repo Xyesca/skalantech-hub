@@ -4,7 +4,7 @@ import smtplib
 import time
 from email.mime.text import MIMEText
 
-from flask import Blueprint, render_template, send_from_directory, current_app, request, flash, redirect, url_for, jsonify
+from flask import Blueprint, render_template, send_from_directory, current_app, request, flash, redirect, url_for, jsonify, Response
 from app.models import Settings, Link, Project, ContactMessage
 from app.extensions import db
 
@@ -14,6 +14,15 @@ public_bp = Blueprint("public", __name__)
 _CONTACT_LIMITS: dict[str, list[float]] = {}
 _CONTACT_MAX = 3          # max messages per IP
 _CONTACT_WINDOW = 3600    # sliding window in seconds (1 hour)
+
+_SERVICE_CHOICES = {
+    "Infrastruktur & Cloud",
+    "Prozessautomatisierung",
+    "KI-Agenten & RAG",
+    "Betrieb & Reliability",
+    "System-Check / Beratung",
+    "Etwas anderes",
+}
 
 
 def _client_ip() -> str:
@@ -84,6 +93,25 @@ def index():
     return render_template("index.html", settings=settings, links=links, projects=projects)
 
 
+@public_bp.route("/robots.txt")
+def robots_txt():
+    """Serve crawler instructions from the canonical application route."""
+    content = "User-agent: *\nAllow: /\n\nSitemap: https://skalantech.store/sitemap.xml\n"
+    return Response(content, mimetype="text/plain")
+
+
+@public_bp.route("/sitemap.xml")
+def sitemap_xml():
+    """Small, explicit sitemap for indexable public pages."""
+    content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://skalantech.store/</loc><priority>1.0</priority></url>
+  <url><loc>https://skalantech.store/faq</loc><priority>0.6</priority></url>
+</urlset>
+"""
+    return Response(content, mimetype="application/xml")
+
+
 # ── Legal Pages ──────────────────────────────────────────────────────
 @public_bp.route("/impressum")
 def impressum():
@@ -112,26 +140,42 @@ def test_footer():
 
 @public_bp.route("/contact", methods=["POST"])
 def contact():
-    name = request.form.get("name", "").strip()
+    name = " ".join(request.form.get("name", "").split())
     email = request.form.get("email", "").strip()
+    company = " ".join(request.form.get("company", "").split())
+    service = request.form.get("service", "").strip()
     message_text = request.form.get("message", "").strip()
+    privacy = request.form.get("privacy", "")
+    honeypot = request.form.get("website", "").strip()
+
+    # Quietly accept obvious bot submissions without storing or sending them.
+    if honeypot:
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify(success=True, message="Vielen Dank. Ihre Anfrage wurde übermittelt.")
+        return redirect(url_for("public.index", _anchor="contact"))
 
     # ── Validierung ──────────────────────────────────────────────────
     errors = []
-    if not name:
-        errors.append("Bitte gib deinen Namen ein.")
+    if not name or len(name) > 120:
+        errors.append("Bitte geben Sie einen gültigen Namen ein.")
     if not email or "@" not in email or len(email) > 254:
-        errors.append("Bitte gib eine gültige E-Mail-Adresse ein.")
+        errors.append("Bitte geben Sie eine gültige E-Mail-Adresse ein.")
+    if len(company) > 160:
+        errors.append("Der Unternehmensname ist zu lang.")
+    if service and service not in _SERVICE_CHOICES:
+        errors.append("Bitte wählen Sie ein gültiges Anliegen aus.")
     if not message_text:
-        errors.append("Bitte gib eine Nachricht ein.")
+        errors.append("Bitte beschreiben Sie kurz Ihre Ausgangslage.")
     if len(message_text) > 5000:
         errors.append("Nachricht ist zu lang (max. 5000 Zeichen).")
+    if privacy != "accepted":
+        errors.append("Bitte bestätigen Sie die Datenschutzerklärung.")
 
     # ── Rate-Limiting ────────────────────────────────────────────────
     if not errors:
         ip = _client_ip()
         if not _check_contact_limit(ip):
-            errors.append("Zu viele Anfragen. Bitte versuche es später erneut.")
+            errors.append("Zu viele Anfragen. Bitte versuchen Sie es später erneut.")
 
     if errors:
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -141,15 +185,22 @@ def contact():
         return redirect(url_for("public.index", _anchor="contact"))
 
     # ── Speichern + optional E-Mail ──────────────────────────────────
-    msg = ContactMessage(name=name, email=email, message=message_text)
+    context = []
+    if company:
+        context.append(f"Unternehmen: {company}")
+    if service:
+        context.append(f"Anliegen: {service}")
+    stored_message = "\n".join(context + ([""] if context else []) + [message_text])
+
+    msg = ContactMessage(name=name, email=email, message=stored_message)
     db.session.add(msg)
     db.session.commit()
 
-    _send_email(name, email, message_text)  # silent — don't block on failure
+    _send_email(name, email, stored_message)  # silent — don't block on failure
 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return jsonify(success=True, message='Nachricht erfolgreich gesendet!')
-    flash("Nachricht erfolgreich gesendet. Ich melde mich bald!", "success")
+        return jsonify(success=True, message='Vielen Dank. Ihre Anfrage wurde erfolgreich gesendet.')
+    flash("Vielen Dank. Ihre Anfrage wurde erfolgreich gesendet.", "success")
     return redirect(url_for("public.index", _anchor="contact"))
 
 

@@ -1,43 +1,52 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>FAQ · {{ settings.name }}</title>
-<meta name="robots" content="noindex">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-<nav class="nav" id="nav" aria-label="Hauptnavigation">
-  <div class="nav__inner">
-    <a href="{{ url_for('public.index') }}" class="nav__brand">
-      <img src="{{ url_for('static', filename='logo.svg') }}" alt="Skalantech" class="nav__logo">
-    </a>
-  </div>
-</nav>
-<main style="max-width:720px;margin:6rem auto 4rem;padding:0 1.5rem;">
-  <h1 style="font-family:var(--font-display);font-size:2rem;font-weight:700;margin-bottom:2rem;">FAQ — Häufige Fragen</h1>
+{% extends "base.html" %}
+{% block title %}FAQ · Skalantech{% endblock %}
+{% block description %}Antworten zu IT-Infrastruktur, Automatisierung, KI-Agenten, Self-Hosting und der Zusammenarbeit mit Skalantech.{% endblock %}
+{% block canonical %}https://skalantech.store/faq{% endblock %}
+{% block og_title %}FAQ · Zusammenarbeit mit Skalantech{% endblock %}
+{% block og_url %}https://skalantech.store/faq{% endblock %}
+{% block body_class %}page-legal{% endblock %}
 
-  <div class="glass" style="padding:2rem;">
-    <div style="margin-bottom:1.5rem;">
-      <h3 style="font-size:1rem;margin-bottom:0.3rem;">Welche Dienstleistungen bietest du an?</h3>
-      <p style="color:var(--text-secondary);font-size:0.88rem;">IT-Infrastruktur (M365, VMware, Hyper-V), Cloud Engineering, AI Agents & Automatisierung mit PowerShell, Python und n8n.</p>
-    </div>
-    <div style="margin-bottom:1.5rem;">
-      <h3 style="font-size:1rem;margin-bottom:0.3rem;">Bietest du auch Remote-Support?</h3>
-      <p style="color:var(--text-secondary);font-size:0.88rem;">Ja, ich arbeite deutschlandweit und remote. Eine Festanstellung oder Projektbasis ist flexibel möglich.</p>
-    </div>
-    <div style="margin-bottom:1.5rem;">
-      <h3 style="font-size:1rem;margin-bottom:0.3rem;">Wie kann ich dich kontaktieren?</h3>
-      <p style="color:var(--text-secondary);font-size:0.88rem;">Über das Kontaktformular auf dieser Seite, per E-Mail an xyesca1989@googlemail.com oder via LinkedIn.</p>
-    </div>
-    <div>
-      <h3 style="font-size:1rem;margin-bottom:0.3rem;">Welche Technologien verwendest du?</h3>
-      <p style="color:var(--text-secondary);font-size:0.88rem;">M365, Azure, VMware, Hyper-V, Docker, Python, PowerShell, n8n, AI Agents, LLMs/RAG und mehr.</p>
-    </div>
-  </div>
+{% block body %}
+<main class="legal-page" id="main-content">
+  <div class="shell">
+    <header class="legal-page__header">
+      <p class="section-label">Häufige Fragen</p>
+      <h1>Gut zu wissen.</h1>
+      <p>Leistungen, Technik und Zusammenarbeit</p>
+    </header>
 
-  <a href="{{ url_for('public.index') }}" class="btn btn--ghost" style="margin-top:2rem;">← Zurück zur Startseite</a>
+    <div class="legal-layout">
+      <nav class="legal-layout__aside" aria-label="FAQ-Themen">
+        <a href="#services">Leistungen</a>
+        <a href="#delivery">Zusammenarbeit</a>
+        <a href="#technology">Technologie</a>
+      </nav>
+
+      <article class="legal-content">
+        <h2 id="services">Leistungen</h2>
+        <h3>Welche Themen übernimmt Skalantech?</h3>
+        <p>IT-Infrastruktur und Cloud, Plattform- und Systemmigrationen, Prozessautomatisierung, produktive KI-Agenten sowie der verlässliche Betrieb mit Monitoring, Backups und Dokumentation.</p>
+
+        <h3>Kannst du bestehende Systeme übernehmen?</h3>
+        <p>Ja. Gewachsene Umgebungen werden zuerst strukturiert aufgenommen. Darauf basierend entsteht ein realistischer Plan für Stabilisierung, Migration oder schrittweise Modernisierung.</p>
+
+        <h2 id="delivery">Zusammenarbeit</h2>
+        <h3>Arbeitest du remote?</h3>
+        <p>Ja. Projekte sind remote in Deutschland und im DACH-Raum möglich. Für geeignete Termine und Projektphasen ist auch Zusammenarbeit vor Ort nach Absprache möglich.</p>
+
+        <h3>Wie beginnt ein Projekt?</h3>
+        <p>Mit einer kurzen Beschreibung der Ausgangslage und des gewünschten Ergebnisses. Danach klären wir, ob ein System-Check, ein abgegrenztes Delivery-Projekt oder eine laufende Begleitung am sinnvollsten ist.</p>
+
+        <h2 id="technology">Technologie</h2>
+        <h3>Ist Self-Hosting möglich?</h3>
+        <p>Ja. Open-Source- und Self-Hosting-Optionen werden bevorzugt geprüft, wenn sie zu Anforderungen, Budget und Betrieb passen. Cloud-Dienste werden gezielt statt reflexartig eingesetzt.</p>
+
+        <h3>Welche Technologien setzt du ein?</h3>
+        <p>Unter anderem Microsoft 365, Azure, VMware, Hyper-V, Linux, Docker, n8n, Python, PowerShell sowie moderne Agenten-, RAG- und LLM-Architekturen.</p>
+      </article>
+    </div>
+
+    <a class="legal-back" href="{{ url_for('public.index') }}#contact">Projekt anfragen →</a>
+  </div>
 </main>
-</body>
-</html>
+{% endblock %}

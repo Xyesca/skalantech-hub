@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Skalantech App-Symbol</title>
+  <desc id="desc">Die Skalantech S-Bildmarke auf einem hellblauen Quadrat.</desc>
+  <rect width="64" height="64" rx="17" fill="#EEF4FF"/>
+  <path fill="#1D4ED8" d="M50 8H25C15.6 8 8 15.6 8 25s7.6 17 17 17h14c2.8 0 5 2.2 5 5s-2.2 5-5 5H14v8h25c7.2 0 13-5.8 13-13s-5.8-13-13-13H25c-5 0-9-4-9-9s4-9 9-9h25V8Z"/>
+  <circle cx="50" cy="12" r="4" fill="#60A5FA"/>
+  <circle cx="14" cy="56" r="4" fill="#60A5FA"/>
+</svg>

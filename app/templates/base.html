@@ -1,48 +1,160 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Skalantech{% endblock %}</title>
-  <meta name="description" content="{% block description %}Skalantech — Digitale Infrastruktur, Cloud Engineering, KI-Automation{% endblock %}">
-  <meta name="theme-color" content="#06060a">
-  <link rel="canonical" href="https://skalantech.store/">
-  <meta property="og:title" content="Skalantech · IT Infrastructure · Cloud · AI Agents">
-  <meta property="og:description" content="Xavier Escalante — IT-Infrastruktur, Cloud Engineering, AI Agents & Automatisierung. Moderne IT-Lösungen aus Leidenschaft.">
-  <meta property="og:image" content="https://skalantech.store/static/logo.svg">
-  <meta property="og:url" content="https://skalantech.store">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fc">
+  <meta name="color-scheme" content="light">
+  <title>{% block title %}Skalantech · IT-Infrastruktur & KI-Automation{% endblock %}</title>
+  <meta name="description" content="{% block description %}Skalantech modernisiert IT-Infrastruktur, automatisiert Abläufe und bringt KI-Agenten zuverlässig in den Betrieb.{% endblock %}">
+  <meta name="author" content="Xavier Escalante Castellar">
+  <meta name="robots" content="{% block robots %}index, follow, max-image-preview:large{% endblock %}">
+  <link rel="canonical" href="{% block canonical %}https://skalantech.store/{% endblock %}">
   <meta property="og:type" content="website">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:site_name" content="Skalantech">
+  <meta property="og:title" content="{% block og_title %}Skalantech · IT-Infrastruktur & KI-Automation{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Stabile IT. Weniger Handarbeit. Mehr Wirkung.{% endblock %}">
+  <meta property="og:url" content="{% block og_url %}https://skalantech.store/{% endblock %}">
+  <meta property="og:image" content="https://skalantech.store/static/img/skalantech-og.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Skalantech Systemvisual für Infrastruktur, Automation und KI">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://skalantech.store/static/img/skalantech-og.jpg">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=5">
+  <script src="{{ url_for('static', filename='js/main.js') }}?v=5" defer></script>
   <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Xavier Escalante",
-  "url": "https://skalantech.store",
-  "jobTitle": "IT-Infrastructure & Cloud Engineer",
-  "knowsAbout": ["IT Infrastructure", "Cloud Engineering", "AI Agents", "Automation", "DevOps"],
-  "sameAs": ["https://linkedin.com/in/xyesca/", "https://github.com/Xyesca"]
-}
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ProfessionalService",
+        "@id": "https://skalantech.store/#business",
+        "name": "Skalantech",
+        "url": "https://skalantech.store/",
+        "description": "IT-Infrastruktur, Cloud Engineering, Prozessautomatisierung und produktive KI-Agenten für Unternehmen.",
+        "areaServed": {"@type": "Country", "name": "Deutschland"},
+        "founder": {"@id": "https://skalantech.store/#xavier"},
+        "sameAs": [
+          "https://github.com/Xyesca",
+          "https://linkedin.com/in/xyesca/"
+        ]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://skalantech.store/#xavier",
+        "name": "Xavier Escalante Castellar",
+        "url": "https://skalantech.store/",
+        "jobTitle": "IT Infrastructure & Automation Engineer",
+        "worksFor": {"@id": "https://skalantech.store/#business"},
+        "knowsAbout": [
+          "IT-Infrastruktur",
+          "Cloud Engineering",
+          "Microsoft 365",
+          "Virtualisierung",
+          "Prozessautomatisierung",
+          "KI-Agenten",
+          "Self-Hosting"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://skalantech.store/#website",
+        "name": "Skalantech",
+        "url": "https://skalantech.store/",
+        "inLanguage": "de-DE",
+        "publisher": {"@id": "https://skalantech.store/#business"}
+      }
+    ]
+  }
   </script>
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Skalantech",
-  "url": "https://skalantech.store",
-  "description": "IT-Infrastruktur mit KI-Power — Cloud Engineering, AI Agents & Automatisierung"
-}
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Martian+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="preload" as="style" href="{{ url_for('static', filename='css/style.css') }}?v=2">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2">
   {% block head %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
+  <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
+
+  <header class="site-header" id="site-header">
+    <div class="shell site-header__inner">
+      <a class="brand" href="{{ url_for('public.index') }}" aria-label="Skalantech Startseite">
+        <img class="brand__mark" src="{{ url_for('static', filename='brand/skalantech-mark.svg') }}" alt="" width="25" height="25">
+        <span class="brand__word">skalantech</span>
+      </a>
+
+      <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+        <a href="{{ url_for('public.index') }}#services">Leistungen</a>
+        <a href="{{ url_for('public.index') }}#process">Vorgehen</a>
+        <a href="{{ url_for('public.index') }}#work">Projekte</a>
+        <a href="{{ url_for('public.index') }}#about">Über mich</a>
+      </nav>
+
+      <a class="header-cta" href="{{ url_for('public.index') }}#contact">
+        Projekt anfragen
+        <span aria-hidden="true">↗</span>
+      </a>
+
+      <button class="menu-toggle" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-stack" id="flash-stack" aria-live="polite">
+        {% for category, message in messages %}
+          <div class="flash flash--{{ category }}">
+            <span>{{ message }}</span>
+            <button type="button" aria-label="Hinweis schließen">×</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
   {% block body %}{% endblock %}
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  {% block scripts %}{% endblock %}
+
+  <footer class="site-footer">
+    <div class="shell">
+      <div class="site-footer__top">
+        <div class="footer-intro">
+          <a class="brand brand--footer" href="{{ url_for('public.index') }}">
+            <img class="brand__mark" src="{{ url_for('static', filename='brand/skalantech-mark.svg') }}" alt="" width="25" height="25">
+            <span class="brand__word">skalantech</span>
+          </a>
+          <p>IT-Infrastruktur, Automation und KI-Systeme – klar geplant, sauber umgesetzt und für den Alltag gebaut.</p>
+        </div>
+
+        <div class="footer-nav">
+          <div>
+            <p class="footer-nav__title">Leistungen</p>
+            <a href="{{ url_for('public.index') }}#services">Infrastruktur & Cloud</a>
+            <a href="{{ url_for('public.index') }}#services">Automation & KI</a>
+            <a href="{{ url_for('public.index') }}#process">Zusammenarbeit</a>
+          </div>
+          <div>
+            <p class="footer-nav__title">Kontakt</p>
+            <a href="mailto:xyesca1989@googlemail.com">E-Mail</a>
+            <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub</a>
+          </div>
+          <div>
+            <p class="footer-nav__title">Rechtliches</p>
+            <a href="{{ url_for('public.impressum') }}">Impressum</a>
+            <a href="{{ url_for('public.datenschutz') }}">Datenschutz</a>
+            <a href="{{ url_for('public.agb') }}">AGB</a>
+            <a href="{{ url_for('public.faq') }}">FAQ</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="site-footer__bottom">
+        <span>© 2026 Skalantech · Xavier Escalante Castellar</span>
+        <span>Köln · Remote in DACH</span>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

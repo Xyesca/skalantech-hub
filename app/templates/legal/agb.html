@@ -1,39 +1,43 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AGB · {{ settings.name }}</title>
-<meta name="robots" content="noindex">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-<nav class="nav" id="nav" aria-label="Hauptnavigation">
-  <div class="nav__inner">
-    <a href="{{ url_for('public.index') }}" class="nav__brand">
-      <img src="{{ url_for('static', filename='logo.svg') }}" alt="Skalantech" class="nav__logo">
-    </a>
+{% extends "base.html" %}
+{% block title %}AGB · Skalantech{% endblock %}
+{% block description %}Allgemeine Geschäftsbedingungen von Skalantech.{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+{% block canonical %}https://skalantech.store/agb{% endblock %}
+{% block og_url %}https://skalantech.store/agb{% endblock %}
+{% block body_class %}page-legal{% endblock %}
+
+{% block body %}
+<main class="legal-page" id="main-content">
+  <div class="shell">
+    <header class="legal-page__header">
+      <p class="section-label">Rechtliches</p>
+      <h1>Allgemeine Geschäftsbedingungen</h1>
+      <p>Stand: Juni 2026</p>
+    </header>
+
+    <div class="legal-layout">
+      <nav class="legal-layout__aside" aria-label="Rechtliche Seiten">
+        <a href="{{ url_for('public.impressum') }}">Impressum</a>
+        <a href="{{ url_for('public.datenschutz') }}">Datenschutz</a>
+        <a href="{{ url_for('public.agb') }}" aria-current="page">AGB</a>
+      </nav>
+
+      <article class="legal-content">
+        <h2>1. Geltungsbereich</h2>
+        <p>Diese AGB gelten für alle Dienstleistungen und Projekte zwischen Xavier Escalante Castellar (Skalantech) und dem Auftraggeber.</p>
+
+        <h2>2. Leistungsumfang</h2>
+        <p>Der genaue Leistungsumfang wird individuell im Projektvertrag festgehalten. Änderungen bedürfen der schriftlichen Zustimmung beider Parteien.</p>
+
+        <h2>3. Vergütung</h2>
+        <p>Die Vergütung wird im Projektvertrag vereinbart. Rechnungen sind innerhalb von 14 Tagen nach Erhalt ohne Abzug zahlbar.</p>
+
+        <h2>4. Haftung</h2>
+        <p>Die Haftung ist auf Vorsatz und grobe Fahrlässigkeit beschränkt. Für indirekte Schäden oder Datenverlust wird nicht gehaftet.</p>
+      </article>
+    </div>
+
+    <a class="legal-back" href="{{ url_for('public.index') }}">← Zurück zur Startseite</a>
   </div>
-</nav>
-<main style="max-width:720px;margin:6rem auto 4rem;padding:0 1.5rem;">
-  <h1 style="font-family:var(--font-display);font-size:2rem;font-weight:700;margin-bottom:0.5rem;">Allgemeine Geschäftsbedingungen</h1>
-  <p style="color:var(--text-tertiary);font-size:0.85rem;margin-bottom:2rem;">Stand: Juni 2026</p>
-
-  <div class="glass" style="padding:2rem;line-height:1.8;">
-    <h2 style="font-size:1.2rem;margin:1.5rem 0 0.5rem;">1. Geltungsbereich</h2>
-    <p>Diese AGB gelten für alle Dienstleistungen und Projekte zwischen Xavier Escalante Castellar (Skalantech) und dem Auftraggeber.</p>
-
-    <h2 style="font-size:1.2rem;margin:1.5rem 0 0.5rem;">2. Leistungsumfang</h2>
-    <p>Der genaue Leistungsumfang wird individuell im Projektvertrag festgehalten. Änderungen bedürfen der schriftlichen Zustimmung beider Parteien.</p>
-
-    <h2 style="font-size:1.2rem;margin:1.5rem 0 0.5rem;">3. Vergütung</h2>
-    <p>Die Vergütung wird im Projektvertrag vereinbart. Rechnungen sind innerhalb von 14 Tagen nach Erhalt ohne Abzug zahlbar.</p>
-
-    <h2 style="font-size:1.2rem;margin:1.5rem 0 0.5rem;">4. Haftung</h2>
-    <p>Die Haftung ist auf Vorsatz und grobe Fahrlässigkeit beschränkt. Für indirekte Schäden oder Datenverlust wird nicht gehaftet.</p>
-  </div>
-
-  <a href="{{ url_for('public.index') }}" class="btn btn--ghost" style="margin-top:2rem;">← Zurück zur Startseite</a>
 </main>
-</body>
-</html>
+{% endblock %}

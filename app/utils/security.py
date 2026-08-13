@@ -17,28 +17,52 @@ def add_security_headers(response: Response) -> Response:
     """After-request hook that hardens every HTTP response."""
     h = response.headers
 
-    # ── Anti-Cache: Browser soll NIE alte Versionen anzeigen ──────────────
-    h["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
-    h["Pragma"] = "no-cache"
-    h["Expires"] = "0"
+    # Public assets may be cached; authenticated and mutating routes may not.
+    sensitive = (
+        request.method != "GET"
+        or request.path.startswith("/admin")
+        or request.path.startswith("/login")
+        or request.path.startswith("/logout")
+    )
+    if request.path.startswith("/static/"):
+        h["Cache-Control"] = "public, max-age=604800, stale-while-revalidate=86400"
+    elif sensitive:
+        h["Cache-Control"] = "no-store, max-age=0"
+    else:
+        h["Cache-Control"] = "public, max-age=0, must-revalidate"
 
-    # ── Security Header ───────────────────────────────────────────────────
+    # Browser hardening.
     h["X-Content-Type-Options"] = "nosniff"
-    h["X-Frame-Options"] = "SAMEORIGIN"
-    h["X-XSS-Protection"] = "1; mode=block"
+    h["X-Frame-Options"] = "DENY"
+    h["X-XSS-Protection"] = "0"
     h["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    h["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
-    # CSP wird zentral in Caddy gesetzt — hier nur Fallback
+    h["Permissions-Policy"] = (
+        "camera=(), microphone=(), geolocation=(), payment=(), usb=(), "
+        "interest-cohort=()"
+    )
+    h["Strict-Transport-Security"] = "max-age=31536000"
+    h["Cross-Origin-Opener-Policy"] = "same-origin"
+    h["Cross-Origin-Resource-Policy"] = "same-origin"
+    h["Origin-Agent-Cluster"] = "?1"
+
+    # The public site has no inline executable code. The authenticated admin
+    # keeps its legacy inline allowance until its templates are refactored.
     if not h.get("Content-Security-Policy"):
+        admin_inline = request.path.startswith("/admin") or request.path.startswith("/login")
+        script_src = "'self' 'unsafe-inline'" if admin_inline else "'self'"
+        style_src = "'self' 'unsafe-inline'" if admin_inline else "'self'"
         h["Content-Security-Policy"] = (
             "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; "
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-            "font-src 'self' https://fonts.gstatic.com; "
-            "img-src 'self' data: blob:; "
-            "media-src 'self' blob:; "
+            f"script-src {script_src}; "
+            f"style-src {style_src}; "
+            "font-src 'self'; "
+            "img-src 'self' data:; "
+            "media-src 'self'; "
             "connect-src 'self'; "
             "frame-ancestors 'none'; "
-            "base-uri 'self'; form-action 'self'"
+            "object-src 'none'; "
+            "base-uri 'self'; "
+            "form-action 'self'; "
+            "manifest-src 'self'"
         )
     return response

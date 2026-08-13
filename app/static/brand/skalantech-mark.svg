@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Skalantech Bildmarke</title>
+  <desc id="desc">Eine geometrische S-Form mit zwei Verbindungspunkten.</desc>
+  <path fill="#1D4ED8" d="M52 8H24C14.1 8 6 16.1 6 26s8.1 18 18 18h16c2.8 0 5 2.2 5 5s-2.2 5-5 5H12v10h28c8.3 0 15-6.7 15-15s-6.7-15-15-15H24c-4.4 0-8-3.6-8-8s3.6-8 8-8h28V8Z"/>
+  <circle cx="52" cy="13" r="5" fill="#60A5FA"/>
+  <circle cx="12" cy="59" r="5" fill="#60A5FA"/>
+</svg>

@@ -3,7 +3,8 @@
   "@type": "Person",
   "name": "Xavier Escalante",
   "url": "https://skalantech.store",
-  "jobTitle": "IT-Infrastructure & Cloud Engineer",
-  "knowsAbout": ["IT Infrastructure", "Cloud Engineering", "AI Agents", "Automation", "DevOps"],
+  "jobTitle": "IT Infrastructure & Automation Engineer",
+  "knowsAbout": ["IT Infrastructure", "Cloud Engineering", "Microsoft 365", "Virtualization", "Process Automation", "AI Agents", "RAG", "Self-Hosting"],
+  "worksFor": {"@type": "ProfessionalService", "name": "Skalantech", "url": "https://skalantech.store"},
   "sameAs": ["https://linkedin.com/in/xyesca/", "https://github.com/Xyesca"]
 }

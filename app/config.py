@@ -14,6 +14,7 @@ class BaseConfig:
     # ── Security ──────────────────────────────────────────────────────────
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_NAME = "skalantech_session"
     PERMANENT_SESSION_LIFETIME = 3600  # 1 hour
 
     # ── Uploads ───────────────────────────────────────────────────────────
@@ -32,9 +33,13 @@ class ProductionConfig(BaseConfig):
         os.environ.get("DATABASE_URL")
         or f"sqlite:///{BASE_DIR / 'instance' / 'app.db'}"
     )
-    SESSION_COOKIE_SECURE = False  # HTTP-only (Tailscale — kein HTTPS)
+    SESSION_COOKIE_SECURE = (
+        os.environ.get("SESSION_COOKIE_SECURE", "true").strip().lower()
+        in {"1", "true", "yes", "on"}
+    )
+    PREFERRED_URL_SCHEME = "https"
 
-    SEND_FILE_MAX_AGE_DEFAULT = 0  # No cache — so updates appear instantly
+    SEND_FILE_MAX_AGE_DEFAULT = 604800
 
 
 class DevelopmentConfig(BaseConfig):

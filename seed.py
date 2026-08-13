@@ -16,15 +16,15 @@ app = create_app(os.environ.get("FLASK_ENV", "production"))
 with app.app_context():
     s = Settings.get()
     s.name = "Skalantech"
-    s.tagline = "Digitale Infrastruktur · Cloud Engineering · KI-Automation"
+    s.tagline = "Stabile IT · Weniger Handarbeit · Mehr Wirkung"
     s.location = "Köln, Germany"
     s.about = (
-        "Ich bin Xavier — IT-Engineer mit Leidenschaft für Infrastruktur, "
-        "Cloud und KI-Automation.\n\n"
-        "Skalantech ist meine digitale Plattform: Hier findet ihr meine Projekte, "
-        "Tools und Dienste — von DeepDive (YouTube zu KI-Analyse) bis zu "
-        "maßgeschneiderten Automationslösungen.\n\n"
-        "Alles selbst gehostet, Open-Source-first, designed für Performanz."
+        "Ich bin Xavier — IT-Infrastructure & Automation Engineer mit mehr als "
+        "sieben Jahren Praxiserfahrung.\n\n"
+        "Skalantech verbindet klassische Infrastruktur mit moderner "
+        "Prozessautomatisierung und produktiven KI-Agenten.\n\n"
+        "Open-Source-first, selbst gehostet und für einen verlässlichen Betrieb "
+        "gebaut."
     )
 
     links = [
@@ -40,8 +40,8 @@ with app.app_context():
 
     projects = [
         ("DeepDive", "YouTube zu KI-Analyse in Sekunden. Transkribieren, zusammenfassen, exportieren.", "https://deepdive.skalantech.store", 0),
-        ("Skalantech Hub", "Persönliche Visitenkarte mit Admin-Dashboard, selbst gehostet.", "https://skalantech.store", 1),
-        ("Hermes Agent", "KI-Agenten-Framework — konfigurierbar, erweiterbar, multi-provider.", "https://github.com/NousResearch/hermes-agent", 2),
+        ("DebtPilot AI", "Self-hosted KI-Plattform mit lokalen Modellen, RAG-Dokumentenanalyse und modularer Architektur.", "", 1),
+        ("AI Job Agent", "Sucht Stellenangebote, analysiert Anforderungen und erstellt automatisch personalisierte Bewerbungen mit KI.", "", 2),
     ]
     for title, desc, url, pos in projects:
         if not Project.query.filter_by(title=title).first():

@@ -3,5 +3,7 @@
   "@type": "WebSite",
   "name": "Skalantech",
   "url": "https://skalantech.store",
-  "description": "IT-Infrastruktur mit KI-Power — Cloud Engineering, AI Agents & Automatisierung"
+  "description": "IT-Infrastruktur, Cloud Engineering, Prozessautomatisierung und produktive KI-Agenten für Unternehmen",
+  "inLanguage": "de-DE",
+  "publisher": {"@type": "ProfessionalService", "name": "Skalantech"}
 }

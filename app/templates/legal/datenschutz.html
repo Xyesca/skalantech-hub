@@ -1,39 +1,50 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Datenschutz · {{ settings.name }}</title>
-<meta name="robots" content="noindex">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-<nav class="nav" id="nav" aria-label="Hauptnavigation">
-  <div class="nav__inner">
-    <a href="{{ url_for('public.index') }}" class="nav__brand">
-      <img src="{{ url_for('static', filename='logo.svg') }}" alt="Skalantech" class="nav__logo">
-    </a>
+{% extends "base.html" %}
+{% block title %}Datenschutz · Skalantech{% endblock %}
+{% block description %}Datenschutzerklärung der Website Skalantech.{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+{% block canonical %}https://skalantech.store/datenschutz{% endblock %}
+{% block og_url %}https://skalantech.store/datenschutz{% endblock %}
+{% block body_class %}page-legal{% endblock %}
+
+{% block body %}
+<main class="legal-page" id="main-content">
+  <div class="shell">
+    <header class="legal-page__header">
+      <p class="section-label">Rechtliches</p>
+      <h1>Datenschutz</h1>
+      <p>Stand: August 2026</p>
+    </header>
+
+    <div class="legal-layout">
+      <nav class="legal-layout__aside" aria-label="Rechtliche Seiten">
+        <a href="{{ url_for('public.impressum') }}">Impressum</a>
+        <a href="{{ url_for('public.datenschutz') }}" aria-current="page">Datenschutz</a>
+        <a href="{{ url_for('public.agb') }}">AGB</a>
+      </nav>
+
+      <article class="legal-content">
+        <h2>1. Verantwortlicher</h2>
+        <p>
+          Xavier Escalante Castellar<br>
+          Eifelstraße 33, 51109 Köln<br>
+          <a href="mailto:xyesca1989@googlemail.com">xyesca1989@googlemail.com</a>
+        </p>
+
+        <h2>2. Kontaktanfragen</h2>
+        <p>Bei einer Anfrage über das Kontaktformular werden Name, E-Mail-Adresse, Unternehmen (optional), ausgewähltes Anliegen und Nachricht verarbeitet. Die Angaben werden ausschließlich genutzt, um die Anfrage zu prüfen, zu beantworten und eine mögliche Zusammenarbeit vorzubereiten.</p>
+
+        <h2>3. Technische Bereitstellung</h2>
+        <p>Diese Website lädt keine externen Webfonts, Analyse-Skripte oder Werbetracker. Technisch notwendige Session-Cookies werden nur für den geschützten Administrationsbereich eingesetzt.</p>
+
+        <h2>4. Speicherdauer</h2>
+        <p>Anfragedaten werden nur so lange gespeichert, wie dies zur Bearbeitung und für eine mögliche Zusammenarbeit erforderlich ist. Gesetzliche Aufbewahrungspflichten bleiben unberührt.</p>
+
+        <h2>5. Ihre Rechte</h2>
+        <p>Sie haben im Rahmen der gesetzlichen Voraussetzungen insbesondere Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Wenden Sie sich dazu an die oben genannte E-Mail-Adresse.</p>
+      </article>
+    </div>
+
+    <a class="legal-back" href="{{ url_for('public.index') }}">← Zurück zur Startseite</a>
   </div>
-</nav>
-<main style="max-width:720px;margin:6rem auto 4rem;padding:0 1.5rem;">
-  <h1 style="font-family:var(--font-display);font-size:2rem;font-weight:700;margin-bottom:0.5rem;">Datenschutzerklärung</h1>
-  <p style="color:var(--text-tertiary);font-size:0.85rem;margin-bottom:2rem;">Stand: Juni 2026</p>
-
-  <div class="glass" style="padding:2rem;line-height:1.8;">
-    <h2 style="font-size:1.2rem;margin:1.5rem 0 0.5rem;">1. Verantwortlicher</h2>
-    <p>Xavier Escalante Castellar<br>Eifelstraße 33, 51109 Köln<br>xyesca1989@googlemail.com</p>
-
-    <h2 style="font-size:1.2rem;margin:1.5rem 0 0.5rem;">2. Datenerfassung</h2>
-    <p>Diese Website erhebt personenbezogene Daten nur über das Kontaktformular (Name, E-Mail, Nachricht). Die Daten werden ausschließlich zur Bearbeitung der Anfrage genutzt und nicht an Dritte weitergegeben.</p>
-
-    <h2 style="font-size:1.2rem;margin:1.5rem 0 0.5rem;">3. Cookies</h2>
-    <p>Diese Website verwendet keine Tracking-Cookies. Technisch notwendige Session-Cookies können beim Login verwendet werden.</p>
-
-    <h2 style="font-size:1.2rem;margin:1.5rem 0 0.5rem;">4. Rechte</h2>
-    <p>Du hast jederzeit Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner Daten. Kontaktiere mich dazu per E-Mail.</p>
-  </div>
-
-  <a href="{{ url_for('public.index') }}" class="btn btn--ghost" style="margin-top:2rem;">← Zurück zur Startseite</a>
 </main>
-</body>
-</html>
+{% endblock %}

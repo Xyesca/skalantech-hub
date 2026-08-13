@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" role="img" aria-labelledby="title desc">
+  <title id="title">Skalantech</title>
+  <desc id="desc">Helle Skalantech Wort-Bild-Marke für dunkle Hintergründe.</desc>
+  <path fill="#60A5FA" d="M52 4H24C14.1 4 6 12.1 6 22s8.1 18 18 18h16c2.8 0 5 2.2 5 5s-2.2 5-5 5H12v10h28c8.3 0 15-6.7 15-15s-6.7-15-15-15H24c-4.4 0-8-3.6-8-8s3.6-8 8-8h28V4Z"/>
+  <circle cx="52" cy="9" r="5" fill="#BFDBFE"/>
+  <circle cx="12" cy="55" r="5" fill="#BFDBFE"/>
+  <text x="76" y="43" fill="#FFFFFF" font-family="Inter, Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="-1.1">skalantech</text>
+</svg>

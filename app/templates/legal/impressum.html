@@ -1,42 +1,51 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Impressum · {{ settings.name }}</title>
-<meta name="robots" content="noindex">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-<nav class="nav" id="nav" aria-label="Hauptnavigation">
-  <div class="nav__inner">
-    <a href="{{ url_for('public.index') }}" class="nav__brand">
-      <img src="{{ url_for('static', filename='logo.svg') }}" alt="Skalantech" class="nav__logo">
-    </a>
+{% extends "base.html" %}
+{% block title %}Impressum · Skalantech{% endblock %}
+{% block description %}Impressum und Anbieterkennzeichnung von Skalantech.{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+{% block canonical %}https://skalantech.store/impressum{% endblock %}
+{% block og_url %}https://skalantech.store/impressum{% endblock %}
+{% block body_class %}page-legal{% endblock %}
+
+{% block body %}
+<main class="legal-page" id="main-content">
+  <div class="shell">
+    <header class="legal-page__header">
+      <p class="section-label">Rechtliches</p>
+      <h1>Impressum</h1>
+      <p>Angaben gemäß § 5 DDG</p>
+    </header>
+
+    <div class="legal-layout">
+      <nav class="legal-layout__aside" aria-label="Rechtliche Seiten">
+        <a href="{{ url_for('public.impressum') }}" aria-current="page">Impressum</a>
+        <a href="{{ url_for('public.datenschutz') }}">Datenschutz</a>
+        <a href="{{ url_for('public.agb') }}">AGB</a>
+      </nav>
+
+      <article class="legal-content">
+        <h2>Anbieter</h2>
+        <p>
+          <strong>Xavier Escalante Castellar</strong><br>
+          Eifelstraße 33<br>
+          51109 Köln<br>
+          Deutschland
+        </p>
+
+        <h2>Kontakt</h2>
+        <p>
+          E-Mail: <a href="mailto:xyesca1989@googlemail.com">xyesca1989@googlemail.com</a><br>
+          Telefon: <a href="tel:+4917677879366">0176 77879366</a>
+        </p>
+
+        <h2>Verantwortlich für Inhalte</h2>
+        <p>Xavier Escalante Castellar, Anschrift wie oben.</p>
+
+        <h2>Haftung für Inhalte</h2>
+        <p>Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für Richtigkeit, Vollständigkeit und Aktualität kann dennoch keine Gewähr übernommen werden.</p>
+      </article>
+    </div>
+
+    <a class="legal-back" href="{{ url_for('public.index') }}">← Zurück zur Startseite</a>
   </div>
-</nav>
-<main style="max-width:720px;margin:6rem auto 4rem;padding:0 1.5rem;">
-  <h1 style="font-family:var(--font-display);font-size:2rem;font-weight:700;margin-bottom:0.5rem;">Impressum</h1>
-  <p style="color:var(--text-tertiary);font-size:0.85rem;margin-bottom:2rem;">Angaben gemäß §5 TMG</p>
-
-  <div class="glass" style="padding:2rem;line-height:1.8;">
-    <p><strong>Xavier Escalante Castellar</strong><br>
-    Eifelstraße 33<br>
-    51109 Köln<br>
-    Deutschland</p>
-
-    <p style="margin-top:1.5rem;"><strong>Kontakt</strong><br>
-    E-Mail: xyesca1989@googlemail.com<br>
-    Telefon: 017677879366</p>
-
-    <p style="margin-top:1.5rem;"><strong>Verantwortlich für Inhalte</strong><br>
-    Xavier Escalante Castellar</p>
-
-    <p style="margin-top:1.5rem;"><strong>Haftungsausschluss</strong><br>
-    Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden.</p>
-  </div>
-
-  <a href="{{ url_for('public.index') }}" class="btn btn--ghost" style="margin-top:2rem;">← Zurück zur Startseite</a>
 </main>
-</body>
-</html>
+{% endblock %}

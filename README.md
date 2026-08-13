@@ -1,79 +1,83 @@
 # Skalantech Hub
 
-> Persönliche Visitenkarte + Admin-Dashboard für digitale Projekte, Tools und Dienste.
+Conversion-orientierte Website und Content-Backend für Skalantech: IT-Infrastruktur, Cloud Engineering, Prozessautomatisierung und produktive KI-Agenten.
 
-![Flask](https://img.shields.io/badge/Flask-3.0+-000000?logo=flask&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green)
+## Highlights
 
----
+- Klar positionierte Leistungs- und Angebotsarchitektur
+- Responsive, barrierearme Oberfläche ohne externe Frontend-Abhängigkeiten
+- Dynamische Projektverwaltung über ein geschütztes Admin-Dashboard
+- Qualifiziertes Kontaktformular mit CSRF-Schutz, Validierung, Honeypot und Rate-Limit
+- Technisches SEO mit strukturierten Daten, Sitemap, Canonical- und Social-Metadaten
+- Self-hosted Flask-/SQLite-Stack mit Docker-Deployment
+- Sicherheitsheader, datensparsame Auslieferung und optimiertes Asset-Caching
 
-## ✨ Features
+## Stack
 
-- **Öffentliche Visitenkarte** — Projekte, Links, Kontakt
-- **Admin-Dashboard** — Inhalte verwalten (CRUD für Projekte, Links)
-- **Docker-ready** — Ein Befehl zum Starten
-- **SQLite** — Keine externe Datenbank nötig
+| Bereich | Technologie |
+| --- | --- |
+| Backend | Python 3.11+, Flask, SQLAlchemy |
+| Frontend | Jinja2, semantisches HTML, Vanilla CSS und JavaScript |
+| Datenbank | SQLite |
+| Auth & Formulare | Werkzeug, Flask-WTF, Flask-Limiter |
+| Betrieb | Gunicorn, Docker Compose |
 
-## 🚀 Quick Start
+Es werden keine externen Webfonts, Tracking-Skripte oder UI-CDNs geladen.
+
+## Schnellstart mit Docker
 
 ```bash
-# Klonen
 git clone https://github.com/Xyesca/skalantech-hub.git
 cd skalantech-hub
-
-# Konfiguration
 cp .env.example .env
-# → ADMIN_USERNAME, ADMIN_PASSWORD eintragen
-
-# Mit Docker starten
-docker compose up -d
+docker compose up --build -d
 ```
 
-## 🏗️ Architektur
+Die Website läuft anschließend standardmäßig auf Port `5000`.
 
+## Konfiguration
+
+| Variable | Zweck |
+| --- | --- |
+| `ADMIN_USERNAME` | Benutzername für das Admin-Dashboard |
+| `ADMIN_PASSWORD` | Starkes Admin-Passwort |
+| `SECRET_KEY` | Persistenter, zufälliger Flask-Session-Key |
+| `SESSION_COOKIE_SECURE` | In Produktion mit HTTPS auf `true` setzen |
+| `DATABASE_URL` | Optional: abweichende SQLAlchemy-Datenbank-URL |
+| `GMAIL_USER` | Optional: SMTP-Absender für Kontaktbenachrichtigungen |
+| `GMAIL_APP_PASSWORD` | Optional: App-Passwort für SMTP |
+
+## Lokale Entwicklung
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+FLASK_ENV=development python run.py
 ```
-┌──────────────┐
-│   Caddy      │  TLS-Terminierung + Reverse Proxy
-│  (extern)    │
-└──────┬───────┘
-       │
-┌──────▼───────┐
-│   Flask App  │  :5000  — Visitenkarte + Admin
-│   skalantech │
-└──────┬───────┘
-       │
-┌──────▼───────┐
-│   SQLite     │  instance/skalantech.db
-└──────────────┘
+
+## Tests
+
+```bash
+python -m unittest discover -v
 ```
 
-## 🛠️ Tech Stack
+Die Tests decken öffentliche Routen, Conversion-Inhalte, Kontaktvalidierung, Bot-Honeypot, Datenspeicherung und Security-Header ab.
 
-| Komponente | Technologie |
-|------------|-------------|
-| **Backend** | Python 3, Flask, SQLAlchemy |
-| **Frontend** | Jinja2 Templates, Vanilla CSS |
-| **Auth** | Werkzeug (Passwort-Hash + Session) |
-| **DB** | SQLite |
-| **Container** | Docker Compose |
+## Architektur
 
-## ⚙️ Konfiguration
+```text
+app/
+├── blueprints/      # Public-, Auth- und Admin-Routen
+├── static/          # Eigenes CSS, JavaScript und Medien
+├── templates/       # Öffentliche, rechtliche und Admin-Templates
+├── utils/           # Security- und Upload-Helfer
+├── config.py
+├── models.py
+└── __init__.py
+```
 
-| Variable | Beschreibung |
-|----------|-------------|
-| `ADMIN_USERNAME` | Admin-Login (erforderlich) |
-| `ADMIN_PASSWORD` | Admin-Passwort (erforderlich) |
-| `SECRET_KEY` | Flask-Session-Key (optional, auto-generiert) |
-| `PORT` | Port (Default: 5000) |
+## Lizenz
 
-## 📄 License
-
-MIT — siehe [LICENSE](LICENSE).
-
----
-
-<div align="center">
-  Entwickelt von <a href="https://github.com/Xyesca">Xavier Escalante Castellar</a> •
-  <a href="https://linkedin.com/in/xyesca/">LinkedIn</a>
-</div>
+MIT – siehe [LICENSE](LICENSE).

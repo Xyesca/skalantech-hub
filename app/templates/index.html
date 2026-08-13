@@ -1,649 +1,597 @@
-<!DOCTYPE html>
-<html lang="de" class="no-js">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<script>document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js-active');</script>
-<title>{{ settings.name }} · IT Infrastructure · Cloud · AI Agents</title>
-<meta name="description" content="{{ settings.tagline or 'Xavier Escalante — IT-Infrastruktur, Cloud Engineering, AI Agents & Automatisierung. Moderne IT-Lösungen aus Leidenschaft.' }}">
-<meta name="keywords" content="Xavier Escalante, IT Infrastructure, Cloud Engineer, AI Agents, Automation, Skalantech, DevOps">
-<meta property="og:title" content="{{ settings.name }} · IT Infrastructure · Cloud · AI Agents">
-<meta property="og:description" content="{{ settings.tagline or 'Xavier Escalante — IT-Infrastruktur, Cloud Engineering, AI Agents & Automatisierung. Moderne IT-Lösungen aus Leidenschaft.' }}">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://skalantech.store">
-<meta property="og:image" content="https://skalantech.store/static/logo.svg">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://skalantech.store/">
-<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-<link rel="preload" as="style" href="{{ url_for('static', filename='css/style.css') }}?v=3">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Xavier Escalante",
-  "url": "https://skalantech.store",
-  "jobTitle": "IT-Infrastructure & Cloud Engineer",
-  "description": "IT-Infrastruktur mit KI-Power — Cloud Engineering, AI Agents & Automatisierung",
-  "knowsAbout": ["IT Infrastructure", "Cloud Engineering", "AI Agents", "Automation", "DevOps", "Microsoft 365", "VMware", "Hyper-V", "Active Directory"],
-  "address": {"@type": "PostalAddress", "addressLocality": "Köln", "addressCountry": "DE"},
-  "sameAs": ["https://linkedin.com/in/xyesca/", "https://github.com/Xyesca"]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Skalantech",
-  "url": "https://skalantech.store",
-  "description": "IT-Infrastruktur mit KI-Power — Cloud Engineering, AI Agents & Automatisierung",
-  "author": {"@type": "Person", "name": "Xavier Escalante"}
-}
-</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Martian+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=3">
-</head>
-<body>
-<!-- Skip to Content (Barrierefreiheit) -->
-<a href="#hero" class="skip-link">Zum Inhalt springen</a>
+{% extends "base.html" %}
 
-<!-- Navigation -->
-<nav class="nav" id="nav" aria-label="Hauptnavigation">
-  <div class="nav__inner">
-    <a href="#hero" class="nav__brand">
-      <img src="{{ url_for('static', filename='logo.svg') }}" alt="Skalantech" class="nav__logo" loading="lazy">
-    </a>
-    <div class="nav__links">
-      <a href="#about">Über mich</a>
-      <a href="#projects">Projekte</a>
-      <a href="#stack">Skills</a>
-      <a href="#contact">Kontakt</a>
-      <a href="{{ url_for('auth.login') }}" class="nav__lock" aria-label="Admin">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-      </a>
-    </div>
-    <button class="nav__toggle" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
+{% block title %}Skalantech · IT-Infrastruktur & KI-Automation für Unternehmen{% endblock %}
+{% block description %}Xavier Escalante modernisiert IT-Infrastruktur, automatisiert Prozesse und bringt KI-Agenten zuverlässig in den Betrieb – selbst gehostet, dokumentiert und praxisnah.{% endblock %}
+{% block og_title %}Skalantech · Stabile IT. Weniger Handarbeit. Mehr Wirkung.{% endblock %}
+{% block og_description %}IT-Infrastruktur, Cloud Engineering, Prozessautomatisierung und produktive KI-Agenten aus einer Hand.{% endblock %}
 
-<!-- Flash Messages -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-<div class="flash-stack" id="flash-stack">
-  {% for category, message in messages %}
-  <div class="flash flash--{{ category }}">{{ message }}</div>
-  {% endfor %}
-</div>
-<script>setTimeout(()=>{const s=document.getElementById('flash-stack');if(s)s.remove()},5000)</script>
-{% endif %}
-{% endwith %}
-
-<!-- ============================================================ -->
-<!-- HERO — 2-Column: Name + Terminal -->
-<!-- ============================================================ -->
-<section class="hero scanline" id="hero">
-  <div class="hero__bg">
-    <div class="hero__gradient-canvas"></div>
-    <div class="hero__gradient"></div>
-    <div class="hero__overlay"></div>
-    <div class="hero__grid"></div>
-  </div>
-  <div class="hero__glow hero__glow--1"></div>
-  <div class="hero__glow hero__glow--2"></div>
-  <div class="hero__glow hero__glow--3"></div>
-  <div class="hero__glow hero__glow--cursor" id="hero-cursor-glow"></div>
-  <!-- Floating Geometric Shapes -->
-  <div class="hero__geom hero__geom--1"></div>
-  <div class="hero__geom hero__geom--2"></div>
-  <div class="hero__geom hero__geom--3"></div>
-  <div class="hero__geom hero__geom--4"></div>
-
-  <div class="hero__content">
-    <!-- Left Column -->
-    <div class="hero__left">
-      <div class="hero__chip" data-reveal="up">
-        <span class="status-dot"></span>
-        Remote · {{ settings.location or 'Köln' }}
-      </div>
-
-      <h1 class="hero__title" data-reveal="up">
-        Xavier<br>
-        <span class="hero__title--accent">Escalante</span>
-      </h1>
-
-      <p class="hero__subtitle" data-reveal="up">
-        Ich baue, migriere und automatisiere IT-Infrastruktur — mit KI-Power.
-        7+ Jahre Erfahrung, von Microsoft 365 bis zu eigenen AI-Agenten.
-      </p>
-
-      <div class="hero__actions" data-reveal="up">
-        <a href="#projects" class="btn btn--primary">
-          Projekte ansehen
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-        </a>
-        <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener" class="btn btn--ghost">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
-          LinkedIn
-        </a>
-      </div>
-    </div>
-
-    <!-- Right Column: Terminal Window -->
-    <div class="hero__right" data-reveal="up">
-      <div class="terminal-window">
-        <div class="terminal-window__header">
-          <span class="terminal-window__dot terminal-window__dot--red"></span>
-          <span class="terminal-window__dot terminal-window__dot--yellow"></span>
-          <span class="terminal-window__dot terminal-window__dot--green"></span>
-          <span class="terminal-window__title">skalantech — system monitor</span>
-          <span class="terminal-window__live">
-            <span class="terminal-window__live-dot"></span>
-            LIVE
-          </span>
+{% block body %}
+<main id="main-content">
+  <section class="hero" id="top">
+    <div class="hero__grid-bg" aria-hidden="true"></div>
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="shell hero__inner">
+      <div class="hero__copy">
+        <div class="eyebrow eyebrow--light" data-reveal>
+          <span class="eyebrow__pulse" aria-hidden="true"></span>
+          Xavier Escalante · Independent IT Engineer
         </div>
-        <div class="terminal-window__body" id="terminal-body"></div>
+
+        <h1 data-reveal>
+          IT, die läuft.
+          <span>Automation, die Arbeit abnimmt.</span>
+        </h1>
+
+        <p class="hero__lead" data-reveal>
+          Ich modernisiere Infrastruktur, automatisiere Abläufe und bringe
+          KI-Agenten zuverlässig in den Betrieb – von der ersten Analyse
+          bis zur dokumentierten Übergabe.
+        </p>
+
+        <div class="hero__actions" data-reveal>
+          <a class="button button--accent" href="#contact">
+            Projekt unverbindlich anfragen
+            <span aria-hidden="true">↗</span>
+          </a>
+          <a class="button button--quiet" href="#services">
+            Leistungen ansehen
+            <span aria-hidden="true">↓</span>
+          </a>
+        </div>
+
+        <ul class="hero__facts" aria-label="Rahmenbedingungen" data-reveal>
+          <li>
+            <strong>7+ Jahre</strong>
+            <span>Infrastrukturpraxis</span>
+          </li>
+          <li>
+            <strong>Open-Source-first</strong>
+            <span>ohne unnötigen Lock-in</span>
+          </li>
+          <li>
+            <strong>DE · EN · ES</strong>
+            <span>Köln & remote</span>
+          </li>
+        </ul>
       </div>
-    </div>
-  </div>
 
-  <a href="#about" class="hero__scroll">
-    <span></span>
-  </a>
-</section>
-
-<!-- ============================================================ -->
-<!-- ABOUT — Bento Grid (Vanilla CSS) -->
-<!-- ============================================================ -->
-<section class="section" id="about">
-  <div class="section__inner">
-    <div class="section__header" data-reveal="up">
-      <span class="section__label">Über mich</span>
-      <h2 class="section__title">IT-Infrastruktur mit <span class="text-gradient-cyber">KI-Power</span></h2>
-    </div>
-
-    <div class="bento-grid" data-reveal="up">
-
-      <!-- BIO (Spant 2 Spalten) -->
-      <div class="bento-card bento-card--bio">
-        <div class="bento-card__glow"></div>
-        <div class="bento-card__content">
-          <div class="bento-card__header">
-            <div class="about-v2__avatar-wrap">
-              <svg viewBox="0 0 80 80" width="60" height="60"><circle cx="40" cy="40" r="38" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"/><text x="40" y="46" text-anchor="middle" fill="var(--cyber)" font-family="var(--font-display)" font-size="24" font-weight="700">XE</text></svg>
-              <div class="about-v2__status" title="Online"></div>
-            </div>
+      <div class="hero__visual" data-reveal>
+        <div class="system-card" aria-label="Skalantech Delivery System: Analyse, Architektur, Automation und Betrieb">
+          <div class="system-card__header">
             <div>
-              <span class="badge badge--cyber-subtle">IT-Systemadministrator</span>
-              <h3>Xavier Escalante</h3>
+              <span class="system-card__kicker">Delivery system</span>
+              <strong>Operational blueprint</strong>
             </div>
+            <span class="system-card__state">
+              <i aria-hidden="true"></i>
+              Praxisnah
+            </span>
           </div>
-          <p class="bento-card__text">
-            <strong>7+ Jahre</strong> Erfahrung in Planung, Implementierung und Wartung komplexer IT-Infrastrukturen. Spezialisiert auf <span class="text-cyan">Microsoft 365</span>, <span class="text-cyan">VMware</span>, <span class="text-cyan">Hyper-V</span>, <span class="text-cyan">Active Directory</span> und <span class="text-cyan">Cloud</span> — kombiniert mit moderner Automatisierung durch PowerShell, Python und n8n.
-          </p>
-          <div class="bento-card__footer-meta">
-            <span>🟢 Remote · Köln</span>
-            <span>🤖 Eigene AI-Agenten im Betrieb</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- STATS (Spant 2 Reihen vertikal) -->
-      <div class="bento-card bento-card--stats">
-        <div class="bento-card__content">
-          <span class="bento-card__label">Live Status</span>
-          <h3>System Overview</h3>
-          <div class="bento-stats-wrap">
-            <div class="stat-large">
-              <div class="kpi-counter" data-target="7" data-suffix="+">0+</div>
-              <p>Jahre Erfahrung</p>
+          <div class="system-map" aria-hidden="true">
+            <div class="system-map__rail system-map__rail--one"></div>
+            <div class="system-map__rail system-map__rail--two"></div>
+            <div class="system-node system-node--infra">
+              <span>01</span>
+              <strong>Infrastruktur</strong>
+              <small>Cloud · Server · Identity</small>
             </div>
-            <div class="progress-bar-wrap">
-              <div class="progress-bar-labels">
-                <span>Remote-fähig</span>
-                <span>100%</span>
-              </div>
-              <div class="progress-bar-track">
-                <div class="progress-bar-fill" style="width: 100%;"></div>
-              </div>
+            <div class="system-node system-node--flow">
+              <span>02</span>
+              <strong>Workflows</strong>
+              <small>APIs · n8n · Scripting</small>
             </div>
-            <div class="stats-mini-grid">
-              <div class="mini-stat-card">
-                <div class="kpi-counter" data-target="6" data-suffix="+">0+</div>
-                <p>Eigene Produkte</p>
-              </div>
-              <div class="mini-stat-card">
-                <div class="kpi-counter" data-target="20" data-suffix="+">0+</div>
-                <p>AI Agents</p>
-              </div>
+            <div class="system-node system-node--ai">
+              <span>03</span>
+              <strong>KI-Systeme</strong>
+              <small>Agents · RAG · Local LLMs</small>
+            </div>
+            <div class="system-core">
+              <span class="system-core__orbit"></span>
+              <span class="system-core__orbit system-core__orbit--two"></span>
+              <strong>RUN</strong>
+              <small>reliable</small>
             </div>
           </div>
-          <div class="bento-card__footer-meta">
-            <span>Deutsch · Englisch · Spanisch</span>
-            <span class="status-pulse-dot"></span>
-          </div>
-        </div>
-      </div>
 
-      <!-- REMOTE-READY (Kleine Card) -->
-      <div class="bento-card bento-card--remote">
-        <div class="bento-card__icon-box">
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-          </svg>
+          <div class="system-card__footer">
+            <div>
+              <span>Plan</span>
+              <strong>Verstehen</strong>
+            </div>
+            <span class="system-card__arrow" aria-hidden="true">→</span>
+            <div>
+              <span>Build</span>
+              <strong>Umsetzen</strong>
+            </div>
+            <span class="system-card__arrow" aria-hidden="true">→</span>
+            <div>
+              <span>Run</span>
+              <strong>Übergeben</strong>
+            </div>
+          </div>
         </div>
+        <p class="hero__visual-note">
+          <span aria-hidden="true">↳</span>
+          Technologie ist erst dann gut, wenn Ihr Team damit arbeiten kann.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="signal-bar" aria-label="Erfahrung und Fokus">
+    <div class="shell signal-bar__inner">
+      <div>
+        <strong>100%</strong>
+        <span>remote-fähig</span>
+      </div>
+      <div>
+        <strong>6+</strong>
+        <span>selbst gehostete Produkte</span>
+      </div>
+      <div>
+        <strong>3</strong>
+        <span>echte Projekte im Portfolio</span>
+      </div>
+      <div class="signal-bar__statement">
+        <span class="signal-bar__dot" aria-hidden="true"></span>
+        Live: Hermes · n8n · DebtPilot AI · Docker · Caddy · Tailscale
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--intro">
+    <div class="shell intro-grid">
+      <div data-reveal>
+        <p class="section-label">Der Unterschied</p>
+        <h2>Keine Folienarchitektur.<br>Systeme, die im Alltag bestehen.</h2>
+      </div>
+      <div class="intro-copy" data-reveal>
+        <p>
+          Gute IT verschwindet im Hintergrund: Sie ist stabil, nachvollziehbar
+          und nimmt Ihrem Team Arbeit ab. Genau darauf ist Skalantech ausgerichtet.
+        </p>
+        <ul class="check-list">
+          <li><span aria-hidden="true">✓</span> Ein Ansprechpartner statt Schnittstellen-Pingpong</li>
+          <li><span aria-hidden="true">✓</span> Offene Technologien und nachvollziehbare Entscheidungen</li>
+          <li><span aria-hidden="true">✓</span> Dokumentation und Wissenstransfer inklusive</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--services" id="services">
+    <div class="shell">
+      <div class="section-heading" data-reveal>
         <div>
-          <h4>Remote-Ready</h4>
-          <p>Weltweit einsetzbar. Flexibel und ortsunabhängig.</p>
+          <p class="section-label">Leistungen</p>
+          <h2>Was ich für Sie löse.</h2>
         </div>
+        <p>
+          Von gewachsener Infrastruktur bis zum produktiven KI-Workflow:
+          klare Entscheidungen, saubere Umsetzung, verlässlicher Betrieb.
+        </p>
       </div>
 
-      <!-- KI-INFRASTRUKTUR (Kleine Card) -->
-      <div class="bento-card bento-card--ai">
-        <div class="bento-card__icon-box">
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
-          </svg>
-        </div>
-        <div>
-          <h4>KI-Infrastruktur</h4>
-          <p>20+ AI Agents, LLMs, RAG — spezialisiert auf KI-Automation.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- STACK — Core Infrastructure | AI/Automation -->
-<!-- ============================================================ -->
-<section class="section section--dark" id="stack" data-reveal="up">
-  <div class="section__inner">
-    <div class="section__header" data-reveal="up">
-      <span class="section__label">Technologien</span>
-      <h2 class="section__title">Mein <span class="text-gradient-cyber">Tech Stack</span></h2>
-    </div>
-
-    <div class="stack-grid">
-      <!-- Core Infrastructure -->
-      <div class="stack-card glass" data-reveal="up" data-reveal-delay="100">
-        <h3 class="stack-card__title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-          Core Infrastructure
-        </h3>
-        <div class="stack-card__items">
-          <span class="stack-pill"><span class="stack-pill__dot"></span>Microsoft 365</span>
-          <span class="stack-pill"><span class="stack-pill__dot"></span>Azure</span>
-          <span class="stack-pill"><span class="stack-pill__dot"></span>VMware</span>
-          <span class="stack-pill"><span class="stack-pill__dot"></span>Hyper-V</span>
-          <span class="stack-pill"><span class="stack-pill__dot"></span>Windows Server</span>
-          <span class="stack-pill"><span class="stack-pill__dot"></span>Active Directory</span>
-          <span class="stack-pill"><span class="stack-pill__dot"></span>Linux</span>
-        </div>
-      </div>
-
-      <!-- AI/Automation -->
-      <div class="stack-card glass" data-reveal="up" data-reveal-delay="200">
-        <h3 class="stack-card__title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          AI &amp; Automation
-        </h3>
-        <div class="stack-card__items">
-          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>AI Agents</span>
-          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>LLMs / RAG</span>
-          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>OpenAI APIs</span>
-          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>n8n / Make</span>
-          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>Python</span>
-          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>PowerShell</span>
-          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>Bash</span>
-          <span class="stack-pill stack-pill--green"><span class="stack-pill__dot"></span>Docker</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- LIVE SERVICES — direkt nach Stack -->
-<!-- ============================================================ -->
-<section class="section section--dark" id="services">
-  <div class="section__inner">
-    <div class="section__header" data-reveal="up">
-      <span class="section__label">Live Services</span>
-      <h2 class="section__title">Aktuell <span class="text-gradient-matrix">online</span></h2>
-    </div>
-    <div class="service-bar" data-reveal="up">
-      <span class="service-pill"><span class="service-pill__dot"></span>Hermes Agent</span>
-      <span class="service-pill"><span class="service-pill__dot"></span>n8n</span>
-      <span class="service-pill"><span class="service-pill__dot"></span>DebtPilot AI</span>
-      <span class="service-pill"><span class="service-pill__dot"></span>Docker</span>
-      <span class="service-pill"><span class="service-pill__dot"></span>Caddy</span>
-      <span class="service-pill"><span class="service-pill__dot"></span>Tailscale</span>
-    </div>
-  </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- PROJECTS — Visual Cards with Tech Tags & Glow -->
-<!-- ============================================================ -->
-<section class="section" id="projects">
-  <div class="section__inner">
-    <div class="section__header" data-reveal="up">
-      <span class="section__label">Projekte</span>
-      <h2 class="section__title">Was ich <span class="text-gradient-cyber">baue</span></h2>
-    </div>
-
-    {% if projects %}
-    <div class="project-grid">
-      {% set tones = ['cyber', 'matrix', 'plasma'] %}
-      {% for project in projects %}
-      <article class="project-card-v2 project-card-v2--{{ tones[loop.index0 % 3] }}" data-reveal="up">
-        <div class="project-card-v2__color-bar"></div>
-        <div class="project-card-v2__inner glass">
-          <div class="project-card-v2__icon-wrap">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5">
-              {% if 'Dashboard' in project.title or 'Hub' in project.title %}
-              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-              {% elif 'Automation' in project.title or 'n8n' in project.title or 'Workflow' in project.title %}
-              <path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="10" cy="18" r="1.5"/>
-              {% elif 'Agent' in project.title and 'Job' in project.title %}
-              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-              {% elif 'Agent' in project.title or 'Hermes' in project.title %}
-              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-              {% elif 'DeepDive' in project.title %}
-              <polygon points="5 3 19 12 5 21 5 3"/>
-              {% elif 'Homelab' in project.title or 'Cluster' in project.title %}
-              <rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/>
-              {% else %}
-              <rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/>
-              {% endif %}
+      <div class="service-grid">
+        <article class="service-card service-card--featured" data-reveal>
+          <div class="service-card__top">
+            <span class="service-card__number">01</span>
+            <span class="service-card__tag">Core</span>
+          </div>
+          <div class="service-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+              <rect x="5" y="7" width="38" height="10" rx="3"></rect>
+              <rect x="5" y="21" width="38" height="10" rx="3"></rect>
+              <rect x="5" y="35" width="38" height="8" rx="3"></rect>
+              <path d="M12 12h1M12 26h1M12 39h1M20 12h16M20 26h16M20 39h16"></path>
             </svg>
           </div>
-          <h3 class="project-card-v2__title">{{ project.title }}</h3>
-          {% if project.description %}
-          <p class="project-card-v2__desc">{{ project.description }}</p>
-          {% endif %}
-          {% if project.url %}
-          <a href="{{ project.url }}" class="project-card-v2__link" target="_blank" rel="noopener">
-            Projekt öffnen
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l10-10M7 7h10v10"/></svg>
-          </a>
-          {% endif %}
-        </div>
-      </article>
-      {% endfor %}
-    </div>
-    {% else %}
-    <div class="project-grid">
-      <article class="project-card-v2 project-card-v2--cyber" data-reveal="up">
-        <div class="project-card-v2__color-bar"></div>
-        <div class="project-card-v2__inner glass">
-          <div class="project-card-v2__icon-wrap">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <h3>Infrastruktur modernisieren</h3>
+          <p>
+            Bestehende Systeme analysieren, Zielarchitekturen planen und
+            Plattformen kontrolliert migrieren – in der Cloud, on-premises
+            oder hybrid.
+          </p>
+          <ul>
+            <li>Microsoft 365, Azure, Active Directory</li>
+            <li>VMware, Hyper-V, Linux & Open-Source-Alternativen</li>
+            <li>Migration, Hardening, Backup & Dokumentation</li>
+          </ul>
+          <a href="#contact" data-service-choice="Infrastruktur & Cloud">Infrastruktur besprechen <span aria-hidden="true">↗</span></a>
+        </article>
+
+        <article class="service-card" data-reveal>
+          <div class="service-card__top">
+            <span class="service-card__number">02</span>
+            <span class="service-card__tag">Efficiency</span>
           </div>
-          <h3 class="project-card-v2__title">DeepDive</h3>
-          <p class="project-card-v2__desc">Open-Source: YouTube-Videos transkribieren, per KI analysieren und als PDF/HTML + MP3 exportieren. Python, Whisper, LLMs.</p>
-          <a href="https://github.com/Xyesca/deepdive" class="project-card-v2__link" target="_blank" rel="noopener">
-            Projekt öffnen
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l10-10M7 7h10v10"/></svg>
-          </a>
-        </div>
-      </article>
-      <article class="project-card-v2 project-card-v2--matrix" data-reveal="up">
-        <div class="project-card-v2__color-bar"></div>
-        <div class="project-card-v2__inner glass">
-          <div class="project-card-v2__icon-wrap">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <div class="service-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+              <circle cx="10" cy="24" r="5"></circle>
+              <circle cx="38" cy="10" r="5"></circle>
+              <circle cx="38" cy="38" r="5"></circle>
+              <path d="M15 22l18-10M15 26l18 10"></path>
+            </svg>
           </div>
-          <h3 class="project-card-v2__title">DebtPilot AI</h3>
-          <p class="project-card-v2__desc">Enterprise KI-Plattform für Schuldenmanagement: Microservices-Architektur, Docker, lokale LLMs (Ollama), RAG-Dokumentenanalyse.</p>
-        </div>
-      </article>
-      <article class="project-card-v2 project-card-v2--plasma" data-reveal="up">
-        <div class="project-card-v2__color-bar"></div>
-        <div class="project-card-v2__inner glass">
-          <div class="project-card-v2__icon-wrap">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <h3>Prozesse automatisieren</h3>
+          <p>
+            Manuelle Übergaben, Copy-Paste und Medienbrüche werden zu robusten,
+            transparenten Workflows.
+          </p>
+          <ul>
+            <li>n8n, Python, PowerShell & APIs</li>
+            <li>Freigaben, Fehlerpfade & Monitoring</li>
+            <li>Self-hosted und anpassbar</li>
+          </ul>
+          <a href="#contact" data-service-choice="Prozessautomatisierung">Workflow prüfen <span aria-hidden="true">↗</span></a>
+        </article>
+
+        <article class="service-card" data-reveal>
+          <div class="service-card__top">
+            <span class="service-card__number">03</span>
+            <span class="service-card__tag">Intelligence</span>
           </div>
-          <h3 class="project-card-v2__title">AI Job Agent</h3>
-          <p class="project-card-v2__desc">Sucht Stellenangebote, analysiert Anforderungen und erstellt automatisch personalisierte Bewerbungen mit KI.</p>
-        </div>
-      </article>
-    </div>
-    {% endif %}
-  </div>
-  </div>
-</section>
+          <div class="service-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+              <path d="M16 10h16a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8H16a8 8 0 0 1-8-8V18a8 8 0 0 1 8-8Z"></path>
+              <circle cx="18" cy="24" r="2"></circle>
+              <circle cx="30" cy="24" r="2"></circle>
+              <path d="M18 31h12M24 10V5M20 5h8"></path>
+            </svg>
+          </div>
+          <h3>KI-Agenten produktiv machen</h3>
+          <p>
+            KI wird dort eingesetzt, wo sie messbar unterstützt – mit klaren
+            Grenzen, eigenen Daten und menschlicher Kontrolle.
+          </p>
+          <ul>
+            <li>Agenten, RAG & lokale Sprachmodelle</li>
+            <li>Tool-Anbindung und Wissenssysteme</li>
+            <li>Guardrails, Tests & Human-in-the-loop</li>
+          </ul>
+          <a href="#contact" data-service-choice="KI-Agenten & RAG">KI-Use-Case einordnen <span aria-hidden="true">↗</span></a>
+        </article>
 
-<!-- ============================================================ -->
-<!-- CONTACT — Terminal Styled -->
-<!-- ============================================================ -->
-<section class="section section--dark" id="contact">
-  <div class="section__inner">
-    <div class="section__header" data-reveal="up">
-      <span class="section__label">Kontakt</span>
-      <h2 class="section__title">Lass uns <span class="text-gradient-cyber">vernetzen</span></h2>
-    </div>
-
-    <div class="contact-grid" data-reveal="up">
-      <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener" class="contact-card glass">
-        <div class="contact-card__icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
-        </div>
-        <h4>LinkedIn</h4>
-        <p>Berufliches Netzwerk</p>
-        <span class="contact-card__action">Verbinden →</span>
-      </a>
-
-      <a href="https://github.com/Xyesca" target="_blank" rel="noopener" class="contact-card glass">
-        <div class="contact-card__icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.13-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.78 1.2 1.78 1.2 1.03 1.78 2.71 1.26 3.37.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a10.9 10.9 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .31.21.67.8.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
-        </div>
-        <h4>GitHub</h4>
-        <p>Open Source Projekte</p>
-        <span class="contact-card__action">Folgen →</span>
-      </a>
-
-      <a href="mailto:xyesca1989@googlemail.com" class="contact-card glass">
-        <div class="contact-card__icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        </div>
-        <h4>E-Mail</h4>
-        <p>Direkter Kontakt</p>
-        <span class="contact-card__action">Schreiben →</span>
-      </a>
-    </div>
-
-    <div class="contact-terminal glass" data-reveal="up">
-      <div class="contact-terminal__header">
-        <span class="terminal-window__dot terminal-window__dot--red"></span>
-        <span class="terminal-window__dot terminal-window__dot--yellow"></span>
-        <span class="terminal-window__dot terminal-window__dot--green"></span>
-        <span class="terminal-window__title" style="flex:1;text-align:center;">new_message.sh</span>
-      </div>
-      <form class="contact-terminal__form" method="POST" action="{{ url_for('public.contact') }}">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" placeholder="Max Mustermann" autocomplete="name" required>
-        <label for="email">E-Mail</label>
-        <input type="email" id="email" name="email" placeholder="max@example.com" autocomplete="email" required>
-        <label for="message">Nachricht</label>
-        <textarea id="message" name="message" placeholder="Deine Nachricht..." autocomplete="off" required></textarea>
-        <button type="submit" class="btn btn--primary">
-          Senden
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-        </button>
-        <div class="contact-terminal__prompt">Bereit für eingehende Verbindungen...</div>
-      </form>
-    </div>
-  </div>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="footer">
-  <div class="footer__inner">
-    <div class="footer__brand">
-      <div class="footer__logo">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7" opacity="0.4"/><circle cx="12" cy="12" r="11" opacity="0.2"/></svg>
-        <span>Skalantech</span>
-      </div>
-      <p class="footer__desc">IT-Infrastruktur mit KI-Power — Cloud Engineering, AI Agents & Automatisierung aus Köln.</p>
-      <div class="footer__social">
-        <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener" aria-label="LinkedIn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
-        </a>
-        <a href="https://github.com/Xyesca" target="_blank" rel="noopener" aria-label="GitHub">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.13-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.78 1.2 1.78 1.2 1.03 1.78 2.71 1.26 3.37.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a10.9 10.9 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .31.21.67.8.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
-        </a>
-        <a href="mailto:xyesca1989@googlemail.com" aria-label="E-Mail">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        </a>
+        <article class="service-card" data-reveal>
+          <div class="service-card__top">
+            <span class="service-card__number">04</span>
+            <span class="service-card__tag">Reliability</span>
+          </div>
+          <div class="service-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+              <path d="M24 5l16 7v11c0 10-6.7 17.1-16 20-9.3-2.9-16-10-16-20V12l16-7Z"></path>
+              <path d="M17 24l5 5 10-11"></path>
+            </svg>
+          </div>
+          <h3>Betrieb verlässlich aufsetzen</h3>
+          <p>
+            Deployment, Monitoring, Backups und Runbooks werden von Anfang an
+            mitgedacht – nicht erst beim ersten Ausfall.
+          </p>
+          <ul>
+            <li>Docker, Linux & sichere Deployments</li>
+            <li>Monitoring, Logging & Recovery</li>
+            <li>Übergabe, Schulung & Begleitung</li>
+          </ul>
+          <a href="#contact" data-service-choice="Betrieb & Reliability">Betrieb verbessern <span aria-hidden="true">↗</span></a>
+        </article>
       </div>
     </div>
-    <div class="footer__col">
-      <h4>Navigation</h4>
-      <a href="#about">Über mich</a>
-      <a href="#stack">Tech Stack</a>
-      <a href="#projects">Projekte</a>
-      <a href="#contact">Kontakt</a>
+  </section>
+
+  <section class="section section--dark" id="process">
+    <div class="shell process-grid">
+      <div class="process-intro" data-reveal>
+        <p class="section-label section-label--light">Vorgehen</p>
+        <h2>Von „müsste man mal“ zu einem System, das läuft.</h2>
+        <p>
+          Sie behalten jederzeit den Überblick über Ziel, Aufwand und nächste
+          Entscheidung. Kein Big-Bang, keine Blackbox.
+        </p>
+        <a class="button button--outline-light" href="#contact">Ersten Schritt klären <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <ol class="process-list">
+        <li data-reveal>
+          <span>01</span>
+          <div>
+            <p>Verstehen</p>
+            <h3>Ausgangslage und Engpass klären</h3>
+            <p>Systeme, Risiken und tatsächliche Arbeitsabläufe werden sichtbar. Das Ergebnis ist ein klar priorisierter nächster Schritt.</p>
+          </div>
+        </li>
+        <li data-reveal>
+          <span>02</span>
+          <div>
+            <p>Entscheiden</p>
+            <h3>Zielbild und Scope festziehen</h3>
+            <p>Architektur, Technologie und Verantwortlichkeiten werden so gewählt, dass sie zu Team, Budget und Betrieb passen.</p>
+          </div>
+        </li>
+        <li data-reveal>
+          <span>03</span>
+          <div>
+            <p>Liefern</p>
+            <h3>In kleinen, prüfbaren Schritten umsetzen</h3>
+            <p>Frühe Ergebnisse, transparente Zwischenstände und getestete Übergaben reduzieren Risiko und Überraschungen.</p>
+          </div>
+        </li>
+        <li data-reveal>
+          <span>04</span>
+          <div>
+            <p>Befähigen</p>
+            <h3>Dokumentieren, übergeben, verbessern</h3>
+            <p>Ihr Team versteht das System und kann es betreiben. Wenn gewünscht, begleite ich Optimierung und Weiterentwicklung.</p>
+          </div>
+        </li>
+      </ol>
     </div>
-    <div class="footer__col">
-      <h4>Rechtliches</h4>
-      <a href="{{ url_for('public.impressum') }}">Impressum</a>
-      <a href="{{ url_for('public.datenschutz') }}">Datenschutz</a>
-      <a href="{{ url_for('public.agb') }}">AGB</a>
-      <a href="{{ url_for('public.faq') }}">FAQ</a>
+  </section>
+
+  <section class="section section--models">
+    <div class="shell">
+      <div class="section-heading" data-reveal>
+        <div>
+          <p class="section-label">Zusammenarbeit</p>
+          <h2>Passend zu Ihrem Bedarf.</h2>
+        </div>
+        <p>Ein klarer Einstieg statt eines überdimensionierten Projekts.</p>
+      </div>
+
+      <div class="model-grid">
+        <article data-reveal>
+          <span>01 · Klarheit</span>
+          <h3>System-Check</h3>
+          <p>Bestandsaufnahme, technische Einordnung und priorisierte Roadmap für Ihre konkrete Situation.</p>
+          <strong>Gut für: Entscheidungen vor Migration oder Automatisierung</strong>
+        </article>
+        <article data-reveal>
+          <span>02 · Umsetzung</span>
+          <h3>Delivery-Projekt</h3>
+          <p>Ein klar abgegrenztes Vorhaben von der Architektur bis zur getesteten, dokumentierten Lösung.</p>
+          <strong>Gut für: Migrationen, Integrationen und neue Workflows</strong>
+        </article>
+        <article data-reveal>
+          <span>03 · Kontinuität</span>
+          <h3>Engineering-Partner</h3>
+          <p>Regelmäßige technische Begleitung für Betrieb, Optimierung und neue Anforderungen.</p>
+          <strong>Gut für: Teams ohne eigene Spezialisten für jedes Thema</strong>
+        </article>
+      </div>
     </div>
-    <div class="footer__col">
-      <h4>Kontakt</h4>
-      <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://github.com/Xyesca" target="_blank" rel="noopener">GitHub</a>
-      <a href="mailto:xyesca1989@googlemail.com">E-Mail</a>
-      <a href="{{ url_for('auth.login') }}">Admin</a>
+  </section>
+
+  <section class="section section--work" id="work">
+    <div class="shell">
+      <div class="section-heading" data-reveal>
+        <div>
+          <p class="section-label">Ausgewählte Systeme</p>
+          <h2>Gebaut, betrieben, weitergedacht.</h2>
+        </div>
+        <p>Eigene Produkte und technische Plattformen – nicht nur Konzepte.</p>
+      </div>
+
+      <div class="work-grid">
+        {% if projects %}
+          {% for project in projects %}
+            <article class="work-card" data-reveal>
+              <div class="work-card__meta">
+                <span>0{{ loop.index }}</span>
+                <span>Eigenentwicklung</span>
+              </div>
+              <div class="work-card__graphic" aria-hidden="true">
+                <span></span><span></span><span></span>
+                <i></i>
+              </div>
+              <h3>{{ project.title }}</h3>
+              <p>{{ project.description or 'Technisches Produkt aus dem Skalantech-Ökosystem.' }}</p>
+              {% if project.url %}
+                <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer">
+                  Projekt öffnen <span aria-hidden="true">↗</span>
+                </a>
+              {% endif %}
+            </article>
+          {% endfor %}
+        {% else %}
+          <article class="work-card" data-reveal>
+            <div class="work-card__meta"><span>01</span><span>AI Product</span></div>
+            <div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div>
+            <h3>DeepDive</h3>
+            <p>Open-Source: Videos transkribieren, per KI analysieren und als PDF, HTML oder Audio exportieren.</p>
+            <a href="https://github.com/Xyesca/deepdive" target="_blank" rel="noopener noreferrer">
+              Projekt öffnen <span aria-hidden="true">↗</span>
+            </a>
+          </article>
+          <article class="work-card" data-reveal>
+            <div class="work-card__meta"><span>02</span><span>AI Platform</span></div>
+            <div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div>
+            <h3>DebtPilot AI</h3>
+            <p>Self-hosted Plattform mit lokalen Modellen, RAG-Dokumentenanalyse und modularer Architektur.</p>
+          </article>
+          <article class="work-card" data-reveal>
+            <div class="work-card__meta"><span>03</span><span>AI Automation</span></div>
+            <div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div>
+            <h3>AI Job Agent</h3>
+            <p>Sucht Stellenangebote, analysiert Anforderungen und erstellt automatisch personalisierte Bewerbungen mit KI.</p>
+          </article>
+        {% endif %}
+      </div>
     </div>
-  </div>
-  <div class="footer__bottom">
-    <span>{{ settings.name }} · {{ settings.location or 'Köln' }}</span>
-    <span>Turning ideas into intelligent systems.</span>
-  </div>
-</footer>
+  </section>
 
-<!-- Scroll Animations & Terminal Script -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
-<script src="{{ url_for('static', filename='js/terminal.js') }}"></script>
-<script src="{{ url_for('static', filename='js/kpi-counter.js') }}"></script>
-<script>
-// Mobile Nav Toggle
-document.querySelector('.nav__toggle').addEventListener('click', function() {
-  document.querySelector('.nav__links').classList.toggle('is-open');
-  this.classList.toggle('is-active');
-});
+  <section class="section section--about" id="about">
+    <div class="shell about-grid">
+      <div class="about-visual" data-reveal>
+        <div class="about-visual__frame">
+          <img
+            src="{{ url_for('static', filename='img/skalantech-systems.webp') }}"
+            srcset="{{ url_for('static', filename='img/skalantech-systems-480.webp') }} 480w, {{ url_for('static', filename='img/skalantech-systems.webp') }} 960w"
+            sizes="(max-width: 720px) calc(100vw - 40px), (max-width: 1100px) 44vw, 460px"
+            alt="Editorial-Visual für Infrastruktur, Automation und KI bei Skalantech"
+            width="960"
+            height="1200"
+            loading="lazy"
+            decoding="async">
+        </div>
+        <div class="about-visual__caption">
+          <span>Infrastruktur · Automation · KI</span>
+          <span>Köln · Remote</span>
+        </div>
+      </div>
 
-// Nav Background on Scroll
-window.addEventListener('scroll', function() {
-  const nav = document.getElementById('nav');
-  nav.classList.toggle('is-scrolled', window.scrollY > 50);
-});
+      <div class="about-copy" data-reveal>
+        <p class="section-label">Über mich</p>
+        <h2>Technik verstehen.<br>Verantwortung übernehmen.</h2>
+        <p class="about-copy__lead">
+          Ich bin Xavier Escalante – IT-Infrastructure & Automation Engineer
+          mit über sieben Jahren Praxiserfahrung.
+        </p>
+        <p>
+          Mein Schwerpunkt liegt dort, wo klassische Infrastruktur und moderne
+          Automatisierung zusammenkommen. Ich plane nicht nur, sondern baue,
+          teste, dokumentiere und betreibe selbst. Dadurch entstehen Lösungen,
+          die technisch sauber und im Arbeitsalltag wirklich nutzbar sind.
+        </p>
+        <p>
+          Skalantech steht für offene Systeme, Datensouveränität und pragmatische
+          Entscheidungen. Kein unnötiger Vendor-Lock-in. Keine Technologie um
+          ihrer selbst willen.
+        </p>
 
-// Smooth Scroll
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function(e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      document.querySelector('.nav__links').classList.remove('is-open');
-    }
-  });
-});
+        <div class="expertise-list" aria-label="Technologie-Schwerpunkte">
+          <span>Microsoft 365</span>
+          <span>Azure</span>
+          <span>VMware / Hyper-V</span>
+          <span>Linux & Docker</span>
+          <span>n8n</span>
+          <span>Python / PowerShell</span>
+          <span>AI Agents & RAG</span>
+          <span>Self-Hosting</span>
+        </div>
 
-// Scroll Reveal using IntersectionObserver
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('is-visible');
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        <div class="about-links">
+          <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+          <a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+  <section class="section section--faq" id="faq">
+    <div class="shell faq-grid">
+      <div data-reveal>
+        <p class="section-label">FAQ</p>
+        <h2>Vor dem ersten Gespräch.</h2>
+        <p>Die häufigsten Fragen zu Projekten, Technologien und Zusammenarbeit.</p>
+      </div>
+      <div class="faq-list" data-reveal>
+        <details>
+          <summary>Für welche Unternehmen passt Skalantech?</summary>
+          <p>Für kleine und mittelständische Unternehmen sowie Teams, die ihre IT modernisieren, Abläufe automatisieren oder KI kontrolliert einsetzen möchten – ohne sofort ein großes internes Spezialistenteam aufzubauen.</p>
+        </details>
+        <details>
+          <summary>Übernimmst du auch bestehende, gewachsene Umgebungen?</summary>
+          <p>Ja. Gerade bei heterogenen Bestandsumgebungen starte ich mit einer strukturierten Aufnahme, identifiziere Risiken und entwickle einen realistischen Migrations- oder Verbesserungsplan.</p>
+        </details>
+        <details>
+          <summary>Ist Self-Hosting möglich?</summary>
+          <p>Ja. Open-Source- und Self-Hosting-Optionen werden bevorzugt geprüft, wenn sie fachlich und wirtschaftlich sinnvoll sind. Cloud-Dienste sind kein Selbstzweck.</p>
+        </details>
+        <details>
+          <summary>Kannst du von der Idee bis zum Betrieb begleiten?</summary>
+          <p>Ja. Die Zusammenarbeit kann Analyse, Architektur, Implementierung, Tests, Dokumentation, Übergabe und auf Wunsch die laufende technische Begleitung umfassen.</p>
+        </details>
+        <details>
+          <summary>Wie startet ein Projekt?</summary>
+          <p>Mit einer kurzen Beschreibung Ihrer Ausgangslage und des gewünschten Ergebnisses. Danach klären wir, ob ein kompakter System-Check oder direkt ein abgegrenztes Umsetzungsprojekt sinnvoll ist.</p>
+        </details>
+      </div>
+    </div>
+  </section>
 
-// Mouse-Tracking Glow im Hero-Bereich
-(function() {
-  const hero = document.getElementById('hero');
-  const glow = document.getElementById('hero-cursor-glow');
-  if (!hero || !glow) return;
-  hero.addEventListener('mousemove', function(e) {
-    const rect = hero.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
-    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
-    glow.style.setProperty('--mx', x + '%');
-    glow.style.setProperty('--my', y + '%');
-  });
-  hero.addEventListener('mouseleave', function() {
-    glow.style.setProperty('--mx', '-100%');
-    glow.style.setProperty('--my', '-100%');
-  });
-})();
+  <section class="contact-section" id="contact">
+    <div class="shell contact-grid">
+      <div class="contact-copy" data-reveal>
+        <p class="section-label section-label--light">Projektanfrage</p>
+        <h2>Was soll in Ihrer IT einfacher werden?</h2>
+        <p>
+          Drei Sätze zur Ausgangslage reichen für den Anfang. Ich prüfe persönlich,
+          ob und wie ich sinnvoll unterstützen kann.
+        </p>
 
-// 3D Tilt auf Project Cards
-document.addEventListener('DOMContentLoaded', function() {
-  if (typeof VanillaTilt !== 'undefined') {
-    VanillaTilt.init(document.querySelectorAll('.project-card-v2'), {
-      max: 10,
-      speed: 600,
-      glare: true,
-      'max-glare': 0.25,
-      scale: 1.03,
-      perspective: 800,
-    });
-  }
-});
+        <div class="contact-fit">
+          <p>Besonders passend für:</p>
+          <ul>
+            <li><span aria-hidden="true">✓</span> Infrastruktur- und Plattformwechsel</li>
+            <li><span aria-hidden="true">✓</span> wiederkehrende manuelle Abläufe</li>
+            <li><span aria-hidden="true">✓</span> konkrete KI-Use-Cases mit eigenen Daten</li>
+          </ul>
+        </div>
 
-// Gradient Parallax Hero
-(function() {
-  const bg = document.querySelector('.hero__bg');
-  if (!bg) return;
-  window.addEventListener('scroll', function() {
-    const scrolled = window.scrollY;
-    const maxScroll = window.innerHeight;
-    if (scrolled <= maxScroll) {
-      bg.style.transform = 'translateY(' + (scrolled * 0.08) + 'px)';
-    }
-  });
-})();
+        <div class="contact-direct">
+          <span>Lieber direkt?</span>
+          <a href="mailto:xyesca1989@googlemail.com">xyesca1989@googlemail.com <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
 
-// Smooth Counter Animation
-(function() {
-  const counters = document.querySelectorAll('.kpi-counter');
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const target = parseInt(el.dataset.target);
-        const suffix = el.dataset.suffix || '';
-        let current = 0;
-        const step = Math.ceil(target / 40);
-        const timer = setInterval(() => {
-          current += step;
-          if (current >= target) { current = target; clearInterval(timer); }
-          el.textContent = current + suffix;
-        }, 40);
-        obs.unobserve(el);
-      }
-    });
-  }, { threshold: 0.5 });
-  counters.forEach(c => obs.observe(c));
-})();
+      <div class="contact-form-wrap" data-reveal>
+        <form class="contact-form" id="contact-form" method="post" action="{{ url_for('public.contact') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="form-honeypot" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </div>
 
-</script>
-</body>
-</html>
+          <div class="form-grid">
+            <div class="field">
+              <label for="name">Name <span>*</span></label>
+              <input type="text" id="name" name="name" autocomplete="name" maxlength="120" required placeholder="Ihr Name">
+            </div>
+            <div class="field">
+              <label for="company">Unternehmen</label>
+              <input type="text" id="company" name="company" autocomplete="organization" maxlength="160" placeholder="Optional">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">E-Mail <span>*</span></label>
+            <input type="email" id="email" name="email" autocomplete="email" maxlength="254" required placeholder="name@unternehmen.de">
+          </div>
+
+          <div class="field">
+            <label for="service">Worum geht es?</label>
+            <select id="service" name="service">
+              <option value="">Bitte auswählen</option>
+              <option>Infrastruktur & Cloud</option>
+              <option>Prozessautomatisierung</option>
+              <option>KI-Agenten & RAG</option>
+              <option>Betrieb & Reliability</option>
+              <option>System-Check / Beratung</option>
+              <option>Etwas anderes</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="message">Ausgangslage und Ziel <span>*</span></label>
+            <textarea id="message" name="message" rows="6" maxlength="5000" required placeholder="Was läuft heute noch manuell oder unzuverlässig – und was soll stattdessen möglich sein?"></textarea>
+            <span class="field__hint"><span id="message-count">0</span> / 5.000 Zeichen</span>
+          </div>
+
+          <label class="privacy-check">
+            <input type="checkbox" name="privacy" value="accepted" required>
+            <span>Ich habe die <a href="{{ url_for('public.datenschutz') }}" target="_blank">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span>
+          </label>
+
+          <button class="button button--accent button--submit" type="submit">
+            <span>Projektanfrage senden</span>
+            <span aria-hidden="true">↗</span>
+          </button>
+          <p class="form-status" id="form-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
