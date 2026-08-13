@@ -63,61 +63,17 @@
       </div>
 
       <div class="hero__visual" data-reveal>
-        <div class="system-card" aria-label="Skalantech Delivery System: Analyse, Architektur, Automation und Betrieb">
-          <div class="system-card__header">
-            <div>
-              <span class="system-card__kicker">Delivery system</span>
-              <strong>Operational blueprint</strong>
-            </div>
-            <span class="system-card__state">
-              <i aria-hidden="true"></i>
-              Praxisnah
-            </span>
-          </div>
-
-          <div class="system-map" aria-hidden="true">
-            <div class="system-map__rail system-map__rail--one"></div>
-            <div class="system-map__rail system-map__rail--two"></div>
-            <div class="system-node system-node--infra">
-              <span>01</span>
-              <strong>Infrastruktur</strong>
-              <small>Cloud · Server · Identity</small>
-            </div>
-            <div class="system-node system-node--flow">
-              <span>02</span>
-              <strong>Workflows</strong>
-              <small>APIs · n8n · Scripting</small>
-            </div>
-            <div class="system-node system-node--ai">
-              <span>03</span>
-              <strong>KI-Systeme</strong>
-              <small>Agents · RAG · Local LLMs</small>
-            </div>
-            <div class="system-core">
-              <span class="system-core__orbit"></span>
-              <span class="system-core__orbit system-core__orbit--two"></span>
-              <strong>RUN</strong>
-              <small>reliable</small>
-            </div>
-          </div>
-
-          <div class="system-card__footer">
-            <div>
-              <span>Plan</span>
-              <strong>Verstehen</strong>
-            </div>
-            <span class="system-card__arrow" aria-hidden="true">→</span>
-            <div>
-              <span>Build</span>
-              <strong>Umsetzen</strong>
-            </div>
-            <span class="system-card__arrow" aria-hidden="true">→</span>
-            <div>
-              <span>Run</span>
-              <strong>Übergeben</strong>
-            </div>
-          </div>
-        </div>
+        <figure class="hero__portrait">
+          <img
+            src="{{ url_for('static', filename='img/portrait-480.webp') }}"
+            srcset="{{ url_for('static', filename='img/portrait-480.webp') }} 480w,
+                    {{ url_for('static', filename='img/portrait-720.webp') }} 720w,
+                    {{ url_for('static', filename='img/portrait-1040.webp') }} 1040w"
+            sizes="(max-width: 680px) min(84vw, 340px), (max-width: 1100px) 340px, 460px"
+            width="1040" height="1300"
+            alt="Xavier Escalante – IT-Infrastructure & Automation Engineer"
+            fetchpriority="high" decoding="async">
+        </figure>
         <p class="hero__visual-note">
           <span aria-hidden="true">↳</span>
           Technologie ist erst dann gut, wenn Ihr Team damit arbeiten kann.

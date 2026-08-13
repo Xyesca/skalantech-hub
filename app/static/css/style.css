@@ -513,6 +513,35 @@ p:last-child {
   min-width: 0;
 }
 
+.hero__portrait {
+  margin: 0;
+  width: min(100%, 460px);
+  justify-self: end;
+  line-height: 0;
+}
+
+.hero__portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 24px;
+  /* weicher Übergang zum hellen Hero-Hintergrund: unterer + seitlicher Verlauf */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 72%,
+    rgba(0, 0, 0, 0.55) 92%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 72%,
+    rgba(0, 0, 0, 0.55) 92%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
 .system-card {
   position: relative;
   padding: 24px;
@@ -2199,6 +2228,11 @@ p:last-child {
     width: min(100%, 610px);
   }
 
+  .hero__portrait {
+    justify-self: center;
+    width: min(100%, 420px);
+  }
+
   .system-map {
     min-height: 390px;
   }
@@ -2306,6 +2340,11 @@ p:last-child {
   .hero__inner {
     padding-top: 64px;
     padding-bottom: 58px;
+  }
+
+  .hero__portrait {
+    width: min(100%, 340px);
+    justify-self: center;
   }
 
   .eyebrow {
