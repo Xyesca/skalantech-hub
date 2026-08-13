@@ -107,7 +107,7 @@
           }
         });
       },
-      { threshold: [0.2, 0.45, 0.7], rootMargin: "-20% 0px -55% 0px" }
+      { threshold: 0, rootMargin: "-20% 0px -55% 0px" }
     );
 
     sections.forEach(function (section) {
