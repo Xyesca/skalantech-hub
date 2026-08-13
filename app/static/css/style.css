@@ -1251,6 +1251,15 @@ p:last-child {
   border-radius: 14px;
 }
 
+.work-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .work-card__graphic span {
   position: absolute;
   width: 72px;

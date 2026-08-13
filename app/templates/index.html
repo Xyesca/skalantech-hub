@@ -381,8 +381,12 @@
                 <span>Eigenentwicklung</span>
               </div>
               <div class="work-card__graphic" aria-hidden="true">
-                <span></span><span></span><span></span>
-                <i></i>
+                {% if project.image_path %}
+                  <img src="/{{ project.image_path }}" alt="" loading="lazy" class="work-card__img">
+                {% else %}
+                  <span></span><span></span><span></span>
+                  <i></i>
+                {% endif %}
               </div>
               <h3>{{ project.title }}</h3>
               <p>{{ project.description or 'Technisches Produkt aus dem Skalantech-Ökosystem.' }}</p>
