@@ -656,26 +656,83 @@
           30 Minuten, unverbindlich, online. Wir klären Ihre Ausgangslage und
           ob – und wie – ich Sie sinnvoll unterstützen kann.
         </p>
+        <ul class="booking-points">
+          <li><span aria-hidden="true">✓</span> Kostenlos &amp; unverbindlich</li>
+          <li><span aria-hidden="true">✓</span> 30 Minuten per Videocall</li>
+          <li><span aria-hidden="true">✓</span> Konkrete Einschätzung zu Ihrer Ausgangslage</li>
+        </ul>
+        <div class="contact-direct">
+          <span>Lieber direkt?</span>
+          <a href="mailto:xyesca1989@googlemail.com">xyesca1989@googlemail.com <span aria-hidden="true">↗</span></a>
+        </div>
       </div>
       <div class="booking-box" data-reveal>
         <div class="booking-box__status">
           <span class="booking-box__dot" aria-hidden="true"></span>
-          Terminbuchung in Vorbereitung
+          Online-Terminbuchung
         </div>
-        <p>
-          Die Online-Terminbuchung wird in Kürze direkt hier verfügbar sein.
-          Bis dahin erreichen Sie mich per E-Mail – ich melde mich in der Regel
-          innerhalb eines Werktages.
-        </p>
-        <a class="button button--accent" href="mailto:xyesca1989@googlemail.com">
-          Jetzt per E-Mail anfragen
-          <span aria-hidden="true">↗</span>
-        </a>
-        <!--
-          Cal.com-Integration: sobald der Kalender konfiguriert ist, ersetzen:
-          <script type="text/javascript" src="https://app.cal.com/embed/embed.js"></script>
-          <div class="cal-inline" data-cal-link="DEIN_CALCOM_USERNAME/erstgespraech" style="min-height: 480px"></div>
-        -->
+        <form class="booking-form" id="booking-form" method="post" action="{{ url_for('public.contact') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="book_slot" value="1">
+          <input type="hidden" name="service" value="Erstgespräch">
+          <div class="form-honeypot" aria-hidden="true">
+            <label for="booking-website">Website</label>
+            <input type="text" id="booking-website" name="website" tabindex="-1" autocomplete="off">
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="booking-name">Name <span>*</span></label>
+              <input type="text" id="booking-name" name="name" autocomplete="name" maxlength="120" required placeholder="Ihr Name">
+            </div>
+            <div class="field">
+              <label for="booking-company">Unternehmen</label>
+              <input type="text" id="booking-company" name="company" autocomplete="organization" maxlength="160" placeholder="Optional">
+            </div>
+          </div>
+          <div class="field">
+            <label for="booking-email">E-Mail <span>*</span></label>
+            <input type="email" id="booking-email" name="email" autocomplete="email" maxlength="254" required placeholder="name@unternehmen.de">
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="booking-day">Wunschtag <span>*</span></label>
+              <input type="date" id="booking-day" name="preferred_day" required min="{{ today }}">
+            </div>
+            <div class="field">
+              <label for="booking-time">Wunschzeit <span>*</span></label>
+              <select id="booking-time" name="preferred_time" required>
+                <option value="">Bitte wählen</option>
+                <option value="09:00">09:00</option>
+                <option value="09:30">09:30</option>
+                <option value="10:00">10:00</option>
+                <option value="10:30">10:30</option>
+                <option value="11:00">11:00</option>
+                <option value="11:30">11:30</option>
+                <option value="13:00">13:00</option>
+                <option value="13:30">13:30</option>
+                <option value="14:00">14:00</option>
+                <option value="14:30">14:30</option>
+                <option value="15:00">15:00</option>
+                <option value="15:30">15:30</option>
+                <option value="16:00">16:00</option>
+                <option value="16:30">16:30</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="booking-message">Worum geht es? <span>*</span></label>
+            <textarea id="booking-message" name="message" rows="4" maxlength="2000" required placeholder="Kurze Beschreibung Ihrer Ausgangslage (2–3 Sätze reichen)."></textarea>
+          </div>
+          <label class="privacy-check">
+            <input type="checkbox" name="privacy" value="accepted" required>
+            <span>Ich habe die <a href="{{ url_for('public.datenschutz') }}" target="_blank">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span>
+          </label>
+          <button class="button button--accent button--submit" type="submit">
+            <span>Termin anfragen</span>
+            <span aria-hidden="true">↗</span>
+          </button>
+          <p class="form-status" id="booking-status" aria-live="polite"></p>
+        </form>
       </div>
     </div>
   </section>

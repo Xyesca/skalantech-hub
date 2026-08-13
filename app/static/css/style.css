@@ -2722,6 +2722,91 @@ p:last-child {
   line-height: 1.7;
 }
 
+/* --- Booking-Formular --- */
+.booking-points {
+  margin: 26px 0 30px;
+  padding: 0;
+  list-style: none;
+}
+
+.booking-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-bottom: 9px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.booking-points li span {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.booking-form .form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.booking-form .field {
+  margin-bottom: 14px;
+}
+
+.booking-form .field label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.booking-form .field label span {
+  color: var(--accent-deep);
+}
+
+.booking-form .field input,
+.booking-form .field select,
+.booking-form .field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.booking-form .field input:focus,
+.booking-form .field select:focus,
+.booking-form .field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.14);
+}
+
+.booking-form .privacy-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 4px 0 20px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.55;
+  cursor: pointer;
+}
+
+.booking-form .privacy-check input {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.booking-form .privacy-check a {
+  color: var(--accent-deep);
+}
+
 /* --- Responsive für neue Sektionen --- */
 @media (max-width: 1100px) {
   .service-grid--three {
@@ -2777,5 +2862,9 @@ p:last-child {
 
   .booking-box {
     padding: 24px 20px;
+  }
+
+  .booking-form .form-grid {
+    grid-template-columns: 1fr;
   }
 }

@@ -172,13 +172,18 @@
   const contactForm = document.getElementById("contact-form");
   const formStatus = document.getElementById("form-status");
 
-  if (contactForm && window.fetch) {
-    contactForm.addEventListener("submit", async function (event) {
+  const bookingForm = document.getElementById("booking-form");
+  const bookingStatus = document.getElementById("booking-status");
+
+  function wireAjaxForm(form, statusEl) {
+    if (!form || !statusEl || !window.fetch) return;
+
+    form.addEventListener("submit", async function (event) {
       event.preventDefault();
 
-      if (!contactForm.reportValidity()) return;
+      if (!form.reportValidity()) return;
 
-      const submitButton = contactForm.querySelector('button[type="submit"]');
+      const submitButton = form.querySelector('button[type="submit"]');
       const buttonLabel = submitButton ? submitButton.querySelector("span") : null;
       const originalLabel = buttonLabel ? buttonLabel.textContent : "";
 
@@ -187,15 +192,15 @@
         submitButton.classList.add("is-loading");
       }
       if (buttonLabel) buttonLabel.textContent = "Wird gesendet …";
-      if (formStatus) {
-        formStatus.textContent = "";
-        formStatus.className = "form-status";
+      if (statusEl) {
+        statusEl.textContent = "";
+        statusEl.className = "form-status";
       }
 
       try {
-        const response = await fetch(contactForm.action, {
+        const response = await fetch(form.action, {
           method: "POST",
-          body: new FormData(contactForm),
+          body: new FormData(form),
           headers: {
             "X-Requested-With": "XMLHttpRequest",
             "Accept": "application/json"
@@ -210,16 +215,15 @@
           throw new Error(payload.message || "Die Anfrage konnte nicht gesendet werden.");
         }
 
-        contactForm.reset();
-        updateMessageCount();
-        if (formStatus) {
-          formStatus.textContent = payload.message;
-          formStatus.classList.add("is-success");
+        form.reset();
+        if (statusEl) {
+          statusEl.textContent = payload.message;
+          statusEl.classList.add("is-success");
         }
       } catch (error) {
-        if (formStatus) {
-          formStatus.textContent = error.message || "Etwas ist schiefgelaufen. Bitte senden Sie eine E-Mail.";
-          formStatus.classList.add("is-error");
+        if (statusEl) {
+          statusEl.textContent = error.message || "Etwas ist schiefgelaufen. Bitte senden Sie eine E-Mail.";
+          statusEl.classList.add("is-error");
         }
       } finally {
         if (submitButton) {
@@ -230,6 +234,9 @@
       }
     });
   }
+
+  wireAjaxForm(contactForm, formStatus);
+  wireAjaxForm(bookingForm, bookingStatus);
 
   document.querySelectorAll(".flash").forEach(function (flash) {
     const closeButton = flash.querySelector("button");

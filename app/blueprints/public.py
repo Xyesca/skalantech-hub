@@ -1,14 +1,53 @@
 """Skalantech Hub — Public routes."""
+import json
 import os
 import smtplib
 import time
 from email.mime.text import MIMEText
+from urllib import request as urlrequest
 
 from flask import Blueprint, render_template, send_from_directory, current_app, request, flash, redirect, url_for, jsonify, Response
 from app.models import Settings, Link, Project, ContactMessage
 from app.extensions import db
 
 public_bp = Blueprint("public", __name__)
+
+# ── n8n-Terminwebhook (intern, Tailscale) ─────────────────────────────
+N8N_WEBHOOK_URL = os.environ.get("N8N_WEBHOOK_URL", "http://127.0.0.1:5678/webhook/skalantech-termin")
+
+
+def _forward_to_n8n(name, email, company, topic, message, preferred_day, preferred_time):
+    """Send a booking request to the n8n workflow. Returns dict(success, message)."""
+    payload = {
+        "name": name,
+        "email": email,
+        "company": company,
+        "topic": topic or "Erstgespräch",
+        "message": message,
+        "preferred_day": preferred_day,
+        "preferred_time": preferred_time,
+        "requested_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+    }
+    data = json.dumps(payload).encode("utf-8")
+    req = urlrequest.Request(
+        N8N_WEBHOOK_URL,
+        data=data,
+        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        method="POST",
+    )
+    try:
+        with urlrequest.urlopen(req, timeout=10) as resp:
+            body = resp.read().decode("utf-8")
+            try:
+                parsed = json.loads(body)
+            except json.JSONDecodeError:
+                parsed = {"success": True}
+            if resp.status >= 400 or parsed.get("success") is False:
+                return {"success": False, "message": parsed.get("message", "Terminanfrage abgelehnt.")}
+            return {"success": True, "message": parsed.get("message", "ok")}
+    except Exception as exc:
+        # n8n nicht erreichbar — Anfrage bleibt in der DB, kein Block für den Nutzer
+        return {"success": False, "message": f"Termindienst nicht erreichbar ({type(exc).__name__}). Anfrage wurde gespeichert."}
 
 # ── Contact form rate-limiting (in-memory, single-instance) ──────────────
 _CONTACT_LIMITS: dict[str, list[float]] = {}
@@ -21,6 +60,7 @@ _SERVICE_CHOICES = {
     "KI-Agenten & RAG",
     "Betrieb & Reliability",
     "System-Check / Beratung",
+    "Erstgespräch",
     "Etwas anderes",
 }
 
@@ -90,7 +130,8 @@ def index():
         .order_by(Project.position.asc(), Project.id.asc())
         .all()
     )
-    return render_template("index.html", settings=settings, links=links, projects=projects)
+    today = time.strftime("%Y-%m-%d")
+    return render_template("index.html", settings=settings, links=links, projects=projects, today=today)
 
 
 @public_bp.route("/robots.txt")
@@ -198,7 +239,19 @@ def contact():
 
     _send_email(name, email, stored_message)  # silent — don't block on failure
 
+    # ── Terminanfrage: Webhook an n8n (nur bei Terminwunsch) ─────────
+    n8n_result = None
+    if request.form.get("book_slot") == "1":
+        n8n_result = _forward_to_n8n(
+            name=name, email=email, company=company,
+            topic=service or "Erstgespräch", message=message_text,
+            preferred_day=request.form.get("preferred_day", "").strip(),
+            preferred_time=request.form.get("preferred_time", "").strip(),
+        )
+
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        if n8n_result is not None and not n8n_result.get("success"):
+            return jsonify(success=False, message=n8n_result.get("message", "Der Terminwunsch konnte nicht verarbeitet werden. Ihre Anfrage wurde trotzdem gespeichert.")), 409
         return jsonify(success=True, message='Vielen Dank. Ihre Anfrage wurde erfolgreich gesendet.')
     flash("Vielen Dank. Ihre Anfrage wurde erfolgreich gesendet.", "success")
     return redirect(url_for("public.index", _anchor="contact"))
