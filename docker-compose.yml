@@ -1,13 +1,16 @@
 services:
   skalantech:
-    build: .
+    build:
+      context: .
+      network: host  # VPS-Quirk: DOCKER-USER-Kette blockt Build-DNS, Host-Netz umgeht das
     container_name: skalantech
     restart: unless-stopped
     expose:
       - "5000"
+    ports:
+      - "127.0.0.1:5000:5000"  # nur localhost — Caddy (Host) proxied auf diese Adresse
     volumes:
       - ./instance:/app/instance
-      - ./.env:/app/.env:ro
     environment:
       - PORT=5000
       - FLASK_ENV=production
