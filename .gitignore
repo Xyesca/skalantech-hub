@@ -8,6 +8,8 @@ env/
 *.bak
 *.backup
 instance/*.db
+instance/*.db-shm
+instance/*.db-wal
 .vscode/
 .idea/
 .DS_Store
