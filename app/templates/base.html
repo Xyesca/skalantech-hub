@@ -24,8 +24,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://skalantech.store/static/img/skalantech-og.jpg">
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=10">
-  <script src="{{ url_for('static', filename='js/main.js') }}?v=10" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=11">
+  <script src="{{ url_for('static', filename='js/main.js') }}?v=11" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,14 +84,16 @@
       </a>
 
       <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
-        <a href="{{ url_for('public.index') }}#services">Leistungen</a>
-        <a href="{{ url_for('public.index') }}#process">Vorgehen</a>
+        <a href="{{ url_for('public.index') }}#services">Lösungen</a>
         <a href="{{ url_for('public.index') }}#work">Projekte</a>
+        <a href="{{ url_for('public.index') }}#ki">KI & Automatisierung</a>
         <a href="{{ url_for('public.index') }}#about">Über mich</a>
+        <a href="{{ url_for('public.index') }}#contact">Kontakt</a>
       </nav>
 
       <a class="header-cta" href="{{ url_for('public.index') }}#contact">
-        Projekt anfragen
+        <span class="header-cta__full">Erstgespräch vereinbaren</span>
+        <span class="header-cta__short">Erstgespräch</span>
         <span aria-hidden="true">↗</span>
       </a>
 

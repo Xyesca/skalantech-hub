@@ -50,14 +50,21 @@ class PublicSiteTests(unittest.TestCase):
         html = response.get_data(as_text=True)
 
         for phrase in (
-            "IT, die läuft.",
-            "Was ich für Sie löse.",
+            "IT, Automatisierung und KI,",
+            "die im Alltag wirklich funktionieren.",
+            "Kostenloses Erstgespräch",
+            "Kommt dir das bekannt vor?",
+            "KI-Kompetenz trifft IT-Praxis.",
+            "Technologien, mit denen ich arbeite.",
+            "KI-Manager:in Advanced",
             "Projektanfrage senden",
             "skalantech-og.jpg",
             "brand/skalantech-mark.svg",
             "founder-600.webp",
             "application/ld+json",
             'id="services"',
+            'id="ki"',
+            'id="about"',
             'id="contact"',
         ):
             self.assertIn(phrase, html)
