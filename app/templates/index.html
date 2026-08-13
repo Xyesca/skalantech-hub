@@ -6,6 +6,13 @@
 {% block og_description %}IT-Infrastruktur, Cloud Engineering, Prozessautomatisierung und produktive KI-Agenten aus einer Hand.{% endblock %}
 
 {% block body %}
+{% set project_alts = {
+  'DeepDive': 'DeepDive verarbeitet Video zu Transkript, KI-Analyse, Dokument und Audio',
+  'AI Job Agent': 'Automatisierter Prozess von der Stellensuche bis zur personalisierten Bewerbung',
+  'DebtPilot AI': 'Geschützte lokale KI-Analyse von Dokumenten mit strukturiertem Maßnahmenplan',
+  'Skalantech Hub': 'Self-hosted Website-Plattform mit Administration, Projekten und Kontaktkanal',
+  'Hermes Agent': 'Modulare KI-Orchestrierung mit Werkzeugen, Modellen und privaten Workflows'
+} %}
 <main id="main-content">
   <section class="hero" id="top">
     <div class="hero__grid-bg" aria-hidden="true"></div>
@@ -380,9 +387,9 @@
                 <span>0{{ loop.index }}</span>
                 <span>Eigenentwicklung</span>
               </div>
-              <div class="work-card__graphic" aria-hidden="true">
+              <div class="work-card__graphic" {% if not project.image_path %}aria-hidden="true"{% endif %}>
                 {% if project.image_path %}
-                  <img src="/{{ project.image_path }}" alt="" loading="lazy" class="work-card__img">
+                  <img src="/{{ project.image_path }}" alt="{{ project_alts.get(project.title, project.title) }}" loading="lazy" decoding="async" width="1200" height="800" class="work-card__img">
                 {% else %}
                   <span></span><span></span><span></span>
                   <i></i>
