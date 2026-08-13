@@ -1,4 +1,5 @@
 """Skalantech Hub — Application Factory."""
+import mimetypes
 import os
 import secrets
 
@@ -9,6 +10,11 @@ from flask_wtf.csrf import CSRFError
 from app.config import config_map
 from app.extensions import db, csrf, limiter
 from app.utils.security import add_security_headers
+
+# ── MIME types ─────────────────────────────────────────────────────────────
+# Flask/Python's mimetypes may not map .webp on minimal systems — register explicitly.
+mimetypes.add_type("image/webp", ".webp")
+mimetypes.add_type("image/avif", ".avif")
 
 # ── Icon SVGs (inline for zero-dependency rendering) ──────────────────────
 ICONS = {

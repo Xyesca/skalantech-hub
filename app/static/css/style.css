@@ -1090,7 +1090,7 @@ p:last-child {
 .process-intro > p:not(.section-label) {
   max-width: 520px;
   margin-bottom: 36px;
-  color: #64748b;
+  color: #94a3b8;
   font-size: 17px;
 }
 
@@ -1144,7 +1144,7 @@ p:last-child {
 .process-list div > p:last-child {
   max-width: 650px;
   margin-bottom: 0;
-  color: #64748b;
+  color: #94a3b8;
   font-size: 14px;
   line-height: 1.75;
 }

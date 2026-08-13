@@ -90,7 +90,13 @@
           .filter(function (entry) { return entry.isIntersecting; })
           .sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; })[0];
 
-        if (!visible) return;
+        if (!visible) {
+          // Beim Verlassen der beobachteten Abschnitte alle veralteten Marker entfernen
+          sectionLinks.forEach(function (link) {
+            link.removeAttribute("aria-current");
+          });
+          return;
+        }
 
         sectionLinks.forEach(function (link) {
           const isActive = link.getAttribute("href").endsWith("#" + visible.target.id);
