@@ -18,7 +18,7 @@
         entries.forEach(entry => {
           if (entry.isIntersecting && !animated) {
             animated = true;
-            const duration = 1400;
+            const duration = Math.min(1600, Math.max(600, target * 10));
             const start = performance.now();
 
             function tick(now) {

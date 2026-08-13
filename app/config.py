@@ -32,7 +32,8 @@ class ProductionConfig(BaseConfig):
         os.environ.get("DATABASE_URL")
         or f"sqlite:///{BASE_DIR / 'instance' / 'app.db'}"
     )
-    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = False  # HTTP-only (Tailscale — kein HTTPS)
+
     SEND_FILE_MAX_AGE_DEFAULT = 0  # No cache — so updates appear instantly
 
 

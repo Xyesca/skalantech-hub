@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FAQ · {{ settings.name }}</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<nav class="nav" id="nav" aria-label="Hauptnavigation">
+  <div class="nav__inner">
+    <a href="{{ url_for('public.index') }}" class="nav__brand">
+      <img src="{{ url_for('static', filename='logo.svg') }}" alt="Skalantech" class="nav__logo">
+    </a>
+  </div>
+</nav>
+<main style="max-width:720px;margin:6rem auto 4rem;padding:0 1.5rem;">
+  <h1 style="font-family:var(--font-display);font-size:2rem;font-weight:700;margin-bottom:2rem;">FAQ — Häufige Fragen</h1>
+
+  <div class="glass" style="padding:2rem;">
+    <div style="margin-bottom:1.5rem;">
+      <h3 style="font-size:1rem;margin-bottom:0.3rem;">Welche Dienstleistungen bietest du an?</h3>
+      <p style="color:var(--text-secondary);font-size:0.88rem;">IT-Infrastruktur (M365, VMware, Hyper-V), Cloud Engineering, AI Agents & Automatisierung mit PowerShell, Python und n8n.</p>
+    </div>
+    <div style="margin-bottom:1.5rem;">
+      <h3 style="font-size:1rem;margin-bottom:0.3rem;">Bietest du auch Remote-Support?</h3>
+      <p style="color:var(--text-secondary);font-size:0.88rem;">Ja, ich arbeite deutschlandweit und remote. Eine Festanstellung oder Projektbasis ist flexibel möglich.</p>
+    </div>
+    <div style="margin-bottom:1.5rem;">
+      <h3 style="font-size:1rem;margin-bottom:0.3rem;">Wie kann ich dich kontaktieren?</h3>
+      <p style="color:var(--text-secondary);font-size:0.88rem;">Über das Kontaktformular auf dieser Seite, per E-Mail an xyesca1989@googlemail.com oder via LinkedIn.</p>
+    </div>
+    <div>
+      <h3 style="font-size:1rem;margin-bottom:0.3rem;">Welche Technologien verwendest du?</h3>
+      <p style="color:var(--text-secondary);font-size:0.88rem;">M365, Azure, VMware, Hyper-V, Docker, Python, PowerShell, n8n, AI Agents, LLMs/RAG und mehr.</p>
+    </div>
+  </div>
+
+  <a href="{{ url_for('public.index') }}" class="btn btn--ghost" style="margin-top:2rem;">← Zurück zur Startseite</a>
+</main>
+</body>
+</html>

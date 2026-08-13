@@ -186,29 +186,49 @@
   })();
 
   // ================================================================
-  // 7. ACTIVE NAV SECTION HIGHLIGHT
+  // 7. ACTIVE NAV SECTION HIGHLIGHT (Improved — most-visible wins)
   // ================================================================
   (function() {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav__links a[href^="#"]');
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('.nav__links a[href^="#"]');
 
     if (!sections.length || !navLinks.length) return;
 
-    const navObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (!entry.isIntersecting) return;
-        const id = entry.target.getAttribute('id');
+    var visibilityMap = {}; // id → ratio
 
+    var navObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        var id = entry.target.getAttribute('id');
+        visibilityMap[id] = entry.intersectionRatio;
+      });
+
+      // Find the section with the highest intersection ratio
+      var bestId = '';
+      var bestRatio = 0;
+      for (var id in visibilityMap) {
+        if (visibilityMap[id] > bestRatio) {
+          bestRatio = visibilityMap[id];
+          bestId = id;
+        }
+      }
+
+      if (bestId && bestRatio > 0) {
         navLinks.forEach(function(link) {
           link.classList.remove('nav--active');
-          if (link.getAttribute('href') === '#' + id) {
+          if (link.getAttribute('href') === '#' + bestId) {
             link.classList.add('nav--active');
           }
         });
-      });
-    }, { threshold: 0.25, rootMargin: '-80px 0px 0px 0px' });
+        // Store last active to avoid flickering when all out of view
+        visibilityMap._lastActive = bestId;
+      } else if (visibilityMap._lastActive) {
+        // All sections out of view — keep last active
+        // (do nothing, preserve current highlight)
+      }
+    }, { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1], rootMargin: '-80px 0px 0px 0px' });
 
     sections.forEach(function(section) {
+      visibilityMap[section.getAttribute('id')] = 0;
       navObserver.observe(section);
     });
   })();

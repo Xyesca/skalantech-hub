@@ -4,7 +4,7 @@ import smtplib
 import time
 from email.mime.text import MIMEText
 
-from flask import Blueprint, render_template, send_from_directory, current_app, request, flash, redirect, url_for
+from flask import Blueprint, render_template, send_from_directory, current_app, request, flash, redirect, url_for, jsonify
 from app.models import Settings, Link, Project, ContactMessage
 from app.extensions import db
 
@@ -84,6 +84,32 @@ def index():
     return render_template("index.html", settings=settings, links=links, projects=projects)
 
 
+# ── Legal Pages ──────────────────────────────────────────────────────
+@public_bp.route("/impressum")
+def impressum():
+    settings = Settings.get()
+    return render_template("legal/impressum.html", settings=settings)
+
+@public_bp.route("/datenschutz")
+def datenschutz():
+    settings = Settings.get()
+    return render_template("legal/datenschutz.html", settings=settings)
+
+@public_bp.route("/agb")
+def agb():
+    settings = Settings.get()
+    return render_template("legal/agb.html", settings=settings)
+
+@public_bp.route("/faq")
+def faq():
+    settings = Settings.get()
+    return render_template("legal/faq.html", settings=settings)
+
+@public_bp.route("/test-footer")
+def test_footer():
+    """Minimale Testseite nur für Footer-Diagnose."""
+    return render_template("test-footer.html")
+
 @public_bp.route("/contact", methods=["POST"])
 def contact():
     name = request.form.get("name", "").strip()
@@ -108,6 +134,8 @@ def contact():
             errors.append("Zu viele Anfragen. Bitte versuche es später erneut.")
 
     if errors:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify(success=False, message='; '.join(errors)), 400
         for err in errors:
             flash(err, "error")
         return redirect(url_for("public.index", _anchor="contact"))
@@ -119,6 +147,8 @@ def contact():
 
     _send_email(name, email, message_text)  # silent — don't block on failure
 
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify(success=True, message='Nachricht erfolgreich gesendet!')
     flash("Nachricht erfolgreich gesendet. Ich melde mich bald!", "success")
     return redirect(url_for("public.index", _anchor="contact"))
 

@@ -6,10 +6,38 @@
   <title>{% block title %}Skalantech{% endblock %}</title>
   <meta name="description" content="{% block description %}Skalantech — Digitale Infrastruktur, Cloud Engineering, KI-Automation{% endblock %}">
   <meta name="theme-color" content="#06060a">
+  <link rel="canonical" href="https://skalantech.store/">
+  <meta property="og:title" content="Skalantech · IT Infrastructure · Cloud · AI Agents">
+  <meta property="og:description" content="Xavier Escalante — IT-Infrastruktur, Cloud Engineering, AI Agents & Automatisierung. Moderne IT-Lösungen aus Leidenschaft.">
+  <meta property="og:image" content="https://skalantech.store/static/logo.svg">
+  <meta property="og:url" content="https://skalantech.store">
+  <meta property="og:type" content="website">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Xavier Escalante",
+  "url": "https://skalantech.store",
+  "jobTitle": "IT-Infrastructure & Cloud Engineer",
+  "knowsAbout": ["IT Infrastructure", "Cloud Engineering", "AI Agents", "Automation", "DevOps"],
+  "sameAs": ["https://linkedin.com/in/xyesca/", "https://github.com/Xyesca"]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Skalantech",
+  "url": "https://skalantech.store",
+  "description": "IT-Infrastruktur mit KI-Power — Cloud Engineering, AI Agents & Automatisierung"
+}
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Martian+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="{{ url_for('static', filename='css/style.css') }}?v=2">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2">
   {% block head %}{% endblock %}
 </head>
 <body>

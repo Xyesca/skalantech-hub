@@ -1,29 +1,58 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="no-js">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<script>document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js-active');</script>
 <title>{{ settings.name }} · IT Infrastructure · Cloud · AI Agents</title>
 <meta name="description" content="{{ settings.tagline or 'Xavier Escalante — IT-Infrastruktur, Cloud Engineering, AI Agents & Automatisierung. Moderne IT-Lösungen aus Leidenschaft.' }}">
 <meta name="keywords" content="Xavier Escalante, IT Infrastructure, Cloud Engineer, AI Agents, Automation, Skalantech, DevOps">
 <meta property="og:title" content="{{ settings.name }} · IT Infrastructure · Cloud · AI Agents">
-<meta property="og:description" content="{{ settings.tagline }}">
+<meta property="og:description" content="{{ settings.tagline or 'Xavier Escalante — IT-Infrastruktur, Cloud Engineering, AI Agents & Automatisierung. Moderne IT-Lösungen aus Leidenschaft.' }}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://skalantech.store">
 <meta property="og:image" content="https://skalantech.store/static/logo.svg">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://skalantech.store/">
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<link rel="preload" as="style" href="{{ url_for('static', filename='css/style.css') }}?v=3">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Xavier Escalante",
+  "url": "https://skalantech.store",
+  "jobTitle": "IT-Infrastructure & Cloud Engineer",
+  "description": "IT-Infrastruktur mit KI-Power — Cloud Engineering, AI Agents & Automatisierung",
+  "knowsAbout": ["IT Infrastructure", "Cloud Engineering", "AI Agents", "Automation", "DevOps", "Microsoft 365", "VMware", "Hyper-V", "Active Directory"],
+  "address": {"@type": "PostalAddress", "addressLocality": "Köln", "addressCountry": "DE"},
+  "sameAs": ["https://linkedin.com/in/xyesca/", "https://github.com/Xyesca"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Skalantech",
+  "url": "https://skalantech.store",
+  "description": "IT-Infrastruktur mit KI-Power — Cloud Engineering, AI Agents & Automatisierung",
+  "author": {"@type": "Person", "name": "Xavier Escalante"}
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Martian+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=3">
 </head>
 <body>
+<!-- Skip to Content (Barrierefreiheit) -->
+<a href="#hero" class="skip-link">Zum Inhalt springen</a>
 
 <!-- Navigation -->
-<nav class="nav" id="nav">
+<nav class="nav" id="nav" aria-label="Hauptnavigation">
   <div class="nav__inner">
     <a href="#hero" class="nav__brand">
-      <img src="{{ url_for('static', filename='logo.svg') }}" alt="Skalantech" class="nav__logo">
+      <img src="{{ url_for('static', filename='logo.svg') }}" alt="Skalantech" class="nav__logo" loading="lazy">
     </a>
     <div class="nav__links">
       <a href="#about">Über mich</a>
@@ -57,7 +86,7 @@
 <!-- ============================================================ -->
 <section class="hero scanline" id="hero">
   <div class="hero__bg">
-    <img src="{{ url_for('static', filename='img/hero_bg.png') }}" alt="" class="hero__bg-img" loading="lazy">
+    <div class="hero__gradient-canvas"></div>
     <div class="hero__gradient"></div>
     <div class="hero__overlay"></div>
     <div class="hero__grid"></div>
@@ -86,7 +115,8 @@
       </h1>
 
       <p class="hero__subtitle" data-reveal="up">
-        IT Infrastructure &amp; AI Automation Engineer
+        Ich baue, migriere und automatisiere IT-Infrastruktur — mit KI-Power.
+        7+ Jahre Erfahrung, von Microsoft 365 bis zu eigenen AI-Agenten.
       </p>
 
       <div class="hero__actions" data-reveal="up">
@@ -125,7 +155,7 @@
 </section>
 
 <!-- ============================================================ -->
-<!-- ABOUT — Avatar + Bio | System Stats Terminal -->
+<!-- ABOUT — Bento Grid (Vanilla CSS) -->
 <!-- ============================================================ -->
 <section class="section" id="about">
   <div class="section__inner">
@@ -134,84 +164,113 @@
       <h2 class="section__title">IT-Infrastruktur mit <span class="text-gradient-cyber">KI-Power</span></h2>
     </div>
 
-    <div class="about-v2" data-reveal="scale" data-delay="100">
-      <!-- Left: Avatar + Bio -->
-      <div class="about-v2__bio glass-strong">
-        <div class="about-v2__avatar-wrap">
-          <svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="38" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"/><text x="40" y="46" text-anchor="middle" fill="var(--cyber)" font-family="var(--font-display)" font-size="28" font-weight="700">XE</text></svg>
-          <div class="about-v2__status" title="Online"></div>
-        </div>
-        <div class="about-v2__text">
-          <p>Hallo, ich bin <strong>Xavier Escalante</strong> — <strong>IT-Systemadministrator</strong> aus Köln mit über <strong>7 Jahren Erfahrung</strong> in der Planung, Implementierung und Wartung komplexer IT-Infrastrukturen.</p>
-          <p>Meine Spezialgebiete: <strong>Microsoft 365</strong>, <strong>VMware</strong>, <strong>Hyper-V</strong>, <strong>Active Directory</strong> und <strong>Cloud-Technologien</strong> — kombiniert mit moderner <strong>Automatisierung</strong> durch PowerShell, Python und n8n.</p>
-          <p>Ich liebe es, Systeme nicht nur am Laufen zu halten, sondern sie <strong>intelligent</strong> zu machen — mit AI Agents, selbstheilenden Workflows und smarter Dokumentation.</p>
+    <div class="bento-grid" data-reveal="up">
+
+      <!-- BIO (Spant 2 Spalten) -->
+      <div class="bento-card bento-card--bio">
+        <div class="bento-card__glow"></div>
+        <div class="bento-card__content">
+          <div class="bento-card__header">
+            <div class="about-v2__avatar-wrap">
+              <svg viewBox="0 0 80 80" width="60" height="60"><circle cx="40" cy="40" r="38" fill="var(--surface-2)" stroke="var(--border)" stroke-width="1.5"/><text x="40" y="46" text-anchor="middle" fill="var(--cyber)" font-family="var(--font-display)" font-size="24" font-weight="700">XE</text></svg>
+              <div class="about-v2__status" title="Online"></div>
+            </div>
+            <div>
+              <span class="badge badge--cyber-subtle">IT-Systemadministrator</span>
+              <h3>Xavier Escalante</h3>
+            </div>
+          </div>
+          <p class="bento-card__text">
+            <strong>7+ Jahre</strong> Erfahrung in Planung, Implementierung und Wartung komplexer IT-Infrastrukturen. Spezialisiert auf <span class="text-cyan">Microsoft 365</span>, <span class="text-cyan">VMware</span>, <span class="text-cyan">Hyper-V</span>, <span class="text-cyan">Active Directory</span> und <span class="text-cyan">Cloud</span> — kombiniert mit moderner Automatisierung durch PowerShell, Python und n8n.
+          </p>
+          <div class="bento-card__footer-meta">
+            <span>🟢 Remote · Köln</span>
+            <span>🤖 Eigene AI-Agenten im Betrieb</span>
+          </div>
         </div>
       </div>
 
-      <!-- Right: System Stats Terminal Panel -->
-      <div class="about-v2__stats glass-strong grid-bg">
-        <div class="about-v2__stats-header">
-          <span class="about-v2__stats-dot about-v2__stats-dot--red"></span>
-          <span class="about-v2__stats-dot about-v2__stats-dot--yellow"></span>
-          <span class="about-v2__stats-dot about-v2__stats-dot--green"></span>
-          <span class="about-v2__stats-title">system_stats.sh</span>
-        </div>
-        <div class="about-v2__stats-body">
-          <div class="sys-stat">
-            <span class="sys-stat__icon">🗓</span>
-            <span class="sys-stat__label">IT-Erfahrung</span>
-            <span class="sys-stat__value kpi-counter" data-target="7" data-suffix="+">0+</span>
-            <span class="sys-stat__unit">Jahre</span>
+      <!-- STATS (Spant 2 Reihen vertikal) -->
+      <div class="bento-card bento-card--stats">
+        <div class="bento-card__content">
+          <span class="bento-card__label">Live Status</span>
+          <h3>System Overview</h3>
+          <div class="bento-stats-wrap">
+            <div class="stat-large">
+              <div class="kpi-counter" data-target="7" data-suffix="+">0+</div>
+              <p>Jahre Erfahrung</p>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-labels">
+                <span>Remote-fähig</span>
+                <span>100%</span>
+              </div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+            <div class="stats-mini-grid">
+              <div class="mini-stat-card">
+                <div class="kpi-counter" data-target="6" data-suffix="+">0+</div>
+                <p>Eigene Produkte</p>
+              </div>
+              <div class="mini-stat-card">
+                <div class="kpi-counter" data-target="20" data-suffix="+">0+</div>
+                <p>AI Agents</p>
+              </div>
+            </div>
           </div>
-          <div class="sys-stat">
-            <span class="sys-stat__icon">⚡</span>
-            <span class="sys-stat__label">Workflows</span>
-            <span class="sys-stat__value kpi-counter" data-target="50" data-suffix="+">0+</span>
-            <span class="sys-stat__unit">automatisiert</span>
-          </div>
-          <div class="sys-stat">
-            <span class="sys-stat__icon">🤖</span>
-            <span class="sys-stat__label">AI Agents</span>
-            <span class="sys-stat__value kpi-counter" data-target="20" data-suffix="+">0+</span>
-            <span class="sys-stat__unit">aktiv</span>
-          </div>
-          <div class="sys-stat">
-            <span class="sys-stat__icon">🔓</span>
-            <span class="sys-stat__label">Open Source</span>
-            <span class="sys-stat__value kpi-counter" data-target="100" data-suffix="%">0%</span>
-            <span class="sys-stat__unit"></span>
-          </div>
-          <div class="sys-stat">
-            <span class="sys-stat__icon">🐳</span>
-            <span class="sys-stat__label">Docker</span>
-            <span class="sys-stat__value kpi-counter" data-target="14" data-suffix="">0</span>
-            <span class="sys-stat__unit">Container</span>
-          </div>
-          <div class="sys-stat">
-            <span class="sys-stat__icon">🌐</span>
-            <span class="sys-stat__label">Subdomains</span>
-            <span class="sys-stat__value kpi-counter" data-target="5" data-suffix="">0</span>
-            <span class="sys-stat__unit">aktiv</span>
+          <div class="bento-card__footer-meta">
+            <span>Deutsch · Englisch · Spanisch</span>
+            <span class="status-pulse-dot"></span>
           </div>
         </div>
       </div>
+
+      <!-- REMOTE-READY (Kleine Card) -->
+      <div class="bento-card bento-card--remote">
+        <div class="bento-card__icon-box">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div>
+          <h4>Remote-Ready</h4>
+          <p>Weltweit einsetzbar. Flexibel und ortsunabhängig.</p>
+        </div>
+      </div>
+
+      <!-- KI-INFRASTRUKTUR (Kleine Card) -->
+      <div class="bento-card bento-card--ai">
+        <div class="bento-card__icon-box">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+          </svg>
+        </div>
+        <div>
+          <h4>KI-Infrastruktur</h4>
+          <p>20+ AI Agents, LLMs, RAG — spezialisiert auf KI-Automation.</p>
+        </div>
+      </div>
+
     </div>
+  </div>
   </div>
 </section>
 
 <!-- ============================================================ -->
 <!-- STACK — Core Infrastructure | AI/Automation -->
 <!-- ============================================================ -->
-<section class="section section--dark" id="stack">
+<section class="section section--dark" id="stack" data-reveal="up">
   <div class="section__inner">
     <div class="section__header" data-reveal="up">
       <span class="section__label">Technologien</span>
       <h2 class="section__title">Mein <span class="text-gradient-cyber">Tech Stack</span></h2>
     </div>
 
-    <div class="stack-grid" data-stagger-grid data-stagger-delay="120">
+    <div class="stack-grid">
       <!-- Core Infrastructure -->
-      <div class="stack-card glass" data-reveal="left" data-stagger data-delay="0">
+      <div class="stack-card glass" data-reveal="up" data-reveal-delay="100">
         <h3 class="stack-card__title">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
           Core Infrastructure
@@ -228,7 +287,7 @@
       </div>
 
       <!-- AI/Automation -->
-      <div class="stack-card glass" data-reveal="right" data-stagger data-delay="120">
+      <div class="stack-card glass" data-reveal="up" data-reveal-delay="200">
         <h3 class="stack-card__title">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           AI &amp; Automation
@@ -246,6 +305,28 @@
       </div>
     </div>
   </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- LIVE SERVICES — direkt nach Stack -->
+<!-- ============================================================ -->
+<section class="section section--dark" id="services">
+  <div class="section__inner">
+    <div class="section__header" data-reveal="up">
+      <span class="section__label">Live Services</span>
+      <h2 class="section__title">Aktuell <span class="text-gradient-matrix">online</span></h2>
+    </div>
+    <div class="service-bar" data-reveal="up">
+      <span class="service-pill"><span class="service-pill__dot"></span>Hermes Agent</span>
+      <span class="service-pill"><span class="service-pill__dot"></span>n8n</span>
+      <span class="service-pill"><span class="service-pill__dot"></span>DebtPilot AI</span>
+      <span class="service-pill"><span class="service-pill__dot"></span>Docker</span>
+      <span class="service-pill"><span class="service-pill__dot"></span>Caddy</span>
+      <span class="service-pill"><span class="service-pill__dot"></span>Tailscale</span>
+    </div>
+  </div>
+  </div>
 </section>
 
 <!-- ============================================================ -->
@@ -259,11 +340,10 @@
     </div>
 
     {% if projects %}
-    <div class="project-grid" data-stagger-grid data-stagger-delay="100">
+    <div class="project-grid">
       {% set tones = ['cyber', 'matrix', 'plasma'] %}
-      {% set dirs = ['left', 'up', 'right'] %}
       {% for project in projects %}
-      <article class="project-card-v2 project-card-v2--{{ tones[loop.index0 % 3] }}" data-reveal="{{ dirs[loop.index0 % 3] }}" data-stagger data-delay="{{ loop.index0 * 100 }}">
+      <article class="project-card-v2 project-card-v2--{{ tones[loop.index0 % 3] }}" data-reveal="up">
         <div class="project-card-v2__color-bar"></div>
         <div class="project-card-v2__inner glass">
           <div class="project-card-v2__icon-wrap">
@@ -300,22 +380,22 @@
       {% endfor %}
     </div>
     {% else %}
-    <div class="project-grid" data-stagger-grid data-stagger-delay="100">
-      <article class="project-card-v2 project-card-v2--cyber" data-reveal="left" data-stagger data-delay="0">
+    <div class="project-grid">
+      <article class="project-card-v2 project-card-v2--cyber" data-reveal="up">
         <div class="project-card-v2__color-bar"></div>
         <div class="project-card-v2__inner glass">
           <div class="project-card-v2__icon-wrap">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
           <h3 class="project-card-v2__title">DeepDive</h3>
-          <p class="project-card-v2__desc">YouTube zu KI-Analyse in Sekunden. Transkribieren, zusammenfassen, exportieren.</p>
-          <a href="https://deepdive.skalantech.store" class="project-card-v2__link" target="_blank" rel="noopener">
+          <p class="project-card-v2__desc">Open-Source: YouTube-Videos transkribieren, per KI analysieren und als PDF/HTML + MP3 exportieren. Python, Whisper, LLMs.</p>
+          <a href="https://github.com/Xyesca/deepdive" class="project-card-v2__link" target="_blank" rel="noopener">
             Projekt öffnen
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l10-10M7 7h10v10"/></svg>
           </a>
         </div>
       </article>
-      <article class="project-card-v2 project-card-v2--matrix" data-reveal="up" data-stagger data-delay="100">
+      <article class="project-card-v2 project-card-v2--matrix" data-reveal="up">
         <div class="project-card-v2__color-bar"></div>
         <div class="project-card-v2__inner glass">
           <div class="project-card-v2__icon-wrap">
@@ -325,39 +405,29 @@
           <p class="project-card-v2__desc">Sucht Stellenangebote, analysiert Anforderungen und erstellt automatisch personalisierte Bewerbungen mit KI.</p>
         </div>
       </article>
-      <article class="project-card-v2 project-card-v2--plasma" data-reveal="right" data-stagger data-delay="200">
+      <article class="project-card-v2 project-card-v2--plasma" data-reveal="up">
         <div class="project-card-v2__color-bar"></div>
         <div class="project-card-v2__inner glass">
           <div class="project-card-v2__icon-wrap">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg>
           </div>
-          <h3 class="project-card-v2__title">Homelab</h3>
-          <p class="project-card-v2__desc">Moderne Lern- und Entwicklungsumgebung mit Docker-Swarm, Kubernetes und Monitoring auf dem VPS.</p>
+          <h3 class="project-card-v2__title">DebtPilot AI</h3>
+          <p class="project-card-v2__desc">Enterprise KI-Plattform für Schuldenmanagement: Microservices-Architektur, Docker, lokale LLMs (Ollama), RAG-Dokumentenanalyse.</p>
+        </div>
+      </article>
+      <article class="project-card-v2 project-card-v2--plasma" data-reveal="up">
+        <div class="project-card-v2__color-bar"></div>
+        <div class="project-card-v2__inner glass">
+          <div class="project-card-v2__icon-wrap">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 class="project-card-v2__title">AI Job Agent</h3>
+          <p class="project-card-v2__desc">Sucht Stellenangebote, analysiert Anforderungen und erstellt automatisch personalisierte Bewerbungen mit KI.</p>
         </div>
       </article>
     </div>
     {% endif %}
   </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- LIVE SERVICES BAR -->
-<!-- ============================================================ -->
-<section class="section" id="services" style="padding-top:0;">
-  <div class="section__inner">
-    <div class="section__header" data-reveal="up" style="margin-bottom:1.5rem;">
-      <span class="section__label">Live Services</span>
-      <h2 class="section__title" style="font-size:1.6rem;">Aktuell <span class="text-gradient-matrix">online</span></h2>
-    </div>
-    <div class="service-bar" data-reveal="scale" data-delay="150">
-      <span class="service-pill"><span class="service-pill__dot"></span>DeepDive</span>
-      <span class="service-pill"><span class="service-pill__dot"></span>Hermes Agent</span>
-      <span class="service-pill"><span class="service-pill__dot"></span>n8n</span>
-      <span class="service-pill"><span class="service-pill__dot"></span>Docker</span>
-      <span class="service-pill"><span class="service-pill__dot"></span>Caddy</span>
-      <span class="service-pill"><span class="service-pill__dot"></span>CrowdSec</span>
-      <span class="service-pill"><span class="service-pill__dot"></span>Tailscale</span>
-    </div>
   </div>
 </section>
 
@@ -371,9 +441,8 @@
       <h2 class="section__title">Lass uns <span class="text-gradient-cyber">vernetzen</span></h2>
     </div>
 
-    <div class="contact-grid" data-reveal="up" data-delay="0">
-
-      <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener" class="contact-card glass" data-reveal="left" data-delay="200">
+    <div class="contact-grid" data-reveal="up">
+      <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener" class="contact-card glass">
         <div class="contact-card__icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
         </div>
@@ -382,7 +451,7 @@
         <span class="contact-card__action">Verbinden →</span>
       </a>
 
-      <a href="https://github.com/Xyesca" target="_blank" rel="noopener" class="contact-card glass" data-reveal="up" data-delay="250">
+      <a href="https://github.com/Xyesca" target="_blank" rel="noopener" class="contact-card glass">
         <div class="contact-card__icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.13-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.78 1.2 1.78 1.2 1.03 1.78 2.71 1.26 3.37.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a10.9 10.9 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .31.21.67.8.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
         </div>
@@ -391,7 +460,7 @@
         <span class="contact-card__action">Folgen →</span>
       </a>
 
-      <a href="mailto:xyesca1989@googlemail.com" class="contact-card glass" data-reveal="right" data-delay="300">
+      <a href="mailto:xyesca1989@googlemail.com" class="contact-card glass">
         <div class="contact-card__icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         </div>
@@ -401,7 +470,7 @@
       </a>
     </div>
 
-    <div class="contact-terminal glass" data-reveal="scale" data-delay="350">
+    <div class="contact-terminal glass" data-reveal="up">
       <div class="contact-terminal__header">
         <span class="terminal-window__dot terminal-window__dot--red"></span>
         <span class="terminal-window__dot terminal-window__dot--yellow"></span>
@@ -410,12 +479,12 @@
       </div>
       <form class="contact-terminal__form" method="POST" action="{{ url_for('public.contact') }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <label>Name</label>
-        <input type="text" name="name" placeholder="Max Mustermann" required>
-        <label>E-Mail</label>
-        <input type="email" name="email" placeholder="max@example.com" required>
-        <label>Nachricht</label>
-        <textarea name="message" placeholder="Deine Nachricht..." required></textarea>
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Max Mustermann" autocomplete="name" required>
+        <label for="email">E-Mail</label>
+        <input type="email" id="email" name="email" placeholder="max@example.com" autocomplete="email" required>
+        <label for="message">Nachricht</label>
+        <textarea id="message" name="message" placeholder="Deine Nachricht..." autocomplete="off" required></textarea>
         <button type="submit" class="btn btn--primary">
           Senden
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
@@ -424,30 +493,60 @@
       </form>
     </div>
   </div>
+  </div>
 </section>
 
 <!-- Footer -->
 <footer class="footer">
   <div class="footer__inner">
     <div class="footer__brand">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7" opacity="0.4"/><circle cx="12" cy="12" r="11" opacity="0.2"/></svg>
-      <span>Skalantech</span>
+      <div class="footer__logo">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7" opacity="0.4"/><circle cx="12" cy="12" r="11" opacity="0.2"/></svg>
+        <span>Skalantech</span>
+      </div>
+      <p class="footer__desc">IT-Infrastruktur mit KI-Power — Cloud Engineering, AI Agents & Automatisierung aus Köln.</p>
+      <div class="footer__social">
+        <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+        </a>
+        <a href="https://github.com/Xyesca" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.13-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.78 1.2 1.78 1.2 1.03 1.78 2.71 1.26 3.37.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a10.9 10.9 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .31.21.67.8.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+        </a>
+        <a href="mailto:xyesca1989@googlemail.com" aria-label="E-Mail">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </a>
+      </div>
     </div>
-    <div class="footer__links">
+    <div class="footer__col">
+      <h4>Navigation</h4>
+      <a href="#about">Über mich</a>
+      <a href="#stack">Tech Stack</a>
+      <a href="#projects">Projekte</a>
+      <a href="#contact">Kontakt</a>
+    </div>
+    <div class="footer__col">
+      <h4>Rechtliches</h4>
+      <a href="{{ url_for('public.impressum') }}">Impressum</a>
+      <a href="{{ url_for('public.datenschutz') }}">Datenschutz</a>
+      <a href="{{ url_for('public.agb') }}">AGB</a>
+      <a href="{{ url_for('public.faq') }}">FAQ</a>
+    </div>
+    <div class="footer__col">
+      <h4>Kontakt</h4>
       <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://github.com/Xyesca" target="_blank" rel="noopener">GitHub</a>
+      <a href="mailto:xyesca1989@googlemail.com">E-Mail</a>
       <a href="{{ url_for('auth.login') }}">Admin</a>
     </div>
-    <div class="footer__copy">
-      <span>{{ settings.name }} · {{ settings.location or 'Köln' }}</span>
-      <span class="footer__tagline">Turning ideas into intelligent systems.</span>
-    </div>
+  </div>
+  <div class="footer__bottom">
+    <span>{{ settings.name }} · {{ settings.location or 'Köln' }}</span>
+    <span>Turning ideas into intelligent systems.</span>
   </div>
 </footer>
 
-<!-- Scroll Animations, Terminal, KPI Counter -->
+<!-- Scroll Animations & Terminal Script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
-<script src="{{ url_for('static', filename='js/scroll-effects.js') }}"></script>
 <script src="{{ url_for('static', filename='js/terminal.js') }}"></script>
 <script src="{{ url_for('static', filename='js/kpi-counter.js') }}"></script>
 <script>
@@ -509,14 +608,52 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 document.addEventListener('DOMContentLoaded', function() {
   if (typeof VanillaTilt !== 'undefined') {
     VanillaTilt.init(document.querySelectorAll('.project-card-v2'), {
-      max: 8,
-      speed: 400,
+      max: 10,
+      speed: 600,
       glare: true,
-      'max-glare': 0.2,
-      scale: 1.02,
+      'max-glare': 0.25,
+      scale: 1.03,
+      perspective: 800,
     });
   }
 });
+
+// Gradient Parallax Hero
+(function() {
+  const bg = document.querySelector('.hero__bg');
+  if (!bg) return;
+  window.addEventListener('scroll', function() {
+    const scrolled = window.scrollY;
+    const maxScroll = window.innerHeight;
+    if (scrolled <= maxScroll) {
+      bg.style.transform = 'translateY(' + (scrolled * 0.08) + 'px)';
+    }
+  });
+})();
+
+// Smooth Counter Animation
+(function() {
+  const counters = document.querySelectorAll('.kpi-counter');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        let current = 0;
+        const step = Math.ceil(target / 40);
+        const timer = setInterval(() => {
+          current += step;
+          if (current >= target) { current = target; clearInterval(timer); }
+          el.textContent = current + suffix;
+        }, 40);
+        obs.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => obs.observe(c));
+})();
+
 </script>
 </body>
 </html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Impressum · {{ settings.name }}</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<nav class="nav" id="nav" aria-label="Hauptnavigation">
+  <div class="nav__inner">
+    <a href="{{ url_for('public.index') }}" class="nav__brand">
+      <img src="{{ url_for('static', filename='logo.svg') }}" alt="Skalantech" class="nav__logo">
+    </a>
+  </div>
+</nav>
+<main style="max-width:720px;margin:6rem auto 4rem;padding:0 1.5rem;">
+  <h1 style="font-family:var(--font-display);font-size:2rem;font-weight:700;margin-bottom:0.5rem;">Impressum</h1>
+  <p style="color:var(--text-tertiary);font-size:0.85rem;margin-bottom:2rem;">Angaben gemäß §5 TMG</p>
+
+  <div class="glass" style="padding:2rem;line-height:1.8;">
+    <p><strong>Xavier Escalante Castellar</strong><br>
+    Eifelstraße 33<br>
+    51109 Köln<br>
+    Deutschland</p>
+
+    <p style="margin-top:1.5rem;"><strong>Kontakt</strong><br>
+    E-Mail: xyesca1989@googlemail.com<br>
+    Telefon: 017677879366</p>
+
+    <p style="margin-top:1.5rem;"><strong>Verantwortlich für Inhalte</strong><br>
+    Xavier Escalante Castellar</p>
+
+    <p style="margin-top:1.5rem;"><strong>Haftungsausschluss</strong><br>
+    Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden.</p>
+  </div>
+
+  <a href="{{ url_for('public.index') }}" class="btn btn--ghost" style="margin-top:2rem;">← Zurück zur Startseite</a>
+</main>
+</body>
+</html>

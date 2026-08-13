@@ -11,7 +11,7 @@
   const scriptLines = [
     { text: 'Initializing system...', status: 'ok', delay: 50 },
     { text: '[OK] M365 tenant connected', status: 'ok', delay: 40 },
-    { text: '[OK] Proxmox cluster healthy', status: 'ok', delay: 40 },
+    { text: '[OK] Tailscale mesh secure', status: 'ok', delay: 40 },
     { text: '[OK] Docker 14 containers up', status: 'ok', delay: 40 },
     { text: '[OK] Hermes Agent connected', status: 'ok', delay: 40 },
     { text: '[OK] n8n — 50 workflows live', status: 'ok', delay: 40 },
@@ -88,4 +88,66 @@
 
   terminalBody.innerHTML = '';
   setTimeout(typeNextChar, 500);
+})();
+
+/**
+ * Contact Form AJAX — Terminal-Style Feedback.
+ */
+(function() {
+  'use strict';
+
+  const form = document.querySelector('.contact-terminal__form');
+  const prompt = document.querySelector('.contact-terminal__prompt');
+  if (!form || !prompt) return;
+
+  const lines = [
+    '[CONNECT] Establishing secure channel...',
+    '[AUTH]   Verifying session token...',
+    '[SEND]   Transmitting payload...',
+    '[OK]     Message securely delivered ✓',
+  ];
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const btn = form.querySelector('.btn--primary');
+    const origText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'Senden...';
+    prompt.textContent = '';
+
+    let lineIdx = 0;
+    function typePrompt() {
+      if (lineIdx >= lines.length) {
+        // Final — actually submit
+        const fd = new FormData(form);
+        fetch(form.action, {
+          method: 'POST',
+          body: fd,
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        })
+        .then(r => r.json().catch(() => ({ ok: r.ok })))
+        .then(data => {
+          if (data.ok || data.success) {
+            prompt.textContent = '[DONE] ✓ ' + (data.message || 'Nachricht erfolgreich gesendet!');
+            form.querySelectorAll('input, textarea').forEach(el => el.value = '');
+          } else {
+            prompt.textContent = '[FAIL] ✗ ' + (data.message || 'Fehler beim Senden');
+          }
+        })
+        .catch(() => {
+          prompt.textContent = '[FAIL] ✗ Verbindung fehlgeschlagen';
+        })
+        .finally(() => {
+          btn.disabled = false;
+          btn.innerHTML = origText;
+        });
+        return;
+      }
+      prompt.textContent = lines[lineIdx];
+      lineIdx++;
+      setTimeout(typePrompt, 350 + Math.random() * 200);
+    }
+    typePrompt();
+  });
 })();

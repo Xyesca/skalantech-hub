@@ -8,7 +8,7 @@ from flask import (
 )
 from werkzeug.security import check_password_hash
 
-from app.extensions import db, limiter
+from app.extensions import db, limiter, csrf
 from app.models import Admin
 
 auth_bp = Blueprint("auth", __name__)
@@ -32,6 +32,7 @@ def _safe_next_url(default_endpoint: str = "admin.settings") -> str:
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 @limiter.limit("10 per minute")
+@csrf.exempt
 def login():
     if session.get("logged_in"):
         return redirect(url_for("admin.settings"))

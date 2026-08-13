@@ -1,0 +1,9 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Xavier Escalante",
+  "url": "https://skalantech.store",
+  "jobTitle": "IT-Infrastructure & Cloud Engineer",
+  "knowsAbout": ["IT Infrastructure", "Cloud Engineering", "AI Agents", "Automation", "DevOps"],
+  "sameAs": ["https://linkedin.com/in/xyesca/", "https://github.com/Xyesca"]
+}
