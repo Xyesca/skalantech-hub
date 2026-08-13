@@ -55,7 +55,7 @@ class PublicSiteTests(unittest.TestCase):
             "Projektanfrage senden",
             "skalantech-og.jpg",
             "brand/skalantech-mark.svg",
-            "skalantech-systems.webp",
+            "founder-600.webp",
             "application/ld+json",
             'id="services"',
             'id="contact"',

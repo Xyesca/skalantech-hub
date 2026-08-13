@@ -64,15 +64,22 @@
 
       <div class="hero__visual" data-reveal>
         <figure class="hero__portrait">
-          <img
-            src="{{ url_for('static', filename='img/portrait-480.webp') }}"
-            srcset="{{ url_for('static', filename='img/portrait-480.webp') }} 480w,
-                    {{ url_for('static', filename='img/portrait-720.webp') }} 720w,
-                    {{ url_for('static', filename='img/portrait-1040.webp') }} 1040w"
-            sizes="(max-width: 680px) min(84vw, 340px), (max-width: 1100px) 340px, 460px"
-            width="1040" height="1300"
-            alt="Xavier Escalante – IT-Infrastructure & Automation Engineer"
-            fetchpriority="high" decoding="async">
+          <picture>
+            <source type="image/avif"
+              srcset="{{ url_for('static', filename='img/portrait-480.avif') }} 480w,
+                      {{ url_for('static', filename='img/portrait-720.avif') }} 720w,
+                      {{ url_for('static', filename='img/portrait-1040.avif') }} 1040w"
+              sizes="(max-width: 680px) min(84vw, 340px), (max-width: 1100px) 340px, 460px">
+            <img
+              src="{{ url_for('static', filename='img/portrait-480.webp') }}"
+              srcset="{{ url_for('static', filename='img/portrait-480.webp') }} 480w,
+                      {{ url_for('static', filename='img/portrait-720.webp') }} 720w,
+                      {{ url_for('static', filename='img/portrait-1040.webp') }} 1040w"
+              sizes="(max-width: 680px) min(84vw, 340px), (max-width: 1100px) 340px, 460px"
+              width="1040" height="1300"
+              alt="Xavier Escalante – IT-Infrastructure & Automation Engineer"
+              fetchpriority="high" decoding="async">
+          </picture>
         </figure>
         <p class="hero__visual-note">
           <span aria-hidden="true">↳</span>
@@ -345,7 +352,17 @@
               </div>
               <div class="work-card__graphic" {% if not project.image_path %}aria-hidden="true"{% endif %}>
                 {% if project.image_path %}
-                  <img src="/{{ project.image_path }}" alt="{{ project_alts.get(project.title, project.title) }}" loading="lazy" decoding="async" width="1200" height="800" class="work-card__img">
+                  {% set img_base = project.image_path|replace('.webp', '') %}
+                  <picture>
+                    <source type="image/avif"
+                      srcset="/{{ img_base }}-800.avif 800w, /{{ img_base }}-1200.avif 1200w"
+                      sizes="(max-width: 680px) calc(100vw - 64px), (max-width: 1100px) calc(50vw - 40px), 560px">
+                    <img src="/{{ img_base }}-800.webp"
+                      srcset="/{{ img_base }}-800.webp 800w, /{{ img_base }}-1200.webp 1200w"
+                      sizes="(max-width: 680px) calc(100vw - 64px), (max-width: 1100px) calc(50vw - 40px), 560px"
+                      alt="{{ project_alts.get(project.title, project.title) }}"
+                      loading="lazy" decoding="async" width="1200" height="800" class="work-card__img">
+                  </picture>
                 {% else %}
                   <span></span><span></span><span></span>
                   <i></i>
@@ -390,20 +407,29 @@
   <section class="section section--about" id="about">
     <div class="shell about-grid">
       <div class="about-visual" data-reveal>
-        <div class="about-visual__frame">
-          <img
-            src="{{ url_for('static', filename='img/skalantech-systems.webp') }}"
-            srcset="{{ url_for('static', filename='img/skalantech-systems-480.webp') }} 480w, {{ url_for('static', filename='img/skalantech-systems.webp') }} 960w"
-            sizes="(max-width: 720px) calc(100vw - 40px), (max-width: 1100px) 44vw, 460px"
-            alt="Editorial-Visual für Infrastruktur, Automation und KI bei Skalantech"
-            width="960"
-            height="1200"
-            loading="lazy"
-            decoding="async">
+        <div class="about-visual__frame about-visual__frame--portrait">
+          <picture>
+            <source type="image/avif"
+              srcset="{{ url_for('static', filename='img/founder-400.avif') }} 400w,
+                      {{ url_for('static', filename='img/founder-600.avif') }} 600w,
+                      {{ url_for('static', filename='img/founder-800.avif') }} 800w"
+              sizes="(max-width: 720px) calc(100vw - 64px), (max-width: 1100px) 300px, 360px">
+            <img
+              src="{{ url_for('static', filename='img/founder-600.webp') }}"
+              srcset="{{ url_for('static', filename='img/founder-400.webp') }} 400w,
+                      {{ url_for('static', filename='img/founder-600.webp') }} 600w,
+                      {{ url_for('static', filename='img/founder-800.webp') }} 800w"
+              sizes="(max-width: 720px) calc(100vw - 64px), (max-width: 1100px) 300px, 360px"
+              alt="Xavier Escalante Castellar – Gründer und IT-Infrastructure & Automation Engineer bei Skalantech"
+              width="800"
+              height="1000"
+              loading="lazy"
+              decoding="async">
+          </picture>
         </div>
         <div class="about-visual__caption">
-          <span>Infrastruktur · Automation · KI</span>
-          <span>Köln · Remote</span>
+          <span>Xavier Escalante Castellar</span>
+          <span>Gründer · Köln · Remote</span>
         </div>
       </div>
 
@@ -442,6 +468,16 @@
           <a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
           <a href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate <span aria-hidden="true">↗</span></a>
         </div>
+
+        <p class="about-copy__personal">
+          Sie arbeiten direkt mit mir – ohne Account-Manager, ohne Übergaben ins
+          Unbekannte. Ich verantworte Ihre Anfrage persönlich und melde mich
+          nach der Prüfung mit einer ehrlichen Einschätzung zurück.
+        </p>
+        <a class="about-copy__cta" href="#contact">
+          Direkt ins Gespräch kommen
+          <span aria-hidden="true">↗</span>
+        </a>
       </div>
     </div>
   </section>

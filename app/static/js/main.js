@@ -13,6 +13,18 @@
     }
   }
 
+  // rAF-Throttling für den Scroll-Handler: ein Schreibzugriff pro Frame statt pro Event.
+  let scrollTicking = false;
+  function onScroll() {
+    if (!scrollTicking) {
+      scrollTicking = true;
+      window.requestAnimationFrame(function () {
+        setHeaderState();
+        scrollTicking = false;
+      });
+    }
+  }
+
   function closeMenu(returnFocus) {
     if (!menuButton || !navigation) return;
     menuButton.setAttribute("aria-expanded", "false");
@@ -37,8 +49,14 @@
       });
     });
 
+    let resizeTimer = null;
     window.addEventListener("resize", function () {
-      if (window.innerWidth > 860) closeMenu(false);
+      if (window.innerWidth > 860 && navigation.classList.contains("is-open")) {
+        clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(function () {
+          closeMenu(false);
+        }, 120);
+      }
     });
   }
 
@@ -49,7 +67,7 @@
   });
 
   setHeaderState();
-  window.addEventListener("scroll", setHeaderState, { passive: true });
+  window.addEventListener("scroll", onScroll, { passive: true });
 
   const revealElements = Array.from(document.querySelectorAll("[data-reveal]"));
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -84,6 +102,8 @@
     .filter(Boolean);
 
   if ("IntersectionObserver" in window && sections.length) {
+    let currentActiveId = null;
+
     const activeObserver = new IntersectionObserver(
       function (entries) {
         const visible = entries
@@ -91,13 +111,18 @@
           .sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; })[0];
 
         if (!visible) {
-          // Beim Verlassen der beobachteten Abschnitte alle veralteten Marker entfernen
-          sectionLinks.forEach(function (link) {
-            link.removeAttribute("aria-current");
-          });
+          if (currentActiveId !== null) {
+            currentActiveId = null;
+            sectionLinks.forEach(function (link) {
+              link.removeAttribute("aria-current");
+            });
+          }
           return;
         }
 
+        if (currentActiveId === visible.target.id) return;
+
+        currentActiveId = visible.target.id;
         sectionLinks.forEach(function (link) {
           const isActive = link.getAttribute("href").endsWith("#" + visible.target.id);
           if (isActive) {
