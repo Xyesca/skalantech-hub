@@ -35,6 +35,11 @@ def create_app(config_name: str | None = None) -> Flask:
     app = Flask(__name__)
     app.config.from_object(config_map.get(config_name, config_map["default"]))
 
+    # Trust the Caddy reverse proxy (X-Forwarded-Proto/For) so Flask treats
+    # requests behind TLS as secure — required for SESSION_COOKIE_SECURE + CSRF.
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+
     # Ensure required directories
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
     instance_dir = os.path.join(os.path.dirname(app.root_path), "instance")
