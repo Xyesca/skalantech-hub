@@ -61,6 +61,17 @@ Falls Ollama aktuell nur über seine Docker-IP erreichbar ist, die Docker-IP nur
 11. Website nicht auf einen öffentlichen n8n-Webhook umstellen; internen Loopback-Aufruf beibehalten.
 12. Keine Secrets oder OAuth-Tokens ins Git-Repository schreiben.
 
+## Telegram-Benachrichtigung
+
+Bei jeder erfolgreichen Terminbuchung sendet der Workflow eine Benachrichtigung an den Telegram-Kanal **„AiGents"** (`-1003956152501`):
+
+- Bot: `@CarEmmBot` (HermesGambito) — Token aus `~/.hermes/.env` (`TELEGRAM_BOT_TOKEN`)
+- n8n-Credential: `u9Q39TmSaAZEhFTX` (Typ `telegramApi`)
+- Node: **„Telegram: Buchung bestätigt"** — hängt parallel zu „Antwort: Erfolg"/„KI-Prompt bauen"/„Benachrichtigung Xavier" am „Event-Kontext zusammenführen"
+- Inhalt: Name, Unternehmen, E-Mail, Datum/Uhrzeit, Thema, Nachricht, Meet-Link
+- `onError: continueRegularOutput` → Telegram-Ausfall blockiert die Buchung nie
+- Nur bei **erfolgreicher** Buchung (nach Event-Anlage); Terminkonflikte lösen keine Telegram-Nachricht aus
+
 ## E2E-Tests
 
 Hermes soll mindestens diese Tests durchführen und protokollieren:

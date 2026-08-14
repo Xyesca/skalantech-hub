@@ -568,6 +568,31 @@
       ],
       "type": "n8n-nodes-base.code",
       "typeVersion": 2
+    },
+    {
+      "id": "wki-tg-0001",
+      "name": "Telegram: Buchung bestätigt",
+      "parameters": {
+        "chatId": "-1003956152501",
+        "text": "={{ '✅ Neue Terminbuchung über skalantech.store\\n\\n' + $json.name + ($json.company ? ' · ' + $json.company : '') + '\\n' + $json.email + '\\n\\n' + $json.displayDate + ' · ' + $json.displayTime + ' Uhr · 30 Min\\nThema: ' + $json.topic + ($json.message ? '\\n\\n' + $json.message : '') + ($json.meetLink ? '\\n\\nMeet: ' + $json.meetLink : '') }}",
+        "additionalFields": {}
+      },
+      "position": [
+        2200,
+        208
+      ],
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "credentials": {
+        "telegramApi": {
+          "id": "u9Q39TmSaAZEhFTX",
+          "name": "Telegram Bot (HermesGambito)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 1500
     }
   ],
   "connections": {
@@ -705,6 +730,11 @@
           },
           {
             "node": "Benachrichtigung Xavier",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram: Buchung bestätigt",
             "type": "main",
             "index": 0
           }
