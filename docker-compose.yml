@@ -5,10 +5,7 @@ services:
       network: host  # VPS-Quirk: DOCKER-USER-Kette blockt Build-DNS, Host-Netz umgeht das
     container_name: skalantech
     restart: unless-stopped
-    expose:
-      - "5000"
-    ports:
-      - "127.0.0.1:5000:5000"  # nur localhost — Caddy (Host) proxied auf diese Adresse
+    network_mode: host  # Zugriff auf Host-localhost (n8n :5678); Caddy (Host) erreicht Container direkt über 127.0.0.1:5000
     volumes:
       - ./instance:/app/instance
     environment:
@@ -19,9 +16,3 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
-    networks:
-      - apps_default
-
-networks:
-  apps_default:
-    external: true
