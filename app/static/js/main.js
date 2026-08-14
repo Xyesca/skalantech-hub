@@ -175,6 +175,14 @@
   const bookingForm = document.getElementById("booking-form");
   const bookingStatus = document.getElementById("booking-status");
 
+  // CustomValidity zurücksetzen, sobald der Nutzer einen neuen Tag wählt
+  const bookingDay = document.getElementById("booking-day");
+  if (bookingDay) {
+    bookingDay.addEventListener("input", function () {
+      bookingDay.setCustomValidity("");
+    });
+  }
+
   function wireAjaxForm(form, statusEl) {
     if (!form || !statusEl || !window.fetch) return;
 
@@ -182,6 +190,28 @@
       event.preventDefault();
 
       if (!form.reportValidity()) return;
+
+      // Wunschtag: Wochenende + Vergangenheit vor dem Absenden blocken
+      if (form.id === "booking-form") {
+        const dayField = document.getElementById("booking-day");
+        if (dayField && dayField.value) {
+          const d = new Date(dayField.value + "T12:00:00");
+          const weekday = d.getUTCDay();
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          if (weekday === 0 || weekday === 6) {
+            dayField.setCustomValidity("Termine sind nur Montag bis Freitag buchbar.");
+            dayField.reportValidity();
+            return;
+          }
+          if (d < today) {
+            dayField.setCustomValidity("Bitte wählen Sie einen Termin in der Zukunft.");
+            dayField.reportValidity();
+            return;
+          }
+          dayField.setCustomValidity("");
+        }
+      }
 
       const submitButton = form.querySelector('button[type="submit"]');
       const buttonLabel = submitButton ? submitButton.querySelector("span") : null;

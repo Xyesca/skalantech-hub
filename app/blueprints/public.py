@@ -131,7 +131,8 @@ def index():
         .all()
     )
     today = time.strftime("%Y-%m-%d")
-    return render_template("index.html", settings=settings, links=links, projects=projects, today=today)
+    max_booking_day = time.strftime("%Y-%m-%d", time.localtime(time.time() + 90 * 86400))
+    return render_template("index.html", settings=settings, links=links, projects=projects, today=today, max_booking_day=max_booking_day)
 
 
 @public_bp.route("/robots.txt")

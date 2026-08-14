@@ -696,7 +696,7 @@
           <div class="form-grid">
             <div class="field">
               <label for="booking-day">Wunschtag <span>*</span></label>
-              <input type="date" id="booking-day" name="preferred_day" required min="{{ today }}">
+              <input type="date" id="booking-day" name="preferred_day" required min="{{ today }}" max="{{ max_booking_day }}">
             </div>
             <div class="field">
               <label for="booking-time">Wunschzeit <span>*</span></label>
