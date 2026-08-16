@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /auth
+Disallow: /test-footer
 
 Sitemap: https://skalantech.store/sitemap.xml
