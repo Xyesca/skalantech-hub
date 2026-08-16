@@ -107,6 +107,10 @@ def _migrate_db() -> None:
         ("settings", "updated_at",   "DATETIME"),
         ("links", "created_at",      "DATETIME"),
         ("projects", "created_at",   "DATETIME"),
+        ("contact_messages", "source",   "VARCHAR(120) DEFAULT ''"),
+        ("contact_messages", "medium",   "VARCHAR(60) DEFAULT ''"),
+        ("contact_messages", "campaign", "VARCHAR(160) DEFAULT ''"),
+        ("contact_messages", "referrer", "VARCHAR(512) DEFAULT ''"),
     ]
 
     for table, column, col_type in migrations:

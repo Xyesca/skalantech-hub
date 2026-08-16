@@ -70,5 +70,11 @@ class ContactMessage(db.Model):
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(254), nullable=False)
     message = db.Column(db.Text, nullable=False)
+    # First-Party Conversion-Attribution (kein Tracker, keine Cookies):
+    # UTM-Parameter + Referrer der Anfrage — für SEO-/Kanal-Auswertung.
+    source = db.Column(db.String(120), default="")
+    medium = db.Column(db.String(60), default="")
+    campaign = db.Column(db.String(160), default="")
+    referrer = db.Column(db.String(512), default="")
     is_read = db.Column(db.Boolean, default=False, index=True)
     created_at = db.Column(db.DateTime, default=_utcnow)

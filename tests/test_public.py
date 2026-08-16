@@ -95,7 +95,7 @@ class PublicSiteTests(unittest.TestCase):
         from app.models import ContactMessage
 
         response = self.client.post(
-            "/contact",
+            "/contact?utm_source=google&utm_medium=organic&utm_campaign=seo",
             data={
                 "name": "Test Person",
                 "company": "Test GmbH",
@@ -116,6 +116,10 @@ class PublicSiteTests(unittest.TestCase):
             self.assertIsNotNone(saved)
             self.assertIn("Unternehmen: Test GmbH", saved.message)
             self.assertIn("Anliegen: Prozessautomatisierung", saved.message)
+            # First-Party-Attribution (UTM) wird mitgespeichert
+            self.assertEqual(saved.source, "google")
+            self.assertEqual(saved.medium, "organic")
+            self.assertEqual(saved.campaign, "seo")
 
     def test_contact_validation_and_honeypot(self):
         invalid = self.client.post(
@@ -163,6 +167,8 @@ class PublicSiteTests(unittest.TestCase):
             "/wissen/was-ist-ein-ki-agent",
             "/wissen/n8n-selbst-hosten",
             "/wissen/lokale-ki-vs-cloud-ki",
+            "/wissen/n8n-vs-power-automate",
+            "/wissen/welche-prozesse-ki-automatisierung",
         ):
             with self.subTest(path=path):
                 response = self.client.get(path, buffered=True)
@@ -218,6 +224,8 @@ class PublicSiteTests(unittest.TestCase):
             "/wissen/was-ist-ein-ki-agent",
             "/wissen/n8n-selbst-hosten",
             "/wissen/lokale-ki-vs-cloud-ki",
+            "/wissen/n8n-vs-power-automate",
+            "/wissen/welche-prozesse-ki-automatisierung",
             "/faq",
         ):
             self.assertIn(f"https://skalantech.store{path}</loc>", body)

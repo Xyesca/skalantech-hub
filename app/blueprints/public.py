@@ -332,7 +332,17 @@ def contact():
         context.append(f"Anliegen: {service}")
     stored_message = "\n".join(context + ([""] if context else []) + [message_text])
 
-    msg = ContactMessage(name=name, email=email, message=stored_message)
+    # First-Party-Attribution: UTM-Parameter + Referrer (keine Cookies,
+    # kein Tracker — nur technische Metadaten dieser einen Anfrage).
+    source = (request.args.get("utm_source") or "").strip()[:120]
+    medium = (request.args.get("utm_medium") or "").strip()[:60]
+    campaign = (request.args.get("utm_campaign") or "").strip()[:160]
+    referrer = (request.referrer or "").strip()[:512]
+
+    msg = ContactMessage(
+        name=name, email=email, message=stored_message,
+        source=source, medium=medium, campaign=campaign, referrer=referrer,
+    )
     db.session.add(msg)
     db.session.commit()
 

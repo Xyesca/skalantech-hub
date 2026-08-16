@@ -141,12 +141,123 @@ ARTICLES = {
         "related_service": "lokale-ki",
         "cta_text": "KI-Architektur für Ihr Unternehmen klären",
     },
+    "n8n-vs-power-automate": {
+        "title": "n8n vs. Power Automate für Unternehmen: Der ehrliche Vergleich",
+        "description": "n8n oder Power Automate? Vergleich von Kosten, Self-Hosting, KI-Integration, Datenschutz und Betrieb – und welche Plattform für welchen Use-Case passt.",
+        "h1": "n8n vs. Power Automate: Welche Automatisierungsplattform passt zu Ihrem Unternehmen?",
+        "intro": (
+            "Beide Plattformen lösen dasselbe Grundproblem: Sie verbinden Anwendungen und automatisieren Abläufe. "
+            "Die Unterschiede liegen im Detail – bei Kostenmodell, Datenkontrolle, KI-Integration und Betriebsaufwand. "
+            "Dieser Artikel vergleicht ehrlich, damit die Entscheidung auf Fakten statt Bauchgefühl basiert."
+        ),
+        "sections": [
+            {
+                "heading": "Die Grundidee beider Plattformen",
+                "paragraphs": [
+                    "Power Automate ist Microsofts Automatisierungsplattform – eng verzahnt mit Microsoft 365, SharePoint, Teams und Dynamics. Wer bereits tief im Microsoft-Ökosystem steckt, kommt damit schnell zu Ergebnissen, weil die Konnektoren und Berechtigungen vorhanden sind.",
+                    "n8n ist eine quelloffene Workflow-Plattform, die als Cloud-Dienst oder selbst gehostet betrieben werden kann. Der visuelle Editor arbeitet mit Nodes, die per Drag-and-drop verbunden werden. Die Stärke von n8n liegt in der Flexibilität: eigene Konnektoren, Webhooks und die volle Kontrolle über den Betrieb.",
+                ],
+            },
+            {
+                "heading": "Kosten: Das größte Missverständnis",
+                "paragraphs": [
+                    "Power Automate klingt oft kostenlos, weil es im Microsoft-365-Abonnement enthalten ist – tatsächlich gilt das nur für eine eingeschränkte Basisversion. Sobald Premium-Konnektoren, höhere Ausführungslimits oder Policies ins Spiel kommen, entstehen pro Benutzer oder pro Ausführung Kosten, die mit dem Umfang der Automatisierung wachsen.",
+                    "n8n ist in der quelloffenen Community-Version lizenzkostenfrei. Die Kosten bestehen aus Infrastruktur (bei Self-Hosting ein kleiner Server) und Umsetzung. Gerade bei vielen Workflows mit hohem Volumen ist n8n über die Zeit deutlich planbarer.",
+                ],
+            },
+            {
+                "heading": "Datenschutz und Datenkontrolle",
+                "paragraphs": [
+                    "Der wichtigste Unterschied: n8n lässt sich vollständig selbst hosten. Workflow-Daten, Zwischenschritte und Protokolle bleiben dann in der eigenen Infrastruktur – für viele Unternehmen mit sensiblen Daten der entscheidende Punkt.",
+                    "Power Automate läuft in der Microsoft-Cloud. Für Unternehmen im Microsoft-365-Ökosystem ist das oft vertraglich sauber geregelt, aber die Daten verlassen die eigene Umgebung. Bei strengen Compliance-Anforderungen kann das ein Ausschlusskriterium sein.",
+                ],
+            },
+            {
+                "heading": "KI-Integration: Wo die Plattformen heute stehen",
+                "paragraphs": [
+                    "Beide Plattformen können KI-Schritte einbinden. Power Automate bietet mit Copilot und vorgefertigten KI-Konnektoren einen bequemen Weg für Microsoft-Nutzer – allerdings meist innerhalb des Microsoft-Universums.",
+                    "n8n ist offener: LLM-Nodes erlauben die Anbindung beliebiger Modelle – OpenAI, Anthropic, aber auch selbst gehostete Modelle über Ollama. Wer lokale oder hybride KI-Lösungen plant, hat mit n8n mehr Freiheit.",
+                ],
+            },
+            {
+                "heading": "Für wen lohnt sich welche Plattform?",
+                "paragraphs": [
+                    "Power Automate ist die pragmatische Wahl, wenn das Unternehmen vollständig auf Microsoft 365 setzt, die Teams dort arbeiten und keine Datenkontrolle außerhalb der Cloud gefordert ist. Die Einarbeitung ist flach, die Integration in Teams/SharePoint out-of-the-box.",
+                    "n8n lohnt sich, wenn heterogene Systeme verbunden werden müssen, Kosten skalierbar bleiben sollen, KI flexibel eingebunden wird oder Datenschutz Self-Hosting erfordert. Der Betrieb erfordert etwas mehr technische Verantwortung – genau dort unterstützt Skalantech.",
+                    "Ein hybrider Ansatz ist üblich und legitim: Microsoft-interne Abläufe per Power Automate, unternehmenskritische und KI-lastige Workflows per n8n.",
+                ],
+            },
+        ],
+        "related_service": "n8n-automatisierung",
+        "cta_text": "n8n-Automatisierung besprechen",
+    },
+    "welche-prozesse-ki-automatisierung": {
+        "title": "Welche Prozesse eignen sich für KI-Automatisierung? Ein Prüfschema",
+        "description": "Nicht jeder Prozess braucht KI. Mit einem klaren Prüfschema erkennen Sie, welche Abläufe sich für KI-Automatisierung lohnen – und welche besser manuell bleiben.",
+        "h1": "Welche Prozesse eignen sich für KI-Automatisierung?",
+        "intro": (
+            "KI-Automatisierung verspricht weniger manuelle Arbeit – aber nicht jeder Prozess eignet sich dafür. "
+            "Wer wahllos automatisiert, schafft Wartungsaufwand statt Wert. Dieses Prüfschema hilft, die richtigen Kandidaten zu erkennen."
+        ),
+        "sections": [
+            {
+                "heading": "Das Grundprinzip: Regelmäßigkeit plus klare Regeln",
+                "paragraphs": [
+                    "Der ideale Automatisierungskandidat ist ein Prozess, der regelmäßig vorkommt, klare Schritte hat und dessen Ergebnis erwartbar ist. Je häufiger ein Ablauf läuft und je klarer die Regeln sind, desto höher der Nutzen.",
+                    "KI kommt dort ins Spiel, wo Regeln allein nicht reichen: wenn unstrukturierte Daten (Texte, E-Mails, Dokumente) verstanden werden müssen. Reine Datenübertragung braucht keine KI – nur saubere Integration.",
+                ],
+            },
+            {
+                "heading": "Vier Fragen, die jeder Prozess beantworten muss",
+                "paragraphs": [
+                    "Bevor ein Prozess automatisiert wird, sollten vier Fragen beantwortet sein:",
+                ],
+                "list": [
+                    "Wie oft läuft der Ablauf? – Einmal im Monat lohnt selten; täglich oder stündlich fast immer.",
+                    "Wie viel Zeit kostet er manuell? – Ab etwa einer Stunde pro Woche wird Automatisierung wirtschaftlich interessant.",
+                    "Sind die Regeln klar? – Ja: klassische Integration. Teilweise: KI kann die Lücke füllen. Gar nicht: erst Prozess stabilisieren.",
+                    "Was passiert bei Fehlern? – Automatisierung braucht definierte Fehlerpfade, sonst entsteht stille Datenkorruption.",
+                ],
+            },
+            {
+                "heading": "Klassiker, die sich fast immer lohnen",
+                "paragraphs": [
+                    "In der Praxis dominieren einige wiederkehrende Muster:",
+                ],
+                "list": [
+                    "Datenübertragung zwischen Systemen (CRM, ERP, Tabellen, Dateiablagen) – regelbasiert, hoher Zeitfresser.",
+                    "Eingangsverarbeitung: Rechnungen, Belege, Bestellungen erfassen und prüfen – dank OCR/KI auch bei unstrukturierten Dokumenten.",
+                    "Berichtserstellung: Kennzahlen aus mehreren Quellen sammeln und aufbereiten – ersetzt tägliche Copy-Paste-Arbeit.",
+                    "E-Mail-Klassifizierung und -Routing: Anfragen erkennen, priorisieren, weiterleiten – idealer KI-Einsatz.",
+                    "Dokumentation: Aus Meetings und Notizen strukturierte Unterlagen erzeugen – spart Fachkräftezeit.",
+                ],
+            },
+            {
+                "heading": "Wo Automatisierung (noch) nicht funktioniert",
+                "paragraphs": [
+                    "Nicht geeignet sind Prozesse mit hohem Ermessensspielraum, fehlenden Daten oder stark schwankender Qualität. Wenn das Ergebnis von Verhandlung, Gefühl oder Menschenkenntnis abhängt, bleibt die Automatisierung auf Vorbereitung beschränkt.",
+                    "Auch Prozesse, die sich ständig ändern, sind schwierige Kandidaten: Jede Änderung bedeutet Wartung. Die Regel lautet: erst stabilisieren, dann automatisieren.",
+                ],
+            },
+            {
+                "heading": "Der pragmatische Einstieg",
+                "paragraphs": [
+                    "Statt einer großen Automatisierungsstrategie lohnt der Start mit einem einzelnen Prozess: Zeitaufwand messen, Ablauf dokumentieren, Lösung bauen, Ergebnis kontrollieren. Sobald ein Workflow im Alltag trägt, wird das nächste Kandidatenschema durchlaufen.",
+                    "Wichtig ist die Erfolgsmessung: Wie viele Stunden spart die Automatisierung wirklich? Nur messbare Ergebnisse rechtfertigen den nächsten Schritt – und machen den Unterschied zwischen Automatisierung als Projekt und Automatisierung als Prozess.",
+                ],
+            },
+        ],
+        "related_service": "ki-automatisierung",
+        "cta_text": "KI-Potenzial in Ihren Prozessen prüfen",
+    },
 }
 
 ARTICLE_ORDER = [
     "was-ist-ein-ki-agent",
     "n8n-selbst-hosten",
     "lokale-ki-vs-cloud-ki",
+    "n8n-vs-power-automate",
+    "welche-prozesse-ki-automatisierung",
 ]
 
 # Publikationsdatum (Tag des Deployments der Wissensstruktur)
