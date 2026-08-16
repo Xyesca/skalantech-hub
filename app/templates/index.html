@@ -5,6 +5,47 @@
 {% block og_title %}Skalantech · Stabile IT. Weniger Handarbeit. Mehr Wirkung.{% endblock %}
 {% block og_description %}IT-Infrastruktur, Cloud Engineering, Prozessautomatisierung und produktive KI-Agenten aus einer Hand.{% endblock %}
 
+{% block head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "FAQPage",
+      "@id": "https://skalantech.store/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Für welche Unternehmen passt Skalantech?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Für kleine und mittelständische Unternehmen sowie Teams, die ihre IT modernisieren, Abläufe automatisieren oder KI kontrolliert einsetzen möchten – ohne sofort ein großes internes Spezialistenteam aufzubauen." }
+        },
+        {
+          "@type": "Question",
+          "name": "Übernimmst du auch bestehende, gewachsene Umgebungen?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Gerade bei heterogenen Bestandsumgebungen starte ich mit einer strukturierten Aufnahme, identifiziere Risiken und entwickle einen realistischen Migrations- oder Verbesserungsplan." }
+        },
+        {
+          "@type": "Question",
+          "name": "Ist Self-Hosting möglich?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Open-Source- und Self-Hosting-Optionen werden bevorzugt geprüft, wenn sie fachlich und wirtschaftlich sinnvoll sind. Cloud-Dienste sind kein Selbstzweck." }
+        },
+        {
+          "@type": "Question",
+          "name": "Kannst du von der Idee bis zum Betrieb begleiten?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Die Zusammenarbeit kann Analyse, Architektur, Implementierung, Tests, Dokumentation, Übergabe und auf Wunsch die laufende technische Begleitung umfassen." }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie startet ein Projekt?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Mit einer kurzen Beschreibung Ihrer Ausgangslage und des gewünschten Ergebnisses. Danach klären wir, ob ein kompakter System-Check oder direkt ein abgegrenztes Umsetzungsprojekt sinnvoll ist." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
 {% block body %}
 {% set project_alts = {
   'DeepDive': 'DeepDive verarbeitet Video zu Transkript, KI-Analyse, Dokument und Audio',
@@ -202,6 +243,7 @@
             <li>Sichere Systemintegration</li>
           </ul>
           <a href="#contact" data-service-choice="Infrastruktur & Cloud">Infrastruktur besprechen <span aria-hidden="true">↗</span></a>
+          <a class="service-card__detail" href="{{ url_for('public.landing_it_infrastruktur') }}">Mehr zur Leistung: IT-Infrastruktur <span aria-hidden="true">→</span></a>
         </article>
 
         <article class="service-card" data-reveal>
@@ -234,6 +276,7 @@
             <li>LLM-Integration</li>
           </ul>
           <a href="#contact" data-service-choice="Prozessautomatisierung">Workflow prüfen <span aria-hidden="true">↗</span></a>
+          <a class="service-card__detail" href="{{ url_for('public.landing_ki_automatisierung') }}">Mehr zur Leistung: KI-Automatisierung <span aria-hidden="true">→</span></a>
         </article>
 
         <article class="service-card" data-reveal>
@@ -268,6 +311,7 @@
             <li>Bewertung von Aufwand und Nutzen</li>
           </ul>
           <a href="#contact" data-service-choice="KI-Agenten & RAG">KI-Use-Case einordnen <span aria-hidden="true">↗</span></a>
+          <a class="service-card__detail" href="{{ url_for('public.landing_ki_integration') }}">Mehr zur Leistung: KI-Integration <span aria-hidden="true">→</span></a>
         </article>
       </div>
     </div>

@@ -3,7 +3,7 @@ import mimetypes
 import os
 import secrets
 
-from flask import Flask, flash, redirect, request, url_for
+from flask import Flask, flash, redirect, render_template, request, url_for
 from markupsafe import Markup
 from flask_wtf.csrf import CSRFError
 
@@ -58,6 +58,11 @@ def create_app(config_name: str | None = None) -> Flask:
     def handle_csrf_error(e: CSRFError):
         flash("Sitzung abgelaufen. Bitte Seite neu laden.", "error")
         return redirect(request.referrer or url_for("public.index")), 400
+
+    # ── 404 error handler (SEO: echte 404s mit Auswegen statt toten Seiten) ─
+    @app.errorhandler(404)
+    def handle_404(e):
+        return render_template("404.html"), 404
 
     # ── Template globals ──────────────────────────────────────────────────
     @app.template_global()

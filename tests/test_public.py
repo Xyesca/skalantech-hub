@@ -149,6 +149,127 @@ class PublicSiteTests(unittest.TestCase):
 
         self.assertIn("script-src 'self'", response.headers["Content-Security-Policy"])
 
+    # ── SEO: Landingpages, Wissen, Sitemap, robots, 404 ──────────────────
+
+    def test_seo_landing_pages_render(self):
+        for path in (
+            "/it-infrastruktur",
+            "/ki-integration",
+            "/ki-automatisierung",
+            "/ki-agenten",
+            "/n8n-automatisierung",
+            "/lokale-ki",
+            "/wissen",
+            "/wissen/was-ist-ein-ki-agent",
+            "/wissen/n8n-selbst-hosten",
+            "/wissen/lokale-ki-vs-cloud-ki",
+        ):
+            with self.subTest(path=path):
+                response = self.client.get(path, buffered=True)
+                try:
+                    self.assertEqual(response.status_code, 200)
+                finally:
+                    response.close()
+
+    def test_landing_page_seo_structure(self):
+        response = self.client.get("/ki-agenten")
+        html = response.get_data(as_text=True)
+
+        self.assertIn('<h1>KI-Agenten, die Aufgaben wirklich erledigen.</h1>', html)
+        self.assertIn('<link rel="canonical" href="https://skalantech.store/ki-agenten">', html)
+        self.assertIn('og:url', html)
+        # Strukturierte Daten: Service, BreadcrumbList, FAQPage
+        self.assertIn('"@type": "Service"', html)
+        self.assertIn('"@type": "BreadcrumbList"', html)
+        self.assertIn('"@type": "FAQPage"', html)
+        # CTA zur Terminbuchung
+        self.assertIn('#termin', html)
+
+    def test_landing_pages_are_not_duplicate_content(self):
+        """Jede Landingpage hat eigene H1 + unique Description."""
+        titles = []
+        descriptions = []
+        for slug in ("it-infrastruktur", "ki-integration", "ki-automatisierung", "ki-agenten", "n8n-automatisierung", "lokale-ki"):
+            response = self.client.get(f"/{slug}")
+            html = response.get_data(as_text=True)
+            import re
+            h1 = re.search(r"<h1>(.*?)</h1>", html, re.S)
+            desc = re.search(r'<meta name="description" content="([^"]*)"', html)
+            self.assertIsNotNone(h1, f"H1 fehlt auf /{slug}")
+            self.assertIsNotNone(desc, f"Description fehlt auf /{slug}")
+            titles.append(h1.group(1).strip())
+            descriptions.append(desc.group(1))
+        self.assertEqual(len(set(titles)), 6, "H1s der Landingpages müssen eindeutig sein")
+        self.assertEqual(len(set(descriptions)), 6, "Descriptions der Landingpages müssen eindeutig sein")
+
+    def test_sitemap_lists_all_indexable_pages(self):
+        response = self.client.get("/sitemap.xml")
+        body = response.get_data(as_text=True)
+
+        for path in (
+            "/",
+            "/it-infrastruktur",
+            "/ki-integration",
+            "/ki-automatisierung",
+            "/ki-agenten",
+            "/n8n-automatisierung",
+            "/lokale-ki",
+            "/wissen",
+            "/wissen/was-ist-ein-ki-agent",
+            "/wissen/n8n-selbst-hosten",
+            "/wissen/lokale-ki-vs-cloud-ki",
+            "/faq",
+        ):
+            self.assertIn(f"https://skalantech.store{path}</loc>", body)
+
+        # Keine nicht-indexierbaren Routen in der Sitemap
+        for blocked in ("/admin", "/login", "/impressum", "/datenschutz", "/agb", "/test-footer"):
+            self.assertNotIn(f"<loc>https://skalantech.store{blocked}</loc>", body)
+
+    def test_robots_txt_disallows_private_routes(self):
+        response = self.client.get("/robots.txt")
+        body = response.get_data(as_text=True)
+
+        self.assertIn("Disallow: /admin", body)
+        self.assertIn("Disallow: /login", body)
+        self.assertIn("Disallow: /auth", body)
+        self.assertIn("Disallow: /test-footer", body)
+        self.assertIn("Sitemap: https://skalantech.store/sitemap.xml", body)
+
+    def test_custom_404_page(self):
+        response = self.client.get("/gibt-es-nicht")
+        self.assertEqual(response.status_code, 404)
+        html = response.get_data(as_text=True)
+        self.assertIn("Diese Seite gibt es nicht.", html)
+        self.assertIn('noindex', html)
+
+    def test_unknown_article_and_landing_slug_404(self):
+        self.assertEqual(self.client.get("/wissen/gibt-es-nicht").status_code, 404)
+        self.assertEqual(self.client.get("/wissen/../gibt-es-nicht").status_code, 404)
+
+    def test_removed_test_footer_route_404(self):
+        self.assertEqual(self.client.get("/test-footer").status_code, 404)
+
+    def test_faq_page_has_faq_schema(self):
+        response = self.client.get("/faq")
+        html = response.get_data(as_text=True)
+        self.assertIn('"@type": "FAQPage"', html)
+
+    def test_homepage_has_faq_schema_and_landing_links(self):
+        response = self.client.get("/")
+        html = response.get_data(as_text=True)
+        self.assertIn('"@type": "FAQPage"', html)
+        self.assertIn("/ki-automatisierung", html)
+        self.assertIn("/it-infrastruktur", html)
+        self.assertIn("/ki-integration", html)
+
+    def test_article_has_article_schema_and_related_cta(self):
+        response = self.client.get("/wissen/n8n-selbst-hosten")
+        html = response.get_data(as_text=True)
+        self.assertIn('"@type": "Article"', html)
+        self.assertIn('"@type": "BreadcrumbList"', html)
+        self.assertIn("n8n-Automatisierung im Überblick", html)
+
 
 if __name__ == "__main__":
     unittest.main()

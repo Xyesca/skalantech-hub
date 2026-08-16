@@ -22,10 +22,12 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Skalantech Systemvisual für Infrastruktur, Automation und KI">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block twitter_title %}Skalantech · Stabile IT. Weniger Handarbeit. Mehr Wirkung.{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}IT-Infrastruktur, Cloud Engineering, Prozessautomatisierung und produktive KI-Agenten aus einer Hand.{% endblock %}">
   <meta name="twitter:image" content="https://skalantech.store/static/img/skalantech-og.jpg">
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=12">
-  <script src="{{ url_for('static', filename='js/main.js') }}?v=12" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=13">
+  <script src="{{ url_for('static', filename='js/main.js') }}?v=13" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -132,9 +134,12 @@
         <div class="footer-nav">
           <div>
             <p class="footer-nav__title">Leistungen</p>
-            <a href="{{ url_for('public.index') }}#services">Infrastruktur & Cloud</a>
-            <a href="{{ url_for('public.index') }}#services">Automation & KI</a>
-            <a href="{{ url_for('public.index') }}#process">Zusammenarbeit</a>
+            <a href="{{ url_for('public.landing_it_infrastruktur') }}">IT-Infrastruktur</a>
+            <a href="{{ url_for('public.landing_ki_integration') }}">KI-Integration</a>
+            <a href="{{ url_for('public.landing_ki_automatisierung') }}">KI-Automatisierung</a>
+            <a href="{{ url_for('public.landing_ki_agenten') }}">KI-Agenten</a>
+            <a href="{{ url_for('public.landing_n8n_automatisierung') }}">n8n-Automatisierung</a>
+            <a href="{{ url_for('public.landing_lokale_ki') }}">Lokale KI</a>
           </div>
           <div>
             <p class="footer-nav__title">Kontakt</p>

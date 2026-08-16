@@ -1,8 +1,4 @@
-# Sitemap Struktur für skalantech.store
+# Sitemap-Struktur
 
-- https://skalantech.store/ (priority: 1.0, changefreq: weekly)
-- https://skalantech.store/#uber-mich (priority: 0.8, changefreq: monthly)
-- https://skalantech.store/#projekte (priority: 0.8, changefreq: weekly)
-- https://skalantech.store/#skills (priority: 0.7, changefreq: monthly)
-- https://skalantech.store/#kontakt (priority: 0.6, changefreq: monthly)
-- https://skalantech.store/login (priority: 0.3, changefreq: monthly, noindex)
+Veraltet — Inhalt wurde in [SEO_CONTENT.md](SEO_CONTENT.md) übernommen.
+Die Sitemap wird dynamisch in `app/blueprints/public.py` generiert.

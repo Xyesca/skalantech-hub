@@ -6,14 +6,37 @@ import time
 from email.mime.text import MIMEText
 from urllib import request as urlrequest
 
-from flask import Blueprint, render_template, send_from_directory, current_app, request, flash, redirect, url_for, jsonify, Response
+from flask import Blueprint, render_template, send_from_directory, current_app, request, flash, redirect, url_for, jsonify, Response, abort
 from app.models import Settings, Link, Project, ContactMessage
 from app.extensions import db
+from app.seo_pages import LANDING_PAGES, LANDING_ORDER
+from app.wissen import ARTICLES, ARTICLE_ORDER, ARTICLE_PUBLISHED
 
 public_bp = Blueprint("public", __name__)
 
 # ── n8n-Terminwebhook (intern, Tailscale) ─────────────────────────────
 N8N_WEBHOOK_URL = os.environ.get("N8N_WEBHOOK_URL", "http://127.0.0.1:5678/webhook/skalantech-termin")
+
+# ── SEO: indexierbare Seiten für Sitemap & robots ──────────────────────
+SITE_URL = "https://skalantech.store"
+
+SITEMAP_PAGES = [
+    {"loc": "/", "priority": "1.0"},
+    *[{"loc": f"/{slug}", "priority": "0.8"} for slug in LANDING_ORDER],
+    {"loc": "/wissen", "priority": "0.7"},
+    *[{"loc": f"/wissen/{slug}", "priority": "0.7"} for slug in ARTICLE_ORDER],
+    {"loc": "/faq", "priority": "0.6"},
+]
+
+ROBOTS_TXT = f"""User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /auth
+Disallow: /test-footer
+
+Sitemap: {SITE_URL}/sitemap.xml
+"""
 
 
 def _forward_to_n8n(name, email, company, topic, message, preferred_day, preferred_time):
@@ -135,20 +158,100 @@ def index():
     return render_template("index.html", settings=settings, links=links, projects=projects, today=today, max_booking_day=max_booking_day)
 
 
+# ── SEO Landingpages (eine View, mehrere explizite Routen) ────────────────
+def _landing_map():
+    """Landing-Daten + fertige URLs für Templates."""
+    return {
+        s: {**p, "slug": s, "url": url_for(f"public.landing_{s.replace('-', '_')}")}
+        for s, p in LANDING_PAGES.items()
+    }
+
+
+def _render_landing(slug: str):
+    """Render a SEO landing page from seo_pages.py."""
+    if slug not in LANDING_PAGES:
+        abort(404)
+    page = LANDING_PAGES[slug]
+    page = {**page, "slug": slug, "url": url_for(f"public.landing_{slug.replace('-', '_')}")}
+    return render_template(
+        "landing.html",
+        landing_page=page,
+        landing_map=_landing_map(),
+    )
+
+
+@public_bp.route("/it-infrastruktur")
+def landing_it_infrastruktur():
+    return _render_landing("it-infrastruktur")
+
+
+@public_bp.route("/ki-integration")
+def landing_ki_integration():
+    return _render_landing("ki-integration")
+
+
+@public_bp.route("/ki-automatisierung")
+def landing_ki_automatisierung():
+    return _render_landing("ki-automatisierung")
+
+
+@public_bp.route("/ki-agenten")
+def landing_ki_agenten():
+    return _render_landing("ki-agenten")
+
+
+@public_bp.route("/n8n-automatisierung")
+def landing_n8n_automatisierung():
+    return _render_landing("n8n-automatisierung")
+
+
+@public_bp.route("/lokale-ki")
+def landing_lokale_ki():
+    return _render_landing("lokale-ki")
+
+
+# ── Wissensstruktur ────────────────────────────────────────────────────
+@public_bp.route("/wissen")
+def wissen():
+    return render_template(
+        "wissen.html",
+        article_map=ARTICLES,
+        article_order=ARTICLE_ORDER,
+        article_published=ARTICLE_PUBLISHED,
+        landing_map=_landing_map(),
+    )
+
+
+@public_bp.route("/wissen/<slug>")
+def article(slug: str):
+    if slug not in ARTICLES:
+        abort(404)
+    article_data = {**ARTICLES[slug], "slug": slug}
+    return render_template(
+        "article.html",
+        article_data=article_data,
+        article_published=ARTICLE_PUBLISHED,
+        landing_map=_landing_map(),
+    )
+
+
 @public_bp.route("/robots.txt")
 def robots_txt():
     """Serve crawler instructions from the canonical application route."""
-    content = "User-agent: *\nAllow: /\n\nSitemap: https://skalantech.store/sitemap.xml\n"
-    return Response(content, mimetype="text/plain")
+    return Response(ROBOTS_TXT, mimetype="text/plain")
 
 
 @public_bp.route("/sitemap.xml")
 def sitemap_xml():
-    """Small, explicit sitemap for indexable public pages."""
-    content = """<?xml version="1.0" encoding="UTF-8"?>
+    """Sitemap generated from the explicit indexable-pages list."""
+    today = time.strftime("%Y-%m-%d")
+    urls = "\n".join(
+        f'  <url><loc>{SITE_URL}{p["loc"]}</loc><lastmod>{today}</lastmod><priority>{p["priority"]}</priority></url>'
+        for p in SITEMAP_PAGES
+    )
+    content = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://skalantech.store/</loc><priority>1.0</priority></url>
-  <url><loc>https://skalantech.store/faq</loc><priority>0.6</priority></url>
+{urls}
 </urlset>
 """
     return Response(content, mimetype="application/xml")
@@ -174,11 +277,6 @@ def agb():
 def faq():
     settings = Settings.get()
     return render_template("legal/faq.html", settings=settings)
-
-@public_bp.route("/test-footer")
-def test_footer():
-    """Minimale Testseite nur für Footer-Diagnose."""
-    return render_template("test-footer.html")
 
 @public_bp.route("/contact", methods=["POST"])
 def contact():

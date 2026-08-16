@@ -6,6 +6,52 @@
 {% block og_url %}https://skalantech.store/faq{% endblock %}
 {% block body_class %}page-legal{% endblock %}
 
+{% block head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "FAQPage",
+      "@id": "https://skalantech.store/faq#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Welche Themen übernimmt Skalantech?",
+          "acceptedAnswer": { "@type": "Answer", "text": "IT-Infrastruktur und Cloud, Plattform- und Systemmigrationen, Prozessautomatisierung, produktive KI-Agenten sowie der verlässliche Betrieb mit Monitoring, Backups und Dokumentation." }
+        },
+        {
+          "@type": "Question",
+          "name": "Kannst du bestehende Systeme übernehmen?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Gewachsene Umgebungen werden zuerst strukturiert aufgenommen. Darauf basierend entsteht ein realistischer Plan für Stabilisierung, Migration oder schrittweise Modernisierung." }
+        },
+        {
+          "@type": "Question",
+          "name": "Arbeitest du remote?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Projekte sind remote in Deutschland und im DACH-Raum möglich. Für geeignete Termine und Projektphasen ist auch Zusammenarbeit vor Ort nach Absprache möglich." }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie beginnt ein Projekt?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Mit einer kurzen Beschreibung der Ausgangslage und des gewünschten Ergebnisses. Danach klären wir, ob ein System-Check, ein abgegrenztes Delivery-Projekt oder eine laufende Begleitung am sinnvollsten ist." }
+        },
+        {
+          "@type": "Question",
+          "name": "Ist Self-Hosting möglich?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Open-Source- und Self-Hosting-Optionen werden bevorzugt geprüft, wenn sie zu Anforderungen, Budget und Betrieb passen. Cloud-Dienste werden gezielt statt reflexartig eingesetzt." }
+        },
+        {
+          "@type": "Question",
+          "name": "Welche Technologien setzt du ein?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Unter anderem Microsoft 365, Azure, VMware, Hyper-V, Linux, Docker, n8n, Python, PowerShell sowie moderne Agenten-, RAG- und LLM-Architekturen." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
 {% block body %}
 <main class="legal-page" id="main-content">
   <div class="shell">
