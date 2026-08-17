@@ -1,10 +1,16 @@
 # Google Search Console Verification für skalantech.store
 
-> ⚠️ **WICHTIG:** Der untenstehende Verifikationswert ist ein **PLATZHALTER**
-> (Beispiel-String). Du musst den **echten** Verifikationscode direkt aus der
-> Google Search Console übernehmen — sonst schlägt die Verifikation fehl.
+## Status: TXT-Record gesetzt & propagiert (2026-08-17)
 
-## Schritt für Schritt
+Der TXT-Record `google-site-verification=gly9Ag9wNe6cRlpyQrLC-P740gHuou5p5FMhTJfOFaY`
+wurde bei IONOS gesetzt und ist über öffentliche DNS-Server (8.8.8.8, 1.1.1.1) sichtbar.
+Nächster Schritt in GSC: **„Verifizieren"** klicken → danach Sitemap
+`https://skalantech.store/sitemap.xml` unter **Sitemaps** einreichen.
+
+> Hinweis: Der Verifikationswert ist ein Domain-Verifikations-Token (kein Zugangs-Secret)
+> und steht öffentlich im DNS. Er dient nur der Inhaberschafts-Bestätigung gegenüber Google.
+
+## Ersteinrichtung (falls noch nicht durchgeführt)
 
 1. Öffne https://search.google.com/search-console
 2. Wähle als Property-Typ **"Domain"** und gib `skalantech.store` ein.
