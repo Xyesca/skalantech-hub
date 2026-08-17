@@ -28,18 +28,23 @@ with app.app_context():
     )
 
     links = [
-        ("DeepDive", "https://deepdive.skalantech.store", "app", 0),
-        ("n8n", "https://n8n.skalantech.store", "app", 1),
-        ("Dashboard", "https://dashboard.skalantech.store", "app", 2),
-        ("Workspace", "https://workspace.skalantech.store", "app", 3),
-        ("GitHub", "https://github.com/Xyesca", "github", 10),
+        # Interne Tailscale-Apps (DeepDive, n8n, Dashboard, Workspace) sind
+        # bewusst NICHT öffentlich -> visible=False. Nur GitHub ist öffentlich.
+        ("DeepDive", "https://deepdive.skalantech.store", "app", 0, False),
+        ("n8n", "https://n8n.skalantech.store", "app", 1, False),
+        ("Dashboard", "https://dashboard.skalantech.store", "app", 2, False),
+        ("Workspace", "https://workspace.skalantech.store", "app", 3, False),
+        ("GitHub", "https://github.com/Xyesca", "github", 10, True),
     ]
-    for label, url, platform, pos in links:
-        if not Link.query.filter_by(url=url).first():
-            db.session.add(Link(label=label, url=url, platform=platform, position=pos, visible=True))
+    for label, url, platform, pos, vis in links:
+        existing = Link.query.filter_by(url=url).first()
+        if existing:
+            existing.visible = vis
+        else:
+            db.session.add(Link(label=label, url=url, platform=platform, position=pos, visible=vis))
 
     projects = [
-        ("DeepDive", "YouTube zu KI-Analyse in Sekunden. Transkribieren, zusammenfassen, exportieren.", "https://deepdive.skalantech.store", 0),
+        ("DeepDive", "YouTube zu KI-Analyse in Sekunden. Transkribieren, zusammenfassen, exportieren.", "https://github.com/Xyesca/deepdive", 0),
         ("DebtPilot AI", "Self-hosted KI-Plattform mit lokalen Modellen, RAG-Dokumentenanalyse und modularer Architektur.", "", 1),
         ("AI Job Agent", "Sucht Stellenangebote, analysiert Anforderungen und erstellt automatisch personalisierte Bewerbungen mit KI.", "", 2),
     ]
