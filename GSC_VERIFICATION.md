@@ -1,16 +1,23 @@
 # Google Search Console Verification für skalantech.store
 
-## Status: TXT-Record gesetzt & propagiert (2026-08-17)
+## Status: KOMPLETT EINGERICHTET (2026-08-17)
 
-Der TXT-Record `google-site-verification=gly9Ag9wNe6cRlpyQrLC-P740gHuou5p5FMhTJfOFaY`
-wurde bei IONOS gesetzt und ist über öffentliche DNS-Server (8.8.8.8, 1.1.1.1) sichtbar.
-Nächster Schritt in GSC: **„Verifizieren"** klicken → danach Sitemap
-`https://skalantech.store/sitemap.xml` unter **Sitemaps** einreichen.
+1. ✅ Domain-Property `sc-domain:skalantech.store` verifiziert (DNS-TXT)
+2. ✅ Service Account `gsc-reader@skalantech-seo.iam.gserviceaccount.com` mit vollem Zugriff (API-Zugang für Hermes)
+   - Key: `/root/.hermes/gsc_service_account.json` (chmod 600, NIE committen)
+   - Python-venv: `/root/.venvs/gsc/` (google-auth)
+3. ✅ Sitemap `https://skalantech.store/sitemap.xml` per API eingereicht (Status 204) und von Google verarbeitet: 14 URLs, keine Fehler
+4. ✅ URL-Inspektion für alle 14 indexierbaren Seiten angestoßen (per API)
+5. ✅ Baseline unter `/root/.hermes/data/seo/gsc_YYYYMMDD.json` — Startwert 0 Daten (Property frisch)
+6. ✅ Wochenreport-Cron (Sonntag 9 Uhr) nutzt echte GSC-Daten via `gsc_report.py`
 
-> Hinweis: Der Verifikationswert ist ein Domain-Verifikations-Token (kein Zugangs-Secret)
-> und steht öffentlich im DNS. Er dient nur der Inhaberschafts-Bestätigung gegenüber Google.
+## Skripte (VPS)
+- `/root/.hermes/scripts/gsc_report.py` — Baseline/Report (Search Analytics, Sitemaps, Inspection)
+- `/root/.hermes/scripts/gsc_inspect.py` — URL-Inspektion aller Hauptseiten
+- `/root/.hermes/scripts/gsc_submit_sitemap.py` — Sitemap einreichen
+- Aufruf immer mit `/root/.venvs/gsc/bin/python`
 
-## Ersteinrichtung (falls noch nicht durchgeführt)
+## Ersteinrichtung (falls neu durchzuführen)
 
 1. Öffne https://search.google.com/search-console
 2. Wähle als Property-Typ **"Domain"** und gib `skalantech.store` ein.
