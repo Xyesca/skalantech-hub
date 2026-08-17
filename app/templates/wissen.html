@@ -47,7 +47,7 @@
       {% set article = article_map[slug] %}
       <article class="wissen-card" data-reveal>
         <div class="wissen-card__meta">
-          <span>{{ article_published }}</span>
+          <span>{{ article.published or article_published }}</span>
           {% if article.related_service in landing_map %}
           <span>{{ landing_map[article.related_service].nav_label }}</span>
           {% endif %}

@@ -22,7 +22,7 @@
       "headline": "{{ article.title }}",
       "description": "{{ article.description }}",
       "inLanguage": "de-DE",
-      "datePublished": "{{ article_published }}",
+      "datePublished": "{{ article.published or article_published }}",
       "author": { "@id": "https://skalantech.store/#xavier" },
       "publisher": { "@id": "https://skalantech.store/#business" },
       "mainEntityOfPage": "{{ article_url }}"
@@ -54,7 +54,7 @@
 
     <article class="article-page">
       <header class="article-page__header">
-        <p class="section-label">Wissensartikel · {{ article_published }}</p>
+        <p class="section-label">Wissensartikel · {{ article.published or article_published }}</p>
         <h1>{{ article.h1 }}</h1>
         <p class="article-page__intro">{{ article.intro }}</p>
       </header>

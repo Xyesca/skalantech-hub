@@ -250,6 +250,145 @@ ARTICLES = {
         "related_service": "ki-automatisierung",
         "cta_text": "KI-Potenzial in Ihren Prozessen prüfen",
     },
+    "rag-wissensassistenten": {
+        "title": "RAG und Wissensassistenten: So wird Unternehmenswissen nutzbar",
+        "description": "RAG erklärt: Wie Wissensassistenten mit Retrieval-Augmented Generation Fragen auf Basis Ihrer Dokumente beantworten – inklusive Grenzen und Datenschutz.",
+        "h1": "RAG und Wissensassistenten: So wird Unternehmenswissen nutzbar",
+        "intro": (
+            "Viele Unternehmen besitzen wertvolles Wissen in Handbüchern, Verträgen und internen Dokumenten – "
+            "aber niemand kann es systematisch nutzen. Wissensassistenten auf Basis von RAG versprechen Abhilfe. "
+            "Dieser Artikel erklärt, wie die Technik funktioniert, wo sie Grenzen hat und wie der Einstieg pragmatisch gelingt."
+        ),
+        "sections": [
+            {
+                "heading": "Das Grundproblem: Wissen liegt in Dokumenten, nicht in Köpfen",
+                "paragraphs": [
+                    "Generative KI-Modelle beantworten Fragen auf Basis ihres Trainingswissens – nicht auf Basis Ihrer Unterlagen. Wer ein internes Handbuch auswerten will, bekommt von einem allgemeinen Chatbot bestenfalls allgemeine Antworten, im schlimmsten Fall plausible Fehler.",
+                    "Die Lösung heißt RAG: Retrieval-Augmented Generation. Das Modell wird nicht neu trainiert, sondern bekommt vor der Antwort die relevanten Passagen aus Ihren eigenen Dokumenten als Kontext – und kann so präzise, belegbare Antworten liefern.",
+                ],
+            },
+            {
+                "heading": "Wie RAG funktioniert: Drei Schritte",
+                "paragraphs": [
+                    "RAG besteht technisch aus drei Komponenten:",
+                ],
+                "list": [
+                    "Indexierung: Dokumente werden in sinnvolle Abschnitte geteilt und in einer Vektordatenbank abgelegt – mit semantischen Embeddings, die Bedeutung statt nur Stichworte erfassen.",
+                    "Abruf (Retrieval): Bei einer Frage werden die passendsten Abschnitte per Ähnlichkeitssuche gefunden – meist nur wenige aus oft tausenden Dokumenten.",
+                    "Generierung: Das Sprachmodell bekommt die Frage plus die gefundenen Abschnitte und formuliert eine Antwort, die auf diesen Quellen basiert.",
+                ],
+            },
+            {
+                "heading": "Typische Einsatzfälle in Unternehmen",
+                "paragraphs": [
+                    "RAG lohnt sich überall dort, wo Fachwissen aus Dokumenten abgerufen werden muss:",
+                ],
+                "list": [
+                    "Interne Wissenssuche: Mitarbeiter fragen Richtlinien, Prozesse oder Standards ab, statt in Ordnern zu suchen.",
+                    "Support und Dokumentation: Kunden- oder Serviceteams bekommen Antworten aus Handbüchern und bekannten Fehlerlösungen.",
+                    "Vertrags- und Aktenprüfung: Relevante Klauseln, Fristen oder Risiken werden aus Verträgen extrahiert und zusammengefasst.",
+                    "Onboarding: Neue Mitarbeiter erhalten Antworten auf Basis der internen Doku – ohne jemanden zu unterbrechen.",
+                ],
+            },
+            {
+                "heading": "Was RAG nicht ist: Die ehrlichen Grenzen",
+                "paragraphs": [
+                    "RAG ist keine Fakten-Engine. Die Antwortqualität hängt direkt von der Qualität und Vollständigkeit der Dokumente ab – fehlt eine Information, kann das Modell sie nicht erfinden, aber es kann Lücken unsauber überbrücken. Deshalb gehören Quellenangaben und eine Freigabeschleife für kritische Antworten zum Design.",
+                    "Auch die Aufbereitung ist nicht trivial: Scans ohne Texterkennung, widersprüchliche Dokumente oder sehr lange, unstrukturierte Dateien senken die Qualität. Wer RAG einführt, sollte zuerst die Dokumentenqualität prüfen.",
+                ],
+            },
+            {
+                "heading": "Datenschutz: Lokal oder in der Cloud?",
+                "paragraphs": [
+                    "Der entscheidende Vorteil von RAG: Die Dokumente müssen das Unternehmen nicht verlassen. Bei einem selbst gehosteten Setup mit lokalen Modellen bleiben Index, Abruf und Generierung vollständig in der eigenen Infrastruktur.",
+                    "Für unkritische Inhalte kann auch eine Cloud-Variante mit vertraglicher Absicherung sinnvoll sein. Die Faustregel: Je sensibler die Dokumente, desto eher gehört das System nach innen.",
+                ],
+            },
+            {
+                "heading": "Der pragmatische Einstieg",
+                "paragraphs": [
+                    "RAG beginnt nicht mit der Technik, sondern mit einer konkreten Frage: Welches Dokumenten-Set beantwortet welche wiederkehrenden Fragen? Ein Pilot mit einer klar abgegrenzten Doku (z. B. ein Handbuch oder eine Richtlinien-Sammlung) zeigt schnell, ob Qualität und Nutzen stimmen.",
+                    "Wichtig ist die Erfolgsmessung: Beantwortet der Assistent typische Fragen korrekt? Werden Quellen angegeben? Erspart er messbar Zeit? Erst wenn ein Pilot trägt, lohnt der Ausbau auf weitere Wissensbereiche.",
+                ],
+            },
+        ],
+        "related_service": "ki-agenten",
+        "cta_text": "Wissensassistenten mit Ihren Daten prüfen",
+        "published": "2026-08-17",
+    },
+    "kosten-roi-ki-automatisierung": {
+        "title": "Kosten und ROI von KI-Automatisierung: Was sich wirklich lohnt",
+        "description": "KI-Automatisierung rechnet sich nicht immer. Mit einer ehrlichen Kosten-Nutzen-Rechnung erkennen Sie, welche Prozesse sich automatisieren lassen – und welche nicht.",
+        "h1": "Kosten und ROI von KI-Automatisierung: Was sich wirklich lohnt",
+        "intro": (
+            "Automatisierung kostet zuerst Zeit und Geld – Umsetzung, Betrieb, Wartung. "
+            "Wann rechnet sich das? Dieser Artikel liefert einen ehrlichen Rechenweg, "
+            "damit die Entscheidung auf Zahlen statt auf Hype basiert."
+        ),
+        "sections": [
+            {
+                "heading": "Die vier Kostenarten, die fast immer unterschätzt werden",
+                "paragraphs": [
+                    "Eine Automatisierung besteht aus mehr als dem Bau des Workflows. Vollständig gerechnet gehören dazu:",
+                ],
+                "list": [
+                    "Prozessanalyse: Den Ablauf verstehen, dokumentieren, Engpässe und Ausnahmen identifizieren – oft 20–30 Prozent des Gesamtaufwands.",
+                    "Umsetzung: Workflow bauen, Schnittstellen anbinden, Testen mit echten Daten.",
+                    "Betrieb: Monitoring, Fehlerbehebung, Updates und Anpassungen an veränderte Systeme – die Dauerlast.",
+                    "Lizenz- und Infrastrukturkosten: Plattformgebühren, Server, ggf. KI-API-Kosten pro Aufruf.",
+                ],
+            },
+            {
+                "heading": "Die Nutzenrechnung: Zeitersparnis und mehr",
+                "paragraphs": [
+                    "Der Kernnutzen ist fast immer Zeit. Wer die manuelle Arbeit in Stunden pro Woche kennt, kann rechnen: Stunden pro Woche mal Wochen pro Jahr mal Stundensatz ergibt den jährlichen Wert der Automatisierung.",
+                    "Daneben zählen: vermiedene Fehlerkosten (Übertragungsfehler, vergessene Schritte), schnellere Durchlaufzeiten (Kundenzufriedenheit) und Skaleneffekte (mehr Volumen ohne mehr Personal).",
+                ],
+            },
+            {
+                "heading": "Die Faustregel: Wann lohnt es sich?",
+                "paragraphs": [
+                    "Als Richtwert gilt: Ein Prozess, der mindestens eine Stunde pro Woche manuell kostet, regelmäßig läuft und stabile Regeln hat, ist ein ernsthafter Kandidat. Darunter übersteigt der Wartungsaufwand oft den Nutzen.",
+                    "Die drei Prüffragen vor jedem Projekt: Wie oft läuft der Prozess? Wie viel Zeit kostet er konkret? Bleiben die Regeln in den nächsten zwei Jahren stabil? Drei Ja-Antworten rechtfertigen die Rechnung.",
+                ],
+            },
+            {
+                "heading": "Die klassischen ROI-Fallen",
+                "paragraphs": [
+                    "Die häufigsten Fehler bei Automatisierungsprojekten:",
+                ],
+                "list": [
+                    "Instabile Prozesse automatisieren: Wer einen chaotischen Ablauf digitalisiert, automatisiert das Chaos – Wartung frisst den Nutzen.",
+                    "Wartung unterschätzen: Jede Systemänderung (neues CRM-Release, andere Schnittstelle) kostet Anpassungszeit. Ohne Budget dafür stirbt die Automatisierung langsam.",
+                    "Schöne statt kritische Prozesse wählen: Ein „Nice-to-have“-Workflow, der selten läuft, liefert keine Rechtfertigung für die Infrastruktur.",
+                    "Nur die Baukosten rechnen: Betrieb und Wartung über drei Jahre gehören in jede ROI-Betrachtung.",
+                ],
+            },
+            {
+                "heading": "Der pragmatische Rechenweg in fünf Schritten",
+                "paragraphs": [
+                    "Eine belastbare Entscheidung braucht keine perfekte Excel-Tabelle, aber fünf Zahlen:",
+                ],
+                "list": [
+                    "Stunden pro Woche, die der Prozess heute manuell kostet.",
+                    "Stundensatz des betroffenen Teams (intern oder extern).",
+                    "Einmalige Kosten: Analyse plus Umsetzung.",
+                    "Jährliche Betriebskosten: Wartung, Lizenzen, Infrastruktur.",
+                    "Zusätzlicher Nutzen: Fehlerreduktion, Durchlaufzeit, Skalierung – bewusst konservativ schätzen.",
+                ],
+            },
+            {
+                "heading": "Automatisieren, outsourcen oder lassen?",
+                "paragraphs": [
+                    "Nicht jede Automatisierung ist die richtige Antwort. Manchmal ist ein externer Dienstleister für einen Spezialprozess günstiger als ein eigener Workflow; manchmal ist der manuelle Prozess – gut dokumentiert – die wirtschaftlichste Option.",
+                    "Die Entscheidung gehört auf Papier: Kosten, Nutzen und Risiko der drei Optionen gegenüberstellen. Genau diese Rechnung macht den Unterschied zwischen Automatisierung als Projekt und Automatisierung als wertschöpfender Prozess.",
+                ],
+            },
+        ],
+        "related_service": "ki-automatisierung",
+        "cta_text": "KI-Potenzial in Ihren Prozessen prüfen",
+        "published": "2026-08-17",
+    },
 }
 
 ARTICLE_ORDER = [
@@ -258,7 +397,9 @@ ARTICLE_ORDER = [
     "lokale-ki-vs-cloud-ki",
     "n8n-vs-power-automate",
     "welche-prozesse-ki-automatisierung",
+    "rag-wissensassistenten",
+    "kosten-roi-ki-automatisierung",
 ]
 
-# Publikationsdatum (Tag des Deployments der Wissensstruktur)
+# Publikationsdatum (Fallback; Artikel können eigenes "published" tragen)
 ARTICLE_PUBLISHED = "2026-08-16"

@@ -169,6 +169,8 @@ class PublicSiteTests(unittest.TestCase):
             "/wissen/lokale-ki-vs-cloud-ki",
             "/wissen/n8n-vs-power-automate",
             "/wissen/welche-prozesse-ki-automatisierung",
+            "/wissen/rag-wissensassistenten",
+            "/wissen/kosten-roi-ki-automatisierung",
         ):
             with self.subTest(path=path):
                 response = self.client.get(path, buffered=True)
@@ -226,6 +228,8 @@ class PublicSiteTests(unittest.TestCase):
             "/wissen/lokale-ki-vs-cloud-ki",
             "/wissen/n8n-vs-power-automate",
             "/wissen/welche-prozesse-ki-automatisierung",
+            "/wissen/rag-wissensassistenten",
+            "/wissen/kosten-roi-ki-automatisierung",
             "/faq",
         ):
             self.assertIn(f"https://skalantech.store{path}</loc>", body)
