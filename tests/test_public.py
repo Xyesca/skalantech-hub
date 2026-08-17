@@ -282,6 +282,42 @@ class PublicSiteTests(unittest.TestCase):
         self.assertIn('"@type": "BreadcrumbList"', html)
         self.assertIn("n8n-Automatisierung im Überblick", html)
 
+    def test_csrf_protected_contact_flow(self):
+        """Regressions-Test: Formular-POST mit echtem CSRF-Flow (nicht deaktiviert).
+
+        Früher wurde CSRF in Tests deaktiviert -> WTF_CSRF_SSL_STRICT-Bug
+        (400 auf jeden POST) blieb unentdeckt.
+        """
+        # CSRF für diesen Test aktivieren (Rest der Suite nutzt deaktiviertes CSRF)
+        app = self.app
+        old_check = app.config.get("WTF_CSRF_ENABLED")
+        app.config["WTF_CSRF_ENABLED"] = True
+        client = app.test_client()
+        import re
+        try:
+            r = client.get("/")
+            html = r.get_data(as_text=True)
+            m = re.search(r'name="csrf_token" value="([^"]+)"', html)
+            self.assertIsNotNone(m, "CSRF-Token fehlt im Formular")
+            token = m.group(1)
+
+            resp = client.post(
+                "/contact",
+                data={
+                    "csrf_token": token,
+                    "name": "CSRF Flow Test",
+                    "email": "csrf-flow@example.com",
+                    "message": "Test des echten CSRF-Flows",
+                    "privacy": "accepted",
+                    "website": "",
+                },
+                headers={"X-Requested-With": "XMLHttpRequest", "Accept": "application/json"},
+            )
+            self.assertEqual(resp.status_code, 200, "CSRF-geschützter POST muss 200 liefern")
+            self.assertTrue(resp.get_json()["success"])
+        finally:
+            app.config["WTF_CSRF_ENABLED"] = old_check
+
 
 if __name__ == "__main__":
     unittest.main()

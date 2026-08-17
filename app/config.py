@@ -17,6 +17,11 @@ class BaseConfig:
     SESSION_COOKIE_NAME = "skalantech_session"
     PERMANENT_SESSION_LIFETIME = 3600  # 1 hour
 
+    # CSRF: SSL_STRICT abschalten — die Website ist über Caddy zwingend
+    # HTTPS-only (HSTS + Redirect). SSL_STRICT bricht sonst jeden Formular-POST,
+    # sobald request.is_secure in Proxy-/Healthcheck-Kontexten False ist.
+    WTF_CSRF_SSL_STRICT = False
+
     # ── Uploads ───────────────────────────────────────────────────────────
     UPLOAD_FOLDER = str(BASE_DIR / "instance" / "uploads")
     ALLOWED_IMAGE_EXT = {"png", "jpg", "jpeg", "gif", "webp"}
