@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Prozessautomatisierung für KMU · Skalantech{% endblock %}
+{% block description %}Skalantech automatisiert wiederkehrende Abläufe für KMU: Anfragen, Angebote, Rechnungen, E-Mails, CRM, Dokumente und Follow-ups – integriert in Ihre bestehende IT.{% endblock %}
+{% block canonical %}https://skalantech.store/automationen{% endblock %}
+{% block og_title %}Skalantech · Prozesse automatisieren statt Arbeit kopieren{% endblock %}
+{% block og_url %}https://skalantech.store/automationen{% endblock %}
+
+{% block body %}
+<main id="main-content">
+  <section class="showcase-hero">
+    <div class="shell showcase-hero__grid">
+      <div>
+        <p class="showcase-kicker">Prozessautomatisierung für KMU</p>
+        <h1>Weniger klicken. <span>Mehr erledigen.</span></h1>
+        <p class="showcase-hero__lead">
+          Skalantech verbindet Formulare, E-Mails, CRM, Dokumente, interne Systeme und KI zu robusten Abläufen.
+          Entscheidend ist nicht der einzelne Bot, sondern dass ein realer Geschäftsprozess zuverlässig schneller wird.
+        </p>
+        <div class="showcase-actions">
+          <a class="button button--accent" href="{{ url_for('public.index') }}#termin">Kostenlose Business-Analyse <span aria-hidden="true">↗</span></a>
+          <a class="button button--quiet" href="{{ url_for('showcase.demos') }}">Live-Demos testen <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <aside class="showcase-proof" aria-label="Typischer Skalantech Automationsprozess">
+        <p class="showcase-proof__label">Vom Eingang bis zur Aktion</p>
+        <ol class="showcase-flow">
+          <li data-step="01">Trigger · Mail, Formular, Datei, API</li>
+          <li data-step="02">Prüfen · Regeln, Daten, Berechtigungen</li>
+          <li data-step="03">Verarbeiten · n8n, Python, KI</li>
+          <li data-step="04">Ausführen · CRM, Mail, Aufgabe, System</li>
+        </ol>
+      </aside>
+    </div>
+  </section>
+
+  <section class="usecase-section" id="use-cases">
+    <div class="shell">
+      <div class="showcase-heading">
+        <div>
+          <p class="section-label">Konkrete Anwendungsfälle</p>
+          <h2>Was lässt sich in Ihrem Betrieb automatisieren?</h2>
+        </div>
+        <p>Diese Beispiele sind bewusst geschäftsnah formuliert. Im Audit prüfen wir Datenquellen, Fehlerpfade, Datenschutz, ROI und die menschlichen Freigaben.</p>
+      </div>
+      <div class="usecase-grid">
+        {% for title, description in use_cases %}
+        <article class="usecase-card">
+          <span class="usecase-card__index">{{ "%02d"|format(loop.index) }}</span>
+          <h3>{{ title }}</h3>
+          <p>{{ description }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section">
+    <div class="shell">
+      <div class="showcase-heading">
+        <div>
+          <p class="section-label">Proof statt Pitch</p>
+          <h2>Drei Automationen laufen bereits als Demo.</h2>
+        </div>
+        <p>InvoiceFlow, OfferAI und MailAgent zeigen drei wiederkehrende Muster: Daten extrahieren, Inhalte vorbereiten und Kommunikation einordnen.</p>
+      </div>
+      <div class="demo-grid">
+        {% for slug, demo in demos.items() %}
+        <article class="demo-card">
+          <span class="demo-card__state">Live-Workflow</span>
+          <h3>{{ demo.name }}</h3>
+          <p class="demo-card__eyebrow">{{ demo.eyebrow }}</p>
+          <p class="demo-card__desc">{{ demo.description }}</p>
+          <a class="button button--quiet" href="{{ url_for('showcase.demos') }}#{{ slug }}">Demo öffnen <span aria-hidden="true">→</span></a>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="offer-strip">
+    <div class="shell offer-strip__inner">
+      <div>
+        <h2>Automatisierung startet nicht mit n8n. Sie startet mit dem Engpass.</h2>
+        <p>Wir wählen zuerst den Prozess mit klarem Nutzen, bauen einen kleinen belastbaren Flow und erweitern erst nach messbarem Ergebnis.</p>
+      </div>
+      <a class="button button--accent" href="{{ url_for('public.index') }}#termin">Prozess gemeinsam prüfen <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+</main>
+{% endblock %}

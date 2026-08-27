@@ -1,88 +1,152 @@
-# Demo-Integration — InvoiceFlow · OfferAI · MailAgent (P0)
+# Demo-Integration — InvoiceFlow · OfferAI · MailAgent
 
-Stand: 2026-08-27. Betrifft die produktiven Demo-Workflows in n8n und ihre
-Einbindung auf den vier Branchen-Landingpages.
+Stand: 2026-08-28. Dieses Dokument beschreibt sowohl die internen n8n-Demos als auch die neue öffentliche, abgesicherte Demo-Oberfläche auf `skalantech.store`.
 
-## 1. Produktive Demos (n8n)
+## 1. Interne n8n-Demos
 
-Drei Demo-Workflows laufen **aktiv** in der selbstgehosteten n8n-Instanz
-(`127.0.0.1:5678`, extern nur über Tailscale `ubuntu.piranha-gray.ts.net:9443`):
+| Produkt | Workflow-ID | interner Webhook | Feld | Funktion |
+| --- | ---: | --- | --- | --- |
+| InvoiceFlow | `400` | `/webhook/demo-invoice` | `invoice` | Rechnungstext → strukturierte Rechnungsdaten |
+| OfferAI | `401` | `/webhook/demo-offer` | `inquiry` | Kundenanfrage → Angebotsentwurf |
+| MailAgent | `402` | `/webhook/demo-mail` | `mail` | E-Mail → Klassifikation + Antwortvorschlag |
+| Lead-Erfassung | `8Xol9ORELU3HN29V` | `/webhook/lead-erfassung` | Formularfelder | Lead validieren und weiterverarbeiten |
 
-| Produkt      | Workflow-ID | Webhook (intern)          | Eingabe-Feld | Funktion                                     |
-|--------------|-------------|---------------------------|--------------|----------------------------------------------|
-| InvoiceFlow  | `400`       | `/webhook/demo-invoice`   | `invoice`    | Rechnungstext → strukturierte Rechnungsdaten  |
-| OfferAI      | `401`       | `/webhook/demo-offer`     | `inquiry`    | Kundenanfrage → Angebotsentwurf (JSON)        |
-| MailAgent    | `402`       | `/webhook/demo-mail`      | `mail`       | E-Mail → Klassifikation + Antwortvorschlag    |
-| Lead-Erfassung | `8Xol9ORELU3HN29V` | `/webhook/lead-erfassung` | Formularfelder | Demo-/Kontakt-Leads validieren + ablegen |
+Die n8n-Instanz bleibt **intern** auf Loopback/Tailscale. Es gibt keinen öffentlichen Link auf die n8n-UI und keinen direkten Browserzugriff auf n8n-Webhooks.
 
-- KI-Extraktion: **DeepSeek (primär)**, **Ollama lfm25 (Backup-Failover)**.
-- Detail-Architektur, Schemata, Guardrails: siehe Demo-README aus
-  `t_fa590264` (InvoiceFlow/OfferAI/MailAgent) bzw. `t_eb982f36`
-  (Baustein „Lead-Erfassung").
-- Alle Webhooks sind **nicht öffentlich**: n8n bindet auf Loopback, Zugriff
-  nur über den Tailscale-Tunnel (Level-C-Freigabe für Public-Exposure steht aus).
+## 2. Neue öffentliche Demo-Seite
 
-## 2. Landingpage-Integration (Flask)
+Route:
 
-Auf den vier Branchen-Seiten (`/branchen/handwerk`, `/branchen/kfz`,
-`/branchen/kanzleien`, `/branchen/immobilien`) rendert `_render_landing`
-(`app/blueprints/public.py`) eine **Live-Demo-Sektion** (`id="demo"`):
+`GET https://skalantech.store/demos`
 
-- `page["demo"]` wird nur für `branchen-*`-Slugs gesetzt — Service-Seiten
-  bleiben unverändert.
-- Produktliste (InvoiceFlow/OfferAI/MailAgent) + Auswahl-Dropdown
-  (`demo_type`) + Kontaktformular (`#demo-form`, CSRF + Honeypot).
-- Formular wird per AJAX an die Route **`POST /demo`** gesendet
-  (`app/blueprints/public.py` → `public.demo`).
+Die Seite zeigt alle drei Workflows mit Beispieltexten. Besucher können eine Eingabe absenden, ohne die interne n8n-Adresse zu kennen.
 
-## 3. Lead-Erfassung — Datenfluss
+Datenfluss:
 
-```
-Landingpage (#demo-form)
-  └─ POST /demo  (CSRF, Honeypot, Rate-Limit, Validierung)
-       ├─ Lead in Flask-DB (Source of Truth) — Leads dedupliziert per E-Mail
-       ├─ Analytics-Event "lead_created" (serverseitig, First-Party-Attribution)
-       ├─ n8n "Lead-Erfassung" via N8N_LEAD_WEBHOOK_URL (best-effort)
-       └─ Gmail-Notification (best-effort, silent)
+```text
+Browser
+  → POST /api/demos/<slug>
+  → Flask: CSRF + Slug-Allowlist + Längenlimit + Rate-Limit
+  → interner n8n Webhook auf 127.0.0.1:5678
+  → Ergebnis zurück an Flask
+  → JSON-Ergebnis im Browser
 ```
 
-- `N8N_LEAD_WEBHOOK_URL` (Default `http://127.0.0.1:5678/webhook/lead-erfassung`)
-  ist ein reiner Default im Code; kein Secret, keine `.env`-Pflicht.
-- n8n-Ausfall blockiert die Anfrage **nicht** — der Lead ist vorher bereits in
-  der Flask-DB gespeichert (D3-Queued-Muster, konsistent zu `/contact`).
-- n8n-Baustein dedupliziert zusätzlich per E-Mail und legt Leads in
-  `/home/node/.n8n-files/leads.json` ab (dateibasiert, DB als Folgeschritt).
+Implementierung:
 
-## 4. Sicherheit / Perimeter
+- `app/blueprints/automation_showcase.py`
+- `app/templates/demos.html`
+- `app/static/js/showcase.js`
+- `app/static/css/showcase.css`
+- `tests/test_showcase.py`
 
-- Tailscale-only bleibt bis CEO-Freigabe (Demos, n8n, Admin).
-- Public erreichbar ist ausschließlich `skalantech.store` (Hub :80/:443, SEO).
-- `/demo` trägt dieselben Schutzmechanismen wie `/contact`: CSRF, Honeypot,
-  In-Memory-Rate-Limit (3/IP/Stunde), Eingabe-Längen-Caps.
-- **DSGVO**: Demo-/Booking-Pfad verlangt **keine** erzwungene Einwilligung —
-  Verarbeitung stützt sich auf Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche
-  Maßnahme). Statt Pflicht-Checkbox ein Hinweistext + Link zur
-  Datenschutzerklärung (erzwungene Einwilligung wäre nach Art. 7 Abs. 4 DSGVO
-  angreifbar). Nur das klassische Kontaktformular behält die serverseitige
-  Privacy-Checkbox-Prüfung.
-- Analytics: `form_field_error` + `form_success_view` sind in den Allowlists
-  (`analytics.py` ANALYTICS_EVENTS + `analytics.js` EVENT_NAMES) aufgenommen.
+## 3. Schutzgrenzen
 
-## 5. Test-Evidenz
+Öffentlich erlaubt sind ausschließlich:
 
-- **Unit/Integration**: `tests/test_demo.py` (6 Tests) — Rendering, valide
-  Anfrage, Validierung, Honeypot, n8n-unreachable-Fallback.
-  Gesamtsuite: `pytest tests/ -q` → 101 passed, 137 subtests.
-- **E2E (Live, 2026-08-27)**: GET `/branchen/handwerk` (CSRF-Token aus
-  `#demo-form`) → POST `/demo` → HTTP 200 `success:true`; Lead in Flask-DB
-  (`leads`, service="Demo: InvoiceFlow …", campaign="branche_handwerk")
-  verifiziert; n8n-Execution `239` (workflow `8Xol9ORELU3HN29V`)
-  `status=success`, Lead in `leads.json`. Testdaten anschließend entfernt.
+- `invoiceflow`
+- `offerai`
+- `mailagent`
 
-## 6. Betrieb / Rollback
+Der Browser darf keinen beliebigen Webhook-Namen oder eine interne URL mitgeben. Das Mapping wird serverseitig fest vorgegeben.
 
-- Redeploy: `docker compose up -d --build skalantech`.
-- n8n-Workflows sind die Single Source of Truth ihrer JSONs
-  (`wf-demo-*.json`, `block-lead-erfassung.json`); Rollback über n8n-Versionen
-  oder JSON-Neuaufbau.
-- Verifikation Live: `curl -s https://skalantech.store/branchen/handwerk | grep -c 'id="demo"'` → 1.
+Zusätzliche Grenzen:
+
+- maximal 2.000 Zeichen pro Eingabe
+- mindestens 20 Zeichen für sinnvolle Demo-Eingaben
+- maximal 8 Demo-Aufrufe pro IP und Stunde über Flask-Limiter
+- CSRF bleibt aktiv
+- keine n8n-Credentials oder Tokens im Frontend
+- n8n bleibt auf Loopback/Tailscale
+- Upstream-Fehler werden als generische Fehlermeldung zurückgegeben
+- Nutzerhinweis: keine vertraulichen oder produktiven personenbezogenen Daten in die Demo eingeben
+
+Der aktuelle Flask-Limiter nutzt noch `memory://`. GitHub Issue #4 migriert dies auf einen zentralen Store, bevor mehrere App-Instanzen horizontal skaliert werden.
+
+## 4. Automations-Angebotsseite
+
+Route:
+
+`GET /automationen`
+
+Sie übersetzt technische Fähigkeiten in geschäftsnahe Use Cases, u. a.:
+
+- Anfrage → Angebot
+- Rechnung → Daten
+- E-Mail → CRM
+- Lead → Follow-up
+- Dokument → Wissen
+- Formular → Prozess
+- Termin → Bestätigung
+- KPI → Tagesbriefing
+- Mitarbeiter → Onboarding
+- System → Alarm
+
+Die Referenz `automaticprocess.de` dient nur als Benchmark für Klarheit, Ergebnisorientierung und einfache Conversion-Pfade. Texte, Design und Claims werden nicht kopiert.
+
+## 5. Branchen-Landingpages und Lead-Demo
+
+Die bestehenden Branchen-Seiten behalten zusätzlich das Demo-Anfrageformular `#demo`:
+
+```text
+Branchen-Landingpage
+  → POST /demo
+  → Lead zuerst in Flask-DB speichern
+  → First-Party-Analytics
+  → n8n Lead-Erfassung best-effort
+  → interne Benachrichtigung über IONOS SMTP best-effort
+```
+
+Diese Route ist ein **Lead-/Demo-Terminpfad**. Die neue Route `/demos` ist dagegen ein **direkt ausführbarer Demonstrator**.
+
+## 6. Mail
+
+Die Website verwendet keine Gmail-SMTP-Logik mehr. Interne Website-Benachrichtigungen werden über das IONOS-Postfach gesendet:
+
+- Absender: `xyesca@skalantech.store`
+- SMTP: `smtp.ionos.de:465` SSL/TLS
+- Reply-To: E-Mail des anfragenden Kunden
+
+Secrets liegen ausschließlich in der lokalen `.env` bzw. später in n8n Credentials.
+
+Die Google-freie n8n-Terminmigration ist separat in `docs/HERMES_IONOS_N8N_MIGRATION.md` beschrieben.
+
+## 7. Konfiguration
+
+```env
+N8N_DEMO_BASE_URL=http://127.0.0.1:5678/webhook
+N8N_LEAD_WEBHOOK_URL=http://127.0.0.1:5678/webhook/lead-erfassung
+BUSINESS_EMAIL=xyesca@skalantech.store
+IONOS_SMTP_HOST=smtp.ionos.de
+IONOS_SMTP_PORT=465
+IONOS_MAIL_USER=xyesca@skalantech.store
+IONOS_MAIL_PASSWORD=<secret>
+```
+
+`IONOS_MAIL_PASSWORD` niemals committen.
+
+## 8. Abnahme
+
+Automatisiert:
+
+```bash
+python -m compileall app tests
+python -m unittest discover -v
+```
+
+Produktions-E2E nach Deployment durch Hermes:
+
+1. `/demos` extern erreichbar.
+2. InvoiceFlow-Beispiel liefert ein Ergebnis.
+3. OfferAI-Beispiel liefert ein Ergebnis.
+4. MailAgent-Beispiel liefert ein Ergebnis.
+5. Ungültiger Slug liefert 404.
+6. Zu kurze Eingabe liefert 400.
+7. n8n-Ausfall leakt keine internen Details.
+8. n8n ist weiterhin nicht direkt öffentlich erreichbar.
+9. Kontakt-/Demo-Benachrichtigung kommt über `xyesca@skalantech.store`.
+10. Testdaten anschließend löschen.
+
+## 9. Rollback
+
+Die öffentlichen Demos sind ein zusätzlicher Flask-Blueprint. Bei Problemen kann Hermes den Blueprint deaktivieren oder den vorherigen Containerstand deployen, ohne die bestehenden internen n8n-Workflows zu verändern.
