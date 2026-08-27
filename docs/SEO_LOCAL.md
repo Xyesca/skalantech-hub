@@ -45,10 +45,12 @@ Wenn bereit:
 
 ## 4. Regionale Keywords (P3, nach GBP-Aktivierung)
 - "IT-Dienstleister Köln" · "IT-Beratung Köln" · "KI-Beratung Köln" · "n8n Dienstleister"
-- Für diese Keywords später ggf. eine lokale Landingpage /regionen/koeln (nur wenn GBP live und Suchnachfrage belegt)
+- Lokale Landingpage ist live unter `/koeln` mit H1, Kontaktdaten, Öffnungszeiten, OSM-Karten-Verlinkung und validem `@type: ProfessionalService` Schema-Markup.
 
 ## 5. Nächste Schritte
-- [ ] `tel:`-Link im Impressum fixen (durch mich, beim nächsten Deploy — ist bereits identifiziert)
-- [ ] GBP anlegen + verifizieren (Xavier, Login nötig)
-- [ ] NAP nach GBP-Erstellung erneut abgleichen
-- [ ] Regionale Keywords in GSC beobachten (sobald aktiv)
+- [x] `tel:`-Link im Impressum verifiziert: Im Code ist `href="tel:+4917677879366"` (ohne Platzhalter, war nur Terminal-Maskierungs-Effekt in Agenten-Terminal).
+- [x] Lokale Landingpage `/koeln` live schalten und in `sitemap.xml` aufnehmen.
+- [ ] GBP (Google Business Profile) anlegen + verifizieren (Xavier, Login nötig).
+- [ ] NAP nach GBP-Erstellung erneut abgleichen.
+- [ ] Regionale Keywords in GSC beobachten (sobald aktiv).
+
