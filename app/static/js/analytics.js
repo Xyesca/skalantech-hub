@@ -30,7 +30,14 @@
     "service_viewed",
     "case_study_viewed",
     "roi_calculated",
-    "lead_created"
+    "lead_created",
+    "hero_cta_click",
+    "quickwin_cta_click",
+    "erechnung_cta_click",
+    "faq_open",
+    "check_cta_click",
+    "form_start",
+    "form_submit"
   ];
 
   // ── Storage (sessionStorage mit In-Memory-Fallback) ───────────────────
@@ -216,8 +223,15 @@
     ["#contact-form", "#booking-form"].forEach(function (selector) {
       var form = document.querySelector(selector);
       if (!form) return;
+      var started = false;
+      form.addEventListener("input", function () {
+        if (started) return;
+        started = true;
+        track("form_start", { form: selector.slice(1) });
+      });
       form.addEventListener("submit", function () {
         injectAttribution(form);
+        track("form_submit", { form: selector.slice(1) });
       });
     });
   }

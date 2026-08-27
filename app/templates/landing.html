@@ -31,9 +31,15 @@
       <h1>{{ page.h1 }}</h1>
       <p class="landing-hero__lead">{{ page.lead }}</p>
       <div class="landing-hero__actions">
-        <a class="button button--accent" href="{{ page.cta_termin_url }}">{{ page.cta_primary }} <span aria-hidden="true">↗</span></a>
+        <a class="button button--accent" href="{{ page.cta_termin_url }}"{% if page.tracking %} data-track="{{ page.tracking.hero }}" data-track-label="hero"{% endif %}>{{ page.cta_primary }} <span aria-hidden="true">↗</span></a>
         <a class="button button--quiet" href="{{ page.cta_contact_url }}">{{ page.cta_secondary }} <span aria-hidden="true">↗</span></a>
       </div>
+      {% if page.hero_microcopy or page.hero_trust %}
+      <div class="landing-hero__meta">
+        {% if page.hero_microcopy %}<p class="landing-hero__microcopy">{{ page.hero_microcopy }}</p>{% endif %}
+        {% if page.hero_trust %}<p class="landing-hero__trust">{{ page.hero_trust }}</p>{% endif %}
+      </div>
+      {% endif %}
     </div>
   </section>
 
@@ -61,11 +67,23 @@
           <h2>{{ page.solution_title }}</h2>
         </div>
       </div>
+      {% if page.quickwins %}
+      <div class="landing-quickwins">
+        {% for title, text, cta, event in page.quickwins %}
+        <article class="landing-quickwin" data-reveal>
+          <h3>{{ title }}</h3>
+          <p>{{ text }}</p>
+          <a class="button button--accent" href="{{ page.cta_termin_url }}" data-track="{{ event }}" data-track-label="quickwin-{{ loop.index }}">{{ cta }} <span aria-hidden="true">↗</span></a>
+        </article>
+        {% endfor %}
+      </div>
+      {% elif page.solution %}
       <ul class="landing-list">
         {% for item in page.solution %}
         <li><span aria-hidden="true">✓</span>{{ item }}</li>
         {% endfor %}
       </ul>
+      {% endif %}
     </div>
   </section>
 
@@ -107,6 +125,27 @@
       {% if page.roi_note %}
       <p class="landing-roi__note">{{ page.roi_note }}</p>
       {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if page.erechnung %}
+  <section class="section section--landing section--tint" id="e-rechnung">
+    <div class="shell landing-block">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">E-Rechnung</p>
+          <h2>{{ page.erechnung.title }}</h2>
+        </div>
+      </div>
+      <ul class="landing-list landing-list--facts">
+        {% for fact in page.erechnung.facts %}
+        <li>{{ fact }}</li>
+        {% endfor %}
+      </ul>
+      <div class="landing-erechnung__cta">
+        <a class="button button--accent" href="{{ page.cta_termin_url }}" data-track="{{ page.erechnung.event }}" data-track-label="erechnung">{{ page.erechnung.cta }} <span aria-hidden="true">↗</span></a>
+      </div>
     </div>
   </section>
   {% endif %}
@@ -200,7 +239,7 @@
       <div class="section-heading">
         <div>
           <p class="section-label">Vertrauen</p>
-          <h2>Worauf Sie sich verlassen können.</h2>
+          <h2>{{ page.trust_heading if page.trust_heading else 'Worauf Sie sich verlassen können.' }}</h2>
         </div>
       </div>
       <div class="landing-trust">
@@ -226,11 +265,16 @@
       <div class="faq-list">
         {% for q, a in page.faqs %}
         <details>
-          <summary>{{ q }}</summary>
+          <summary{% if page.tracking %} data-track="{{ page.tracking.faq }}" data-track-label="faq-{{ loop.index }}"{% endif %}>{{ q }}</summary>
           <p>{{ a }}</p>
         </details>
         {% endfor %}
       </div>
+      {% if page.faq_cta and page.tracking %}
+      <div class="faq-cta">
+        <a class="button button--accent" href="{{ page.cta_contact_url }}" data-track="{{ page.tracking.check }}" data-track-label="faq-check">{{ page.faq_cta }} <span aria-hidden="true">↗</span></a>
+      </div>
+      {% endif %}
     </div>
   </section>
   {% endif %}

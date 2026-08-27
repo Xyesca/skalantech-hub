@@ -2971,6 +2971,72 @@ p:last-child {
   gap: 14px;
 }
 
+.landing-hero__meta {
+  display: grid;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.landing-hero__microcopy {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.landing-hero__trust {
+  margin: 0;
+  color: var(--accent-deep);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.landing-quickwins {
+  display: grid;
+  gap: 16px;
+}
+
+.landing-quickwin {
+  display: grid;
+  gap: 12px;
+  padding: 26px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.landing-quickwin h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.landing-quickwin p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.landing-quickwin .button {
+  justify-self: start;
+  margin-top: 4px;
+}
+
+.landing-list--facts li {
+  background: transparent;
+  border-color: var(--border);
+}
+
+.landing-erechnung__cta {
+  margin-top: 22px;
+}
+
+.faq-cta {
+  margin-top: 26px;
+}
+
 .landing-block {
   max-width: 900px;
 }

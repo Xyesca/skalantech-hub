@@ -34,6 +34,14 @@ ANALYTICS_EVENTS = frozenset({
     "case_study_viewed",  # Projekt-/Case-Study-Karte im Viewport (einmal pro Session)
     "roi_calculated",     # ROI-Rechner ausgelöst (UI folgt; API/Event ist bereit)
     "lead_created",       # Kontaktanfrage erfolgreich gespeichert (Lead in CRM)
+    # Landingpage-Events (LUMINA-Spez, Branchen-Seiten) — data-track-Attribute
+    "hero_cta_click",     # Hero-Primär-CTA auf Landingpages
+    "quickwin_cta_click", # Quick-Win-Karten-CTA (Angebot/Termine)
+    "erechnung_cta_click",# E-Rechnung-CTA (Stufe 3, Dringlichkeit)
+    "faq_open",           # FAQ-Accordion geöffnet
+    "check_cta_click",    # Stufe-0-CTA (5-Minuten-Check) im FAQ-Fuß
+    "form_start",         # Erstes Input im Kontakt-/Buchungsformular
+    "form_submit",        # Formular abgeschickt (Client-Event, serverseitige Conversions bleiben Quelle der Wahrheit)
 })
 
 MAX_EVENT_BODY = 8192      # Payload-Limit (Bytes) — verhindert Missbrauch
