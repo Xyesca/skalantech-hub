@@ -25,6 +25,7 @@ SITE_URL = "https://skalantech.store"
 
 SITEMAP_PAGES = [
     {"loc": "/", "priority": "1.0"},
+    {"loc": "/koeln", "priority": "0.8"},
     *[{"loc": f"/{slug}", "priority": "0.8"} for slug in LANDING_ORDER],
     *[{"loc": f"/branchen/{slug}", "priority": "0.8"} for slug in BRANCH_ORDER],
     {"loc": "/wissen", "priority": "0.7"},
@@ -310,6 +311,14 @@ def landing_branchen_kanzleien():
 @public_bp.route("/branchen/immobilien")
 def landing_branchen_immobilien():
     return _render_landing("branchen-immobilien")
+
+
+@public_bp.route("/koeln")
+def landing_koeln():
+    return render_template(
+        "local_koeln.html",
+        landing_map=_landing_map(),
+    )
 
 
 # ── Wissensstruktur ────────────────────────────────────────────────────

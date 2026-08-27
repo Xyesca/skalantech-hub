@@ -54,6 +54,23 @@ LANDING_BRANCHEN = {
             ),
         ],
         "roi_title": "Fixpreis. Einstieg in Tagen, nicht in Monaten.",
+        "roi_calculator": {
+            "title": "Was kostet Sie der Papierkram?",
+            "intro": "Rechnen Sie mit Ihren Werten: Wie viel Bürozeit fressen Angebote, Rechnungen und Kundenanfragen pro Jahr – und was wäre sie wert?",
+            "rate_label": "Verrechnungssatz (€/h)",
+            "disclaimer": "Konservative Schätzung aus Ihren Eingaben – anpassbar, keine Garantie. Die Demo zeigt den Nutzen mit Ihren echten Zahlen.",
+            "result_low": "Eine Stunde am Tag zurück – für Kunden oder Feierabend.",
+            "result_mid": "Ein Monat Bürozeit pro Jahr zurückgewonnen.",
+            "result_high": "Abende und Wochenenden im Büro gehören wieder Ihnen.",
+            "sliders": [
+                {"key": "angebote", "label": "Angebote pro Monat", "min": 0, "max": 100, "default": 15, "unit": "Stk"},
+                {"key": "angebot_min", "label": "Minuten pro Angebot", "min": 15, "max": 240, "default": 90, "unit": "min"},
+                {"key": "rechnungen", "label": "Rechnungen pro Monat", "min": 0, "max": 200, "default": 20, "unit": "Stk"},
+                {"key": "rechnung_min", "label": "Minuten pro Rechnung", "min": 10, "max": 120, "default": 30, "unit": "min"},
+                {"key": "anfragen", "label": "Kundenanfragen pro Woche", "min": 0, "max": 100, "default": 10, "unit": "Stk"},
+                {"key": "anfrage_min", "label": "Minuten pro Anfrage", "min": 5, "max": 60, "default": 15, "unit": "min"},
+            ],
+        },
         "roi": [
             ("Fixpreis vorab", "Sie kennen den Preis, bevor wir starten – keine offenen Baustellen, kein Abo-Bastelkram."),
             ("Einstieg in Tagen", "Wir starten mit genau einem Prozess, der bei Ihnen am meisten Zeit kostet."),

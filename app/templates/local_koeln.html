@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}IT-Dienstleister & KI-Beratung Köln | Skalantech{% endblock %}
+{% block description %}Stabile IT-Infrastruktur, n8n-Prozessautomatisierung und DSGVO-konforme KI-Integration für KMU und Handwerk in Köln. Xavier Escalante · Eifelstraße 33.{% endblock %}
+{% block canonical %}https://skalantech.store/koeln{% endblock %}
+{% block og_title %}IT-Dienstleister & KI-Beratung Köln – Skalantech{% endblock %}
+{% block og_description %}Stabile IT-Infrastruktur, n8n-Prozessautomatisierung und DSGVO-konforme KI-Integration für KMU und Handwerk in Köln. Xavier Escalante · Eifelstraße 33.{% endblock %}
+{% block og_url %}https://skalantech.store/koeln{% endblock %}
+{% block twitter_title %}IT-Dienstleister & KI-Beratung Köln – Skalantech{% endblock %}
+{% block twitter_description %}Stabile IT-Infrastruktur, n8n-Prozessautomatisierung und DSGVO-konforme KI-Integration für KMU und Handwerk in Köln. Xavier Escalante · Eifelstraße 33.{% endblock %}
+{% block body_class %}page-landing{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://skalantech.store/koeln#service",
+      "name": "Skalantech",
+      "image": "https://skalantech.store/static/brand/skalantech-logo.svg",
+      "telephone": "0176 77879366",
+      "email": "xyesca1989@googlemail.com",
+      "url": "https://skalantech.store/koeln",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Eifelstraße 33",
+        "addressLocality": "Köln",
+        "postalCode": "51109",
+        "addressCountry": "DE"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 50.9055,
+        "longitude": 7.0414
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "08:30",
+          "closes": "17:30"
+        }
+      ],
+      "areaServed": [
+        {
+          "@type": "AdministrativeArea",
+          "name": "Köln"
+        },
+        {
+          "@type": "AdministrativeArea",
+          "name": "Nordrhein-Westfalen"
+        }
+      ],
+      "priceRange": "$$"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://skalantech.store/koeln#breadcrumb",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://skalantech.store/"},
+        {"@type": "ListItem", "position": 2, "name": "IT-Dienstleistung Köln", "item": "https://skalantech.store/koeln"}
+      ]
+    }
+  ]
+}
+</script>
+<style>
+  .local-contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 30px;
+  }
+  @media (max-width: 768px) {
+    .local-contact-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+  .local-map-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px;
+    box-shadow: var(--shadow-sm);
+  }
+  .local-map-placeholder {
+    height: 240px;
+    background: var(--paper-warm);
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .local-map-placeholder::before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background-image: radial-gradient(var(--border) 1px, transparent 1px), radial-gradient(var(--border) 1.5px, transparent 1.5px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    opacity: 0.6;
+  }
+  .local-map-pin {
+    width: 48px;
+    height: 48px;
+    background: var(--accent);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    position: relative;
+    animation: pinBounce 2s infinite ease-in-out;
+    box-shadow: -10px 10px 20px rgba(79, 124, 255, 0.4);
+    z-index: 2;
+  }
+  .local-map-pin::after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: var(--surface);
+    position: absolute;
+    border-radius: 50%;
+    top: 14px;
+    left: 14px;
+  }
+  .local-map-shadow {
+    width: 20px;
+    height: 6px;
+    background: rgba(15, 23, 42, 0.2);
+    border-radius: 50%;
+    position: absolute;
+    bottom: 85px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: shadowPulse 2s infinite ease-in-out;
+  }
+  @keyframes pinBounce {
+    0%, 100% { transform: translateY(0) rotate(-45deg); }
+    50% { transform: translateY(-10px) rotate(-45deg); }
+  }
+  @keyframes shadowPulse {
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+    50% { transform: translateX(-50%) scale(1.5); opacity: 0.5; }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<main id="main-content">
+  <section class="landing-hero">
+    <div class="shell landing-hero__inner">
+      <nav class="landing-breadcrumb" aria-label="Brotkrumen-Navigation">
+        <a href="{{ url_for('public.index') }}">Startseite</a>
+        <span aria-hidden="true">/</span>
+        <span>IT-Dienstleistung Köln</span>
+      </nav>
+      <h1>IT-Dienstleister &amp; KI-Beratung für Köln</h1>
+      <p class="landing-hero__lead">
+        Für kleine und mittelständische Unternehmen in Köln und Umgebung: 
+        Ich modernisiere Ihre IT-Infrastruktur, automatisiere wiederkehrende Prozesse mit n8n 
+        und bringe KI-Lösungen datenschutzkonform und ohne Cloud-Zwang in Ihren Betrieb.
+      </p>
+      <div class="landing-hero__actions">
+        <a class="button button--accent" href="{{ url_for('public.index') }}?utm_source=organic&utm_medium=local&utm_campaign=koeln#termin">Kostenloses Erstgespräch <span aria-hidden="true">↗</span></a>
+        <a class="button button--quiet" href="{{ url_for('public.index') }}?utm_source=organic&utm_medium=local&utm_campaign=koeln#contact">Projekt besprechen <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="landing-hero__meta">
+        <p class="landing-hero__trust">Sitz in Köln-Rath/Heumar · Betreuung persönlich &amp; direkt · DSGVO-konform</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--landing">
+    <div class="shell landing-block">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Fokus</p>
+          <h2>Regionale IT- &amp; Automatisierungs-Kompetenz</h2>
+        </div>
+      </div>
+      <div class="landing-cases">
+        <article class="landing-case" data-reveal>
+          <h3>IT-Infrastruktur Köln</h3>
+          <p>Aufbau, Modernisierung und Betreuung stabiler Netzwerke und Serversysteme auf Linux/Docker-Basis. Tailscale-VPNs und sichere Zugriffe ohne offene Ports.</p>
+          <a class="button button--quiet" style="margin-top: 15px; padding: 5px 0;" href="{{ url_for('public.landing_it_infrastruktur') }}">Infrastruktur ansehen →</a>
+        </article>
+        <article class="landing-case" data-reveal>
+          <h3>n8n Prozessautomatisierung</h3>
+          <p>Manuelle Abläufe im Büro digitalisieren. Von der automatisierten Angebotserstellung bis zur E-Rechnung. Eigene Workflows, selbst gehostet in Köln.</p>
+          <a class="button button--quiet" style="margin-top: 15px; padding: 5px 0;" href="{{ url_for('public.landing_n8n_automatisierung') }}">n8n Automatisierung →</a>
+        </article>
+        <article class="landing-case" data-reveal>
+          <h3>Lokale KI &amp; Agenten</h3>
+          <p>DSGVO- und KI-VO-konforme KI-Integration. Akten zusammenfassen, Wissens-Assistenten betreiben auf eigener Hardware, ohne Datenabfluss.</p>
+          <a class="button button--quiet" style="margin-top: 15px; padding: 5px 0;" href="{{ url_for('public.landing_lokale_ki') }}">Lokale KI ansehen →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--landing section--tint">
+    <div class="shell landing-block">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Kontakt &amp; Präsenz</p>
+          <h2>Erreichbarkeit &amp; Standort Köln</h2>
+        </div>
+      </div>
+      
+      <div class="local-contact-grid">
+        <div class="local-map-card">
+          <h3>Öffnungszeiten &amp; Daten</h3>
+          <ul class="landing-list" style="margin-top: 20px;">
+            <li><strong>Montag – Freitag:</strong> 08:30 – 17:30 Uhr</li>
+            <li><strong>Name:</strong> Xavier Escalante Castellar</li>
+            <li><strong>Adresse:</strong> Eifelstraße 33, 51109 Köln</li>
+            <li><strong>Telefon:</strong> <a href="tel:+4917677879366" style="color: var(--accent); text-decoration: underline;">0176 77879366</a></li>
+            <li><strong>E-Mail:</strong> <a href="mailto:xyesca1989@googlemail.com" style="color: var(--accent); text-decoration: underline;">xyesca1989@googlemail.com</a></li>
+          </ul>
+        </div>
+        
+        <div class="local-map-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="local-map-placeholder">
+            <div class="local-map-pin"></div>
+            <div class="local-map-shadow"></div>
+          </div>
+          <div style="text-align: center;">
+            <p style="margin-bottom: 15px; font-weight: 500;">Standort Köln Rath/Heumar (Eifelstraße 33)</p>
+            <a class="button button--accent" href="https://www.openstreetmap.org/?mlat=50.9055&amp;mlon=7.0414#map=16/50.9055/7.0414" target="_blank" rel="noopener noreferrer">Auf OpenStreetMap anzeigen <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--landing section--faq">
+    <div class="shell faq-grid">
+      <div>
+        <p class="section-label">FAQ</p>
+        <h2>Häufige Fragen zu lokalen IT-Diensten.</h2>
+        <p>Regionale Erreichbarkeit und Projektablauf verständlich erklärt.</p>
+      </div>
+      <div class="faq-list">
+        <details>
+          <summary>Bieten Sie Vor-Ort-Termine in Köln an?</summary>
+          <p>Ja. Abstimmungen und Erstgespräche führen wir meist effizient telefonisch oder online durch. Für die Aufnahme von Systemen, geplante Migrationen oder Workshops bin ich selbstverständlich persönlich bei Ihnen im Raum Köln vor Ort.</p>
+        </details>
+        <details>
+          <summary>Wie schnell sind Sie bei IT-Störungen vor Ort?</summary>
+          <p>Skalantech ist auf die Entwicklung und Optimierung von Systemen ausgelegt, nicht auf den klassischen Ad-hoc-Support für Endbenutzer. Ohne laufenden Betreuungs- oder Wartungsvertrag biete ich keine sofortige Störungsbehebung an. Für umgesetzte Projekte vereinbaren wir passende Reaktionszeiten.</p>
+        </details>
+        <details>
+          <summary>Gilt Ihr Angebot nur für Kölner Unternehmen?</summary>
+          <p>Nein. Mein Büro befindet sich in Köln Rath/Heumar, aber ich realisiere IT-Infrastruktur- und Automatisierungsprojekte für Unternehmen in ganz Deutschland und im DACH-Raum remote.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--landing landing-author">
+    <div class="shell landing-author__inner">
+      <div class="landing-author__photo">
+        <picture>
+          <source type="image/avif"
+            srcset="{{ url_for('static', filename='img/founder-400.avif') }} 400w,
+                    {{ url_for('static', filename='img/founder-600.avif') }} 600w"
+            sizes="(max-width: 680px) 96px, 120px">
+          <img
+            src="{{ url_for('static', filename='img/founder-400.webp') }}"
+            srcset="{{ url_for('static', filename='img/founder-400.webp') }} 400w,
+                    {{ url_for('static', filename='img/founder-600.webp') }} 600w"
+            sizes="(max-width: 680px) 96px, 120px"
+            width="600" height="750"
+            alt="Xavier Escalante Castellar – Gründer von Skalantech"
+            loading="lazy" decoding="async">
+        </picture>
+      </div>
+      <div class="landing-author__copy">
+        <p class="section-label">Wer dahintersteht</p>
+        <h2>IT-Experte mit Sitz in Köln.</h2>
+        <p>
+          Mein Name ist Xavier Escalante Castellar. Als IT-Infrastructure &amp; Automation Engineer
+          plane, implementiere und betreue ich Ihre Systeme. Sie haben bei mir einen direkten, technisch 
+          kompetenten Ansprechpartner ohne Agentur-Overhead oder Ticket-Warteschleifen.
+        </p>
+        <div class="landing-author__links">
+          <a href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate <span aria-hidden="true">↗</span></a>
+          <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+          <a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="{{ url_for('public.index') }}#about">Über mich <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

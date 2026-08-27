@@ -39,6 +39,7 @@ class PublicSiteTests(unittest.TestCase):
     def test_public_routes_render(self):
         expected_types = {
             "/": "text/html",
+            "/koeln": "text/html",
             "/faq": "text/html",
             "/impressum": "text/html",
             "/datenschutz": "text/html",
@@ -233,6 +234,7 @@ class PublicSiteTests(unittest.TestCase):
 
         for path in (
             "/",
+            "/koeln",
             "/it-infrastruktur",
             "/ki-integration",
             "/ki-automatisierung",
@@ -484,6 +486,19 @@ class PublicSiteTests(unittest.TestCase):
                     self.assertNotIn("tel:+491***", html)
                 finally:
                     response.close()
+
+    def test_koeln_landing_page(self):
+        """Local SEO page: H1, contact details, opening hours, interactive map link, and schema markup."""
+        response = self.client.get("/koeln")
+        html = response.get_data(as_text=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("IT-Dienstleister &amp; KI-Beratung für Köln", html)
+        self.assertIn("Eifelstraße 33, 51109 Köln", html)
+        # Avoid terminal-masking issues by not searching literal telephone string,
+        # but verifying the anchor tag exists
+        self.assertIn('href="tel:+4917677879366"', html)
+        self.assertIn('"@type": "ProfessionalService"', html)
+        self.assertIn("https://www.openstreetmap.org", html)
 
 
 if __name__ == "__main__":

@@ -87,6 +87,53 @@
     </div>
   </section>
 
+  {% if page.roi_calculator %}
+  <section class="section section--landing section--tint" id="roi-rechner">
+    <div class="shell landing-block">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Zeitrechner</p>
+          <h2>{{ page.roi_calculator.title }}</h2>
+        </div>
+        <p>{{ page.roi_calculator.intro }}</p>
+      </div>
+      <div class="roi-calculator" id="roi-calculator" data-campaign="{{ page.slug|replace('branchen-', 'branche_') }}">
+        <div class="roi-calculator__sliders">
+          {% for s in page.roi_calculator.sliders %}
+          <div class="roi-slider">
+            <div class="roi-slider__head">
+              <label for="roi-{{ s.key }}">{{ s.label }}</label>
+              <output id="roi-out-{{ s.key }}" for="roi-{{ s.key }}">{{ s.default }} {% if s.unit %}{{ s.unit }}{% endif %}</output>
+            </div>
+            <input type="range" id="roi-{{ s.key }}" class="roi-slider__input"
+                   min="{{ s.min }}" max="{{ s.max }}" value="{{ s.default }}"
+                   data-key="{{ s.key }}" data-unit="{{ s.unit }}">
+          </div>
+          {% endfor %}
+          <div class="roi-slider roi-slider--rate">
+            <div class="roi-slider__head">
+              <label for="roi-rate">{{ page.roi_calculator.rate_label }}</label>
+              <output id="roi-out-rate" for="roi-rate">65 €/h</output>
+            </div>
+            <input type="range" id="roi-rate" class="roi-slider__input"
+                   min="20" max="200" value="65" data-key="rate" data-unit="€/h">
+          </div>
+        </div>
+        <div class="roi-calculator__result" id="roi-result" aria-live="polite">
+          <p class="roi-calculator__hours"><strong id="roi-hours">0</strong> Stunden/Jahr zurückgewonnen</p>
+          <p class="roi-calculator__days" id="roi-days">≈ 0 volle Arbeitstage</p>
+          <p class="roi-calculator__value" id="roi-value">0 €/Jahr</p>
+          <p class="roi-calculator__text" id="roi-text">{{ page.roi_calculator.result_mid }}</p>
+          <div class="roi-calculator__cta">
+            <a class="button button--accent" id="roi-cta" href="{{ page.cta_termin_url }}">Demo ansehen <span aria-hidden="true">↗</span></a>
+          </div>
+          <p class="roi-calculator__disclaimer">{{ page.roi_calculator.disclaimer }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
   {% if page.integration %}
   <section class="section section--landing">
     <div class="shell landing-block">
