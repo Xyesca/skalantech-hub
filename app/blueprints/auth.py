@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from flask import (
     Blueprint, render_template, request,
-    redirect, url_for, session, flash,
+    redirect, url_for, session, flash, current_app,
 )
 from werkzeug.security import check_password_hash
 
@@ -31,7 +31,11 @@ def _safe_next_url(default_endpoint: str = "admin.settings") -> str:
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
-@limiter.limit("10 per minute")
+# Nur POST (Login-Versuche) limitieren, GET-Seitenaufrufe zählen nicht.
+# Hinweis: memory://-Storage ist pro gunicorn-Worker — effektives IP-Limit
+# = Limit × Worker. Primärer Brute-Force-Schutz ist der Account-Lockout
+# (5 Fehlversuche → 5 min Sperre, DB-basiert, shared über alle Worker).
+@limiter.limit("5 per minute", methods=["POST"], exempt_when=lambda: bool(current_app.config.get("TESTING")))
 @csrf.exempt
 def login():
     if session.get("logged_in"):
