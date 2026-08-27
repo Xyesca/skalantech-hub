@@ -46,13 +46,6 @@
   var ctaEl = document.getElementById("roi-cta");
   var started = false;
 
-  var RESULT_TEXTS = {};
-  var resultTextsEl = document.getElementById("roi-text");
-  if (resultTextsEl) {
-    // Texte kommen aus dem Content-Dict (VELA/ATLAS) — stehen als data-* nicht
-    // im DOM; sie werden über window-Setup vom Template injiziert (siehe unten).
-  }
-
   function readValues() {
     var vals = {};
     sliders.forEach(function (input) {
@@ -98,7 +91,6 @@
     var campaign = widget.getAttribute("data-campaign") || "branche_handwerk";
     var base = "/?utm_source=organic&utm_medium=landing&utm_campaign=" + campaign;
     ctaEl.href = base + "&roi_context=" + bucket + "#termin";
-    var label = ctaEl.querySelector("span");
     ctaEl.innerHTML = formatNumber(rounded) + " Stunden zurückgewinnen – Demo ansehen <span aria-hidden=\"true\">↗</span>";
     ctaEl.setAttribute("data-track", "roi_cta_click");
     ctaEl.setAttribute("data-track-label", bucket);

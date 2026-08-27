@@ -130,6 +130,9 @@
           <p class="roi-calculator__disclaimer">{{ page.roi_calculator.disclaimer }}</p>
         </div>
       </div>
+      <script>
+      window.SKALANTECH_ROI_TEXTS = {{ {"low": page.roi_calculator.result_low, "mid": page.roi_calculator.result_mid, "high": page.roi_calculator.result_high}|tojson }};
+      </script>
     </div>
   </section>
   {% endif %}

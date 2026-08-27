@@ -308,6 +308,85 @@ class BranchenLandingTests(unittest.TestCase):
         html = self._get("/branchen/handwerk").get_data(as_text=True)
         self.assertIn("Bleiben meine bestehenden Systeme?", html)
 
+    # ── ROI-Rechner (LUMINA UX-Spez) ───────────────────────────────────
+
+    def test_handwerk_roi_calculator_section(self):
+        html = self._get("/branchen/handwerk").get_data(as_text=True)
+        self.assertIn('id="roi-rechner"', html)
+        self.assertIn('id="roi-calculator"', html)
+        self.assertIn("Was kostet Sie der Papierkram?", html)
+        # Slider aus der Spec
+        for key in ("roi-angebote", "roi-angebot_min", "roi-rechnungen", "roi-rechnung_min",
+                    "roi-anfragen", "roi-anfrage_min", "roi-rate"):
+            self.assertIn(f'id="{key}"', html)
+        # Ergebnis-Elemente + personalisierter CTA + Disclaimer
+        self.assertIn('id="roi-hours"', html)
+        self.assertIn('id="roi-cta"', html)
+        self.assertIn("Konservative Schätzung", html)
+        # Ergebnis-Texte (ATLAS-Schmerz-Sprache, 3 Buckets)
+        self.assertIn("Eine Stunde am Tag zurück", html)
+        self.assertIn("Ein Monat Bürozeit pro Jahr zurückgewonnen", html)
+        self.assertIn("Abende und Wochenenden im Büro gehören wieder Ihnen", html)
+
+    def test_handwerk_roi_context_validation(self):
+        from app.models import ContactMessage
+
+        # Gültiger Bucket → wird in die Message übernommen
+        resp = self.client.post(
+            "/contact",
+            data={
+                "name": "ROI Test",
+                "email": "roi@example.com",
+                "service": "Erstgespräch",
+                "message": "Automatisierung im Handwerksbetrieb prüfen.",
+                "privacy": "accepted",
+                "website": "",
+                "roi_context": "h_150_400",
+            },
+            headers={"X-Requested-With": "XMLHttpRequest", "Accept": "application/json"},
+        )
+        self.assertEqual(resp.status_code, 200)
+        with self.app.app_context():
+            saved = ContactMessage.query.filter_by(email="roi@example.com").first()
+            self.assertIsNotNone(saved)
+            self.assertIn("ROI-Rechner: h_150_400", saved.message)
+
+        # Ungültiger Wert → wird verworfen (Whitelist), kein Crash
+        resp2 = self.client.post(
+            "/contact",
+            data={
+                "name": "ROI Bad",
+                "email": "roi-bad@example.com",
+                "service": "Erstgespräch",
+                "message": "Test ungültiger Kontext.",
+                "privacy": "accepted",
+                "website": "",
+                "roi_context": "1337; DROP TABLE",
+            },
+            headers={"X-Requested-With": "XMLHttpRequest", "Accept": "application/json"},
+        )
+        self.assertEqual(resp2.status_code, 200)
+        with self.app.app_context():
+            saved2 = ContactMessage.query.filter_by(email="roi-bad@example.com").first()
+            self.assertIsNotNone(saved2)
+            self.assertNotIn("ROI-Rechner", saved2.message)
+
+    def test_roi_events_in_server_allowlist(self):
+        # LUMINA/PULSE: roi_slider_start, roi_calculated, roi_cta_click müssen
+        # serverseitig akzeptiert werden (analytics.py-Allowlist)
+        for event in ("roi_slider_start", "roi_calculated", "roi_cta_click"):
+            with self.subTest(event=event):
+                resp = self.client.post(
+                    "/analytics/event",
+                    json={"event": event, "page": "/branchen/handwerk", "session_id": "t-sess",
+                          "props": {"bucket": "h_150_400"}},
+                )
+                self.assertEqual(resp.status_code, 200, f"Event {event} muss erlaubt sein")
+
+    def test_handwerk_roi_script_loaded(self):
+        html = self._get("/branchen/handwerk").get_data(as_text=True)
+        self.assertIn("js/roi-calculator.js?v=17", html)
+
 
 if __name__ == "__main__":
     unittest.main()

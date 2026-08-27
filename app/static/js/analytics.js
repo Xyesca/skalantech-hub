@@ -37,7 +37,10 @@
     "faq_open",
     "check_cta_click",
     "form_start",
-    "form_submit"
+    "form_submit",
+    "roi_slider_start",
+    "roi_calculated",
+    "roi_cta_click"
   ];
 
   // ── Storage (sessionStorage mit In-Memory-Fallback) ───────────────────

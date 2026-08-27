@@ -436,11 +436,20 @@ def contact():
         return redirect(url_for("public.index", _anchor="contact"))
 
     # ── Speichern + optional E-Mail ──────────────────────────────────
+    # ROI-Kontext (LUMINA-Spez): NUR validierter Bucket aus dem Rechner,
+    # nie ein Rohwert — serverseitig gegen feste Whitelist geprüft.
+    roi_context = (request.form.get("roi_context") or "").strip()
+    ROI_BUCKETS = {"h_lt_150", "h_150_400", "h_gt_400"}
+    if roi_context not in ROI_BUCKETS:
+        roi_context = ""
+
     context = []
     if company:
         context.append(f"Unternehmen: {company}")
     if service:
         context.append(f"Anliegen: {service}")
+    if roi_context:
+        context.append(f"ROI-Rechner: {roi_context}")
     stored_message = "\n".join(context + ([""] if context else []) + [message_text])
 
     # First-Party-Attribution: UTM-Parameter + Referrer (keine Cookies,

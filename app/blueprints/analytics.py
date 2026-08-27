@@ -42,6 +42,10 @@ ANALYTICS_EVENTS = frozenset({
     "check_cta_click",    # Stufe-0-CTA (5-Minuten-Check) im FAQ-Fuß
     "form_start",         # Erstes Input im Kontakt-/Buchungsformular
     "form_submit",        # Formular abgeschickt (Client-Event, serverseitige Conversions bleiben Quelle der Wahrheit)
+    # ROI-Rechner (LUMINA UX-Spez) — reine Dashboard-Signale, nie Lead-Wahrheit
+    "roi_slider_start",   # Erste Slider-Interaktion im ROI-Rechner (1×/Session)
+    "roi_calculated",     # Rechner-Ergebnis als BUCKET (h_lt_150 | h_150_400 | h_gt_400)
+    "roi_cta_click",      # Personalisierter Ergebnis-CTA (Bucket im Label)
 })
 
 MAX_EVENT_BODY = 8192      # Payload-Limit (Bytes) — verhindert Missbrauch

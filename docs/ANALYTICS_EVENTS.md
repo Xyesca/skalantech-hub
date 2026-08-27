@@ -43,6 +43,11 @@ SQLite: analytics_events  (Modell AnalyticsEvent)
 | `check_cta_click` | Stufe-0-CTA „5-Minuten-Check“ im FAQ-Fuß (LUMINA-Spez) | Client (data-track) | `{"label": "faq-check"}` |
 | `form_start` | Erstes Input im Kontakt-/Buchungsformular (1×/Formular) | Client (input) | `{"form": "booking-form"\|"contact-form"}` |
 | `form_submit` | Formular abgeschickt (Client-Signal; Conversions serverseitig) | Client (submit) | `{"form": "booking-form"\|"contact-form"}` |
+| `roi_slider_start` | Erste Slider-Interaktion im ROI-Rechner (1×/Session) | Client (roi-calculator.js) | — |
+| `roi_calculated` | Rechner-Ergebnis als Bucket (nie Rohwert, keine PII) | Client (roi-calculator.js) | `{"bucket": "h_lt_150"\|"h_150_400"\|"h_gt_400"}` |
+| `roi_cta_click` | Personalisierter Ergebnis-CTA des ROI-Rechners | Client (data-track) | `{"label": "<bucket>"}` |
+
+**ROI-Kontext (LUMINA-Spez):** Der Ergebnis-CTA übergibt nur den Bucket als `roi_context`-Query-Parameter ans Buchungsformular; serverseitig gegen feste Whitelist `{h_lt_150, h_150_400, h_gt_400}` validiert und als „ROI-Rechner: &lt;bucket&gt;“ in die Lead-Message übernommen. **Niemals** fließt der Rohwert (Stunden/€) in Tracking oder Lead — Client-Events (`roi_calculated`, `roi_cta_click`) sind reine Dashboard-Signale, Quelle der Wahrheit bleiben serverseitige Conversions (`form_submit`, `lead_created`).
 
 **Wichtig:** `lead_created`, `demo_completed` und `meeting_booked` werden serverseitig beim
 Formular-POST geschrieben (gekoppelt an den DB-Write). Sie gehen nie verloren, auch wenn der

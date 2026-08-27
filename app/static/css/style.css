@@ -3040,6 +3040,113 @@ p:last-child {
   margin-top: 22px;
 }
 
+/* ── ROI-Rechner (LUMINA UX-Spez) ─────────────────────────────────── */
+.roi-calculator {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 26px;
+  align-items: start;
+}
+
+.roi-calculator__sliders {
+  display: grid;
+  gap: 18px;
+}
+
+.roi-slider {
+  display: grid;
+  gap: 8px;
+}
+
+.roi-slider__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.roi-slider__head label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.roi-slider__head output {
+  font-weight: 700;
+  color: var(--accent-deep);
+  font-variant-numeric: tabular-nums;
+}
+
+.roi-slider__input {
+  width: 100%;
+  height: 44px; /* LUMINA: min. 44px Touch-Fläche */
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.roi-calculator__result {
+  display: grid;
+  gap: 10px;
+  padding: 28px 26px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.roi-calculator__hours {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.roi-calculator__hours strong {
+  display: block;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  line-height: 1.1;
+  color: var(--accent-deep);
+  font-variant-numeric: tabular-nums;
+}
+
+.roi-calculator__days,
+.roi-calculator__value {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.roi-calculator__text {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.roi-calculator__cta {
+  margin-top: 6px;
+}
+
+.roi-calculator__cta .button {
+  justify-self: start;
+}
+
+.roi-calculator__disclaimer {
+  margin: 2px 0 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 860px) {
+  .roi-calculator {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .roi-calculator__result {
+    /* LUMINA: Ergebnis direkt unter den Slidern sichtbar — nie unterhalb der Falte */
+    order: 2;
+  }
+}
+
 .faq-cta {
   margin-top: 26px;
 }
