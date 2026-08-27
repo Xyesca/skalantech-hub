@@ -69,6 +69,7 @@ LANDING_BRANCHEN = {
                 "Formate: XRechnung (öffentliche Hand) und ZUGFeRD ab Version 2.0 – ZUGFeRD enthält zusätzlich ein lesbares PDF.",
                 "Kontext: Die ZDH-Umfrage 2026 (1.926 Betriebe) zeigt, dass Empfang und Versand in der Praxis noch nicht reibungslos laufen – der Bedarf ist real.",
             ],
+            "note": "Wer jetzt vorbereitet ist, muss nichts umstellen, wenn die Pflicht zuschlägt – die Rechnung geht automatisch im richtigen Format raus.",
             "cta": "Jetzt E-Rechnung-fähig – Termin buchen",
             "event": "erechnung_cta_click",
         },

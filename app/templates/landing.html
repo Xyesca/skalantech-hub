@@ -143,6 +143,9 @@
         <li>{{ fact }}</li>
         {% endfor %}
       </ul>
+      {% if page.erechnung.note %}
+      <p class="landing-erechnung__note">{{ page.erechnung.note }}</p>
+      {% endif %}
       <div class="landing-erechnung__cta">
         <a class="button button--accent" href="{{ page.cta_termin_url }}" data-track="{{ page.erechnung.event }}" data-track-label="erechnung">{{ page.erechnung.cta }} <span aria-hidden="true">↗</span></a>
       </div>

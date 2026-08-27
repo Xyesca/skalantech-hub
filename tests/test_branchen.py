@@ -270,6 +270,8 @@ class BranchenLandingTests(unittest.TestCase):
         self.assertIn("800.000", html)
         self.assertIn("XRechnung", html)
         self.assertIn("Jetzt E-Rechnung-fähig", html)
+        # VELA Delta 27.08.: Nutzen-Zeile
+        self.assertIn("Wer jetzt vorbereitet ist, muss nichts umstellen", html)
 
     def test_handwerk_faq_cta_and_tracking_events(self):
         html = self._get("/branchen/handwerk").get_data(as_text=True)
