@@ -175,6 +175,9 @@
   const bookingForm = document.getElementById("booking-form");
   const bookingStatus = document.getElementById("booking-status");
 
+  const demoForm = document.getElementById("demo-form");
+  const demoStatus = document.getElementById("demo-status");
+
   // CustomValidity zurücksetzen, sobald der Nutzer einen neuen Tag wählt
   const bookingDay = document.getElementById("booking-day");
   if (bookingDay) {
@@ -336,6 +339,7 @@
 
   wireAjaxForm(contactForm, formStatus);
   wireAjaxForm(bookingForm, bookingStatus);
+  wireAjaxForm(demoForm, demoStatus);
 
   document.querySelectorAll(".flash").forEach(function (flash) {
     const closeButton = flash.querySelector("button");

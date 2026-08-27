@@ -20,6 +20,11 @@ public_bp = Blueprint("public", __name__)
 # ── n8n-Terminwebhook (intern, Tailscale) ─────────────────────────────
 N8N_WEBHOOK_URL = os.environ.get("N8N_WEBHOOK_URL", "http://127.0.0.1:5678/webhook/skalantech-termin")
 
+# ── n8n-Lead-Webhook (intern, Tailscale) — Demo-/Lead-Erfassung ────────
+N8N_LEAD_WEBHOOK_URL = os.environ.get(
+    "N8N_LEAD_WEBHOOK_URL", "http://127.0.0.1:5678/webhook/lead-erfassung"
+)
+
 # ── SEO: indexierbare Seiten für Sitemap & robots ──────────────────────
 SITE_URL = "https://skalantech.store"
 
@@ -119,6 +124,20 @@ _SERVICE_CHOICES = {
     "Etwas anderes",
 }
 
+# Demo-Produkte für die Live-Demo-Sektion auf den Branchen-Landingpages.
+_DEMO_CHOICES = {
+    "invoiceflow": "InvoiceFlow — Rechnung → Daten",
+    "offerai": "OfferAI — Anfrage → Angebot",
+    "mailagent": "MailAgent — Mail → Klassifikation",
+    "alle": "Alle drei Produkte",
+}
+
+_DEMO_PRODUCTS = [
+    ("InvoiceFlow", "Rechnung → strukturierte Daten"),
+    ("OfferAI", "Kundenanfrage → Angebotsentwurf"),
+    ("MailAgent", "E-Mail → Klassifikation + Antwortvorschlag"),
+]
+
 
 def _client_ip() -> str:
     """Get real client IP behind reverse proxy."""
@@ -168,6 +187,74 @@ def _send_email(name: str, email: str, text: str) -> bool:
         return True
     except Exception:
         return False
+
+
+def _upsert_lead(name, email, company, service, message_text, source, medium, campaign, referrer, session_id):
+    """Dedupe (per E-Mail) + Lead anlegen/aktualisieren. Gibt den Lead zurück.
+
+    Der Commit liegt beim Aufrufer (damit Notizen/Statusänderungen im selben
+    Transaktionskontext folgen können).
+    """
+    lead = Lead.query.filter_by(email=email, is_archived=False).first()
+    if lead is None:
+        lead = Lead(name=name, email=email, status="lead", session_id=session_id)
+        db.session.add(lead)
+    elif not lead.session_id:
+        # First-Touch: Session nur setzen, wenn noch keine bekannt ist
+        lead.session_id = session_id
+    lead.company = company
+    lead.service = service
+    lead.message = message_text
+    if source:
+        lead.source = source
+    if medium:
+        lead.medium = medium
+    if campaign:
+        lead.campaign = campaign
+    if referrer:
+        lead.referrer = referrer
+    lead.last_contact_at = datetime.now(timezone.utc)
+    return lead
+
+
+def _forward_lead_to_n8n(name, email, company, message, source="landing-demo"):
+    """Lead an den n8n-Baustein „Lead-Erfassung" senden.
+
+    Returns dict(success, status, message) — success nur, wenn n8n den Lead
+    explizit als created/duplicate quittiert. Fehler sind nicht blockierend:
+    der Lead ist zuvor bereits in der Flask-DB gespeichert (Source of Truth).
+    """
+    payload = {
+        "name": name,
+        "email": email,
+        "company": company,
+        "message": message,
+        "source": source,
+    }
+    data = json.dumps(payload).encode("utf-8")
+    req = urlrequest.Request(
+        N8N_LEAD_WEBHOOK_URL,
+        data=data,
+        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        method="POST",
+    )
+    try:
+        with urlrequest.urlopen(req, timeout=10) as resp:
+            body = resp.read().decode("utf-8")
+            try:
+                parsed = json.loads(body)
+            except (json.JSONDecodeError, TypeError):
+                parsed = None
+            if parsed is None or resp.status >= 400:
+                return {"success": False, "status": "invalid_response",
+                        "message": "Lead-Erfassung hat keine gültige Antwort geliefert."}
+            status = parsed.get("status")
+            if status in ("created", "duplicate"):
+                return {"success": True, "status": status, "message": parsed.get("leadId") or ""}
+            return {"success": False, "status": "error",
+                    "message": "; ".join(parsed.get("errors") or []) or "Lead-Erfassung meldet einen Fehler."}
+    except Exception:
+        return {"success": False, "status": "unreachable", "message": "Lead-Erfassung nicht erreichbar."}
 
 
 @public_bp.route("/")
@@ -241,8 +328,12 @@ def _build_jsonld(page: dict, page_url: str) -> str:
     return json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False)
 
 
-def _render_landing(slug: str):
-    """Render a SEO landing page from seo_pages.py."""
+def _render_landing(slug: str, template: str = "landing.html"):
+    """Render a SEO landing page from seo_pages.py.
+
+    ``template`` erlaubt dedicated Templates (z. B. "websites_apps.html" für
+    die Angebotsseite) statt des generischen landing.html.
+    """
     if slug not in LANDING_PAGES:
         abort(404)
     page = dict(LANDING_PAGES[slug])
@@ -259,6 +350,20 @@ def _render_landing(slug: str):
     page.setdefault("cta_final", page["cta_primary"])
     # cta_mid ist branchen-spezifisch (Momentum-CTA nach ROI) — kein Default,
     # damit Service-Seiten unverändert bleiben.
+
+    # Live-Demo-Sektion (P0: Demos produktiv) — nur auf Branchen-Seiten.
+    if slug.startswith("branchen-"):
+        page["demo"] = {
+            "title": "Demo mit Branchendaten — sehen Sie es live.",
+            "text": (
+                "InvoiceFlow, OfferAI und MailAgent laufen bereits produktiv. "
+                "Schicken Sie uns Ihren Anwendungsfall — wir zeigen Ihnen die "
+                "passende Automatisierung live mit Ihren Daten, nicht mit Folien."
+            ),
+            "products": _DEMO_PRODUCTS,
+            "choices": list(_DEMO_CHOICES.items()),
+            "cta": "Demo anfordern",
+        }
 
     # CTA-Ziele mit UTM. Query VOR Fragment (#termin/#contact) — sonst gehen
     # die UTM-Parameter verloren (Fragment wird nicht an den Server gesendet).
@@ -278,7 +383,7 @@ def _render_landing(slug: str):
     page["jsonld"] = _build_jsonld(page, page["canonical_url"])
 
     return render_template(
-        "landing.html",
+        template,
         landing_page=page,
         landing_map=_landing_map(),
     )
@@ -312,6 +417,11 @@ def landing_n8n_automatisierung():
 @public_bp.route("/lokale-ki")
 def landing_lokale_ki():
     return _render_landing("lokale-ki")
+
+
+@public_bp.route("/websites-apps")
+def landing_websites_apps():
+    return _render_landing("websites-apps", template="websites_apps.html")
 
 
 # ── Branchen-Landingpages (explizite Routen, kein Catch-All) ──────────
@@ -493,25 +603,11 @@ def contact():
 
     # ── CRM: Lead aus der Kontaktanfrage erzeugen/aktualisieren ──────
     # Dedupe per E-Mail — wiederholte Anfragen aktualisieren denselben Lead.
-    lead = Lead.query.filter_by(email=email, is_archived=False).first()
-    if lead is None:
-        lead = Lead(name=name, email=email, status="lead", session_id=session_id)
-        db.session.add(lead)
-    elif not lead.session_id:
-        # First-Touch: Session nur setzen, wenn noch keine bekannt ist
-        lead.session_id = session_id
-    lead.company = company
-    lead.service = service
-    lead.message = message_text
-    if source:
-        lead.source = source
-    if medium:
-        lead.medium = medium
-    if campaign:
-        lead.campaign = campaign
-    if referrer:
-        lead.referrer = referrer
-    lead.last_contact_at = datetime.now(timezone.utc)
+    lead = _upsert_lead(
+        name=name, email=email, company=company, service=service,
+        message_text=message_text, source=source, medium=medium,
+        campaign=campaign, referrer=referrer, session_id=session_id,
+    )
     db.session.commit()
 
     # ── Analytics: Conversion-Events (serverseitig — verlustsicher, auch
@@ -599,6 +695,93 @@ def contact():
         return redirect(url_for("public.index", _anchor="termin"))
     flash("Vielen Dank. Ihre Anfrage wurde erfolgreich gesendet.", "success")
     return redirect(url_for("public.index", _anchor="contact"))
+
+
+@public_bp.route("/demo", methods=["POST"])
+def demo():
+    """Demo-Anfrage der Branchen-Landingpages.
+
+    Speichert den Lead (Flask-DB = Source of Truth), schreibt Analytics und
+    reicht ihn best-effort an den n8n-Baustein „Lead-Erfassung" weiter.
+    """
+    name = " ".join(request.form.get("name", "").split())
+    email = request.form.get("email", "").strip()
+    company = " ".join(request.form.get("company", "").split())
+    demo_type = request.form.get("demo_type", "").strip()
+    message_text = request.form.get("message", "").strip()
+    honeypot = request.form.get("website", "").strip()
+
+    # Bot-Submissions still akzeptieren (konsistent zu /contact)
+    if honeypot:
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify(success=True, message="Vielen Dank. Ihre Demo-Anfrage wurde übermittelt.")
+        return redirect(url_for("public.index", _anchor="demo"))
+
+    # ── Validierung ──────────────────────────────────────────────────
+    errors = []
+    if not name or len(name) > 120:
+        errors.append("Bitte geben Sie einen gültigen Namen ein.")
+    if not email or "@" not in email or len(email) > 254:
+        errors.append("Bitte geben Sie eine gültige E-Mail-Adresse ein.")
+    if len(company) > 160:
+        errors.append("Der Unternehmensname ist zu lang.")
+    if demo_type and demo_type not in _DEMO_CHOICES:
+        errors.append("Bitte wählen Sie eine gültige Demo aus.")
+    if len(message_text) > 5000:
+        errors.append("Nachricht ist zu lang (max. 5000 Zeichen).")
+
+    # ── Rate-Limiting (gemeinsamer Zähler mit Kontaktformular) ────────
+    if not errors:
+        ip = _client_ip()
+        if not _check_contact_limit(ip):
+            errors.append("Zu viele Anfragen. Bitte versuchen Sie es später erneut.")
+
+    if errors:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify(success=False, message='; '.join(errors)), 400
+        for err in errors:
+            flash(err, "error")
+        return redirect(url_for("public.index", _anchor="demo"))
+
+    # ── Attribution (First-Party, wie /contact) ───────────────────────
+    session_id = (request.form.get("session_id") or request.args.get("session_id") or "").strip()[:64]
+    source = (request.form.get("utm_source") or request.args.get("utm_source") or "").strip()[:120]
+    medium = (request.form.get("utm_medium") or request.args.get("utm_medium") or "").strip()[:60]
+    campaign = (request.form.get("utm_campaign") or request.args.get("utm_campaign") or "").strip()[:160]
+    referrer = (request.referrer or "").strip()[:512]
+    page = (request.form.get("page") or "").strip()[:255]
+
+    service = f"Demo: {_DEMO_CHOICES.get(demo_type, 'Demo')}" if demo_type else "Demo"
+    demo_message = (f"[{demo_type}] {message_text}" if demo_type else message_text).strip()
+
+    lead = _upsert_lead(
+        name=name, email=email, company=company, service=service,
+        message_text=demo_message, source=source, medium=medium,
+        campaign=campaign, referrer=referrer, session_id=session_id,
+    )
+    db.session.flush()  # lead.id für die Notiz-FK (LeadNote.lead_id NOT NULL)
+    lead.add_note(f"Demo-Anfrage: {_DEMO_CHOICES.get(demo_type, 'Demo')}", author="Website")
+    db.session.commit()
+
+    # ── Analytics: Conversion serverseitig (verlustsicher) ────────────
+    _attribution = dict(
+        page=page or "/demo", session_id=session_id,
+        source=source, medium=medium, campaign=campaign, referrer=referrer,
+    )
+    _record_event("lead_created", props={"service": service}, **_attribution)
+
+    # n8n Lead-Erfassung (best-effort — Lead ist bereits in der Flask-DB)
+    _forward_lead_to_n8n(
+        name=name, email=email, company=company,
+        message=demo_message, source="landing-demo",
+    )
+
+    _send_email(name, email, f"Demo-Anfrage ({service}):\n\n{message_text or '—'}")  # silent
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify(success=True, message='Vielen Dank. Ihre Demo-Anfrage ist angekommen — wir melden uns mit einem Demo-Termin.')
+    flash("Vielen Dank. Ihre Demo-Anfrage ist angekommen.", "success")
+    return redirect(url_for("public.index", _anchor="demo"))
 
 
 @public_bp.route("/uploads/<path:filename>")

@@ -48,6 +48,9 @@ ANALYTICS_EVENTS = frozenset({
     "roi_slider_start",   # Erste Slider-Interaktion im ROI-Rechner (1×/Session)
     "roi_calculated",     # Rechner-Ergebnis als BUCKET (h_lt_150 | h_150_400 | h_gt_400)
     "roi_cta_click",      # Personalisierter Ergebnis-CTA (Bucket im Label)
+    # Formular-Feedback (DSGVO-konformer Demo-/Booking-Pfad, Client-Events)
+    "form_field_error",   # Feldvalidierung fehlgeschlagen (Client)
+    "form_success_view",  # Erfolgsansicht nach Formular-Abschluss sichtbar (Client)
 })
 
 MAX_EVENT_BODY = 8192      # Payload-Limit (Bytes) — verhindert Missbrauch

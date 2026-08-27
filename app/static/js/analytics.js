@@ -41,7 +41,9 @@
     "form_submit",
     "roi_slider_start",
     "roi_calculated",
-    "roi_cta_click"
+    "roi_cta_click",
+    "form_field_error",
+    "form_success_view"
   ];
 
   // ── Storage (sessionStorage mit In-Memory-Fallback) ───────────────────
@@ -224,7 +226,7 @@
   }
 
   function wireForms() {
-    ["#contact-form", "#booking-form"].forEach(function (selector) {
+    ["#contact-form", "#booking-form", "#demo-form"].forEach(function (selector) {
       var form = document.querySelector(selector);
       if (!form) return;
       var started = false;
