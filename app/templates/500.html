@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Fehler · Skalantech{% endblock %}
+{% block description %}Ein interner Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+{% block canonical %}https://skalantech.store/{% endblock %}
+{% block body_class %}page-legal{% endblock %}
+
+{% block body %}
+<main class="legal-page" id="main-content">
+  <div class="shell">
+    <header class="legal-page__header">
+      <p class="section-label">Fehler 500</p>
+      <h1>Etwas ist schiefgelaufen.</h1>
+      <p>Ein interner Fehler ist aufgetreten. Ihre Anfrage wurde nicht verarbeitet — bitte versuchen Sie es in einigen Minuten erneut.</p>
+    </header>
+
+    <div class="error-actions">
+      <a class="button button--accent" href="{{ url_for('public.index') }}">Zur Startseite <span aria-hidden="true">↗</span></a>
+      <a class="button button--quiet" href="mailto:kontakt@skalantech.store">Direkt Kontakt aufnehmen <span aria-hidden="true">↗</span></a>
+    </div>
+
+    <div class="error-links" aria-label="Beliebte Seiten">
+      <a href="{{ url_for('public.landing_ki_automatisierung') }}">KI-Automatisierung</a>
+      <a href="{{ url_for('public.landing_ki_agenten') }}">KI-Agenten</a>
+      <a href="{{ url_for('public.landing_n8n_automatisierung') }}">n8n-Automatisierung</a>
+      <a href="{{ url_for('public.wissen') }}">Wissensartikel</a>
+      <a href="{{ url_for('public.faq') }}">FAQ</a>
+    </div>
+  </div>
+</main>
+{% endblock %}

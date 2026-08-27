@@ -64,6 +64,14 @@ def create_app(config_name: str | None = None) -> Flask:
     def handle_404(e):
         return render_template("404.html"), 404
 
+    # ── 500 error handler: generische Seite, keine Interna/Stack/Env leaken.
+    # Der Exception-Stacktrace wird von Flask trotzdem geloggt (docker logs)
+    # und ist vom öffentlichen Response entkoppelt. DEBUG ist in Production
+    # aus (config.py) — doppelte Absicherung gegen Debug-Tracebacks.
+    @app.errorhandler(500)
+    def handle_500(e):
+        return render_template("500.html"), 500
+
     # ── Template globals ──────────────────────────────────────────────────
     @app.template_global()
     def icon_svg(platform: str) -> Markup:
