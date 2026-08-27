@@ -27,6 +27,6 @@ jobs:
         env:
           FLASK_ENV: development
           SECRET_KEY: ci-secret-not-for-production
-          ADMIN_USERNAME: ci-admin
+          ADMIN_USERNAME: admin
           ADMIN_PASSWORD: ci-password
         run: python -m unittest discover -v
