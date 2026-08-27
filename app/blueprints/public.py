@@ -45,7 +45,15 @@ Sitemap: {SITE_URL}/sitemap.xml
 
 
 def _forward_to_n8n(name, email, company, topic, message, preferred_day, preferred_time):
-    """Send a booking request to the n8n workflow. Returns dict(success, message)."""
+    """Send a booking request to the n8n workflow.
+
+    Returns a dict:
+        success : bool  — True only when n8n explicitly returns ``success:true``.
+        status  : str   — "confirmed" (n8n ok) | "slot_taken" (n8n success:false)
+                          | "invalid_response" (n8n lieferte kein valides JSON/HTTP-Fehler)
+                          | "unreachable" (n8n down/timeout).
+        message : str   — human-readable (bei "slot_taken" 1:1 die n8n-Message).
+    """
     payload = {
         "name": name,
         "email": email,
@@ -72,15 +80,29 @@ def _forward_to_n8n(name, email, company, topic, message, preferred_day, preferr
                 parsed = None
             # Nur ein explizites success:true im JSON zählt als Buchung.
             # n8n liefert bei internen Workflow-Fehlern (z. B. Kalender-Credential
-            # abgelaufen) HTTP 200 mit leerem/Fehler-Body — das wäre sonst eine
-            # falsche meeting_booked-Conversion und eine falsche Nutzer-Bestätigung.
-            if parsed is None or resp.status >= 400 or parsed.get("success") is not True:
-                message = parsed.get("message", "Terminanfrage abgelehnt.") if isinstance(parsed, dict) else "Termindienst hat keine gültige Antwort geliefert."
-                return {"success": False, "message": f"{message} Anfrage wurde gespeichert."}
-            return {"success": True, "message": parsed.get("message", "ok")}
-    except Exception as exc:
-        # n8n nicht erreichbar — Anfrage bleibt in der DB, kein Block für den Nutzer
-        return {"success": False, "message": f"Termindienst nicht erreichbar ({type(exc).__name__}). Anfrage wurde gespeichert."}
+            # abgelaufen) HTTP 200 mit leerem/Fehler-Body — das ist eine echte
+            # n8n-Störung (invalid_response), keine „belegt“-Antwort.
+            if parsed is None or resp.status >= 400:
+                return {
+                    "success": False,
+                    "status": "invalid_response",
+                    "message": "Termindienst hat keine gültige Antwort geliefert.",
+                }
+            if parsed.get("success") is True:
+                return {"success": True, "status": "confirmed", "message": parsed.get("message", "ok")}
+            # success:false = Slot belegt / ungültiger Wunsch (normaler Nutzerpfad).
+            return {
+                "success": False,
+                "status": "slot_taken",
+                "message": parsed.get("message", "Der gewünschte Termin ist leider nicht verfügbar."),
+            }
+    except Exception:
+        # n8n nicht erreichbar (down/timeout) — Anfrage bleibt in der DB, kein Block für den Nutzer
+        return {
+            "success": False,
+            "status": "unreachable",
+            "message": "Termindienst nicht erreichbar.",
+        }
 
 # ── Contact form rate-limiting (in-memory, single-instance) ──────────────
 _CONTACT_LIMITS: dict[str, list[float]] = {}
@@ -507,18 +529,17 @@ def contact():
     if request.form.get("book_slot") == "1":
         # Anfrage angenommen (unabhängig vom n8n-Status) = Demo-Flow abgeschlossen
         _record_event("demo_completed", props={"service": "Erstgespräch"}, **_attribution)
+        day = request.form.get("preferred_day", "").strip()
+        slot = request.form.get("preferred_time", "").strip()
         n8n_result = _forward_to_n8n(
             name=name, email=email, company=company,
             topic=service or "Erstgespräch", message=message_text,
-            preferred_day=request.form.get("preferred_day", "").strip(),
-            preferred_time=request.form.get("preferred_time", "").strip(),
+            preferred_day=day, preferred_time=slot,
         )
-        # Erfolgreiche Buchung = qualifizierter Lead (Discovery folgt im Termin)
         if n8n_result and n8n_result.get("success"):
+            # Erfolgreiche Buchung = qualifizierter Lead (Discovery folgt im Termin)
             if lead.status != "qualified":
                 lead.set_status("qualified", reason="Termin über skalantech.store gebucht", author="Website")
-            day = request.form.get("preferred_day", "").strip()
-            slot = request.form.get("preferred_time", "").strip()
             lead.add_note(f"Terminwunsch bestätigt: {day} {slot}".strip(), author="Website")
             lead.last_contact_at = datetime.now(timezone.utc)
             db.session.commit()
@@ -528,11 +549,54 @@ def contact():
                 props={"day": day, "time": slot, "service": "Erstgespräch"},
                 **_attribution,
             )
+        elif n8n_result and n8n_result.get("status") in ("unreachable", "invalid_response"):
+            # n8n down/timeout/invalid → Lead ist bereits gespeichert (kein Verlust).
+            # booking_error NUR bei echter n8n-Störung — nicht bei „Slot belegt“.
+            reason = "unreachable" if n8n_result.get("status") == "unreachable" else "invalid_response"
+            _record_event("booking_error", props={"reason": reason}, **_attribution)
+        # status == "slot_taken": normaler Nutzerpfad — kein Event, Lead bleibt "lead".
 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        if n8n_result is not None and not n8n_result.get("success"):
-            return jsonify(success=False, message=n8n_result.get("message", "Der Terminwunsch konnte nicht verarbeitet werden. Ihre Anfrage wurde trotzdem gespeichert.")), 409
+        if n8n_result is not None:
+            if n8n_result.get("success"):
+                booking = {
+                    "day": request.form.get("preferred_day", "").strip(),
+                    "time": request.form.get("preferred_time", "").strip(),
+                    "status": "confirmed",
+                }
+                return jsonify(
+                    success=True,
+                    message="Vielen Dank. Ihre Anfrage wurde erfolgreich gesendet.",
+                    booking=booking,
+                )
+            if n8n_result.get("status") in ("unreachable", "invalid_response"):
+                # D3: Lead gespeichert, kein 409 — queued-Erfolgsansicht.
+                booking = {
+                    "day": request.form.get("preferred_day", "").strip(),
+                    "time": request.form.get("preferred_time", "").strip(),
+                    "status": "queued",
+                }
+                return jsonify(
+                    success=True,
+                    message="Ihre Anfrage ist angekommen — wir melden uns innerhalb von 24 h mit einem Terminvorschlag.",
+                    booking=booking,
+                )
+            # D2: Slot belegt → n8n-Message 1:1, success:false, HTTP 200 (kein 409).
+            return jsonify(
+                success=False,
+                message=n8n_result.get("message", "Der gewünschte Termin ist leider nicht verfügbar."),
+            )
         return jsonify(success=True, message='Vielen Dank. Ihre Anfrage wurde erfolgreich gesendet.')
+
+    # ── Non-AJAX-Fallback (ohne JavaScript) ───────────────────────────
+    if n8n_result is not None:
+        if n8n_result.get("success"):
+            flash("Vielen Dank. Ihre Anfrage wurde erfolgreich gesendet.", "success")
+        elif n8n_result.get("status") in ("unreachable", "invalid_response"):
+            flash("Ihre Anfrage ist angekommen — wir melden uns innerhalb von 24 h mit einem Terminvorschlag.", "success")
+        else:
+            flash(n8n_result.get("message", "Der gewünschte Termin ist leider nicht verfügbar."), "error")
+        return redirect(url_for("public.index", _anchor="termin"))
     flash("Vielen Dank. Ihre Anfrage wurde erfolgreich gesendet.", "success")
     return redirect(url_for("public.index", _anchor="contact"))
 

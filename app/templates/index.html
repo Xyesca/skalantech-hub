@@ -926,6 +926,37 @@
           </button>
           <p class="form-status" id="booking-status" aria-live="polite"></p>
         </form>
+        <div class="booking-success" id="booking-success" role="status" aria-live="polite" tabindex="-1" hidden>
+          <div class="booking-success__check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="11" fill="currentColor" fill-opacity="0.12"></circle>
+              <path d="M7 12.5l3.2 3.2L17 9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+          <h2 class="booking-success__title">Anfrage ist angekommen.</h2>
+
+          <div class="booking-success__summary" id="booking-success-summary" hidden>
+            <p class="booking-success__slot">Ihr Wunschtermin: <strong id="booking-success-slot"></strong></p>
+            <p class="booking-success__hint">Die Kalendereinladung kommt gleich per E-Mail. Sollte die Zeit doch nicht passen, antworten Sie einfach auf die Einladung.</p>
+          </div>
+
+          <div class="booking-success__queued" id="booking-success-queued" hidden>
+            <p>Wir melden uns innerhalb von 24 h mit einem Terminvorschlag.</p>
+          </div>
+
+          <div class="booking-success__steps">
+            <p>1. E-Mail-Check — Einladung + Terminbestätigung</p>
+            <p>2. 30 Minuten Videocall — wir klären Ihre Ausgangslage</p>
+            <p>3. Konkrete Einschätzung — was sich lohnt, was nicht</p>
+          </div>
+
+          <p class="booking-success__trust">Direkt vom Gründer — kein Vertriebsteam.</p>
+
+          <div class="booking-success__cta">
+            <a href="#faq">Vorab mehr erfahren → FAQ</a>
+            <span>Termin verschieben? → einfach auf die Einladung antworten</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>

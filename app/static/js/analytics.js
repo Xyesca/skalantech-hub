@@ -27,6 +27,7 @@
     "contact_clicked",
     "calendar_opened",
     "meeting_booked",
+    "booking_confirmed",
     "service_viewed",
     "case_study_viewed",
     "roi_calculated",

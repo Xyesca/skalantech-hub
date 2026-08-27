@@ -203,7 +203,8 @@ class AnalyticsEventTests(unittest.TestCase):
         original = self.public_module._forward_to_n8n
         self.public_module._forward_to_n8n = lambda *a, **kw: {
             "success": False,
-            "message": "Termindienst nicht erreichbar",
+            "status": "unreachable",
+            "message": "Termindienst nicht erreichbar.",
         }
         try:
             response = self._submit_contact(extra={
@@ -214,18 +215,22 @@ class AnalyticsEventTests(unittest.TestCase):
         finally:
             self.public_module._forward_to_n8n = original
 
-        # n8n hat abgelehnt → Anfrage bleibt gespeichert, Client bekommt 409
-        self.assertEqual(response.status_code, 409)
+        # n8n down → Anfrage bleibt gespeichert, KEIN 409, queued-Erfolgsansicht (D3)
+        self.assertEqual(response.status_code, 200)
+        body = response.get_json()
+        self.assertTrue(body["success"])
+        self.assertEqual(body["booking"]["status"], "queued")
 
         names = {e.event for e in self._events()}
         self.assertIn("lead_created", names)
         self.assertIn("demo_completed", names)
+        self.assertIn("booking_error", names)
         # n8n ohne Erfolg → keine echte Buchung
         self.assertNotIn("meeting_booked", names)
 
     def test_booking_with_n8n_success_records_meeting_booked(self):
         original = self.public_module._forward_to_n8n
-        self.public_module._forward_to_n8n = lambda *a, **kw: {"success": True, "message": "ok"}
+        self.public_module._forward_to_n8n = lambda *a, **kw: {"success": True, "status": "confirmed", "message": "ok"}
         try:
             response = self._submit_contact(extra={
                 "book_slot": "1",
@@ -250,7 +255,7 @@ class AnalyticsEventTests(unittest.TestCase):
     def test_homepage_loads_analytics_script(self):
         response = self.client.get("/")
         html = response.get_data(as_text=True)
-        self.assertIn("js/analytics.js?v=17", html)
+        self.assertIn("js/analytics.js?v=18", html)
         # Reihenfolge: analytics.js VOR main.js (Attribution vor Formular-Submit)
         self.assertLess(html.index("analytics.js"), html.index("main.js"))
 

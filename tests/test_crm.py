@@ -1,5 +1,6 @@
 """Tests für die CRM-Vertriebs-Pipeline (Leads, API, Admin-UI, Follow-ups)."""
 import importlib
+import json
 import os
 import sys
 import tempfile
@@ -42,14 +43,22 @@ class CrmTests(unittest.TestCase):
         self.db = db
         self.client = self.app.test_client()
 
-        # Test-Isolation: Leads + Notizen vor jedem Test leeren, damit sich
-        # Tests (z. B. Follow-up-Filter, Badge-Zähler) nicht gegenseitig beeinflussen.
+        # Test-Isolation: Leads + Notizen + Analytics-Events + Nachrichten vor
+        # jedem Test leeren, damit sich Tests nicht gegenseitig beeinflussen.
         with self.app.app_context():
-            from app.models import Lead, LeadNote
+            from app.models import AnalyticsEvent, ContactMessage, Lead, LeadNote
 
             LeadNote.query.delete()
             Lead.query.delete()
+            AnalyticsEvent.query.delete()
+            ContactMessage.query.delete()
             db.session.commit()
+
+        # Rate-Limiter (in-memory) zurücksetzen — sonst kumulieren sich die
+        # /contact-POSTs über die Tests hinweg und lösen 400 aus.
+        from app.blueprints.public import _CONTACT_LIMITS
+
+        _CONTACT_LIMITS.clear()
 
     def _login(self):
         return self.client.post(
@@ -207,9 +216,12 @@ class CrmTests(unittest.TestCase):
 
     def test_booking_success_qualifies_lead(self):
         with mock.patch("app.blueprints.public._forward_to_n8n") as mocked:
-            mocked.return_value = {"success": True, "message": "ok"}
+            mocked.return_value = {"success": True, "status": "confirmed", "message": "ok"}
             r = self._contact(email="bernd-ok@kontakt.de", book_slot="1", preferred_day="2026-09-10", preferred_time="10:00")
             self.assertEqual(r.status_code, 200)
+            body = r.get_json()
+            self.assertTrue(body["success"])
+            self.assertEqual(body["booking"], {"day": "2026-09-10", "time": "10:00", "status": "confirmed"})
 
         with self.app.app_context():
             from app.models import Lead
@@ -220,17 +232,44 @@ class CrmTests(unittest.TestCase):
             self.assertTrue(any("Lead → Qualified" in b for b in bodies), bodies)
             self.assertTrue(any("Terminwunsch bestätigt" in b for b in bodies), bodies)
 
-    def test_booking_failure_keeps_lead(self):
+    def test_booking_slot_taken_keeps_lead_and_message(self):
+        n8n_message = "Der gewünschte Termin ist leider bereits belegt. Bitte wählen Sie eine andere Zeit."
         with mock.patch("app.blueprints.public._forward_to_n8n") as mocked:
-            mocked.return_value = {"success": False, "message": "Termindienst nicht erreichbar"}
-            r = self._contact(email="bernd-fail@kontakt.de", book_slot="1")
-            self.assertEqual(r.status_code, 409)
+            mocked.return_value = {"success": False, "status": "slot_taken", "message": n8n_message}
+            r = self._contact(email="bernd-belegt@kontakt.de", book_slot="1", preferred_day="2026-09-10", preferred_time="10:00")
+            self.assertEqual(r.status_code, 200)  # KEIN 409 (D7: 409 nur bei Validierung)
+            body = r.get_json()
+            self.assertFalse(body["success"])
+            self.assertEqual(body["message"], n8n_message)  # n8n-Message 1:1
+            self.assertNotIn("booking", body)
 
         with self.app.app_context():
-            from app.models import Lead
+            from app.models import AnalyticsEvent, Lead
 
-            lead = Lead.query.filter_by(email="bernd-fail@kontakt.de").first()
-            self.assertEqual(lead.status, "lead")
+            lead = Lead.query.filter_by(email="bernd-belegt@kontakt.de").first()
+            self.assertIsNotNone(lead)  # Lead IMMER gespeichert (kein Verlust)
+            self.assertEqual(lead.status, "lead")  # kein Statuswechsel bei „belegt“
+            # KEIN booking_error-Event bei „belegt“ (normaler Nutzerpfad, D6)
+            self.assertEqual(AnalyticsEvent.query.filter_by(event="booking_error").count(), 0)
+
+    def test_booking_down_keeps_lead_queued(self):
+        with mock.patch("app.blueprints.public._forward_to_n8n") as mocked:
+            mocked.return_value = {"success": False, "status": "unreachable", "message": "Termindienst nicht erreichbar."}
+            r = self._contact(email="bernd-down@kontakt.de", book_slot="1", preferred_day="2026-09-10", preferred_time="10:00")
+            self.assertEqual(r.status_code, 200)  # KEIN 409, kein HTTP-Fehler für den Nutzer (D3)
+            body = r.get_json()
+            self.assertTrue(body["success"])
+            self.assertEqual(body["booking"], {"day": "2026-09-10", "time": "10:00", "status": "queued"})
+
+        with self.app.app_context():
+            from app.models import AnalyticsEvent, Lead
+
+            lead = Lead.query.filter_by(email="bernd-down@kontakt.de").first()
+            self.assertIsNotNone(lead)  # Lead IMMER gespeichert
+            self.assertEqual(lead.status, "lead")  # Statuswechsel NUR bei success
+            err = AnalyticsEvent.query.filter_by(event="booking_error").first()
+            self.assertIsNotNone(err)
+            self.assertEqual(json.loads(err.props), {"reason": "unreachable"})
 
     # ══════════════════════════════════════════════════════════════════
     # Admin-UI

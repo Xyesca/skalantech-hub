@@ -30,6 +30,8 @@ ANALYTICS_EVENTS = frozenset({
     "contact_clicked",    # Kontakt-CTA / mailto geklickt
     "calendar_opened",    # Datumsauswahl (Kalender) im Buchungsformular geöffnet
     "meeting_booked",     # n8n-Terminwebhook hat die Buchung bestätigt
+    "booking_error",      # n8n down/timeout/invalid_response (Server; props reason unreachable|invalid_response)
+    "booking_confirmed",  # Bestätigungsansicht im Booking-Box sichtbar (Client)
     "service_viewed",     # Leistungs-Karte im Viewport (einmal pro Session)
     "case_study_viewed",  # Projekt-/Case-Study-Karte im Viewport (einmal pro Session)
     "roi_calculated",     # ROI-Rechner ausgelöst (UI folgt; API/Event ist bereit)

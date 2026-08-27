@@ -183,8 +183,66 @@
     });
   }
 
+  // ── Booking: Inline-Erfolgsansicht (D1/D3) ────────────────────────────
+  const bookingSuccess = document.getElementById("booking-success");
+  let bookingConfirmedTracked = false;
+
+  function formatBookingDay(isoDay) {
+    // "2026-09-10" → "Do., 10.09.2026" (deutsches Format, UTC-safe via Mittagszeit)
+    if (!isoDay) return "";
+    try {
+      const d = new Date(isoDay + "T12:00:00");
+      if (Number.isNaN(d.getTime())) return isoDay;
+      const weekdays = ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."];
+      const wd = weekdays[d.getUTCDay()];
+      const dd = String(d.getUTCDate()).padStart(2, "0");
+      const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+      const yyyy = d.getUTCFullYear();
+      return `${wd}, ${dd}.${mm}.${yyyy}`;
+    } catch (e) {
+      return isoDay;
+    }
+  }
+
+  function showBookingSuccess(form, booking) {
+    if (!bookingSuccess) return;
+    const summary = document.getElementById("booking-success-summary");
+    const slotEl = document.getElementById("booking-success-slot");
+    const queued = document.getElementById("booking-success-queued");
+
+    const isConfirmed = booking && booking.status === "confirmed";
+    if (summary) {
+      if (isConfirmed) {
+        const day = formatBookingDay(booking.day);
+        const time = booking.time ? booking.time + " Uhr" : "";
+        if (slotEl) slotEl.textContent = day + (time ? ", " + time : "");
+        summary.hidden = false;
+      } else {
+        summary.hidden = true;
+      }
+    }
+    if (queued) queued.hidden = isConfirmed;
+
+    form.hidden = true;
+    bookingSuccess.hidden = false;
+
+    // booking_confirmed feuern, sobald die Erfolgsansicht sichtbar wird (1×).
+    if (typeof window.SkalantechAnalytics !== "undefined" && !bookingConfirmedTracked) {
+      bookingConfirmedTracked = true;
+      window.SkalantechAnalytics.track("booking_confirmed", {
+        status: isConfirmed ? "confirmed" : "queued"
+      });
+    }
+
+    // Accessibility: Fokus auf die Erfolgsansicht (tabindex="-1" + focus()).
+    bookingSuccess.focus({ preventScroll: true });
+    bookingSuccess.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
   function wireAjaxForm(form, statusEl) {
     if (!form || !statusEl || !window.fetch) return;
+
+    const isBooking = form.id === "booking-form";
 
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
@@ -245,6 +303,12 @@
           throw new Error(payload.message || "Die Anfrage konnte nicht gesendet werden.");
         }
 
+        // Booking: Inline-Erfolgsansicht statt Reset (D1/D3) — kein Redirect.
+        if (isBooking && payload.booking) {
+          showBookingSuccess(form, payload.booking);
+          return;
+        }
+
         form.reset();
         if (statusEl) {
           statusEl.textContent = payload.message;
@@ -254,6 +318,11 @@
         if (statusEl) {
           statusEl.textContent = error.message || "Etwas ist schiefgelaufen. Bitte senden Sie eine E-Mail.";
           statusEl.classList.add("is-error");
+        }
+        // Slot belegt (D2): Formular bleibt gefüllt, Zeit-Feld fokussieren.
+        if (isBooking) {
+          const timeField = document.getElementById("booking-time");
+          if (timeField) timeField.focus();
         }
       } finally {
         if (submitButton) {

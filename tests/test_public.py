@@ -1,8 +1,10 @@
 """Regression tests for the public Skalantech experience."""
+import json
 import os
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 from flask import url_for
 
@@ -155,6 +157,47 @@ class PublicSiteTests(unittest.TestCase):
         )
         self.assertEqual(bot.status_code, 200)
         self.assertTrue(bot.get_json()["success"])
+
+    def test_forward_to_n8n_classifies_responses(self):
+        """_forward_to_n8n unterscheidet confirmed / slot_taken / invalid_response / unreachable."""
+        from app.blueprints import public as pub
+
+        def _mock_urlopen(status, body):
+            resp = mock.MagicMock()
+            resp.status = status
+            resp.read.return_value = body
+            cm = mock.MagicMock()
+            cm.__enter__.return_value = resp
+            return cm
+
+        # 1) success:true → confirmed
+        with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, b'{"success": true, "message": "ok"}')):
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+        self.assertTrue(r["success"])
+        self.assertEqual(r["status"], "confirmed")
+
+        # 2) success:false → slot_taken (n8n-Message 1:1, kein Event)
+        with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, json.dumps({"success": False, "message": "Slot belegt"}).encode())):
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+        self.assertFalse(r["success"])
+        self.assertEqual(r["status"], "slot_taken")
+        self.assertEqual(r["message"], "Slot belegt")
+
+        # 3) leere Antwort (HTTP 200, kein JSON) → invalid_response
+        with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, b"")):
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+        self.assertEqual(r["status"], "invalid_response")
+
+        # 4) HTTP 500 → invalid_response
+        with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(500, b"Internal Server Error")):
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+        self.assertEqual(r["status"], "invalid_response")
+
+        # 5) Exception (down/timeout) → unreachable
+        with mock.patch.object(pub.urlrequest, "urlopen", side_effect=Exception("connection refused")):
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+        self.assertEqual(r["status"], "unreachable")
+        self.assertFalse(r["success"])
 
     def test_security_headers_are_present(self):
         response = self.client.get("/")
