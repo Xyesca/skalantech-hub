@@ -83,12 +83,14 @@ def create_app(config_name: str | None = None) -> Flask:
     from app.blueprints.admin import admin_bp
     from app.blueprints.crm_api import crm_api_bp
     from app.blueprints.analytics import analytics_bp
+    from app.blueprints.automation_showcase import showcase_bp
 
     app.register_blueprint(public_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(crm_api_bp)
     app.register_blueprint(analytics_bp)
+    app.register_blueprint(showcase_bp)
     # CRM-API ist maschinell (n8n/Hermes) — Auth via X-API-Key statt CSRF.
     csrf.exempt(crm_api_bp)
     # Analytics-Beacon (sendBeacon/fetch ohne Session-Token) — stattdessen
