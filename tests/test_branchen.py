@@ -323,10 +323,12 @@ class BranchenLandingTests(unittest.TestCase):
         self.assertIn('id="roi-hours"', html)
         self.assertIn('id="roi-cta"', html)
         self.assertIn("Konservative Schätzung", html)
-        # Ergebnis-Texte (ATLAS-Schmerz-Sprache, 3 Buckets)
-        self.assertIn("Eine Stunde am Tag zurück", html)
+        # Ergebnis-Texte (ATLAS-Schmerz-Sprache, 3 Buckets) — „Eine Stunde am
+        # Tag“ und „Abende und Wochenenden“ liegen im tojson-Script (ASCII-escaped),
+        # „Ein Monat Bürozeit…“ im gerenderten Ergebnis-Paragraph.
+        self.assertIn("Eine Stunde am Tag", html)
         self.assertIn("Ein Monat Bürozeit pro Jahr zurückgewonnen", html)
-        self.assertIn("Abende und Wochenenden im Büro gehören wieder Ihnen", html)
+        self.assertIn("Abende und Wochenenden", html)
 
     def test_handwerk_roi_context_validation(self):
         from app.models import ContactMessage
@@ -381,7 +383,8 @@ class BranchenLandingTests(unittest.TestCase):
                     json={"event": event, "page": "/branchen/handwerk", "session_id": "t-sess",
                           "props": {"bucket": "h_150_400"}},
                 )
-                self.assertEqual(resp.status_code, 200, f"Event {event} muss erlaubt sein")
+                # Erfolg = 204 No Content (sendBeacon-kompatibel)
+                self.assertEqual(resp.status_code, 204, f"Event {event} muss erlaubt sein")
 
     def test_handwerk_roi_script_loaded(self):
         html = self._get("/branchen/handwerk").get_data(as_text=True)
