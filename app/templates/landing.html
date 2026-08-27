@@ -220,6 +220,48 @@
   </section>
   {% endif %}
 
+  <section class="section section--landing landing-author">
+    <div class="shell landing-author__inner">
+      <div class="landing-author__photo">
+        <picture>
+          <source type="image/avif"
+            srcset="{{ url_for('static', filename='img/founder-400.avif') }} 400w,
+                    {{ url_for('static', filename='img/founder-600.avif') }} 600w"
+            sizes="(max-width: 680px) 96px, 120px">
+          <img
+            src="{{ url_for('static', filename='img/founder-400.webp') }}"
+            srcset="{{ url_for('static', filename='img/founder-400.webp') }} 400w,
+                    {{ url_for('static', filename='img/founder-600.webp') }} 600w"
+            sizes="(max-width: 680px) 96px, 120px"
+            width="600" height="750"
+            alt="Xavier Escalante Castellar – Gründer von Skalantech"
+            loading="lazy" decoding="async">
+        </picture>
+      </div>
+      <div class="landing-author__copy">
+        <p class="section-label">Wer dahintersteht</p>
+        <h2>Eine Person, die mitverantwortet – und erreichbar bleibt.</h2>
+        <p>
+          Xavier Escalante Castellar, IT-Infrastructure &amp; Automation Engineer,
+          baut und betreut die Systeme selbst. Direkter Kontakt, dokumentierte
+          Arbeit, keine Blackbox. Nachweise sind prüfbar: Zertifikate, LinkedIn
+          und GitHub.
+        </p>
+        <div class="landing-author__links">
+          <a href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate <span aria-hidden="true">↗</span></a>
+          <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+          <a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="{{ url_for('public.index') }}#about">Über mich <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="landing-author__trust">
+        <span><span aria-hidden="true">✓</span> SSL-verschlüsselt</span>
+        <span><span aria-hidden="true">✓</span> Keine externen Tracker</span>
+        <span><span aria-hidden="true">✓</span> Datenschutz-konforme Verarbeitung</span>
+      </div>
+    </div>
+  </section>
+
   <section class="section section--landing landing-cta">
     <div class="shell">
       <h2>Klingt nach Ihrem Thema?</h2>

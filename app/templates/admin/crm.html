@@ -1,0 +1,102 @@
+{% extends "admin/base.html" %}
+{% block title %}CRM · Skalantech{% endblock %}
+{% block content %}
+<div class="admin-header" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap;">
+  <div>
+    <h2>CRM · Vertriebs-Pipeline</h2>
+    <p>Lead → Qualified → Discovery → Proposal → Won/Lost</p>
+  </div>
+  <a href="{{ url_for('admin.crm_new') }}" class="btn btn--cyber">+ Neuer Lead</a>
+</div>
+
+<!-- ═══ Funnel-Stats ═══════════════════════════════════════════════ -->
+<div class="crm-stats">
+  <div class="crm-stat">
+    <span class="crm-stat__label">Offene Leads</span>
+    <span class="crm-stat__value">{{ counts.get('lead', 0) + counts.get('qualified', 0) + counts.get('discovery', 0) + counts.get('proposal', 0) }}</span>
+  </div>
+  <div class="crm-stat crm-stat--accent">
+    <span class="crm-stat__label">Fällige Follow-ups</span>
+    <span class="crm-stat__value">{{ due|length }}</span>
+  </div>
+  <div class="crm-stat">
+    <span class="crm-stat__label">Pipeline-Wert (offen)</span>
+    <span class="crm-stat__value">{{ "{:,.0f}".format(open_value) }}&nbsp;€</span>
+  </div>
+  <div class="crm-stat crm-stat--won">
+    <span class="crm-stat__label">Won</span>
+    <span class="crm-stat__value">{{ won }}</span>
+  </div>
+  <div class="crm-stat crm-stat--lost">
+    <span class="crm-stat__label">Lost</span>
+    <span class="crm-stat__value">{{ lost }}</span>
+  </div>
+</div>
+
+<!-- ═══ Fällige Follow-ups ═════════════════════════════════════════ -->
+{% if due %}
+<div class="admin-card" style="border-left: 4px solid var(--accent, #e8871e); margin-bottom: 1.5rem;">
+  <h3 style="margin-bottom: 0.75rem; color: var(--accent, #e8871e);">⏰ Fällige Follow-ups ({{ due|length }})</h3>
+  <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 0.4rem;">
+    {% for l in due %}
+    <li>
+      <a href="{{ url_for('admin.crm_detail', lead_id=l.id) }}" style="color: var(--text); text-decoration: none;">
+        <strong>{{ l.name }}</strong>{% if l.company %} ({{ l.company }}){% endif %}
+        <span style="color: var(--text-secondary); font-size: 0.8rem;">
+          · {{ l.email }} · seit {{ l.next_followup_at.strftime('%d.%m. %H:%M') }} fällig
+        </span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<!-- ═══ Filter-Tabs ════════════════════════════════════════════════ -->
+<div class="crm-tabs">
+  <a href="{{ url_for('admin.crm') }}" class="crm-tab {% if not status %}is-active{% endif %}">Alle offen</a>
+  {% for key, label in stages.items() %}
+    {% if key not in terminal %}
+    <a href="{{ url_for('admin.crm', status=key) }}" class="crm-tab {% if status == key %}is-active{% endif %}">
+      {{ label }} <span class="crm-tab__count">{{ counts.get(key, 0) }}</span>
+    </a>
+    {% endif %}
+  {% endfor %}
+  <a href="{{ url_for('admin.crm', status='won') }}" class="crm-tab {% if status == 'won' %}is-active{% endif %}">Won {{ counts.get('won', 0) }}</a>
+  <a href="{{ url_for('admin.crm', status='lost') }}" class="crm-tab {% if status == 'lost' %}is-active{% endif %}">Lost {{ counts.get('lost', 0) }}</a>
+</div>
+
+<!-- ═══ Board ══════════════════════════════════════════════════════ -->
+<div class="crm-board">
+  {% for key in flow %}
+    {% if status == '' or status == key %}
+    <div class="crm-column">
+      <div class="crm-column__head">
+        <span class="crm-stage crm-stage--{{ key }}">{{ stages[key] }}</span>
+        <span class="crm-column__count">{{ leads|selectattr('status', 'equalto', key)|list|length }}</span>
+      </div>
+      <div class="crm-column__body">
+        {% for l in leads if l.status == key %}
+        <a class="crm-card" href="{{ url_for('admin.crm_detail', lead_id=l.id) }}">
+          <div class="crm-card__top">
+            <strong>{{ l.name }}</strong>
+            {% if l.followup_overdue %}<span class="badge badge--warn" title="Follow-up fällig">⏰</span>{% endif %}
+          </div>
+          {% if l.company %}<div class="crm-card__line">{{ l.company }}</div>{% endif %}
+          <div class="crm-card__line crm-card__muted">{{ l.email }}</div>
+          {% if l.value_estimate %}<div class="crm-card__line crm-card__value">{{ "{:,.0f}".format(l.value_estimate) }} €</div>{% endif %}
+          {% if l.service %}<div class="crm-card__line crm-card__muted"># {{ l.service }}</div>{% endif %}
+          {% if l.next_followup_at and not l.is_terminal %}
+          <div class="crm-card__line crm-card__followup">↳ {{ l.next_followup_at.strftime('%d.%m. %H:%M') }}</div>
+          {% endif %}
+          {% if l.source or l.medium %}<div class="crm-card__line crm-card__src">{{ l.source or '—' }}{% if l.medium %} / {{ l.medium }}{% endif %}</div>{% endif %}
+        </a>
+        {% else %}
+        <div class="crm-column__empty">—</div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}

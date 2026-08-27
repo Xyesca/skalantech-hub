@@ -1,0 +1,129 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ lead.name }} · CRM · Skalantech{% endblock %}
+{% block content %}
+<div class="admin-header" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap;">
+  <div>
+    <h2>{{ lead.name }}{% if lead.company %} · {{ lead.company }}{% endif %}</h2>
+    <p>
+      <a href="mailto:{{ lead.email }}" style="color: var(--cyber);">{{ lead.email }}</a>
+      {% if lead.phone %} · {{ lead.phone }}{% endif %}
+      <span class="crm-stage crm-stage--{{ lead.status }}" style="margin-left: 0.5rem;">{{ lead.status_label }}</span>
+      {% if lead.is_archived %}<span class="badge">archiviert</span>{% endif %}
+    </p>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <a href="{{ url_for('admin.crm') }}" class="btn btn--ghost btn--small">← Pipeline</a>
+    <form method="POST" action="{{ url_for('admin.crm_archive', lead_id=lead.id) }}">
+      <button type="submit" class="btn btn--ghost btn--small">
+        {% if lead.is_archived %}Reaktivieren{% else %}Archivieren{% endif %}
+      </button>
+    </form>
+    <form method="POST" action="{{ url_for('admin.crm_delete', lead_id=lead.id) }}" onsubmit="return confirm('Lead wirklich löschen? Alle Notizen gehen verloren.');">
+      <button type="submit" class="btn btn--ghost btn--small btn--danger-hover">Löschen</button>
+    </form>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem; align-items: start;" class="crm-detail-grid">
+  <!-- ═══ Links: Stammdaten / Status / Follow-up ═════════════════════ -->
+  <form method="POST" action="{{ url_for('admin.crm_edit', lead_id=lead.id) }}" class="admin-card">
+    <h3 style="margin-bottom: 1rem;">Stammdaten & Status</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <div>
+        <label class="form-label" for="name">Name *</label>
+        <input class="form-input" type="text" id="name" name="name" required maxlength="120" value="{{ lead.name }}">
+      </div>
+      <div>
+        <label class="form-label" for="email">E-Mail *</label>
+        <input class="form-input" type="email" id="email" name="email" required maxlength="254" value="{{ lead.email }}">
+      </div>
+      <div>
+        <label class="form-label" for="company">Unternehmen</label>
+        <input class="form-input" type="text" id="company" name="company" maxlength="160" value="{{ lead.company }}">
+      </div>
+      <div>
+        <label class="form-label" for="phone">Telefon</label>
+        <input class="form-input" type="text" id="phone" name="phone" maxlength="60" value="{{ lead.phone }}">
+      </div>
+      <div>
+        <label class="form-label" for="service">Anliegen / Service</label>
+        <input class="form-input" type="text" id="service" name="service" maxlength="120" value="{{ lead.service }}">
+      </div>
+      <div>
+        <label class="form-label" for="value_estimate">Wert-Schätzung (€)</label>
+        <input class="form-input" type="number" id="value_estimate" name="value_estimate" min="0" step="500" value="{{ lead.value_estimate or 0 }}">
+      </div>
+      <div>
+        <label class="form-label" for="status">Status</label>
+        <select class="form-input" id="status" name="status">
+          {% for key, label in stages.items() %}
+          <option value="{{ key }}" {% if lead.status == key %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% if lead.status == 'lost' %}
+      <div>
+        <label class="form-label" for="lost_reason">Lost-Grund</label>
+        <select class="form-input" id="lost_reason" name="lost_reason">
+          <option value="">—</option>
+          {% for r in lost_reasons %}
+          <option value="{{ r }}" {% if lead.lost_reason == r %}selected{% endif %}>{{ r }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <div>
+        <label class="form-label" for="next_followup_at">Nächstes Follow-up</label>
+        <input class="form-input" type="datetime-local" id="next_followup_at" name="next_followup_at" value="{{ fmt_dt(lead.next_followup_at) }}">
+      </div>
+      <div>
+        <label class="form-label" for="last_contact_at">Letzter Kontakt</label>
+        <input class="form-input" type="datetime-local" id="last_contact_at" name="last_contact_at" value="{{ fmt_dt(lead.last_contact_at) }}">
+      </div>
+    </div>
+    <div style="margin-top: 1rem;">
+      <label class="form-label" for="message">Ausgangslage / Nachricht</label>
+      <textarea class="form-input" id="message" name="message" rows="4" maxlength="5000">{{ lead.message }}</textarea>
+    </div>
+    <div style="margin-top: 1rem;">
+      <label class="form-label" for="note">Notiz hinzufügen (optional)</label>
+      <textarea class="form-input" id="note" name="note" rows="2" maxlength="2000" placeholder="z. B. Discovery-Erkenntnis, Preisrahmen, Entscheider…"></textarea>
+    </div>
+    <div style="margin-top: 1.5rem;">
+      <button type="submit" class="btn btn--cyber">Speichern</button>
+    </div>
+    {% if lead.source or lead.medium or lead.campaign or lead.referrer %}
+    <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-mono);">
+      Quelle: {{ lead.source or '—' }} / {{ lead.medium or '—' }} / {{ lead.campaign or '—' }}
+      {% if lead.referrer %}<br>Referrer: {{ lead.referrer }}{% endif %}
+      <br>Erstellt: {{ lead.created_at.strftime('%d.%m.%Y %H:%M') if lead.created_at else '—' }}
+      {% if lead.won_at %} · Won: {{ lead.won_at.strftime('%d.%m.%Y') }}{% endif %}
+      {% if lead.lost_at %} · Lost: {{ lead.lost_at.strftime('%d.%m.%Y') }} ({{ lead.lost_reason or 'ohne Grund' }}){% endif %}
+    </p>
+    {% endif %}
+  </form>
+
+  <!-- ═══ Rechts: Notizen / Aktivitäten ═════════════════════════════ -->
+  <div class="admin-card">
+    <h3 style="margin-bottom: 1rem;">Aktivitäten & Notizen</h3>
+    <form method="POST" action="{{ url_for('admin.crm_note', lead_id=lead.id) }}" style="margin-bottom: 1rem;">
+      <textarea class="form-input" name="body" rows="3" maxlength="2000" placeholder="Neue Notiz…" required></textarea>
+      <button type="submit" class="btn btn--ghost btn--small" style="margin-top: 0.5rem;">Notiz hinzufügen</button>
+    </form>
+    {% if lead.notes %}
+    <div style="display: grid; gap: 0.75rem; max-height: 480px; overflow-y: auto;">
+      {% for n in lead.notes|reverse %}
+      <div style="border-left: 2px solid var(--cyber); padding-left: 0.75rem;">
+        <div style="font-size: 0.7rem; color: var(--text-secondary); font-family: var(--font-mono);">
+          {{ n.created_at.strftime('%d.%m.%Y %H:%M') if n.created_at else '—' }} · {{ n.author }}
+        </div>
+        <div style="white-space: pre-wrap; font-size: 0.85rem; margin-top: 0.15rem;">{{ n.body }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p style="color: var(--text-secondary); font-size: 0.85rem;">Noch keine Notizen.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,7 +1,17 @@
 """Regression tests for the public Skalantech experience."""
 import os
+import sys
 import tempfile
 import unittest
+
+from flask import url_for
+
+
+def _drop_app_modules():
+    """Entferne gecachte app-Module, damit DATABASE_URL/Env je Testklasse greift."""
+    for name in list(sys.modules):
+        if name == "app" or name.startswith("app."):
+            del sys.modules[name]
 
 
 class PublicSiteTests(unittest.TestCase):
@@ -13,6 +23,7 @@ class PublicSiteTests(unittest.TestCase):
         os.environ["SESSION_COOKIE_SECURE"] = "false"
         os.environ["DATABASE_URL"] = f"sqlite:///{cls.temp_dir.name}/site.db"
 
+        _drop_app_modules()
         from app import create_app
 
         cls.app = create_app("production")
@@ -323,6 +334,93 @@ class PublicSiteTests(unittest.TestCase):
             self.assertTrue(resp.get_json()["success"])
         finally:
             app.config["WTF_CSRF_ENABLED"] = old_check
+
+    # ── Trust Architecture (NOVA + SENTINEL) ────────────────────────────
+
+    def test_impressum_has_valid_tel_link(self):
+        """SENTINEL-Befund: tel:-Link darf keine Platzhalter (***) enthalten."""
+        response = self.client.get("/impressum")
+        html = response.get_data(as_text=True)
+        self.assertNotIn("***", html)
+        self.assertIn('href="tel:+4917677879366"', html)
+
+    def test_homepage_has_trust_sections(self):
+        response = self.client.get("/")
+        html = response.get_data(as_text=True)
+
+        # Nachweise / Zertifikate
+        self.assertIn('id="nachweise"', html)
+        self.assertIn("Qualifikationen, die Sie prüfen können.", html)
+        self.assertIn("ITIL Foundation", html)
+        self.assertIn("Azure Administrator (AZ-104)", html)
+        self.assertIn("NIS-2-Grundlagen", html)
+        self.assertIn("Fachinformatiker Systemintegration", html)
+        self.assertIn("certificates_xavier_escalante.pdf", html)
+
+        # Vertrauen / ehrliche Referenzen
+        self.assertIn('id="referenzen"', html)
+        self.assertIn("Worauf Sie sich verlassen können.", html)
+        self.assertIn("Echte Projekte, live im Betrieb", html)
+        self.assertIn("Datenschutz als Standard", html)
+        self.assertIn("Erfundene Referenzen und geschönte Zahlen finden Sie hier nicht.", html)
+
+    def test_footer_trust_line_on_all_pages(self):
+        """Trust-Line (Footer) muss auf jeder öffentlichen Seite stehen."""
+        for path in ("/", "/it-infrastruktur", "/wissen", "/wissen/n8n-selbst-hosten",
+                     "/impressum", "/datenschutz", "/agb", "/faq", "/nicht-vorhanden"):
+            with self.subTest(path=path):
+                response = self.client.get(path, buffered=True)
+                try:
+                    html = response.get_data(as_text=True)
+                    self.assertIn("SSL-verschlüsselt", html)
+                    self.assertIn("Keine externen Tracker", html)
+                    self.assertIn("site-footer__trust", html)
+                    # Rechtliche Links im Footer (url_for braucht App-Kontext)
+                    with self.app.test_request_context():
+                        self.assertIn(url_for("public.impressum"), html)
+                        self.assertIn(url_for("public.datenschutz"), html)
+                finally:
+                    response.close()
+
+    def test_landing_pages_have_author_trust_block(self):
+        for path in ("/it-infrastruktur", "/ki-integration", "/ki-automatisierung",
+                     "/ki-agenten", "/n8n-automatisierung", "/lokale-ki"):
+            with self.subTest(path=path):
+                response = self.client.get(path, buffered=True)
+                try:
+                    html = response.get_data(as_text=True)
+                    self.assertIn("Wer dahintersteht", html)
+                    self.assertIn("Xavier Escalante Castellar", html)
+                    self.assertIn("landing-author", html)
+                    self.assertIn("certificates_xavier_escalante.pdf", html)
+                    self.assertIn("linkedin.com/in/xyesca", html)
+                    self.assertIn("github.com/Xyesca", html)
+                finally:
+                    response.close()
+
+    def test_articles_have_author_byline(self):
+        response = self.client.get("/wissen/was-ist-ein-ki-agent")
+        html = response.get_data(as_text=True)
+        self.assertIn("Geschrieben von", html)
+        self.assertIn("article-author", html)
+        self.assertIn("Xavier Escalante Castellar", html)
+        self.assertIn("Er schreibt aus der Praxis", html)
+        self.assertIn("linkedin.com/in/xyesca", html)
+
+    def test_trust_assets_are_served(self):
+        """Echte Fotos + Zertifikate-PDF müssen ausgeliefert werden."""
+        for path in (
+            "/static/img/founder-400.webp",
+            "/static/img/founder-600.webp",
+            "/static/img/portrait-480.webp",
+            "/static/documents/certificates_xavier_escalante.pdf",
+        ):
+            with self.subTest(path=path):
+                response = self.client.get(path, buffered=True)
+                try:
+                    self.assertEqual(response.status_code, 200)
+                finally:
+                    response.close()
 
 
 if __name__ == "__main__":

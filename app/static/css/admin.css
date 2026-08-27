@@ -517,3 +517,213 @@
   .inline-form { flex-direction: column; }
   .admin-grid { grid-template-columns: 1fr; }
 }
+
+/* ═══════════════════════════════════════════
+   SKALANTECH — CRM Pipeline Styles
+   ═══════════════════════════════════════════ */
+
+/* Design-Variablen des Admin-Dark-Themes (für Templates mit var()-Nutzung) */
+.admin-body {
+  --cyber: #00a6ff;
+  --text-secondary: #b8bdd8;
+  --text: #eef1f8;
+  --surface: #141828;
+  --font-body: "Inter", sans-serif;
+  --accent: #e8871e;
+}
+
+/* ─── Sidebar-Badge (fällige Follow-ups) ─── */
+.admin-sidebar__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: auto;
+  background: rgba(232, 135, 30, 0.15);
+  color: #ffab4a;
+  border: 1px solid rgba(232, 135, 30, 0.35);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+/* ─── Formulare (form-label / form-input) ─── */
+.form-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #b8bdd8;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.35rem;
+}
+.form-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(60, 65, 100, 0.35);
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  font-family: "Inter", sans-serif;
+  font-size: 0.88rem;
+  color: #eef1f8;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+}
+.form-input:focus {
+  border-color: #00a6ff;
+  box-shadow: 0 0 0 3px rgba(0, 166, 255, 0.12);
+}
+textarea.form-input { min-height: 80px; resize: vertical; }
+
+/* ─── Button cyan ─── */
+.btn--cyber {
+  background: rgba(0, 166, 255, 0.12);
+  border: 1px solid rgba(0, 166, 255, 0.35);
+  color: #4fc3ff;
+}
+.btn--cyber:hover {
+  background: rgba(0, 166, 255, 0.2);
+  border-color: #00a6ff;
+}
+
+/* ─── Badge warn (Follow-up überfällig) ─── */
+.badge--warn {
+  background: rgba(232, 135, 30, 0.12);
+  color: #ffab4a;
+  border: 1px solid rgba(232, 135, 30, 0.35);
+}
+
+/* ─── Funnel-Stats ─── */
+.crm-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.crm-stat {
+  background: rgba(20, 22, 40, 0.8);
+  border: 1px solid rgba(60, 65, 100, 0.25);
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+}
+.crm-stat__label {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6a7099;
+  margin-bottom: 0.25rem;
+}
+.crm-stat__value {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #eef1f8;
+}
+.crm-stat--accent .crm-stat__value { color: #ffab4a; }
+.crm-stat--won .crm-stat__value { color: #37d67a; }
+.crm-stat--lost .crm-stat__value { color: #ff6b6b; }
+
+/* ─── Filter-Tabs ─── */
+.crm-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+.crm-tab {
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(60, 65, 100, 0.35);
+  color: #b8bdd8;
+  font-size: 0.78rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.crm-tab:hover { border-color: #00a6ff; color: #eef1f8; }
+.crm-tab.is-active {
+  background: rgba(0, 166, 255, 0.12);
+  border-color: rgba(0, 166, 255, 0.4);
+  color: #4fc3ff;
+}
+.crm-tab__count { opacity: 0.7; font-family: var(--font-mono); font-size: 0.7rem; }
+
+/* ─── Board ─── */
+.crm-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+.crm-column {
+  background: rgba(16, 18, 34, 0.6);
+  border: 1px solid rgba(60, 65, 100, 0.2);
+  border-radius: 14px;
+  padding: 0.75rem;
+  min-height: 120px;
+}
+.crm-column__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.crm-column__count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #6a7099;
+}
+.crm-column__body { display: grid; gap: 0.6rem; }
+.crm-column__empty { color: #3d4260; text-align: center; font-size: 0.8rem; padding: 0.5rem 0; }
+
+/* ─── Stage-Badges ─── */
+.crm-stage {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.crm-stage--lead      { background: rgba(148, 163, 184, 0.12); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
+.crm-stage--qualified { background: rgba(0, 166, 255, 0.12);  color: #4fc3ff;  border: 1px solid rgba(0, 166, 255, 0.35); }
+.crm-stage--discovery { background: rgba(167, 139, 250, 0.12); color: #c4b5fd;  border: 1px solid rgba(167, 139, 250, 0.35); }
+.crm-stage--proposal { background: rgba(232, 135, 30, 0.12);  color: #ffab4a;  border: 1px solid rgba(232, 135, 30, 0.35); }
+.crm-stage--won       { background: rgba(55, 214, 122, 0.12);  color: #37d67a;  border: 1px solid rgba(55, 214, 122, 0.35); }
+.crm-stage--lost      { background: rgba(255, 107, 107, 0.12); color: #ff6b6b;  border: 1px solid rgba(255, 107, 107, 0.35); }
+
+/* ─── Lead-Karten ─── */
+.crm-card {
+  display: block;
+  background: rgba(20, 22, 40, 0.9);
+  border: 1px solid rgba(60, 65, 100, 0.25);
+  border-radius: 10px;
+  padding: 0.7rem 0.85rem;
+  text-decoration: none;
+  color: #eef1f8;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.crm-card:hover {
+  border-color: #00a6ff;
+  transform: translateY(-1px);
+}
+.crm-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+.crm-card__line { font-size: 0.8rem; margin-top: 0.1rem; }
+.crm-card__muted { color: #8b90ad; }
+.crm-card__value { color: #4fc3ff; font-family: var(--font-mono); font-size: 0.78rem; }
+.crm-card__followup { color: #ffab4a; font-size: 0.72rem; font-family: var(--font-mono); }
+.crm-card__src { color: #6a7099; font-size: 0.68rem; font-family: var(--font-mono); }
+
+/* ─── Detail responsive ─── */
+@media (max-width: 900px) {
+  .crm-detail-grid { grid-template-columns: 1fr !important; }
+}

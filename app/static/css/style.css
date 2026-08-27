@@ -3407,3 +3407,388 @@ p:last-child {
     margin-right: 0;
   }
 }
+
+/* ── Trust Architecture: Nachweise, Vertrauen, Autoren (NOVA/SENTINEL) ── */
+.section--credentials {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.credential-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.credential-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 26px 24px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.credential-card__badge {
+  align-self: flex-start;
+  padding: 5px 8px;
+  color: var(--accent-deep);
+  background: rgba(79, 124, 255, 0.1);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.credential-card h3 {
+  margin: 8px 0 0;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+.credential-card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.credential-card__issuer {
+  margin-top: auto;
+  padding-top: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.credential-card--education .credential-card__badge {
+  color: #0f766e;
+  background: rgba(13, 148, 136, 0.1);
+}
+
+.credential-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 40px;
+}
+
+.section--trust {
+  background: var(--paper-warm);
+}
+
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.trust-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 28px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.trust-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-4px);
+}
+
+.trust-card__icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 6px;
+  color: var(--accent-deep);
+  background: rgba(79, 124, 255, 0.1);
+  border-radius: 12px;
+}
+
+.trust-card__icon svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trust-card h3 {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+.trust-card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.trust-card > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  color: var(--accent-deep);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.trust-card > a:hover {
+  text-decoration: underline;
+}
+
+.trust-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 44px auto 0;
+  padding: 16px 22px;
+  width: max-content;
+  max-width: 100%;
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.trust-note span {
+  color: var(--success);
+  font-weight: 800;
+}
+
+/* ── Landingpages: Autor-/Vertrauens-Block ──────────────────────────── */
+.landing-author {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.landing-author__inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 40px 44px;
+  align-items: center;
+}
+
+.landing-author__photo {
+  width: 120px;
+  height: 150px;
+  overflow: hidden;
+  background: var(--ink);
+  border-radius: 16px;
+}
+
+.landing-author__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.landing-author__copy h2 {
+  margin: 0 0 14px;
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+}
+
+.landing-author__copy > p:not(.section-label) {
+  max-width: 760px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.landing-author__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-top: 20px;
+}
+
+.landing-author__links a {
+  display: inline-flex;
+  gap: 8px;
+  padding-bottom: 4px;
+  color: var(--accent-deep);
+  border-bottom: 1px solid currentColor;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.landing-author__trust {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.landing-author__trust span {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.landing-author__trust span > span {
+  color: var(--success);
+  font-weight: 800;
+}
+
+/* ── Wissensartikel: Autor-Byline (E-E-A-T) ─────────────────────────── */
+.article-author {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+  margin-top: 46px;
+  padding: 26px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.article-author__photo {
+  width: 72px;
+  height: 90px;
+  overflow: hidden;
+  background: var(--ink);
+  border-radius: 12px;
+}
+
+.article-author__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-author__label {
+  margin-bottom: 6px;
+  color: var(--accent-deep);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.article-author__copy h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.article-author__copy > p:not(.article-author__label) {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.article-author__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 14px;
+}
+
+.article-author__links a {
+  display: inline-flex;
+  gap: 6px;
+  color: var(--accent-deep);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.article-author__links a:hover {
+  text-decoration: underline;
+}
+
+/* ── Footer: Trust-Line (alle Seiten) ───────────────────────────────── */
+.site-footer__trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 30px;
+  padding: 0 0 26px;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.site-footer__trust span > span {
+  color: #34d399;
+  font-weight: 800;
+}
+
+/* ── Responsive: Trust Architecture ─────────────────────────────────── */
+@media (max-width: 1100px) {
+  .credential-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .trust-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .credential-grid,
+  .trust-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .credential-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .credential-actions .button {
+    text-align: center;
+  }
+
+  .landing-author__inner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .landing-author__photo {
+    width: 96px;
+    height: 120px;
+  }
+
+  .landing-author__trust {
+    grid-column: auto;
+  }
+
+  .article-author {
+    grid-template-columns: 1fr;
+  }
+
+  .trust-note {
+    width: 100%;
+    border-radius: 14px;
+    text-align: center;
+  }
+
+  .site-footer__trust {
+    gap: 10px 18px;
+  }
+}

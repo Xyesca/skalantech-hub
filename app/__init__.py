@@ -73,10 +73,38 @@ def create_app(config_name: str | None = None) -> Flask:
     from app.blueprints.public import public_bp
     from app.blueprints.auth import auth_bp
     from app.blueprints.admin import admin_bp
+    from app.blueprints.crm_api import crm_api_bp
+    from app.blueprints.analytics import analytics_bp
 
     app.register_blueprint(public_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(crm_api_bp)
+    app.register_blueprint(analytics_bp)
+    # CRM-API ist maschinell (n8n/Hermes) — Auth via X-API-Key statt CSRF.
+    csrf.exempt(crm_api_bp)
+    # Analytics-Beacon (sendBeacon/fetch ohne Session-Token) — stattdessen
+    # Event-Allowlist, Payload-Limit und Rate-Limit im Blueprint.
+    csrf.exempt(analytics_bp)
+
+    # ── Template global: fällige Follow-ups für die Admin-Sidebar ─────────
+    @app.context_processor
+    def inject_crm_stats():
+        from datetime import datetime, timezone
+        from app.models import Lead, PIPELINE_TERMINAL
+
+        due = 0
+        if request.endpoint and request.endpoint.startswith("admin"):
+            try:
+                due = Lead.query.filter(
+                    Lead.is_archived.is_(False),
+                    Lead.status.notin_(PIPELINE_TERMINAL),
+                    Lead.next_followup_at.isnot(None),
+                    Lead.next_followup_at <= datetime.now(timezone.utc),
+                ).count()
+            except Exception:
+                due = 0
+        return {"crm_due_count": due}
 
     # ── Database bootstrap ────────────────────────────────────────────────
     with app.app_context():
@@ -111,6 +139,8 @@ def _migrate_db() -> None:
         ("contact_messages", "medium",   "VARCHAR(60) DEFAULT ''"),
         ("contact_messages", "campaign", "VARCHAR(160) DEFAULT ''"),
         ("contact_messages", "referrer", "VARCHAR(512) DEFAULT ''"),
+        ("contact_messages", "session_id", "VARCHAR(64) DEFAULT ''"),
+        ("leads", "session_id", "VARCHAR(64) DEFAULT ''"),
     ]
 
     for table, column, col_type in migrations:

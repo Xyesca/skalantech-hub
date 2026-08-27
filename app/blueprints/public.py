@@ -3,14 +3,16 @@ import json
 import os
 import smtplib
 import time
+from datetime import datetime, timezone
 from email.mime.text import MIMEText
 from urllib import request as urlrequest
 
 from flask import Blueprint, render_template, send_from_directory, current_app, request, flash, redirect, url_for, jsonify, Response, abort
-from app.models import Settings, Link, Project, ContactMessage
+from app.models import Settings, Link, Project, ContactMessage, Lead
 from app.extensions import db
 from app.seo_pages import LANDING_PAGES, LANDING_ORDER
 from app.wissen import ARTICLES, ARTICLE_ORDER, ARTICLE_PUBLISHED
+from app.blueprints.analytics import _record_event
 
 public_bp = Blueprint("public", __name__)
 
@@ -63,10 +65,15 @@ def _forward_to_n8n(name, email, company, topic, message, preferred_day, preferr
             body = resp.read().decode("utf-8")
             try:
                 parsed = json.loads(body)
-            except json.JSONDecodeError:
-                parsed = {"success": True}
-            if resp.status >= 400 or parsed.get("success") is False:
-                return {"success": False, "message": parsed.get("message", "Terminanfrage abgelehnt.")}
+            except (json.JSONDecodeError, TypeError):
+                parsed = None
+            # Nur ein explizites success:true im JSON zählt als Buchung.
+            # n8n liefert bei internen Workflow-Fehlern (z. B. Kalender-Credential
+            # abgelaufen) HTTP 200 mit leerem/Fehler-Body — das wäre sonst eine
+            # falsche meeting_booked-Conversion und eine falsche Nutzer-Bestätigung.
+            if parsed is None or resp.status >= 400 or parsed.get("success") is not True:
+                message = parsed.get("message", "Terminanfrage abgelehnt.") if isinstance(parsed, dict) else "Termindienst hat keine gültige Antwort geliefert."
+                return {"success": False, "message": f"{message} Anfrage wurde gespeichert."}
             return {"success": True, "message": parsed.get("message", "ok")}
     except Exception as exc:
         # n8n nicht erreichbar — Anfrage bleibt in der DB, kein Block für den Nutzer
@@ -334,29 +341,80 @@ def contact():
 
     # First-Party-Attribution: UTM-Parameter + Referrer (keine Cookies,
     # kein Tracker — nur technische Metadaten dieser einen Anfrage).
-    source = (request.args.get("utm_source") or "").strip()[:120]
-    medium = (request.args.get("utm_medium") or "").strip()[:60]
-    campaign = (request.args.get("utm_campaign") or "").strip()[:160]
+    # analytics.js legt die beim Seitenaufruf erfassten UTM-/Session-Werte
+    # als Hidden-Fields ins Formular (Fallback: Query-String des POST).
+    session_id = (request.form.get("session_id") or request.args.get("session_id") or "").strip()[:64]
+    source = (request.form.get("utm_source") or request.args.get("utm_source") or "").strip()[:120]
+    medium = (request.form.get("utm_medium") or request.args.get("utm_medium") or "").strip()[:60]
+    campaign = (request.form.get("utm_campaign") or request.args.get("utm_campaign") or "").strip()[:160]
     referrer = (request.referrer or "").strip()[:512]
 
     msg = ContactMessage(
         name=name, email=email, message=stored_message,
         source=source, medium=medium, campaign=campaign, referrer=referrer,
+        session_id=session_id,
     )
     db.session.add(msg)
+
+    # ── CRM: Lead aus der Kontaktanfrage erzeugen/aktualisieren ──────
+    # Dedupe per E-Mail — wiederholte Anfragen aktualisieren denselben Lead.
+    lead = Lead.query.filter_by(email=email, is_archived=False).first()
+    if lead is None:
+        lead = Lead(name=name, email=email, status="lead", session_id=session_id)
+        db.session.add(lead)
+    elif not lead.session_id:
+        # First-Touch: Session nur setzen, wenn noch keine bekannt ist
+        lead.session_id = session_id
+    lead.company = company
+    lead.service = service
+    lead.message = message_text
+    if source:
+        lead.source = source
+    if medium:
+        lead.medium = medium
+    if campaign:
+        lead.campaign = campaign
+    if referrer:
+        lead.referrer = referrer
+    lead.last_contact_at = datetime.now(timezone.utc)
     db.session.commit()
+
+    # ── Analytics: Conversion-Events (serverseitig — verlustsicher, auch
+    # ohne JavaScript-Client; Spezifikation: docs/ANALYTICS_EVENTS.md) ──
+    _attribution = dict(
+        page="/", session_id=session_id,
+        source=source, medium=medium, campaign=campaign, referrer=referrer,
+    )
+    _record_event("lead_created", props={"service": service or "allgemein"}, **_attribution)
 
     _send_email(name, email, stored_message)  # silent — don't block on failure
 
     # ── Terminanfrage: Webhook an n8n (nur bei Terminwunsch) ─────────
     n8n_result = None
     if request.form.get("book_slot") == "1":
+        # Anfrage angenommen (unabhängig vom n8n-Status) = Demo-Flow abgeschlossen
+        _record_event("demo_completed", props={"service": "Erstgespräch"}, **_attribution)
         n8n_result = _forward_to_n8n(
             name=name, email=email, company=company,
             topic=service or "Erstgespräch", message=message_text,
             preferred_day=request.form.get("preferred_day", "").strip(),
             preferred_time=request.form.get("preferred_time", "").strip(),
         )
+        # Erfolgreiche Buchung = qualifizierter Lead (Discovery folgt im Termin)
+        if n8n_result and n8n_result.get("success"):
+            if lead.status != "qualified":
+                lead.set_status("qualified", reason="Termin über skalantech.store gebucht", author="Website")
+            day = request.form.get("preferred_day", "").strip()
+            slot = request.form.get("preferred_time", "").strip()
+            lead.add_note(f"Terminwunsch bestätigt: {day} {slot}".strip(), author="Website")
+            lead.last_contact_at = datetime.now(timezone.utc)
+            db.session.commit()
+            # n8n hat bestätigt = echte Buchung
+            _record_event(
+                "meeting_booked",
+                props={"day": day, "time": slot, "service": "Erstgespräch"},
+                **_attribution,
+            )
 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         if n8n_result is not None and not n8n_result.get("success"):

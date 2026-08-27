@@ -1,0 +1,61 @@
+{% extends "admin/base.html" %}
+{% block title %}Lead anlegen · Skalantech{% endblock %}
+{% block content %}
+<div class="admin-header">
+  <h2>Neuer Lead</h2>
+  <p>Manuell einen Lead in die Pipeline aufnehmen.</p>
+</div>
+
+<form method="POST" class="admin-card" style="max-width: 720px;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div>
+      <label class="form-label" for="name">Name *</label>
+      <input class="form-input" type="text" id="name" name="name" required maxlength="120" placeholder="Max Mustermann">
+    </div>
+    <div>
+      <label class="form-label" for="email">E-Mail *</label>
+      <input class="form-input" type="email" id="email" name="email" required maxlength="254" placeholder="max@firma.de">
+    </div>
+    <div>
+      <label class="form-label" for="company">Unternehmen</label>
+      <input class="form-input" type="text" id="company" name="company" maxlength="160">
+    </div>
+    <div>
+      <label class="form-label" for="phone">Telefon</label>
+      <input class="form-input" type="text" id="phone" name="phone" maxlength="60">
+    </div>
+    <div>
+      <label class="form-label" for="service">Anliegen / Service</label>
+      <input class="form-input" type="text" id="service" name="service" maxlength="120" placeholder="z. B. Prozessautomatisierung">
+    </div>
+    <div>
+      <label class="form-label" for="status">Status</label>
+      <select class="form-input" id="status" name="status">
+        {% for key, label in stages.items() %}
+        <option value="{{ key }}" {% if key == 'lead' %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="form-label" for="value_estimate">Wert-Schätzung (€)</label>
+      <input class="form-input" type="number" id="value_estimate" name="value_estimate" min="0" step="500" value="0">
+    </div>
+    <div>
+      <label class="form-label" for="next_followup_at">Nächstes Follow-up</label>
+      <input class="form-input" type="datetime-local" id="next_followup_at" name="next_followup_at">
+    </div>
+  </div>
+  <div style="margin-top: 1rem;">
+    <label class="form-label" for="message">Ausgangslage / Nachricht</label>
+    <textarea class="form-input" id="message" name="message" rows="4" maxlength="5000"></textarea>
+  </div>
+  <div style="margin-top: 1rem;">
+    <label class="form-label" for="note">Erste Notiz</label>
+    <textarea class="form-input" id="note" name="note" rows="2" maxlength="2000"></textarea>
+  </div>
+  <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+    <button type="submit" class="btn btn--cyber">Lead anlegen</button>
+    <a href="{{ url_for('admin.crm') }}" class="btn btn--ghost">Abbrechen</a>
+  </div>
+</form>
+{% endblock %}

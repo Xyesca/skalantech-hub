@@ -26,8 +26,9 @@
   <meta name="twitter:description" content="{% block twitter_description %}IT-Infrastruktur, Cloud Engineering, Prozessautomatisierung und produktive KI-Agenten aus einer Hand.{% endblock %}">
   <meta name="twitter:image" content="https://skalantech.store/static/img/skalantech-og.jpg">
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=14">
-  <script src="{{ url_for('static', filename='js/main.js') }}?v=14" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=15">
+  <script src="{{ url_for('static', filename='js/analytics.js') }}?v=15" defer></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}?v=15" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -90,6 +91,7 @@
         <a href="{{ url_for('public.index') }}#work">Projekte</a>
         <a href="{{ url_for('public.index') }}#ki">KI & Automatisierung</a>
         <a href="{{ url_for('public.index') }}#about">Über mich</a>
+        <a href="{{ url_for('public.index') }}#nachweise">Nachweise</a>
         <a href="{{ url_for('public.index') }}#contact">Kontakt</a>
       </nav>
 
@@ -155,6 +157,13 @@
             <a href="{{ url_for('public.faq') }}">FAQ</a>
           </div>
         </div>
+      </div>
+
+      <div class="site-footer__trust" aria-label="Vertrauensmerkmale">
+        <span><span aria-hidden="true">✓</span> SSL-verschlüsselt</span>
+        <span><span aria-hidden="true">✓</span> Keine externen Tracker</span>
+        <span><span aria-hidden="true">✓</span> Keine Tracking-Cookies</span>
+        <span><span aria-hidden="true">✓</span> Direkter Kontakt, keine Blackbox</span>
       </div>
 
       <div class="site-footer__bottom">

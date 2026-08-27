@@ -1,4 +1,6 @@
 """Skalantech Hub — Admin CRUD routes."""
+from datetime import datetime, timezone
+
 from flask import (
     Blueprint, render_template, request,
     redirect, url_for, flash, session,
@@ -6,7 +8,10 @@ from flask import (
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.extensions import db
-from app.models import Settings, Link, Project, Admin, ContactMessage
+from app.models import (
+    Settings, Link, Project, Admin, ContactMessage,
+    Lead, LeadNote, PIPELINE_STAGES, PIPELINE_TERMINAL, PIPELINE_FLOW, LOST_REASONS,
+)
 from app.utils.uploads import save_upload, delete_upload
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -238,3 +243,192 @@ def delete_message(msg_id):
     db.session.commit()
     flash("Nachricht gelöscht.", "success")
     return redirect(url_for("admin.messages"))
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# CRM — Vertriebs-Pipeline
+# ══════════════════════════════════════════════════════════════════════════
+
+def _parse_dt(value):
+    """YYYY-MM-DD oder ISO-8601 → datetime (UTC, reines Datum = Tagesbeginn)."""
+    if not value:
+        return None
+    v = str(value).strip()
+    try:
+        if len(v) == 10 and v.count("-") == 2:
+            return datetime.strptime(v, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+        return datetime.fromisoformat(v.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def _fmt_dt(value):
+    if not value:
+        return ""
+    return value.strftime("%Y-%m-%dT%H:%M")
+
+
+def _author() -> str:
+    return session.get("username") or "admin"
+
+
+@admin_bp.route("/crm")
+def crm():
+    """Pipeline-Board: Funnel-Zähler, fällige Follow-ups, Leads je Stufe."""
+    status = (request.args.get("status") or "").strip()
+    if status not in PIPELINE_STAGES:
+        status = ""
+
+    all_leads = Lead.query.filter_by(is_archived=False).order_by(Lead.updated_at.desc()).all()
+    counts = {stage: 0 for stage in PIPELINE_STAGES}
+    for lead in all_leads:
+        counts[lead.status] = counts.get(lead.status, 0) + 1
+
+    due = sorted(
+        (l for l in all_leads if l.followup_overdue),
+        key=lambda l: l.next_followup_at or datetime.max.replace(tzinfo=timezone.utc),
+    )
+    won = counts.get("won", 0)
+    lost = counts.get("lost", 0)
+    open_value = sum(
+        (l.value_estimate or 0)
+        for l in all_leads if l.status in ("qualified", "discovery", "proposal")
+    )
+
+    if status:
+        shown = [l for l in all_leads if l.status == status]
+    else:
+        shown = [l for l in all_leads if l.status not in PIPELINE_TERMINAL]
+
+    return render_template(
+        "admin/crm.html",
+        stages=PIPELINE_STAGES, flow=PIPELINE_FLOW, leads=shown,
+        counts=counts, due=due, won=won, lost=lost, open_value=open_value,
+        status=status, terminal=PIPELINE_TERMINAL,
+    )
+
+
+@admin_bp.route("/crm/new", methods=["GET", "POST"])
+def crm_new():
+    if request.method == "POST":
+        name = " ".join(request.form.get("name", "").split())
+        email = request.form.get("email", "").strip().lower()
+        if not name or not email or "@" not in email:
+            flash("Name und gültige E-Mail sind erforderlich.", "error")
+            return render_template("admin/crm_form.html", lead=None, stages=PIPELINE_STAGES)
+
+        lead = Lead(
+            name=name, email=email,
+            company=request.form.get("company", "").strip()[:160],
+            phone=request.form.get("phone", "").strip()[:60],
+            service=request.form.get("service", "").strip()[:120],
+            message=request.form.get("message", "").strip(),
+            status=(request.form.get("status") or "lead").strip() or "lead",
+            value_estimate=max(0, int(request.form.get("value_estimate") or 0)),
+            next_followup_at=_parse_dt(request.form.get("next_followup_at")),
+        )
+        db.session.add(lead)
+        db.session.flush()
+        note = request.form.get("note", "").strip()
+        if note:
+            lead.add_note(note, author=_author())
+        db.session.commit()
+        flash("Lead angelegt.", "success")
+        return redirect(url_for("admin.crm_detail", lead_id=lead.id))
+
+    return render_template("admin/crm_form.html", lead=None, stages=PIPELINE_STAGES)
+
+
+@admin_bp.route("/crm/<int:lead_id>")
+def crm_detail(lead_id):
+    lead = db.get_or_404(Lead, lead_id)
+    return render_template(
+        "admin/crm_detail.html", lead=lead,
+        stages=PIPELINE_STAGES, lost_reasons=LOST_REASONS,
+        fmt_dt=_fmt_dt, parse_dt=_parse_dt,
+    )
+
+
+@admin_bp.route("/crm/<int:lead_id>/edit", methods=["POST"])
+def crm_edit(lead_id):
+    lead = db.get_or_404(Lead, lead_id)
+    lead.name = " ".join(request.form.get("name", lead.name).split())[:120]
+    lead.email = request.form.get("email", lead.email).strip().lower()[:254]
+    lead.company = request.form.get("company", "").strip()[:160]
+    lead.phone = request.form.get("phone", "").strip()[:60]
+    lead.service = request.form.get("service", "").strip()[:120]
+    lead.message = request.form.get("message", "").strip()
+    lead.value_estimate = max(0, int(request.form.get("value_estimate") or 0))
+
+    new_status = (request.form.get("status") or lead.status).strip()
+    if new_status in PIPELINE_STAGES and new_status != lead.status:
+        reason = request.form.get("lost_reason", "").strip()
+        note = request.form.get("status_note", "").strip()
+        lead.set_status(new_status, reason=reason or note, author=_author())
+
+    lead.next_followup_at = _parse_dt(request.form.get("next_followup_at"))
+    lead.last_contact_at = _parse_dt(request.form.get("last_contact_at"))
+
+    note = request.form.get("note", "").strip()
+    if note:
+        lead.add_note(note, author=_author())
+
+    db.session.commit()
+    flash("Lead aktualisiert.", "success")
+    return redirect(url_for("admin.crm_detail", lead_id=lead.id))
+
+
+@admin_bp.route("/crm/<int:lead_id>/note", methods=["POST"])
+def crm_note(lead_id):
+    lead = db.get_or_404(Lead, lead_id)
+    body = request.form.get("body", "").strip()
+    if not body:
+        flash("Notiz ist leer.", "error")
+    else:
+        lead.add_note(body, author=_author())
+        lead.last_contact_at = datetime.now(timezone.utc)
+        db.session.commit()
+        flash("Notiz hinzugefügt.", "success")
+    return redirect(url_for("admin.crm_detail", lead_id=lead.id))
+
+
+@admin_bp.route("/crm/<int:lead_id>/status", methods=["POST"])
+def crm_status(lead_id):
+    lead = db.get_or_404(Lead, lead_id)
+    new_status = (request.form.get("status") or "").strip()
+    if new_status not in PIPELINE_STAGES:
+        flash("Ungültiger Status.", "error")
+    else:
+        reason = request.form.get("lost_reason", "").strip()
+        lead.set_status(new_status, reason=reason, author=_author())
+        lead.last_contact_at = datetime.now(timezone.utc)
+        db.session.commit()
+        flash(f"Status → {PIPELINE_STAGES[new_status]}.", "success")
+    return redirect(url_for("admin.crm_detail", lead_id=lead.id))
+
+
+@admin_bp.route("/crm/<int:lead_id>/followup", methods=["POST"])
+def crm_followup(lead_id):
+    lead = db.get_or_404(Lead, lead_id)
+    lead.next_followup_at = _parse_dt(request.form.get("next_followup_at"))
+    db.session.commit()
+    flash("Follow-up gesetzt.", "success")
+    return redirect(url_for("admin.crm_detail", lead_id=lead.id))
+
+
+@admin_bp.route("/crm/<int:lead_id>/archive", methods=["POST"])
+def crm_archive(lead_id):
+    lead = db.get_or_404(Lead, lead_id)
+    lead.is_archived = not lead.is_archived
+    db.session.commit()
+    flash("Lead archiviert." if lead.is_archived else "Lead reaktiviert.", "success")
+    return redirect(url_for("admin.crm_detail", lead_id=lead.id))
+
+
+@admin_bp.route("/crm/<int:lead_id>/delete", methods=["POST"])
+def crm_delete(lead_id):
+    lead = db.get_or_404(Lead, lead_id)
+    db.session.delete(lead)
+    db.session.commit()
+    flash("Lead gelöscht.", "success")
+    return redirect(url_for("admin.crm"))
