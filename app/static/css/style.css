@@ -474,7 +474,35 @@ p:last-child {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 48px;
+  margin-bottom: 22px;
+}
+
+.hero__trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  max-width: 720px;
+  margin: 0 0 48px;
+  padding: 18px 0 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.hero__trust li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #475569;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.hero__trust li span {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--success);
+  font-weight: 800;
 }
 
 .hero__facts {
@@ -2850,6 +2878,13 @@ p:last-child {
 
   .service-grid--three .service-card:last-child {
     grid-column: auto;
+  }
+
+  .hero__trust {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 40px;
   }
 
   .bridge-steps {

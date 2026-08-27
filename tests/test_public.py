@@ -66,6 +66,12 @@ class PublicSiteTests(unittest.TestCase):
             'id="ki"',
             'id="about"',
             'id="contact"',
+            # Conversion: Zielgruppe + Trust im Hero (5-Sekunden-Test)
+            "Für kleine und mittelständische Unternehmen",
+            "Direkt vom Gründer",
+            "7+ Jahre IT-Praxiserfahrung",
+            "Self-Hosting &amp; Datensouveränität statt Vendor-Lock-in",
+            "hero__trust",
         ):
             self.assertIn(phrase, html)
 
