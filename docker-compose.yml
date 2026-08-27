@@ -14,8 +14,15 @@ services:
     environment:
       - PORT=5000
       - FLASK_ENV=production
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - SECRET_KEY=${SECRET_KEY}
+      - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-true}
+      - DATABASE_URL=${DATABASE_URL:-}
       - CRM_API_KEY=${CRM_API_KEY}
+      - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL:-http://127.0.0.1:5678/webhook/skalantech-termin}
+      - N8N_LEAD_WEBHOOK_URL=${N8N_LEAD_WEBHOOK_URL:-http://127.0.0.1:5678/webhook/lead-erfassung}
+      - BUSINESS_EMAIL=${BUSINESS_EMAIL:-xyesca@skalantech.store}
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/')"]
       interval: 30s
