@@ -71,14 +71,38 @@ pollen diesen Endpunkt täglich.
 ## Follow-up-Automation
 
 Der Hub stellt Terminverwaltung (`next_followup_at`) + Fälligkeits-Filter
-bereit; das *Versenden* übernimmt die Automation (n8n oder Hermes-Cron):
+bereit. Der tägliche Poller ist **live** als Hermes-Cron:
 
-1. Täglich `GET /api/crm/leads?due_followup=1` mit `X-API-Key`.
-2. Für jeden fälligen Lead: Erinnerung/Anschreiben generieren (VELA-Texte),
-   versenden.
-3. Danach `PATCH /api/crm/leads/<id>` mit neuem `next_followup_at`
-   (z. B. +3 Werktage) oder `status: "lost"` + `lost_reason`
-   (`"Keine Rückmeldung"`).
+**Job:** `CRM Follow-up täglich` (Hermes-Cron `e43e2738d866`, täglich 08:00 UTC
+= 10:00 Berlin, no_agent, Script `scripts/crm_followup.py` im Repo, Symlink
+nach `~/.hermes/scripts/crm_followup.py`).
+
+**Ablauf:**
+1. `GET /api/crm/leads?due_followup=1` mit `X-API-Key` (aus `/root/skalantech-hub/.env`).
+2. Bei fälligen Leads: **Telegram-Alarm** an den internen Vertriebskanal
+   (`TELEGRAM_HOME_CHANNEL` aus `~/.hermes/.env`, Fallback AiGents-Kanal
+   `-1003956152501`) mit Name, Firma, Service, Stufe, Wert und Überfälligkeit.
+   Kein Kunden-Versand — nur interne Erinnerung (Follow-up-Versand an Kunden
+   bleibt Freigabe-Sache).
+3. Report-JSON je Lauf unter `instance/followup/YYYYMMDD.json`; `stdout`
+   meldet `OK: N fällige Follow-up(s), Telegram-Sends: X, Auto-Lost: Y`.
+
+**Auto-Lost (optional, standardmäßig AUS):** Umgebung `CRM_AUTO_LOST_AFTER_DAYS`
+auf z. B. `5` setzen → Leads, deren Follow-up seit ≥ 5 Tagen überfällig ist,
+werden automatisch auf `lost` / `Keine Rückmeldung` gesetzt (mit Audit-Notiz).
+Bewusst nicht aktiviert, bis Xavier das freigibt.
+
+**Manueller Lauf / Dry-Run:**
+```bash
+cd /root/skalantech-hub
+python3 scripts/crm_followup.py --dry-run   # nichts senden/ändern
+python3 scripts/crm_followup.py             # echter Lauf
+```
+
+**Alternativ n8n:** Der generische Versand-Baustein `Baustein: Follow-up`
+(Webhook, Gmail-OAuth, Dry-Run-Modus) liegt in der n8n-Automationsbibliothek
+(NEXUS) und kann denselben `due_followup`-Endpunkt füttern, sobald der
+E-Mail-Versand freigegeben ist.
 
 ## Won/Lost
 

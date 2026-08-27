@@ -8,6 +8,10 @@ Conversion-orientierte Website und Content-Backend für Skalantech: IT-Infrastru
 - Responsive, barrierearme Oberfläche ohne externe Frontend-Abhängigkeiten
 - Dynamische Projektverwaltung über ein geschütztes Admin-Dashboard
 - Qualifiziertes Kontaktformular mit CSRF-Schutz, Validierung, Honeypot und Rate-Limit
+- **CRM-Vertriebs-Pipeline** (Lead → Qualified → Discovery → Proposal → Won/Lost) mit
+  Admin-Board, Follow-up-Tracking und maschinenlesbarer API (n8n/Hermes)
+- **Follow-up-Automation**: täglicher Poller (Hermes-Cron) alarmiert per Telegram bei
+  fälligen Follow-ups — Details in [docs/CRM_PIPELINE.md](docs/CRM_PIPELINE.md)
 - Technisches SEO mit strukturierten Daten, Sitemap, Canonical- und Social-Metadaten
 - Self-hosted Flask-/SQLite-Stack mit Docker-Deployment
 - Sicherheitsheader, datensparsame Auslieferung und optimiertes Asset-Caching
