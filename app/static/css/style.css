@@ -1645,7 +1645,7 @@ p:last-child {
 
 .footer-nav {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 40px;
 }
 
@@ -3158,6 +3158,101 @@ p:last-child {
   text-decoration: underline;
 }
 
+/* ── Branchen: Integration, ROI, Trust, Mid-CTA ─────────────────────── */
+.landing-integration li {
+  background: rgba(79, 124, 255, 0.05);
+  border-color: rgba(79, 124, 255, 0.28);
+}
+
+.landing-roi {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.landing-roi__card {
+  padding: 26px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.landing-roi__card h3 {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 1.06rem;
+  letter-spacing: -0.01em;
+}
+
+.landing-roi__card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.landing-roi__note {
+  margin: 22px 0 0;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.landing-cta--mid {
+  padding: 24px 0 0;
+  text-align: center;
+}
+
+.landing-trust {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.landing-trust__item {
+  padding: 26px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.landing-trust__item h3 {
+  margin: 0 0 8px;
+  color: var(--accent-deep);
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+}
+
+.landing-trust__item p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.landing-articles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.landing-articles a {
+  color: var(--accent-deep);
+  font-size: 0.92rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.landing-articles a:hover {
+  text-decoration: underline;
+}
+
 /* ── Wissen ─────────────────────────────────────────────────────────── */
 
 .wissen-grid {
@@ -3346,7 +3441,9 @@ p:last-child {
   }
 
   .landing-cases,
-  .landing-process {
+  .landing-process,
+  .landing-roi,
+  .landing-trust {
     grid-template-columns: 1fr;
   }
 

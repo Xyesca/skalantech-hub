@@ -10,6 +10,7 @@ env/
 instance/*.db
 instance/*.db-shm
 instance/*.db-wal
+instance/followup/
 .vscode/
 .idea/
 .DS_Store

@@ -6,6 +6,8 @@ Technologien → Vorteile → FAQ → CTA), die Inhalte sind pro Seite substanzi
 unterschiedlich. Keine erfundenen Referenzen, Kunden oder Kennzahlen.
 """
 
+from app.branchen import LANDING_BRANCHEN
+
 LANDING_PAGES = {
     "it-infrastruktur": {
         "nav_label": "IT-Infrastruktur",
@@ -296,6 +298,13 @@ LANDING_PAGES = {
         "related": ["ki-integration", "it-infrastruktur"],
     },
 }
+
+# ── Branchen-Landingpages (Stage 5 der Pipeline) ───────────────────────
+# Copy 1:1 aus VELA (Kanban t_7ccdf6ff). Schlüssel "branchen-{slug}" →
+# Routen /branchen/{slug} (explizit, kein Catch-All). In LANDING_ORDER
+# bewusst NICHT aufgenommen — die Branch-Slugs haben ein eigenes URL-Schema
+# und werden in public.py separat in die Sitemap aufgenommen.
+LANDING_PAGES.update(LANDING_BRANCHEN)
 
 # Reihenfolge für Navigation, Sitemap und interne Verlinkung
 LANDING_ORDER = [

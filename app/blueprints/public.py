@@ -11,6 +11,7 @@ from flask import Blueprint, render_template, send_from_directory, current_app, 
 from app.models import Settings, Link, Project, ContactMessage, Lead
 from app.extensions import db
 from app.seo_pages import LANDING_PAGES, LANDING_ORDER
+from app.branchen import BRANCH_ORDER
 from app.wissen import ARTICLES, ARTICLE_ORDER, ARTICLE_PUBLISHED
 from app.blueprints.analytics import _record_event
 
@@ -25,6 +26,7 @@ SITE_URL = "https://skalantech.store"
 SITEMAP_PAGES = [
     {"loc": "/", "priority": "1.0"},
     *[{"loc": f"/{slug}", "priority": "0.8"} for slug in LANDING_ORDER],
+    *[{"loc": f"/branchen/{slug}", "priority": "0.8"} for slug in BRANCH_ORDER],
     {"loc": "/wissen", "priority": "0.7"},
     *[{"loc": f"/wissen/{slug}", "priority": "0.7"} for slug in ARTICLE_ORDER],
     {"loc": "/faq", "priority": "0.6"},
@@ -174,12 +176,84 @@ def _landing_map():
     }
 
 
+def _utm_campaign(slug: str) -> str:
+    """UTM-Kampagnen-Slug: Branchen → branche_{slug}, Service-Seiten → {slug}."""
+    if slug.startswith("branchen-"):
+        return "branche_" + slug[len("branchen-"):]
+    return slug
+
+
+def _build_jsonld(page: dict, page_url: str) -> str:
+    """Service + BreadcrumbList + FAQPage als einzeln valides JSON (kein Fake)."""
+    graph = [
+        {
+            "@type": "Service",
+            "@id": f"{page_url}#service",
+            "name": page["breadcrumb"],
+            "description": page["description"],
+            "serviceType": page["breadcrumb"],
+            "provider": {"@id": f"{SITE_URL}/#business"},
+            "areaServed": {"@type": "Country", "name": "Deutschland"},
+            "url": page_url,
+        },
+        {
+            "@type": "BreadcrumbList",
+            "@id": f"{page_url}#breadcrumb",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "Startseite", "item": f"{SITE_URL}/"},
+                {"@type": "ListItem", "position": 2, "name": page["breadcrumb"], "item": page_url},
+            ],
+        },
+    ]
+    faqs = page.get("faqs")
+    if faqs:
+        graph.append({
+            "@type": "FAQPage",
+            "@id": f"{page_url}#faq",
+            "mainEntity": [
+                {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}}
+                for q, a in faqs
+            ],
+        })
+    return json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False)
+
+
 def _render_landing(slug: str):
     """Render a SEO landing page from seo_pages.py."""
     if slug not in LANDING_PAGES:
         abort(404)
-    page = LANDING_PAGES[slug]
-    page = {**page, "slug": slug, "url": url_for(f"public.landing_{slug.replace('-', '_')}")}
+    page = dict(LANDING_PAGES[slug])
+    path = url_for(f"public.landing_{slug.replace('-', '_')}")
+    page["slug"] = slug
+    page["url"] = path
+    page["canonical_url"] = SITE_URL + path
+
+    # CTA-Texte (Defaults für Service-Seiten; Branchen liefern eigene)
+    page.setdefault("cta_primary", "Kostenloses Erstgespräch")
+    page.setdefault("cta_secondary", "Projekt besprechen")
+    page.setdefault("cta_final_title", "Klingt nach Ihrem Thema?")
+    page.setdefault("cta_final_text", "30 Minuten, unverbindlich. Wir klären, ob und wie Skalantech Sie unterstützen kann.")
+    page.setdefault("cta_final", page["cta_primary"])
+    # cta_mid ist branchen-spezifisch (Momentum-CTA nach ROI) — kein Default,
+    # damit Service-Seiten unverändert bleiben.
+
+    # CTA-Ziele mit UTM. Query VOR Fragment (#termin/#contact) — sonst gehen
+    # die UTM-Parameter verloren (Fragment wird nicht an den Server gesendet).
+    query = f"utm_source=organic&utm_medium=landing&utm_campaign={_utm_campaign(slug)}"
+    base = url_for("public.index")
+    page["cta_termin_url"] = f"{base}?{query}#termin"
+    page["cta_contact_url"] = f"{base}?{query}#contact"
+
+    # Related-Artikel (/wissen) auflösen → {slug, title, url}
+    page["related_articles_resolved"] = [
+        {"slug": a_slug, "title": ARTICLES[a_slug]["h1"], "url": url_for("public.article", slug=a_slug)}
+        for a_slug in page.get("related_articles", [])
+        if a_slug in ARTICLES
+    ]
+
+    # Strukturierte Daten als einzeln valides JSON (kein Fake)
+    page["jsonld"] = _build_jsonld(page, page["canonical_url"])
+
     return render_template(
         "landing.html",
         landing_page=page,
@@ -215,6 +289,27 @@ def landing_n8n_automatisierung():
 @public_bp.route("/lokale-ki")
 def landing_lokale_ki():
     return _render_landing("lokale-ki")
+
+
+# ── Branchen-Landingpages (explizite Routen, kein Catch-All) ──────────
+@public_bp.route("/branchen/handwerk")
+def landing_branchen_handwerk():
+    return _render_landing("branchen-handwerk")
+
+
+@public_bp.route("/branchen/kfz")
+def landing_branchen_kfz():
+    return _render_landing("branchen-kfz")
+
+
+@public_bp.route("/branchen/kanzleien")
+def landing_branchen_kanzleien():
+    return _render_landing("branchen-kanzleien")
+
+
+@public_bp.route("/branchen/immobilien")
+def landing_branchen_immobilien():
+    return _render_landing("branchen-immobilien")
 
 
 # ── Wissensstruktur ────────────────────────────────────────────────────

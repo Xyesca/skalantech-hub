@@ -1,0 +1,325 @@
+# -*- coding: utf-8 -*-
+"""VELA Copy — 4 Branchen-Landingpages (Stage 4 der Pipeline).
+
+Format: LUMINA Content-Dict-Schema (00_CONTENT-DICT-SCHEMA.md), maschinenlesbar
+fuer FORGE (Build). 1:1 in LANDING_PAGES in app/seo_pages.py uebernehmen;
+Dict-Schluessel sind die vorgegebenen "branchen-{slug}".
+
+Verbindliche Quellen:
+- INTENT-ANALYSE.md (ATLAS) — Keywords NUR aus dort
+- 00_CONTENT-DICT-SCHEMA.md + 01..04_STRUKTUR-*.md (LUMINA)
+- NOVA-Auflagen (Integration Kfz/Immobilien Pflicht, Kanzleien duale Zielgruppe,
+  Kanzleien related_articles Pflicht)
+
+Anti-Kannibalisierung: Title/Description/H1 je Seite eindeutig (verifiziert per
+Check-Skript, Ergebnis in VELA-COPY-HANDOFF.md).
+"""
+
+LANDING_BRANCHEN = {
+    "branchen-handwerk": {
+        "nav_label": "Handwerk",
+        "breadcrumb": "Handwerk",
+        "title": "KI-Automatisierung im Handwerk | Skalantech",
+        "description": "KI-Automatisierung im Handwerk: Angebote aus Foto, Termine online, Rechnungen automatisch – lokal auf Ihren Systemen, ohne Software-Abo. Skalantech.",
+        "h1": "KI-Automatisierung im Handwerk – Daten bleiben im Betrieb.",
+        "lead": "Angebote schreiben, Termine koordinieren, Rechnungen raus – die Büroarbeit im Handwerksbetrieb frisst Zeit, die auf der Baustelle fehlt. Skalantech automatisiert diese Abläufe mit KI, die bei Ihnen läuft: lokal, DSGVO-sicher und ohne dass Sie Ihre Software ersetzen.",
+        "problem_title": "Wo die Büroarbeit Zeit frisst",
+        "problem": [
+            "Angebote entstehen abends im Büro, statt auf der Baustelle – jede Anfrage kostet Stunden, die niemand hat.",
+            "Papierkram stapelt sich: Rechnungen, Lieferscheine, Abnahmen – und trotzdem wird das Wichtigste vergessen.",
+            "Termine werden telefonisch hin- und hergeschoben – Rückrufe, Zettel, Kalender, die niemand pflegt.",
+            "Anfragen werden nicht nachverfolgt – Interessenten hören nichts, Aufträge versickern im Papierkorb.",
+        ],
+        "solution_title": "Was Skalantech für Ihren Betrieb automatisiert",
+        "solution": [
+            "Angebot aus Foto oder Sprachmemo: Der Monteur erfasst die Baustelle unterwegs, die KI erstellt daraus den Angebotsentwurf – Sie prüfen, korrigieren, senden.",
+            "Rechnungen und Zahlungserinnerungen entstehen automatisch aus erledigten Aufträgen – kein Abtippen, kein Vergessen.",
+            "Terminbuchung online plus automatische Erinnerungen – Kunden buchen selbst, der Betrieb bekommt weniger Rückrufe.",
+            "WhatsApp-Anfragen werden erkannt, eingeordnet und beantwortet – die KI läuft lokal im Betrieb, Kundendaten bleiben im Haus.",
+        ],
+        "roi_title": "Was Automatisierung Ihrem Betrieb bringt.",
+        "roi": [
+            ("Zeit", "Angebote, die heute Stunden kosten, laufen nach der Umsetzung in Minuten – aus Foto oder Sprachmemo."),
+            ("Aufträge", "Anfragen werden nachverfolgt, statt im Papierkorb zu versinken – kein Auftrag geht mehr verloren."),
+            ("Termine", "Kunden buchen online, Erinnerungen laufen automatisch – weniger Leerlauf auf dem Hof."),
+            ("Kosten", "Einmalige Umsetzung und Befähigung statt monatlichem Software-Abo."),
+        ],
+        "roi_note": "Angaben sind typische Projekterfahrungen, keine Garantie. Der Nutzen wird vor dem Start gemeinsam konkret beziffert.",
+        "cta_primary": "Kostenloses Erstgespräch für Ihren Betrieb",
+        "cta_secondary": "Projekt besprechen",
+        "cta_mid": "Jetzt unverbindlich sprechen",
+        "cta_final_title": "Büroarbeit zurückholen – Termin vereinbaren",
+        "cta_final_text": "30 Minuten, unverbindlich. Wir schauen uns Ihre Abläufe an und sagen Ihnen ehrlich, wo Automatisierung sich für Ihren Betrieb lohnt.",
+        "cta_final": "Termin sichern – 30 Minuten",
+        "trust": [
+            ("Lokale KI / DSGVO", "KI läuft bei Ihnen im Betrieb – Kundendaten bleiben im Haus."),
+            ("Kein Software-Abo", "Sie kaufen Umsetzung und Befähigung, keine neue Lizenz."),
+            ("Live-Proof", "Skalantech betreibt selbst eine produktive n8n-Terminbuchung."),
+            ("Unverbindlich", "Erstgespräch kostenlos – am Ende wissen Sie, ob es sich lohnt."),
+        ],
+        "cases_heading": "Wo Automatisierung im Handwerksbetrieb konkret wird.",
+        "use_cases": [
+            ("Angebot aus Foto oder Sprachmemo", "Der Monteur erfasst die Baustelle unterwegs – der Angebotsentwurf entsteht automatisch, Sie geben ihn frei."),
+            ("Rechnungs-Erstellung", "Aus erledigten Aufträgen entstehen Rechnungen und Zahlungserinnerungen – ohne Abtippen."),
+            ("Termin-Erinnerung & Online-Buchung", "Kunden buchen selbst, Erinnerungen gehen automatisch raus – weniger Rückrufe, weniger No-Shows."),
+            ("Auftrags-Nachverfolgung & WhatsApp-Anfragen", "Anfragen per WhatsApp werden erkannt, eingeordnet und beantwortet – kein Auftrag versinkt mehr."),
+        ],
+        "process": [
+            ("Aufnahme", "Wir sehen uns Ihre Abläufe an: Angebote, Termine, Rechnungen – und wo sie hängen."),
+            ("Zielbild", "Gemeinsam legen wir fest, was automatisiert wird und wie der Nutzen aussieht."),
+            ("Umsetzung", "In kleinen, prüfbaren Schritten – mit Tests und sauberer Übergabe."),
+            ("Übergabe & Befähigung", "Ihr Team übernimmt die Abläufe selbst – wir bleiben erreichbar."),
+        ],
+        "tech": ["n8n", "LLMs", "RAG", "Python", "WhatsApp Business API", "Docker", "Tailscale"],
+        "benefits": [],
+        "faqs": [
+            ("Was kostet KI-Automatisierung für Handwerksbetriebe?", "Die Kosten hängen vom Umfang ab: ein einzelner Workflow wie die Online-Terminbuchung ist deutlich günstiger als die Automatisierung von Angebot bis Rechnung. Sie zahlen einmalige Umsetzung statt monatlichem Abo – im Erstgespräch nennen wir Ihnen eine realistische Größenordnung für Ihren Betrieb."),
+            ("Muss ich meine Software ersetzen?", "Nein. Ihre Handwerkersoftware bleibt, wie sie ist. Wir automatisieren die Prozesse darum herum – Angebote, Termine, Erinnerungen – und binden an, was schon da ist."),
+            ("Wie lange dauert die Umsetzung?", "Ein einzelner Use-Case wie die Online-Terminbuchung mit Erinnerungen ist in der Regel innerhalb weniger Wochen produktiv. Größere Vorhaben werden in kleine, prüfbare Schritte zerlegt."),
+            ("Sind unsere Kundendaten sicher (DSGVO)?", "Ja. Die KI läuft bei Ihnen im Betrieb – Kundendaten verlassen das Haus nicht. Cloud-Dienste setzen wir nur dort ein, wo es datenschutzrechtlich sauber und fachlich sinnvoll ist."),
+            ("Brauche ich IT-Kenntnisse?", "Nein. Sie beschreiben Ihre Abläufe, wir bauen die Automatisierung. Am Ende wird das Team eingewiesen – die Bedienung ist auf den Alltag ausgelegt, nicht auf IT-Spezialwissen."),
+            ("Wie funktioniert die Terminbuchung für meine Kunden?", "Kunden bekommen einen Buchungslink – per E-Mail, WhatsApp oder von der Website. Sie wählen Dienst und Zeitfenster, das System bestätigt automatisch und erinnert vor dem Termin. Alle Buchungen sehen Sie an einem Ort."),
+        ],
+        "related": ["ki-agenten", "n8n-automatisierung", "lokale-ki"],
+        "related_articles": ["welche-prozesse-ki-automatisierung", "kosten-roi-ki-automatisierung"],
+        "keywords_primary": ["ki automatisierung handwerk", "terminbuchung handwerksbetrieb"],
+        "keywords_secondary": ["angebotserstellung automatisieren", "handwerk digitalisieren", "ki im handwerk", "automatisierung angebote rechnungen handwerk", "ki angebote erstellen handwerk"],
+        "intent": "Prozess-Automatisierung im Handwerksbetrieb (Branche, nicht Technologie)",
+    },
+
+    "branchen-kfz": {
+        "nav_label": "Kfz",
+        "breadcrumb": "Kfz-Werkstatt",
+        "title": "KI-Automatisierung für Kfz-Werkstatt | Skalantech",
+        "description": "KI-Automatisierung für Ihre Kfz-Werkstatt: 24/7-Terminbuchung, HU/TÜV-Erinnerungen, WhatsApp-Status – rund um Ihre Software, DSGVO-konform.",
+        "h1": "KI-Automatisierung für Ihre Werkstatt – ohne neue Software.",
+        "lead": "Das Telefon klingelt, Termine platzen, der Kundenservice hängt an einer Person. Skalantech automatisiert die Abläufe rund um Ihre Werkstattsoftware – Terminbuchung, Erinnerungen, Statusupdates – damit Ihre Werkstatt arbeitet, statt zu verwalten.",
+        "problem_title": "Wenn die Werkstatt mehr verwaltet als arbeitet",
+        "problem": [
+            "Das Telefon klingelt den ganzen Tag – Terminabsprachen, Statusfragen, Rückrufe, oft dieselben Antworten.",
+            "Kunden erscheinen nicht zum Termin – die Bühne steht leer, die Werkstatt verliert Umsatz.",
+            "Der Kundenservice hängt an einer Person – ist sie krank oder im Urlaub, bleibt alles liegen.",
+            "HU/TÜV-Erinnerungen und Rechnungsprozesse laufen manuell – Kunden fallen durchs Raster, Geld kommt später.",
+        ],
+        "solution_title": "Was Skalantech rund um Ihre Software automatisiert",
+        "solution": [
+            "24/7-Terminbuchung: Kunden buchen online – auch nachts – und der Terminplan ist morgens gefüllt.",
+            "HU/TÜV-Erinnerungen und Inspektions-Intervalle laufen automatisch – Kunden kommen rechtzeitig, die Auslastung bleibt stabil.",
+            "WhatsApp-Statusupdates: Kunden erfahren automatisch, wann ihr Fahrzeug fertig ist – Rückfragen am Telefon sinken.",
+            "Bestätigungen und Erinnerungen reduzieren No-Shows, Bewertungsanfragen und Rechnungsdaten Richtung DATEV laufen automatisiert mit.",
+        ],
+        "integration_title": "Ihre Software bleibt – die KI macht die Arbeit darum herum.",
+        "integration": [
+            "Ihre Werkstattsoftware läuft weiter – wir ersetzen sie nicht.",
+            "DATEV und Buchhaltungs-Prozesse bleiben angebunden – Rechnungsdaten fließen automatisch.",
+            "Terminbuchung und Kalender werden ergänzt, nicht abgelöst.",
+            "Kein neues System, keine Umschulung des Teams.",
+        ],
+        "roi_title": "Was Automatisierung Ihrer Werkstatt bringt.",
+        "roi": [
+            ("No-Shows", "Erinnerungen und Bestätigungen laufen automatisch – Termine platzen seltener."),
+            ("Auslastung", "Kunden buchen rund um die Uhr – die Werkstatt ist besser ausgelastet."),
+            ("Telefon", "Anfragen und Statusupdates laufen über WhatsApp – das Telefon hört auf zu klingeln."),
+            ("Verwaltung", "HU/TÜV-Erinnerungen und Bewertungsmanagement laufen automatisch mit."),
+        ],
+        "roi_note": "Angaben sind typische Projekterfahrungen, keine Garantie. Der Nutzen wird vor dem Start gemeinsam konkret beziffert.",
+        "cta_primary": "Erstgespräch für Ihre Werkstatt",
+        "cta_secondary": "Projekt besprechen",
+        "cta_mid": "Jetzt Werkstatt-Termin sichern",
+        "cta_final_title": "Werkstatt entlasten – konkret besprechen",
+        "cta_final_text": "30 Minuten, unverbindlich. Wir prüfen mit Ihnen, welche Abläufe Ihre Werkstatt sofort entlasten – Ihre Software bleibt.",
+        "cta_final": "Automatisierung konkret besprechen",
+        "trust": [
+            ("Ihre Software bleibt", "Wir integrieren in Ihre Werkstattsoftware – kein Ersatz, kein Lock-in."),
+            ("Live-Proof", "Skalantech betreibt selbst eine produktive n8n-Terminbuchung."),
+            ("DSGVO-konform", "Kunden- und Fahrzeugdaten bleiben geschützt – lokale Verarbeitung."),
+            ("Umsetzung + Befähigung", "Einmalige Umsetzung, Ihr Team behält die Kontrolle."),
+        ],
+        "cases_heading": "Wo Automatisierung in der Werkstatt konkret wird.",
+        "use_cases": [
+            ("24/7-Terminbuchung", "Kunden buchen online außerhalb der Öffnungszeiten – der Terminplan ist morgens gefüllt."),
+            ("HU/TÜV-Erinnerungen & Statusupdates", "Kunden bekommen automatisch Erinnerungen und den Status ihres Fahrzeugs – per WhatsApp."),
+            ("No-Show-Reduktion", "Bestätigungen und Erinnerungen laufen automatisch – Termine platzen seltener, die Bühne bleibt belegt."),
+            ("Bewertungsmanagement & DATEV", "Zufriedene Kunden werden automatisch um Bewertung gebeten, Rechnungsdaten fließen Richtung DATEV."),
+        ],
+        "process": [
+            ("Ist-Analyse", "Telefon, Termine, Systeme – wir erfassen, wo die Werkstatt Zeit verliert."),
+            ("Use-Case wählen", "Ein konkreter Ablauf wie die Terminbuchung wird priorisiert – nicht alles auf einmal."),
+            ("Workflow bauen & testen", "Die Automatisierung entsteht mit echten Daten und wird gründlich getestet."),
+            ("Übergabe & Betrieb", "Ihr Team übernimmt, wir betreuen – und erweitern bei Bedarf."),
+        ],
+        "tech": ["n8n", "WhatsApp Business API", "LLMs", "DATEV-Schnittstellen", "Python", "Docker"],
+        "benefits": [],
+        "faqs": [
+            ("Ersetzt das unsere Werkstattsoftware?", "Nein. Ihre Werkstattsoftware bleibt – wir automatisieren die Abläufe darum herum: Terminbuchung, Erinnerungen, Statusupdates, Bewertungsanfragen. Kein neues System, keine Umschulung."),
+            ("Was kostet die Automatisierung?", "Das hängt vom Umfang ab. Ein Use-Case wie die Online-Terminbuchung mit Erinnerungen ist deutlich günstiger als die Automatisierung aller Prozesse. Sie zahlen einmalige Umsetzung statt monatlicher Software-Gebühren – die Größenordnung klären wir im Erstgespräch."),
+            ("Wie reduziert KI No-Shows?", "Kunden bestätigen ihren Termin automatisch und bekommen rechtzeitig Erinnerungen – per WhatsApp oder SMS. Wer nicht bestätigt, wird nachgefragt. Dadurch bleibt die Bühne belegt und Leerzeiten sinken."),
+            ("Ist das DSGVO-konform (Kunden- und Fahrzeugdaten)?", "Ja. Kunden- und Fahrzeugdaten werden lokal verarbeitet – die Automatisierung läuft auf Ihrer Infrastruktur oder datenschutzkonform angebunden. Daten werden nicht an fremde KI-Dienste geschickt."),
+            ("Wie lange dauert die Einrichtung?", "Ein einzelner Use-Case ist in der Regel innerhalb weniger Wochen produktiv. Sie entscheiden, welcher Ablauf zuerst automatisiert wird – wir bauen ihn mit echten Daten und testen gründlich."),
+            ("Was passiert, wenn ein automatisierter Prozess Fehler macht?", "Workflows werden mit Fehlerbehandlung und Protokollierung gebaut. Bei Abweichungen werden Sie informiert – nichts passiert still. Ihr Team kann jeden Schritt nachvollziehen."),
+        ],
+        "related": ["n8n-automatisierung", "ki-agenten", "lokale-ki"],
+        "related_articles": ["n8n-vs-power-automate", "welche-prozesse-ki-automatisierung"],
+        "keywords_primary": ["ki automatisierung kfz-werkstatt", "digitalisierung autowerkstatt", "ki terminplanung werkstatt", "automatische erinnerungen werkstatt", "kfz betrieb abläufe automatisieren"],
+        "keywords_secondary": ["ki werkstatt kundenservice", "werkstatt 4.0", "werkstatt auslastung erhöhen", "kfz werkstatt effizienz", "ki beratung kfz werkstatt"],
+        "intent": "Automatisierung rund um die bestehende Werkstattsoftware (Branche, nicht Software-Ersatz)",
+    },
+
+    "branchen-kanzleien": {
+        "nav_label": "Kanzleien",
+        "breadcrumb": "Kanzleien & Steuerberatung",
+        "title": "KI-Automatisierung für Kanzlei & Steuerberatung | Skalantech",
+        "description": "KI-Automatisierung für Kanzleien und Steuerberatungen: Akten zusammenfassen, Schriftsätze entwerfen – lokal, selbstgehostet, KI-VO- und DSGVO-konform.",
+        "h1": "Lokale KI für Kanzlei und Steuerberatung – DSGVO-konform.",
+        "lead": "Dokumentenflut, Schreibarbeiten, Mandatsannahme – administrative Arbeit kostet Kanzleien und Steuerberatungen Zeit, die für Mandate gedacht ist. Skalantech bringt lokale, selbstgehostete KI in Ihre Kanzlei: Daten bleiben im Haus, Berufsrecht, DSGVO und KI-VO bleiben gewahrt.",
+        "problem_title": "Wo Dokumente die billable hours fressen",
+        "problem": [
+            "Akten, Verträge, Schriftsätze – die Dokumentenflut wächst, das Zusammenfassen frisst billable hours.",
+            "Schreibarbeiten und Formulare binden Fachkräfte, die für Mandate gebraucht werden.",
+            "Mandatsannahme und Erstanfragen liegen unstrukturiert – Anfragen gehen unter, Antworten dauern.",
+            "Fristen und Wiedervorlagen hängen an Disziplin statt an einem System – im Zweifel wird es teuer.",
+        ],
+        "solution_title": "Was Skalantech in Ihrer Kanzlei automatisiert",
+        "solution": [
+            "Akten-Zusammenfassungen: Die KI fasst lange Dokumente strukturiert zusammen – Sie prüfen das Ergebnis, statt selbst zu lesen.",
+            "Vertragsanalyse und Schriftsatz-Entwürfe entstehen auf Basis Ihrer Kanzlei-Vorlagen – Sie korrigieren, nicht tippen.",
+            "Mandatsannahme und Erstanfragen werden erfasst, qualifiziert und beantwortet – kein Mandat geht unter.",
+            "Für Steuerberatungen: Belegverarbeitung und Fristen-Überblick laufen automatisiert – lokal auf Ihrer Infrastruktur, ohne Datenabfluss in US-Clouds.",
+        ],
+        "roi_title": "Was lokale KI Ihrer Kanzlei bringt.",
+        "roi": [
+            ("Zeit", "Akten-Zusammenfassungen in Minuten statt Stunden – mehr billable hours."),
+            ("Schreibarbeit", "Schriftsatz-Entwürfe und Belegverarbeitung laufen vor – Sie prüfen, nicht tippen."),
+            ("Mandate", "Mandatsannahme und Erstanfragen werden strukturiert – kein Mandat geht unter."),
+            ("Compliance", "Lokale Verarbeitung statt US-Cloud – Berufsrecht, DSGVO und KI-VO bleiben gewahrt."),
+        ],
+        "roi_note": "Angaben sind typische Projekterfahrungen, keine Garantie. Der konkrete Nutzen wird vor dem Start gemeinsam beziffert – inklusive Compliance-Prüfung.",
+        "cta_primary": "Compliance-Check vereinbaren",
+        "cta_secondary": "Projekt besprechen",
+        "cta_mid": "Berufsrecht-konforme KI besprechen",
+        "cta_final_title": "Lokale KI für Ihre Kanzlei planen",
+        "cta_final_text": "30 Minuten, unverbindlich – inklusive erster Einschätzung zu Berufsrecht, DSGVO und KI-VO für Ihren Use-Case.",
+        "cta_final": "Lokale KI für Ihre Kanzlei planen",
+        "trust": [
+            ("Lokale KI", "Modelle laufen auf Ihrer Infrastruktur – keine Daten in US-Clouds."),
+            ("KI-VO & DSGVO", "Umsetzung mit Blick auf KI-VO Art. 4, Berufsrecht und beA-Prozesse."),
+            ("RAG auf eigenen Dokumenten", "KI arbeitet mit Ihren Akten und Belegen – ohne Datenabfluss."),
+            ("Umsetzung + Befähigung", "Einmalige Umsetzung, Ihr Team behält die Kontrolle."),
+        ],
+        "cases_heading": "Wo lokale KI in Kanzlei und Steuerberatung konkret wird.",
+        "use_cases": [
+            ("Akten-Zusammenfassungen", "Lange Akten werden strukturiert zusammengefasst – Sie starten mit dem Kern, nicht mit Seite eins."),
+            ("Vertragsanalyse & Schriftsatz-Entwürfe", "Entwürfe entstehen auf Basis Ihrer Vorlagen – Sie prüfen, passen an, signieren."),
+            ("Mandatsannahme & Erstanfragen", "Erstanfragen werden erfasst, qualifiziert und beantwortet – kein Mandat geht unter."),
+            ("Belegverarbeitung & Fristen", "Für Steuerberatungen: Belege laufen strukturiert, Fristen werden überwacht – lokal und ohne Datenabfluss."),
+        ],
+        "process": [
+            ("Anforderung & Compliance-Klärung", "Wir klären Use-Case, Daten und berufsrechtliche Anforderungen – bevor etwas gebaut wird."),
+            ("Machbarkeit mit echten Daten", "An einem echten Dokumenten-Sample zeigen wir, was die KI leistet – ohne Risiko."),
+            ("Pilot auf eigener Infrastruktur", "Die Lösung läuft bei Ihnen, lokal – mit begrenztem Umfang und klaren Erfolgskriterien."),
+            ("Produktivbetrieb & Übergabe", "Ausweitung, Dokumentation und Übergabe – Ihr Team behält die Kontrolle."),
+        ],
+        "tech": ["RAG", "Lokale LLMs (Ollama)", "Docker", "Python", "n8n", "DSGVO-Infrastruktur", "beA-Kontext"],
+        "benefits": [],
+        "faqs": [
+            ("Ist KI in der Kanzlei berufsrechtlich erlaubt?", "Ja, wenn die Grundsätze der anwaltlichen Verschwiegenheit gewahrt bleiben. Genau dafür ist die lokale Variante gedacht: Die KI läuft auf Ihrer Infrastruktur, Mandantendaten verlassen das Haus nicht. Im Projekt klären wir die berufsrechtlichen Anforderungen für Ihren konkreten Use-Case."),
+            ("Was bedeutet KI-VO Art. 4 für uns?", "Die KI-Verordnung verlangt KI-Kompetenz beim Einsatz und Betrieb von KI-Systemen. Wir dokumentieren die eingesetzten Systeme, ihre Zwecke und Grenzen – und schulen Ihr Team. Lokale, selbstgehostete Systeme geben Ihnen dabei die volle Kontrolle über Daten und Einsatz."),
+            ("Bleiben Mandantendaten im Haus?", "Ja. Die Modelle laufen auf Ihrer Infrastruktur oder einer kontrollierten, DSGVO-konformen Umgebung – nicht in US-Clouds. Datenabfluss ist damit ausgeschlossen; das ist der Kern unseres Ansatzes für Kanzleien."),
+            ("Was kostet eine lokale KI?", "Die Kosten setzen sich aus Infrastruktur (Hardware oder Server) und einmaliger Umsetzung zusammen – ohne laufende Cloud-Gebühren pro Nutzung. Im Erstgespräch bekommen Sie eine realistische Größenordnung für Ihren Use-Case."),
+            ("Wie wird sie in unsere Kanzleisoftware integriert?", "Die KI arbeitet neben Ihrer bestehenden Software: Dokumente kommen aus Ihren Ablagen, Ergebnisse gehen zurück – über Schnittstellen, ohne dass Sie Ihre Kanzleisoftware ersetzen oder umstellen müssen."),
+            ("Was bedeutet das für Steuerberatungen?", "Für Steuerberatungen zählen vor allem Belegverarbeitung, Fristen und die Verschwiegenheit der Mandantendaten. Lokale KI übernimmt die strukturierte Vorarbeit – Sie prüfen, Ihr System bleibt, die Daten bleiben im Haus."),
+        ],
+        "related": ["lokale-ki", "ki-integration", "ki-agenten"],
+        "related_articles": ["rag-wissensassistenten", "lokale-ki-vs-cloud-ki"],
+        "keywords_primary": ["ki kanzlei automatisierung", "ki für rechtsanwälte", "steuerkanzlei automatisieren", "ki akten zusammenfassen", "ki mandatsannahme", "ki-v o konform kanzlei"],
+        "keywords_secondary": ["kanzleiautomatisierung", "ki schriftsätze", "dokumentenmanagement kanzlei ki", "kanzlei effizienz steigern", "ki beratung kanzlei"],
+        "intent": "Berufsrechtskonforme lokale KI für Kanzlei und Steuerberatung (RA + StB, nicht Software-Modul)",
+    },
+
+    "branchen-immobilien": {
+        "nav_label": "Immobilien",
+        "breadcrumb": "Immobilien",
+        "title": "KI-Automatisierung für Immobilienmakler | Skalantech",
+        "description": "KI-Automatisierung für Immobilienmakler: Exposés in Minuten, Anfragen automatisch beantwortet, Leads nachverfolgt – Ihr CRM bleibt. Skalantech.",
+        "h1": "Ihr CRM bleibt – die KI macht die Arbeit.",
+        "lead": "Viele Objekte parallel, Exposés, die Stunden kosten, Anfragen, die niemand systematisch nachverfolgt. Skalantech automatisiert diese Prozesse rund um Ihr CRM und Ihre Portale – nichts wird ersetzt, die KI macht die Arbeit.",
+        "problem_title": "Wo Objekte und Anfragen Zeit fressen",
+        "problem": [
+            "Mehrere Objekte parallel – jedes Exposé, jede Besichtigung, jede Anfrage frisst Zeit.",
+            "Exposés und Objektbeschreibungen entstehen per Hand – ein Objekt kostet Stunden, die für Verkauf und Vermietung fehlen.",
+            "Anfragen kommen über Portale, E-Mail und Telefon – nichts wird systematisch beantwortet oder priorisiert.",
+            "Interessenten werden nicht nachverfolgt – nach der ersten Besichtigung wird es still, Leads versanden.",
+        ],
+        "solution_title": "Was Skalantech rund um Ihr CRM automatisiert",
+        "solution": [
+            "Exposés und Objektbeschreibungen entstehen in Minuten aus Ihren Objektdaten – konsistent, mit den Fakten, die Sie pflegen.",
+            "Anfragen werden automatisch qualifiziert und beantwortet – ernsthafte Interessenten erkennen Sie sofort, keine hängt mehr fest.",
+            "Lead-Nachverfolgung läuft systematisch: Antworten, Erinnerungen, Status – kein Interessent wird vergessen.",
+            "Für Hausverwaltungen: Posteingang, Rechnungen und Betriebskosten-Vorbereitung laufen strukturiert – Fristen werden eingehalten, weil sie überwacht werden.",
+        ],
+        "integration_title": "Ihr CRM bleibt – die KI macht die Arbeit.",
+        "integration": [
+            "Ihr CRM (z. B. onoffice) läuft weiter – wir ersetzen es nicht.",
+            "ImmoScout24 und immowelt bleiben Ihre Portale – die KI ergänzt die Abläufe darum herum.",
+            "Aareon und andere Verwaltungssysteme bleiben angebunden – Belegverarbeitung und Fristen laufen automatisiert.",
+            "Kein neues System, keine Datenmigration, keine Umschulung.",
+        ],
+        "roi_title": "Was Automatisierung für Makler und Verwaltung bringt.",
+        "roi": [
+            ("Exposés", "Objektbeschreibungen entstehen in Minuten statt Stunden – aus Ihren Objektdaten."),
+            ("Anfragen", "Anfragen werden automatisch qualifiziert und beantwortet – keine hängt mehr fest."),
+            ("Follow-up", "Interessenten werden systematisch nachverfolgt – kein Lead geht verloren."),
+            ("Verwaltung", "Posteingang, Rechnungen und Betriebskosten-Vorbereitung laufen strukturiert."),
+        ],
+        "roi_note": "Angaben sind typische Projekterfahrungen, keine Garantie. Der Nutzen wird vor dem Start gemeinsam an einem konkreten Objektprozess beziffert.",
+        "cta_primary": "Integrations-Check vereinbaren",
+        "cta_secondary": "Projekt besprechen",
+        "cta_mid": "Ihr CRM bleibt – Termin besprechen",
+        "cta_final_title": "Automatisierung für Ihre Objekte planen",
+        "cta_final_text": "30 Minuten, unverbindlich. Wir zeigen Ihnen an einem konkreten Objektprozess, was Automatisierung bringt – Ihr CRM bleibt.",
+        "cta_final": "Automatisierung für Ihre Objekte planen",
+        "trust": [
+            ("Ihre Software bleibt", "Integration in onoffice, ImmoScout24, immowelt, Aareon – kein Ersatz, kein Lock-in."),
+            ("DSGVO-konform", "Sensible Objektdaten bleiben im Haus – lokale Verarbeitung möglich."),
+            ("Konkrete Prozesse", "Exposé, Anfragen-Triage, Belegverarbeitung – keine KI-Versprechen."),
+            ("Umsetzung + Befähigung", "Einmalige Umsetzung, Ihr Team behält die Kontrolle."),
+        ],
+        "cases_heading": "Wo Automatisierung für Makler und Hausverwaltung konkret wird.",
+        "use_cases": [
+            ("Exposé & Objektbeschreibung in Minuten", "Aus Ihren Objektdaten entsteht ein konsistentes Exposé – in Minuten statt Stunden."),
+            ("Anfragen-Triage & automatische Antworten", "Anfragen werden qualifiziert, priorisiert und beantwortet – ernsthafte Interessenten zuerst."),
+            ("Lead-Nachverfolgung", "Interessenten bekommen automatisch Antworten und Erinnerungen – kein Lead versandet."),
+            ("Hausverwaltung: Post, Rechnungen, Fristen", "Posteingang und Rechnungen laufen strukturiert, Betriebskosten und Fristen werden vorbereitet."),
+        ],
+        "process": [
+            ("Ist-Analyse", "Objekte, CRM, Portale, Post – wir erfassen, wo Zeit verloren geht."),
+            ("Use-Case wählen", "Ein konkreter Prozess wie die Exposé-Erstellung wird zuerst automatisiert."),
+            ("Pilot mit echten Objektdaten", "Die Lösung läuft mit Ihren Daten – Sie sehen den Nutzen, bevor wir ausweiten."),
+            ("Produktivbetrieb & Übergabe", "Ausweitung auf weitere Prozesse, Dokumentation, Übergabe an Ihr Team."),
+        ],
+        "tech": ["n8n", "LLMs", "RAG", "CRM-APIs (onoffice)", "Python", "Docker"],
+        "benefits": [],
+        "faqs": [
+            ("Müssen wir unser CRM wechseln?", "Nein. Ihr CRM bleibt – die KI arbeitet darum herum. Wir integrieren in Ihre bestehende Umgebung (z. B. onoffice) statt ein neues System einzuführen. Keine Datenmigration, keine Umschulung."),
+            ("Wie schnell ist ein Exposé fertig?", "Aus Ihren Objektdaten entsteht ein erster Entwurf in Minuten – Sie prüfen und passen an. Was heute Stunden kostet, wird zur Kontrollaufgabe statt zur Schreibarbeit."),
+            ("Was kostet das?", "Das hängt vom Umfang ab: ein einzelner Prozess wie die Exposé-Erstellung ist deutlich günstiger als die Automatisierung der gesamten Verwaltung. Sie zahlen einmalige Umsetzung – die Größenordnung klären wir im Erstgespräch."),
+            ("Wie steht es um Datenschutz bei Objektdaten?", "Objektdaten sind sensibel – genau deshalb ist lokale Verarbeitung möglich. Die KI läuft bei Ihnen, Daten gehen nicht an fremde Dienste. Cloud-KI setzen wir nur ein, wenn es datenschutzrechtlich sauber ist."),
+            ("Funktioniert das mit ImmoScout24/onoffice?", "Ja. Die Automatisierung läuft über Schnittstellen zu Ihren Portalen und CRM-Systemen: Anfragen aus ImmoScout24 oder immowelt werden übernommen, Exposé-Daten kommen aus Ihrem CRM (z. B. onoffice). Ihre Systeme bleiben, wie sie sind."),
+            ("Brauchen wir IT-Kenntnisse?", "Nein. Sie beschreiben Ihre Abläufe – wir bauen und übergeben. Ihr Team bedient die Automatisierung im Alltag ohne Programmierkenntnisse."),
+        ],
+        "related": ["ki-agenten", "ki-integration", "lokale-ki"],
+        "related_articles": ["rag-wissensassistenten", "welche-prozesse-ki-automatisierung"],
+        "keywords_primary": ["ki automatisierung immobilienmakler", "ki hausverwaltung", "immobilienverwaltung automatisieren", "ki exposé erstellen", "ki crm immobilienmakler"],
+        "keywords_secondary": ["ki objektbeschreibung", "immobilienfotos ki", "immobilie schneller verkaufen", "makler effizienz ki", "ki beratung immobilienmakler"],
+        "intent": "KI-Integration in Bestandssysteme für Makler und Hausverwaltung (Branche, nicht KI-Software-Ersatz)",
+    },
+}
+
+# Reihenfolge für Sitemap & interne Verlinkung (Build-Reihenfolge).
+# Dict-Schlüssel sind "branchen-{slug}", Routen liegen unter /branchen/{slug}.
+BRANCH_ORDER = ["handwerk", "kfz", "kanzleien", "immobilien"]
+
+
+if __name__ == "__main__":
+    for key, page in LANDING_BRANCHEN.items():
+        print(key, "->", page["title"], "|", page["h1"])
