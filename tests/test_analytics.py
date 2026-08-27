@@ -54,6 +54,10 @@ class AnalyticsEventTests(unittest.TestCase):
 
     def setUp(self):
         self.client = self.app.test_client()
+        # In-Memory-Kontakt-Rate-Limit (public._CONTACT_LIMITS) ist ein
+        # Modul-Singleton und überlebt Tests — für Isolation zurücksetzen,
+        # sonst schlagen spätere /contact-POSTs mit 400 fehl.
+        self.public_module._CONTACT_LIMITS.clear()
         with self.app.app_context():
             self.AnalyticsEvent.query.delete()
             self.ContactMessage.query.delete()
@@ -249,6 +253,150 @@ class AnalyticsEventTests(unittest.TestCase):
             {"day": "2026-09-15", "time": "10:00", "service": "Erstgespräch"},
         )
         self.assertIn("demo_completed", {e.event for e in events})
+
+    # ── Lead-Funnel-Kette (LUMINA-Spez §6 / D6) ─────────────────────────
+
+    def test_booking_events_accepted_by_allowlist(self):
+        """booking_error + booking_confirmed sind in der Event-Taxonomie
+        (D6) und werden vom /analytics/event-Endpoint akzeptiert."""
+        for event in ("booking_error", "booking_confirmed"):
+            with self.subTest(event=event):
+                response = self._post_event({"event": event, "page": "/"})
+                self.assertEqual(response.status_code, 204)
+
+        stored = {e.event for e in self._events()}
+        self.assertEqual(stored, {"booking_error", "booking_confirmed"})
+
+    def test_funnel_chain_page_view_to_meeting_booked(self):
+        """Komplette Funnel-Kette in EINER Session (LUMINA-Spez §6):
+        page_view → demo_started → calendar_opened → form_submit
+        → (Server) demo_completed → meeting_booked — in dieser Reihenfolge
+        mit derselben session_id (Funnel-Stitching)."""
+        session = "sess-funnel-1"
+        for event in ("page_view", "demo_started", "calendar_opened", "form_submit"):
+            response = self._post_event({"event": event, "page": "/", "session_id": session})
+            self.assertEqual(response.status_code, 204)
+
+        original = self.public_module._forward_to_n8n
+        self.public_module._forward_to_n8n = lambda *a, **kw: {
+            "success": True,
+            "status": "confirmed",
+            "message": "ok",
+        }
+        try:
+            response = self._submit_contact(extra={
+                "book_slot": "1",
+                "preferred_day": "2026-09-15",
+                "preferred_time": "10:00",
+                "session_id": session,
+            })
+        finally:
+            self.public_module._forward_to_n8n = original
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["booking"]["status"], "confirmed")
+
+        chain = [e.event for e in self._events() if e.session_id == session]
+        # lead_created wird serverseitig bei jedem /contact-POST geschrieben
+        # (vor dem n8n-Call) — die Kette in DB-Reihenfolge:
+        self.assertEqual(
+            chain,
+            ["page_view", "demo_started", "calendar_opened", "form_submit",
+             "lead_created", "demo_completed", "meeting_booked"],
+        )
+        # Die Conversion-relevante Funnel-Kette (LUMINA-Spez §6) ist darin enthalten:
+        funnel = [name for name in chain if name in
+                  ("page_view", "demo_started", "calendar_opened", "form_submit",
+                   "demo_completed", "meeting_booked")]
+        self.assertEqual(
+            funnel,
+            ["page_view", "demo_started", "calendar_opened", "form_submit",
+             "demo_completed", "meeting_booked"],
+        )
+        meeting_events = [e for e in self._events()
+                          if e.session_id == session and e.event == "meeting_booked"]
+        self.assertEqual(len(meeting_events), 1)
+        self.assertEqual(
+            json.loads(meeting_events[0].props),
+            {"day": "2026-09-15", "time": "10:00", "service": "Erstgespräch"},
+        )
+
+    def test_booking_error_invalid_response_reason(self):
+        """n8n liefert kein valides JSON → booking_error mit
+        props.reason='invalid_response' (D6), Lead bleibt gespeichert."""
+        original = self.public_module._forward_to_n8n
+        self.public_module._forward_to_n8n = lambda *a, **kw: {
+            "success": False,
+            "status": "invalid_response",
+            "message": "Termindienst hat keine gültige Antwort geliefert.",
+        }
+        try:
+            response = self._submit_contact(extra={
+                "book_slot": "1",
+                "preferred_day": "2026-09-15",
+                "preferred_time": "10:00",
+            })
+        finally:
+            self.public_module._forward_to_n8n = original
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["booking"]["status"], "queued")
+
+        errors = [e for e in self._events() if e.event == "booking_error"]
+        self.assertEqual(len(errors), 1)
+        self.assertEqual(json.loads(errors[0].props), {"reason": "invalid_response"})
+        self.assertNotIn("meeting_booked", {e.event for e in self._events()})
+
+    def test_slot_taken_is_no_booking_error(self):
+        """„Slot belegt“ (n8n success:false) ist ein normaler Nutzerpfad (D2):
+        KEIN booking_error, KEIN meeting_booked — Lead bleibt 'lead'."""
+        original = self.public_module._forward_to_n8n
+        self.public_module._forward_to_n8n = lambda *a, **kw: {
+            "success": False,
+            "status": "slot_taken",
+            "message": "Der gewünschte Termin ist leider bereits belegt.",
+        }
+        try:
+            response = self._submit_contact(extra={
+                "book_slot": "1",
+                "preferred_day": "2026-09-15",
+                "preferred_time": "10:00",
+            })
+        finally:
+            self.public_module._forward_to_n8n = original
+
+        self.assertEqual(response.status_code, 200)
+        body = response.get_json()
+        self.assertFalse(body["success"])
+        self.assertEqual(
+            body["message"], "Der gewünschte Termin ist leider bereits belegt.",
+        )
+        names = {e.event for e in self._events()}
+        self.assertIn("lead_created", names)
+        self.assertIn("demo_completed", names)
+        self.assertNotIn("booking_error", names)
+        self.assertNotIn("meeting_booked", names)
+
+        with self.app.app_context():
+            lead = self.Lead.query.filter_by(email="analytics@example.com").first()
+            self.assertEqual(lead.status, "lead")  # nicht qualifiziert
+
+    # ── Client-Kontrakt (analytics.js / main.js) ────────────────────────
+
+    def test_client_event_allowlist_matches_spec(self):
+        """D6-Client-Kontrakt: analytics.js enthält booking_confirmed,
+        aber NICHT booking_error (Server-only-Event). main.js feuert
+        booking_confirmed genau 1× pro Submit (Guard-Flag)."""
+        from pathlib import Path
+
+        repo_root = Path(__file__).resolve().parent.parent
+        analytics_js = (repo_root / "app" / "static" / "js" / "analytics.js").read_text(encoding="utf-8")
+        self.assertIn('"booking_confirmed"', analytics_js)
+        self.assertNotIn('"booking_error"', analytics_js)
+
+        main_js = (repo_root / "app" / "static" / "js" / "main.js").read_text(encoding="utf-8")
+        self.assertIn("bookingConfirmedTracked", main_js)
+        self.assertIn('"booking_confirmed"', main_js)
 
     # ── Template-Integration ────────────────────────────────────────────
 

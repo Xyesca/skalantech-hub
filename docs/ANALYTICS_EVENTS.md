@@ -1,6 +1,6 @@
 # Analytics & Conversion Tracking — Event-Spezifikation (PULSE)
 
-**Stand:** 2026-08-27 · **Verantwortlich:** PULSE (Analytics) · **Status:** implementiert + verifiziert (P0)
+**Stand:** 2026-08-27 · **Verantwortlich:** PULSE (Analytics) · **Status:** implementiert + verifiziert (P0) — Lead-Funnel-Erweiterung (booking_error/booking_confirmed) verifiziert (t_14c947e2)
 
 ## 1. Architektur
 
@@ -31,7 +31,9 @@ SQLite: analytics_events  (Modell AnalyticsEvent)
 | `demo_completed` | Termin-Anfrage erfolgreich abgeschickt (Formular ok) | **Server** (Formular-POST) | `{"service": "Erstgespräch"}` |
 | `contact_clicked` | Kontakt-CTA / mailto geklickt | Client (click) | `{"label": "mailto"\|"nav"\|"<Service>"}` |
 | `calendar_opened` | Datumsauswahl im Buchungsformular geöffnet (1×/Session) | Client (focus/click `#booking-day`) | — |
-| `meeting_booked` | n8n-Terminwebhook bestätigt Buchung | **Server** (n8n-Response) | `{"day": "...", "time": "...", "service": "Erstgespräch"}` |
+| `meeting_booked` | n8n-Terminwebhook bestätigt Buchung (`success:true`) | **Server** (n8n-Response) | `{"day": "...", "time": "...", "service": "Erstgespräch"}` |
+| `booking_error` | n8n down/timeout oder ungültige Antwort — **nur** bei echter Störung, **nie** bei „Slot belegt“ (normaler Nutzerpfad) | **Server** (n8n-Fehlerklassifikation) | `{"reason": "unreachable"\|"invalid_response"}` |
+| `booking_confirmed` | Bestätigungsansicht im `.booking-box` sichtbar (Erfolg oder queued) — 1×/Submit | Client (main.js `showBookingSuccess`) | `{"status": "confirmed"\|"queued"}` |
 | `service_viewed` | Leistungs-Karte im Viewport (1×/Session) | Client (IntersectionObserver) | `{"label": "<Karten-Titel>"}` |
 | `case_study_viewed` | Projekt-Karte im Viewport (1×/Session) | Client (IntersectionObserver) | `{"label": "<Projekt-Titel>"}` |
 | `roi_calculated` | ROI-Rechner ausgelöst | Client (Widget-API, folgt) | z. B. `{"savings_hours": 8}` |
@@ -49,13 +51,18 @@ SQLite: analytics_events  (Modell AnalyticsEvent)
 
 **ROI-Kontext (LUMINA-Spez):** Der Ergebnis-CTA übergibt nur den Bucket als `roi_context`-Query-Parameter ans Buchungsformular; serverseitig gegen feste Whitelist `{h_lt_150, h_150_400, h_gt_400}` validiert und als „ROI-Rechner: &lt;bucket&gt;“ in die Lead-Message übernommen. **Niemals** fließt der Rohwert (Stunden/€) in Tracking oder Lead — Client-Events (`roi_calculated`, `roi_cta_click`) sind reine Dashboard-Signale, Quelle der Wahrheit bleiben serverseitige Conversions (`form_submit`, `lead_created`).
 
-**Wichtig:** `lead_created`, `demo_completed` und `meeting_booked` werden serverseitig beim
+**Wichtig:** `lead_created`, `demo_completed`, `meeting_booked` und `booking_error` werden serverseitig beim
 Formular-POST geschrieben (gekoppelt an den DB-Write). Sie gehen nie verloren, auch wenn der
 Client kein JavaScript ausführt. Die übrigen Events kommen vom Client (UX-/Interaktions-Signale).
 
-**Funnel-Definition (KPI-Basis):**
-`page_view` → `demo_started` → `calendar_opened` → `demo_completed` → `meeting_booked`
-sowie `page_view` → `contact_clicked`/`service_viewed` → `lead_created`.
+**Funnel-Definition (KPI-Basis, Lead-Funnel Demo → Termin):**
+`page_view` → `demo_started` → `calendar_opened` → `form_submit` → `demo_completed` → `meeting_booked`
+(in der DB zusätzlich `lead_created` zwischen `form_submit` und `demo_completed` — serverseitiger
+Lead-Write, gehört zur Funnel-Wahrheit, nicht zur Conversion-Kette).
+Nebenfunnel: `page_view` → `contact_clicked`/`service_viewed` → `lead_created`.
+Fehlerpfad: `… → demo_completed` + `booking_error {reason: unreachable|invalid_response}` (n8n-Störung,
+Lead bleibt gespeichert, `booking.status=queued`). „Slot belegt“ = `success:false`-Antwort, **kein**
+`booking_error`-Event.
 
 ## 3. Attribution & Funnel-Stitching
 
@@ -85,15 +92,20 @@ CSRF-exempt (Beacon hat kein Session-Token); stattdessen Allowlist + Limits.
 
 ## 5. Verifikation
 
-- `tests/test_analytics.py` — Endpoint, Allowlist, Limits, CSRF-Exemption,
-  serverseitige Conversion-Events inkl. Attribution, Template-Integration.
+- `tests/test_analytics.py` — Endpoint, Allowlist (inkl. `booking_error`/`booking_confirmed`), Limits,
+  CSRF-Exemption, serverseitige Conversion-Events inkl. Attribution, **Funnel-Kette**
+  (`page_view → demo_started → calendar_opened → form_submit → lead_created → demo_completed
+  → meeting_booked` in einer Session), `booking_error`-Pfade (unreachable/invalid_response),
+  „Slot belegt“-Pfad (kein Event), Client-Kontrakt (analytics.js/main.js), Template-Integration.
+- Live-Verifikation (2026-08-27, t_14c947e2): Flask-Test-Instanz mit Wegwerf-DB + Mock-n8n
+  (lokaler HTTP-Server, `success:true`-Antwort) — Funnel-Kette per HTTP-POST durchgespielt,
+  Events in `analytics_events` per SQL nachgewiesen; `booking_error`-Pfad (Mock antwortet
+  nicht / 500) ebenfalls nachgewiesen. Testdaten danach aufgeräumt (DB gelöscht).
 - Manueller Smoke-Test: Flask-Dev-Server, `curl`-POST auf `/analytics/event`, DB-Read-back;
   Browser-Load der Startseite → `page_view`-Beacon + CTA-Klick → `demo_started` in der DB.
 
 ## 6. Offene Punkte / Roadmap
 
-- **ROI-Rechner-UI** fehlt noch (LUMINA/FORGE): Event-API ist bereit
-  (`window.SkalantechAnalytics.track("roi_calculated", {...})`).
 - **Dashboard** (Admin-Ansicht für analytics_events) folgt als eigener Task.
 - **Bot-Filterung** im Reporting über `user_agent`.
 - **Retention/Aufräumen:** Events wachsen — Archivierungs-Job ab ~50k Zeilen einplanen.
