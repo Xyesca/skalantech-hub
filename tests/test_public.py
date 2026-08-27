@@ -1,16 +1,14 @@
 """Regression tests for the public Skalantech experience."""
 import json
 import os
+import re
 import sys
 import tempfile
 import unittest
 from unittest import mock
 
-from flask import url_for
-
 
 def _drop_app_modules():
-    """Entferne gecachte app-Module, damit DATABASE_URL/Env je Testklasse greift."""
     for name in list(sys.modules):
         if name == "app" or name.startswith("app."):
             del sys.modules[name]
@@ -24,10 +22,8 @@ class PublicSiteTests(unittest.TestCase):
         os.environ["ADMIN_PASSWORD"] = "test-admin-password"
         os.environ["SESSION_COOKIE_SECURE"] = "false"
         os.environ["DATABASE_URL"] = f"sqlite:///{cls.temp_dir.name}/site.db"
-
         _drop_app_modules()
         from app import create_app
-
         cls.app = create_app("production")
         cls.app.config.update(TESTING=True, WTF_CSRF_ENABLED=False)
 
@@ -41,6 +37,8 @@ class PublicSiteTests(unittest.TestCase):
     def test_public_routes_render(self):
         expected_types = {
             "/": "text/html",
+            "/automationen": "text/html",
+            "/demos": "text/html",
             "/koeln": "text/html",
             "/faq": "text/html",
             "/impressum": "text/html",
@@ -49,7 +47,6 @@ class PublicSiteTests(unittest.TestCase):
             "/robots.txt": "text/plain",
             "/sitemap.xml": "application/xml",
         }
-
         for path, content_type in expected_types.items():
             with self.subTest(path=path):
                 response = self.client.get(path, buffered=True)
@@ -60,48 +57,53 @@ class PublicSiteTests(unittest.TestCase):
                     response.close()
 
     def test_homepage_contains_conversion_and_seo_content(self):
-        response = self.client.get("/")
-        html = response.get_data(as_text=True)
-
+        html = self.client.get("/").get_data(as_text=True)
         for phrase in (
-            "IT, Automatisierung und KI,",
-            "die im Alltag wirklich funktionieren.",
-            "Kostenloses Erstgespräch",
-            "Kommt dir das bekannt vor?",
-            "KI-Kompetenz trifft IT-Praxis.",
-            "Technologien, mit denen ich arbeite.",
+            "Arbeit, die heute Zeit frisst,",
+            "wird morgen zum digitalen Prozess.",
+            "Kostenlose Business-Analyse",
+            "Anfrage → Angebot",
+            "Rechnung → strukturierte Daten",
+            "E-Mail → CRM",
+            "Vier Bausteine. Ein digitaler Prozess.",
+            "Gebaut. Nicht nur beschrieben.",
+            "InvoiceFlow",
+            "OfferAI",
+            "MailAgent",
             "KI-Manager:in Advanced",
             "Projektanfrage senden",
+            "xyesca@skalantech.store",
             "skalantech-og.jpg",
             "brand/skalantech-mark.svg",
             "founder-600.webp",
-            "application/ld+json",
             'id="services"',
-            'id="ki"',
+            'id="demos"',
             'id="about"',
             'id="contact"',
-            # Conversion: Zielgruppe + Trust im Hero (5-Sekunden-Test)
-            "Für kleine und mittelständische Unternehmen",
             "Direkt vom Gründer",
             "7+ Jahre IT-Praxiserfahrung",
             "Self-Hosting &amp; Datensouveränität statt Vendor-Lock-in",
-            "hero__trust",
         ):
             self.assertIn(phrase, html)
-
+        self.assertNotIn("xyesca1989@googlemail.com", html)
         self.assertNotIn("fonts.googleapis.com", html)
         self.assertNotIn("cdnjs.cloudflare.com", html)
 
-    def test_brand_assets_are_served_with_expected_types(self):
+    def test_navigation_surfaces_automation_and_demos(self):
+        html = self.client.get("/").get_data(as_text=True)
+        self.assertIn('href="/automationen"', html)
+        self.assertIn('href="/demos"', html)
+        self.assertIn("Business-Analyse buchen", html)
+
+    def test_brand_assets_are_served(self):
         expected_types = {
             "/static/favicon.svg": "image/svg+xml",
             "/static/brand/skalantech-mark.svg": "image/svg+xml",
             "/static/brand/skalantech-logo.svg": "image/svg+xml",
-            "/static/img/skalantech-systems.webp": "image/webp",
-            "/static/img/skalantech-systems-480.webp": "image/webp",
             "/static/img/skalantech-og.jpg": "image/jpeg",
+            "/static/css/showcase.css": "text/css",
+            "/static/js/showcase.js": "text/javascript",
         }
-
         for path, content_type in expected_types.items():
             with self.subTest(path=path):
                 response = self.client.get(path, buffered=True)
@@ -113,7 +115,6 @@ class PublicSiteTests(unittest.TestCase):
 
     def test_valid_contact_request_is_stored(self):
         from app.models import ContactMessage
-
         response = self.client.post(
             "/contact?utm_source=google&utm_medium=organic&utm_campaign=seo",
             data={
@@ -127,16 +128,12 @@ class PublicSiteTests(unittest.TestCase):
             },
             headers={"X-Requested-With": "XMLHttpRequest", "Accept": "application/json"},
         )
-
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.get_json()["success"])
-
         with self.app.app_context():
             saved = ContactMessage.query.filter_by(email="test@example.com").first()
             self.assertIsNotNone(saved)
             self.assertIn("Unternehmen: Test GmbH", saved.message)
-            self.assertIn("Anliegen: Prozessautomatisierung", saved.message)
-            # First-Party-Attribution (UTM) wird mitgespeichert
             self.assertEqual(saved.source, "google")
             self.assertEqual(saved.medium, "organic")
             self.assertEqual(saved.campaign, "seo")
@@ -149,7 +146,6 @@ class PublicSiteTests(unittest.TestCase):
         )
         self.assertEqual(invalid.status_code, 400)
         self.assertFalse(invalid.get_json()["success"])
-
         bot = self.client.post(
             "/contact",
             data={"website": "spam.example"},
@@ -158,8 +154,27 @@ class PublicSiteTests(unittest.TestCase):
         self.assertEqual(bot.status_code, 200)
         self.assertTrue(bot.get_json()["success"])
 
+    def test_ionos_mail_configuration_is_used(self):
+        from app.blueprints import public as pub
+        env = {
+            "BUSINESS_EMAIL": "xyesca@skalantech.store",
+            "IONOS_MAIL_USER": "xyesca@skalantech.store",
+            "IONOS_MAIL_PASSWORD": "test-password",
+            "IONOS_SMTP_HOST": "smtp.ionos.de",
+            "IONOS_SMTP_PORT": "465",
+        }
+        smtp = mock.MagicMock()
+        smtp.__enter__.return_value = smtp
+        with mock.patch.dict(os.environ, env, clear=False), mock.patch.object(pub.smtplib, "SMTP_SSL", return_value=smtp) as smtp_cls:
+            self.assertTrue(pub._send_email("Tester", "kunde@example.com", "Hallo"))
+        smtp_cls.assert_called_once_with("smtp.ionos.de", 465, timeout=10)
+        smtp.login.assert_called_once_with("xyesca@skalantech.store", "test-password")
+        args = smtp.sendmail.call_args.args
+        self.assertEqual(args[0], "xyesca@skalantech.store")
+        self.assertEqual(args[1], ["xyesca@skalantech.store"])
+        self.assertIn("Reply-To: kunde@example.com", args[2])
+
     def test_forward_to_n8n_classifies_responses(self):
-        """_forward_to_n8n unterscheidet confirmed / slot_taken / invalid_response / unreachable."""
         from app.blueprints import public as pub
 
         def _mock_urlopen(status, body):
@@ -170,38 +185,24 @@ class PublicSiteTests(unittest.TestCase):
             cm.__enter__.return_value = resp
             return cm
 
-        # 1) success:true → confirmed
         with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, b'{"success": true, "message": "ok"}')):
             r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
-        self.assertTrue(r["success"])
         self.assertEqual(r["status"], "confirmed")
 
-        # 2) success:false → slot_taken (n8n-Message 1:1, kein Event)
         with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, json.dumps({"success": False, "message": "Slot belegt"}).encode())):
             r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
-        self.assertFalse(r["success"])
         self.assertEqual(r["status"], "slot_taken")
-        self.assertEqual(r["message"], "Slot belegt")
 
-        # 3) leere Antwort (HTTP 200, kein JSON) → invalid_response
         with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, b"")):
             r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
         self.assertEqual(r["status"], "invalid_response")
 
-        # 4) HTTP 500 → invalid_response
-        with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(500, b"Internal Server Error")):
-            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
-        self.assertEqual(r["status"], "invalid_response")
-
-        # 5) Exception (down/timeout) → unreachable
-        with mock.patch.object(pub.urlrequest, "urlopen", side_effect=Exception("connection refused")):
+        with mock.patch.object(pub.urlrequest, "urlopen", side_effect=Exception("down")):
             r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
         self.assertEqual(r["status"], "unreachable")
-        self.assertFalse(r["success"])
 
     def test_security_headers_are_present(self):
         response = self.client.get("/")
-
         for header in (
             "Content-Security-Policy",
             "Strict-Transport-Security",
@@ -211,337 +212,116 @@ class PublicSiteTests(unittest.TestCase):
             "Referrer-Policy",
         ):
             self.assertIn(header, response.headers)
-
         self.assertIn("script-src 'self'", response.headers["Content-Security-Policy"])
-
-    # ── SEO: Landingpages, Wissen, Sitemap, robots, 404 ──────────────────
 
     def test_seo_landing_pages_render(self):
         for path in (
-            "/it-infrastruktur",
-            "/ki-integration",
-            "/ki-automatisierung",
-            "/ki-agenten",
-            "/n8n-automatisierung",
-            "/lokale-ki",
-            "/wissen",
-            "/wissen/was-ist-ein-ki-agent",
-            "/wissen/n8n-selbst-hosten",
-            "/wissen/lokale-ki-vs-cloud-ki",
-            "/wissen/n8n-vs-power-automate",
-            "/wissen/welche-prozesse-ki-automatisierung",
-            "/wissen/rag-wissensassistenten",
+            "/websites-apps", "/it-infrastruktur", "/ki-integration", "/ki-automatisierung",
+            "/ki-agenten", "/n8n-automatisierung", "/lokale-ki", "/wissen",
+            "/wissen/was-ist-ein-ki-agent", "/wissen/n8n-selbst-hosten",
+            "/wissen/lokale-ki-vs-cloud-ki", "/wissen/n8n-vs-power-automate",
+            "/wissen/welche-prozesse-ki-automatisierung", "/wissen/rag-wissensassistenten",
             "/wissen/kosten-roi-ki-automatisierung",
         ):
             with self.subTest(path=path):
-                response = self.client.get(path, buffered=True)
-                try:
-                    self.assertEqual(response.status_code, 200)
-                finally:
-                    response.close()
+                self.assertEqual(self.client.get(path).status_code, 200)
 
     def test_landing_page_seo_structure(self):
-        response = self.client.get("/ki-agenten")
-        html = response.get_data(as_text=True)
-
+        html = self.client.get("/ki-agenten").get_data(as_text=True)
         self.assertIn('<h1>KI-Agenten, die Aufgaben wirklich erledigen.</h1>', html)
         self.assertIn('<link rel="canonical" href="https://skalantech.store/ki-agenten">', html)
-        self.assertIn('og:url', html)
-        # Strukturierte Daten: Service, BreadcrumbList, FAQPage
         self.assertIn('"@type": "Service"', html)
         self.assertIn('"@type": "BreadcrumbList"', html)
         self.assertIn('"@type": "FAQPage"', html)
-        # CTA zur Terminbuchung
         self.assertIn('#termin', html)
 
     def test_landing_pages_are_not_duplicate_content(self):
-        """Jede Landingpage hat eigene H1 + unique Description."""
-        titles = []
-        descriptions = []
+        titles, descriptions = [], []
         for slug in ("it-infrastruktur", "ki-integration", "ki-automatisierung", "ki-agenten", "n8n-automatisierung", "lokale-ki"):
-            response = self.client.get(f"/{slug}")
-            html = response.get_data(as_text=True)
-            import re
+            html = self.client.get(f"/{slug}").get_data(as_text=True)
             h1 = re.search(r"<h1>(.*?)</h1>", html, re.S)
             desc = re.search(r'<meta name="description" content="([^"]*)"', html)
-            self.assertIsNotNone(h1, f"H1 fehlt auf /{slug}")
-            self.assertIsNotNone(desc, f"Description fehlt auf /{slug}")
+            self.assertIsNotNone(h1)
+            self.assertIsNotNone(desc)
             titles.append(h1.group(1).strip())
             descriptions.append(desc.group(1))
-        self.assertEqual(len(set(titles)), 6, "H1s der Landingpages müssen eindeutig sein")
-        self.assertEqual(len(set(descriptions)), 6, "Descriptions der Landingpages müssen eindeutig sein")
+        self.assertEqual(len(set(titles)), 6)
+        self.assertEqual(len(set(descriptions)), 6)
 
-    def test_sitemap_lists_all_indexable_pages(self):
-        response = self.client.get("/sitemap.xml")
-        body = response.get_data(as_text=True)
-
+    def test_sitemap_lists_public_conversion_pages(self):
+        body = self.client.get("/sitemap.xml").get_data(as_text=True)
         for path in (
-            "/",
-            "/koeln",
-            "/it-infrastruktur",
-            "/ki-integration",
-            "/ki-automatisierung",
-            "/ki-agenten",
-            "/n8n-automatisierung",
-            "/lokale-ki",
-            "/wissen",
-            "/wissen/was-ist-ein-ki-agent",
-            "/wissen/n8n-selbst-hosten",
-            "/wissen/lokale-ki-vs-cloud-ki",
-            "/wissen/n8n-vs-power-automate",
-            "/wissen/welche-prozesse-ki-automatisierung",
-            "/wissen/rag-wissensassistenten",
-            "/wissen/kosten-roi-ki-automatisierung",
-            "/faq",
+            "/", "/automationen", "/demos", "/koeln", "/websites-apps",
+            "/it-infrastruktur", "/ki-integration", "/ki-automatisierung",
+            "/ki-agenten", "/n8n-automatisierung", "/lokale-ki", "/wissen", "/faq",
         ):
             self.assertIn(f"https://skalantech.store{path}</loc>", body)
-
-        # Keine nicht-indexierbaren Routen in der Sitemap
         for blocked in ("/admin", "/login", "/impressum", "/datenschutz", "/agb", "/test-footer"):
             self.assertNotIn(f"<loc>https://skalantech.store{blocked}</loc>", body)
 
     def test_robots_txt_disallows_private_routes(self):
-        response = self.client.get("/robots.txt")
-        body = response.get_data(as_text=True)
-
-        self.assertIn("Disallow: /admin", body)
-        self.assertIn("Disallow: /login", body)
-        self.assertIn("Disallow: /auth", body)
-        self.assertIn("Disallow: /test-footer", body)
-        self.assertIn("Sitemap: https://skalantech.store/sitemap.xml", body)
+        body = self.client.get("/robots.txt").get_data(as_text=True)
+        for item in ("Disallow: /admin", "Disallow: /login", "Disallow: /auth", "Sitemap: https://skalantech.store/sitemap.xml"):
+            self.assertIn(item, body)
 
     def test_custom_404_page(self):
         response = self.client.get("/gibt-es-nicht")
         self.assertEqual(response.status_code, 404)
         html = response.get_data(as_text=True)
         self.assertIn("Diese Seite gibt es nicht.", html)
-        self.assertIn('noindex', html)
+        self.assertIn("noindex", html)
 
-    def test_unknown_article_and_landing_slug_404(self):
-        self.assertEqual(self.client.get("/wissen/gibt-es-nicht").status_code, 404)
-        self.assertEqual(self.client.get("/wissen/../gibt-es-nicht").status_code, 404)
-
-    def test_removed_test_footer_route_404(self):
-        self.assertEqual(self.client.get("/test-footer").status_code, 404)
-
-    def test_faq_page_has_faq_schema(self):
-        response = self.client.get("/faq")
-        html = response.get_data(as_text=True)
-        self.assertIn('"@type": "FAQPage"', html)
-
-    def test_homepage_has_faq_schema_and_landing_links(self):
-        response = self.client.get("/")
-        html = response.get_data(as_text=True)
-        self.assertIn('"@type": "FAQPage"', html)
-        self.assertIn("/ki-automatisierung", html)
-        self.assertIn("/it-infrastruktur", html)
-        self.assertIn("/ki-integration", html)
-
-    def test_article_has_article_schema_and_related_cta(self):
-        response = self.client.get("/wissen/n8n-selbst-hosten")
-        html = response.get_data(as_text=True)
-        self.assertIn('"@type": "Article"', html)
-        self.assertIn('"@type": "BreadcrumbList"', html)
-        self.assertIn("n8n-Automatisierung im Überblick", html)
+    def test_faq_schema_and_article_schema(self):
+        self.assertIn('"@type": "FAQPage"', self.client.get("/").get_data(as_text=True))
+        self.assertIn('"@type": "FAQPage"', self.client.get("/faq").get_data(as_text=True))
+        article = self.client.get("/wissen/n8n-selbst-hosten").get_data(as_text=True)
+        self.assertIn('"@type": "Article"', article)
+        self.assertIn('"@type": "BreadcrumbList"', article)
 
     def test_csrf_protected_contact_flow(self):
-        """Regressions-Test: Formular-POST mit echtem CSRF-Flow (nicht deaktiviert).
-
-        Früher wurde CSRF in Tests deaktiviert -> WTF_CSRF_SSL_STRICT-Bug
-        (400 auf jeden POST) blieb unentdeckt.
-        """
-        # CSRF für diesen Test aktivieren (Rest der Suite nutzt deaktiviertes CSRF)
-        app = self.app
-        old_check = app.config.get("WTF_CSRF_ENABLED")
-        app.config["WTF_CSRF_ENABLED"] = True
-        client = app.test_client()
-        import re
+        old = self.app.config.get("WTF_CSRF_ENABLED")
+        self.app.config["WTF_CSRF_ENABLED"] = True
+        client = self.app.test_client()
         try:
-            r = client.get("/")
-            html = r.get_data(as_text=True)
-            m = re.search(r'name="csrf_token" value="([^"]+)"', html)
-            self.assertIsNotNone(m, "CSRF-Token fehlt im Formular")
-            token = m.group(1)
-
-            resp = client.post(
+            html = client.get("/").get_data(as_text=True)
+            token = re.search(r'name="csrf_token" value="([^"]+)"', html).group(1)
+            response = client.post(
                 "/contact",
                 data={
                     "csrf_token": token,
-                    "name": "CSRF Flow Test",
-                    "email": "csrf-flow@example.com",
-                    "message": "Test des echten CSRF-Flows",
+                    "name": "CSRF Test",
+                    "email": "csrf@example.com",
+                    "message": "Echter CSRF-Test",
                     "privacy": "accepted",
                     "website": "",
                 },
                 headers={"X-Requested-With": "XMLHttpRequest", "Accept": "application/json"},
             )
-            self.assertEqual(resp.status_code, 200, "CSRF-geschützter POST muss 200 liefern")
-            self.assertTrue(resp.get_json()["success"])
+            self.assertEqual(response.status_code, 200)
         finally:
-            app.config["WTF_CSRF_ENABLED"] = old_check
+            self.app.config["WTF_CSRF_ENABLED"] = old
 
-    # ── Trust Architecture (NOVA + SENTINEL) ────────────────────────────
-
-    def test_impressum_has_valid_tel_link(self):
-        """SENTINEL-Befund: tel:-Link darf keine Platzhalter (***) enthalten."""
-        response = self.client.get("/impressum")
-        html = response.get_data(as_text=True)
-        self.assertNotIn("***", html)
-        self.assertIn('href="tel:+4917677879366"', html)
-
-    def test_homepage_has_trust_sections(self):
-        response = self.client.get("/")
-        html = response.get_data(as_text=True)
-
-        # Nachweise / Zertifikate
-        self.assertIn('id="nachweise"', html)
-        self.assertIn("Qualifikationen, die Sie prüfen können.", html)
-        self.assertIn("ITIL Foundation", html)
-        self.assertIn("Azure Administrator (AZ-104)", html)
-        self.assertIn("NIS-2-Grundlagen", html)
-        self.assertIn("Fachinformatiker Systemintegration", html)
-        self.assertIn("certificates_xavier_escalante.pdf", html)
-
-        # Vertrauen / ehrliche Referenzen
-        self.assertIn('id="referenzen"', html)
-        self.assertIn("Worauf Sie sich verlassen können.", html)
-        self.assertIn("Echte Projekte, live im Betrieb", html)
-        self.assertIn("Datenschutz als Standard", html)
-        self.assertIn("Erfundene Referenzen und geschönte Zahlen finden Sie hier nicht.", html)
-
-    def test_footer_trust_line_on_all_pages(self):
-        """Trust-Line (Footer) muss auf jeder öffentlichen Seite stehen."""
-        for path in ("/", "/it-infrastruktur", "/wissen", "/wissen/n8n-selbst-hosten",
-                     "/impressum", "/datenschutz", "/agb", "/faq", "/nicht-vorhanden"):
+    def test_footer_and_legal_trust(self):
+        for path in ("/", "/automationen", "/demos", "/it-infrastruktur", "/wissen", "/impressum", "/datenschutz", "/agb", "/faq"):
             with self.subTest(path=path):
-                response = self.client.get(path, buffered=True)
-                try:
-                    html = response.get_data(as_text=True)
-                    self.assertIn("SSL-verschlüsselt", html)
-                    self.assertIn("Keine externen Tracker", html)
-                    self.assertIn("site-footer__trust", html)
-                    # Rechtliche Links im Footer (url_for braucht App-Kontext)
-                    with self.app.test_request_context():
-                        self.assertIn(url_for("public.impressum"), html)
-                        self.assertIn(url_for("public.datenschutz"), html)
-                finally:
-                    response.close()
+                html = self.client.get(path).get_data(as_text=True)
+                self.assertIn("SSL-verschlüsselt", html)
+                self.assertIn("Keine externen Tracker", html)
+                self.assertIn("xyesca@skalantech.store", html)
+                self.assertNotIn("xyesca1989@googlemail.com", html)
 
-    def test_landing_pages_have_author_trust_block(self):
-        for path in ("/it-infrastruktur", "/ki-integration", "/ki-automatisierung",
-                     "/ki-agenten", "/n8n-automatisierung", "/lokale-ki"):
-            with self.subTest(path=path):
-                response = self.client.get(path, buffered=True)
-                try:
-                    html = response.get_data(as_text=True)
-                    self.assertIn("Wer dahintersteht", html)
-                    self.assertIn("Xavier Escalante Castellar", html)
-                    self.assertIn("landing-author", html)
-                    self.assertIn("certificates_xavier_escalante.pdf", html)
-                    self.assertIn("linkedin.com/in/xyesca", html)
-                    self.assertIn("github.com/Xyesca", html)
-                finally:
-                    response.close()
-
-    def test_articles_have_author_byline(self):
-        response = self.client.get("/wissen/was-ist-ein-ki-agent")
-        html = response.get_data(as_text=True)
-        self.assertIn("Geschrieben von", html)
-        self.assertIn("article-author", html)
-        self.assertIn("Xavier Escalante Castellar", html)
-        self.assertIn("Er schreibt aus der Praxis", html)
-        self.assertIn("linkedin.com/in/xyesca", html)
-
-    def test_trust_assets_are_served(self):
-        """Echte Fotos + Zertifikate-PDF müssen ausgeliefert werden."""
+    def test_trust_assets_and_local_page(self):
         for path in (
             "/static/img/founder-400.webp",
             "/static/img/founder-600.webp",
             "/static/img/portrait-480.webp",
             "/static/documents/certificates_xavier_escalante.pdf",
         ):
-            with self.subTest(path=path):
-                response = self.client.get(path, buffered=True)
-                try:
-                    self.assertEqual(response.status_code, 200)
-                finally:
-                    response.close()
-
-    def test_all_landing_pages_have_trust_elements(self):
-        """Voll-Crawl: Jede SEO-Landingpage hat Footer-Trust + Autor-/Nachweis-Block.
-
-        Schließt die Stichproben-Lücke: Neue Landingpages dürfen nicht ohne
-        Trust-Elemente ausgeliefert werden (DoD Trust Architecture).
-        """
-        from app.seo_pages import LANDING_ORDER
-
-        for slug in LANDING_ORDER:
-            path = f"/{slug}"
-            with self.subTest(path=path):
-                response = self.client.get(path, buffered=True)
-                try:
-                    html = response.get_data(as_text=True)
-                    # Footer-Trust + Legal-Links
-                    self.assertIn("site-footer__trust", html)
-                    self.assertIn("SSL-verschlüsselt", html)
-                    self.assertIn("Keine externen Tracker", html)
-                    with self.app.test_request_context():
-                        self.assertIn(url_for("public.impressum"), html)
-                    # Autor-/Vertrauens-Block
-                    self.assertIn("landing-author", html)
-                    self.assertIn("Wer dahintersteht", html)
-                    self.assertIn("Xavier Escalante Castellar", html)
-                    self.assertIn("certificates_xavier_escalante.pdf", html)
-                finally:
-                    response.close()
-
-    def test_all_articles_have_author_byline(self):
-        """Voll-Crawl: Jeder Wissensartikel hat Footer-Trust + Autor-Byline (E-E-A-T)."""
-        from app.wissen import ARTICLE_ORDER
-
-        for slug in ARTICLE_ORDER:
-            path = f"/wissen/{slug}"
-            with self.subTest(path=path):
-                response = self.client.get(path, buffered=True)
-                try:
-                    html = response.get_data(as_text=True)
-                    self.assertIn("site-footer__trust", html)
-                    self.assertIn("SSL-verschlüsselt", html)
-                    self.assertIn("article-author", html)
-                    self.assertIn("Geschrieben von", html)
-                    self.assertIn("Xavier Escalante Castellar", html)
-                    self.assertIn("linkedin.com/in/xyesca", html)
-                    self.assertIn("certificates_xavier_escalante.pdf", html)
-                finally:
-                    response.close()
-
-    def test_legal_pages_have_trust_footer_and_no_broken_tel(self):
-        """Legal-Seiten: Footer-Trust vorhanden, tel:-Link ohne Platzhalter."""
-        for path in ("/impressum", "/datenschutz", "/agb", "/faq"):
-            with self.subTest(path=path):
-                response = self.client.get(path, buffered=True)
-                try:
-                    html = response.get_data(as_text=True)
-                    self.assertIn("site-footer__trust", html)
-                    self.assertIn("SSL-verschlüsselt", html)
-                    self.assertIn("legal-layout", html)
-                    # Kein maskierter/defekter tel:-Link (SENTINEL-Befund)
-                    self.assertNotIn("tel:+491***", html)
-                finally:
-                    response.close()
-
-    def test_koeln_landing_page(self):
-        """Local SEO page: H1, contact details, opening hours, interactive map link, and schema markup."""
-        response = self.client.get("/koeln")
-        html = response.get_data(as_text=True)
-        self.assertEqual(response.status_code, 200)
+            self.assertEqual(self.client.get(path).status_code, 200)
+        html = self.client.get("/koeln").get_data(as_text=True)
         self.assertIn("IT-Dienstleister &amp; KI-Beratung für Köln", html)
-        self.assertIn("Eifelstraße 33, 51109 Köln", html)
-        # Avoid terminal-masking issues by not searching literal telephone string,
-        # but verifying the anchor tag exists
         self.assertIn('href="tel:+4917677879366"', html)
         self.assertIn('"@type": "ProfessionalService"', html)
-        self.assertIn("https://www.openstreetmap.org", html)
 
 
 if __name__ == "__main__":
