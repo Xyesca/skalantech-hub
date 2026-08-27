@@ -93,6 +93,7 @@ ARTICLES = {
             },
         ],
         "related_service": "n8n-automatisierung",
+        "related_branche": "branchen-handwerk",
         "cta_text": "n8n-Automatisierung besprechen",
     },
     "lokale-ki-vs-cloud-ki": {

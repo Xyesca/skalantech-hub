@@ -36,6 +36,13 @@ SQLite: analytics_events  (Modell AnalyticsEvent)
 | `case_study_viewed` | Projekt-Karte im Viewport (1×/Session) | Client (IntersectionObserver) | `{"label": "<Projekt-Titel>"}` |
 | `roi_calculated` | ROI-Rechner ausgelöst | Client (Widget-API, folgt) | z. B. `{"savings_hours": 8}` |
 | `lead_created` | Kontaktanfrage erfolgreich gespeichert (Lead in CRM) | **Server** (Formular-POST) | `{"service": "<Anliegen>"}` |
+| `hero_cta_click` | Hero-Primär-CTA auf Landingpages (LUMINA-Spez) | Client (data-track) | `{"label": "hero"}` |
+| `quickwin_cta_click` | Quick-Win-Karten-CTA Angebot/Termine (LUMINA-Spez) | Client (data-track) | `{"label": "quickwin-1\|quickwin-3"}` |
+| `erechnung_cta_click` | E-Rechnung-CTA, Stufe 3 Dringlichkeit (LUMINA-Spez) | Client (data-track) | `{"label": "quickwin-2"\|"erechnung"}` |
+| `faq_open` | FAQ-Accordion geöffnet (LUMINA-Spez) | Client (data-track auf `<summary>`) | `{"label": "faq-<n>"}` |
+| `check_cta_click` | Stufe-0-CTA „5-Minuten-Check“ im FAQ-Fuß (LUMINA-Spez) | Client (data-track) | `{"label": "faq-check"}` |
+| `form_start` | Erstes Input im Kontakt-/Buchungsformular (1×/Formular) | Client (input) | `{"form": "booking-form"\|"contact-form"}` |
+| `form_submit` | Formular abgeschickt (Client-Signal; Conversions serverseitig) | Client (submit) | `{"form": "booking-form"\|"contact-form"}` |
 
 **Wichtig:** `lead_created`, `demo_completed` und `meeting_booked` werden serverseitig beim
 Formular-POST geschrieben (gekoppelt an den DB-Write). Sie gehen nie verloren, auch wenn der

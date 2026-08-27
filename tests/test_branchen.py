@@ -237,6 +237,75 @@ class BranchenLandingTests(unittest.TestCase):
         for slug in BRANCHES:
             self.assertIn(f"/branchen/{slug}", html)
 
+    # ── VELA-V1-Copy (Handwerk, 27.08.2026) ─────────────────────────────
+
+    def test_handwerk_new_copy_meta(self):
+        html = self._get("/branchen/handwerk").get_data(as_text=True)
+        self.assertIn(
+            "<title>KI-Prozessautomatisierung für Handwerk: Angebote in Minuten, Rechnungen automatisch | Skalantech</title>",
+            html,
+        )
+        self.assertIn(
+            'name="description" content="Angebote in Minuten statt Stunden, Rechnungen automatisch',
+            html,
+        )
+
+    def test_handwerk_quickwins_section(self):
+        html = self._get("/branchen/handwerk").get_data(as_text=True)
+        self.assertIn("landing-quickwins", html)
+        self.assertIn("Drei Prozesse, die Ihrem Betrieb sofort Zeit zurückgeben.", html)
+        self.assertIn("Angebote in Minuten statt Stunden.", html)
+        self.assertIn("Rechnungen gehen automatisch raus. Geld kommt schneller.", html)
+        self.assertIn("Kein Kunde geht verloren, keine Anfrage bleibt liegen.", html)
+        # Hero-Microcopy + Trust-Zeile (LUMINA-Struktur)
+        self.assertIn("Unverbindlich. Wir zeigen die Automatisierung mit Daten aus Ihrem Betrieb", html)
+        self.assertIn("6+ selbst gebaute Produkte live", html)
+
+    def test_handwerk_erechnung_section_55(self):
+        html = self._get("/branchen/handwerk").get_data(as_text=True)
+        self.assertIn('id="e-rechnung"', html)
+        self.assertIn("E-Rechnungspflicht: Vorbereitet, bevor sie Ihren Betrieb trifft.", html)
+        # Rechtsstand (ATLAS, BMF-FAQ + ZDH)
+        self.assertIn("01.01.2025", html)
+        self.assertIn("800.000", html)
+        self.assertIn("XRechnung", html)
+        self.assertIn("Jetzt E-Rechnung-fähig", html)
+
+    def test_handwerk_faq_cta_and_tracking_events(self):
+        html = self._get("/branchen/handwerk").get_data(as_text=True)
+        # Stufe-0-CTA im FAQ-Fuß
+        self.assertIn("5-Minuten-Check", html)
+        # LUMINA-Tracking-Events via data-track
+        self.assertIn('data-track="hero_cta_click"', html)
+        self.assertIn('data-track="quickwin_cta_click"', html)
+        self.assertIn('data-track="erechnung_cta_click"', html)
+        self.assertIn('data-track="check_cta_click"', html)
+        self.assertIn('data-track="faq_open"', html)
+
+    def test_handwerk_kein_tech_vokabular_im_hero(self):
+        html = self._get("/branchen/handwerk").get_data(as_text=True)
+        # NOVA-Auflage: Business Process first — kein n8n/API/LLM-Argument im Hero/Quick-Wins
+        hero = html.split('<section class="landing-hero">')[1].split("</section>")[0]
+        for term in ("n8n", "API", "LLM", "Workflow"):
+            self.assertNotIn(term, hero, f"Tech-Vokabular im Hero: {term}")
+
+    # ── Interne Verlinkung (ATLAS: 4 starke Seiten → /branchen/handwerk) ─
+
+    def test_service_pages_link_to_handwerk(self):
+        for path in ("/n8n-automatisierung", "/ki-integration", "/ki-agenten"):
+            with self.subTest(path=path):
+                html = self._get(path).get_data(as_text=True)
+                self.assertIn("/branchen/handwerk", html)
+
+    def test_article_n8n_selbst_hosten_links_to_handwerk(self):
+        html = self._get("/wissen/n8n-selbst-hosten").get_data(as_text=True)
+        self.assertIn("/branchen/handwerk", html)
+
+    def test_handwerk_faq_bleiben_meine_systeme(self):
+        # VELA FAQ V1: Kern-Einwand „Bleiben meine bestehenden Systeme?“ vorhanden
+        html = self._get("/branchen/handwerk").get_data(as_text=True)
+        self.assertIn("Bleiben meine bestehenden Systeme?", html)
+
 
 if __name__ == "__main__":
     unittest.main()

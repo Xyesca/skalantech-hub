@@ -103,7 +103,7 @@ LANDING_PAGES = {
             ("Brauchen wir dafür ein eigenes Data-Science-Team?", "Nein. Für die meisten Anwendungen reichen APIs, Workflows und eine saubere Datenanbindung. Genau dort setzt Skalantech an."),
             ("Ab wann lohnt sich ein KI-Use-Case?", "Wenn ein wiederkehrender Prozess viel manuelle Zeit kostet und klare Regeln oder Muster enthält. Die Use-Case-Analyse beantwortet das konkret."),
         ],
-        "related": ["lokale-ki", "ki-agenten"],
+        "related": ["lokale-ki", "ki-agenten", "branchen-handwerk"],
     },
     "ki-automatisierung": {
         "nav_label": "KI-Automatisierung",
@@ -199,7 +199,7 @@ LANDING_PAGES = {
             ("Können Agenten eigenständig Entscheidungen treffen?", "Nur innerhalb der Grenzen, die Sie definieren. Kritische Schritte laufen über menschliche Freigabe – der Agent schlägt vor, Sie entscheiden."),
             ("Welche Daten sehen die Agenten?", "Nur die Daten und Systeme, die explizit angebunden werden. Bei sensiblen Daten kommen lokale Modelle zum Einsatz."),
         ],
-        "related": ["ki-integration", "ki-automatisierung"],
+        "related": ["ki-integration", "ki-automatisierung", "branchen-handwerk"],
     },
     "n8n-automatisierung": {
         "nav_label": "n8n-Automatisierung",
@@ -247,7 +247,7 @@ LANDING_PAGES = {
             ("Ist selbst gehostetes n8n sicher?", "Mit sauberer Konfiguration, Zugriffskontrolle und aktuellen Versionen ja. Skalantech betreibt selbst eine produktive n8n-Instanz auf eigener Infrastruktur."),
             ("Können wir n8n ohne Programmierkenntnisse bedienen?", "Die Oberfläche ist visuell. Für robuste Workflows sind trotzdem sauberes Design und Fehlerbehandlung nötig – dafür sind wir da, bis Ihr Team sicher ist."),
         ],
-        "related": ["ki-automatisierung", "lokale-ki"],
+        "related": ["ki-automatisierung", "lokale-ki", "branchen-handwerk"],
     },
     "lokale-ki": {
         "nav_label": "Lokale KI",
