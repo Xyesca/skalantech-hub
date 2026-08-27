@@ -422,6 +422,69 @@ class PublicSiteTests(unittest.TestCase):
                 finally:
                     response.close()
 
+    def test_all_landing_pages_have_trust_elements(self):
+        """Voll-Crawl: Jede SEO-Landingpage hat Footer-Trust + Autor-/Nachweis-Block.
+
+        Schließt die Stichproben-Lücke: Neue Landingpages dürfen nicht ohne
+        Trust-Elemente ausgeliefert werden (DoD Trust Architecture).
+        """
+        from app.seo_pages import LANDING_ORDER
+
+        for slug in LANDING_ORDER:
+            path = f"/{slug}"
+            with self.subTest(path=path):
+                response = self.client.get(path, buffered=True)
+                try:
+                    html = response.get_data(as_text=True)
+                    # Footer-Trust + Legal-Links
+                    self.assertIn("site-footer__trust", html)
+                    self.assertIn("SSL-verschlüsselt", html)
+                    self.assertIn("Keine externen Tracker", html)
+                    with self.app.test_request_context():
+                        self.assertIn(url_for("public.impressum"), html)
+                    # Autor-/Vertrauens-Block
+                    self.assertIn("landing-author", html)
+                    self.assertIn("Wer dahintersteht", html)
+                    self.assertIn("Xavier Escalante Castellar", html)
+                    self.assertIn("certificates_xavier_escalante.pdf", html)
+                finally:
+                    response.close()
+
+    def test_all_articles_have_author_byline(self):
+        """Voll-Crawl: Jeder Wissensartikel hat Footer-Trust + Autor-Byline (E-E-A-T)."""
+        from app.wissen import ARTICLE_ORDER
+
+        for slug in ARTICLE_ORDER:
+            path = f"/wissen/{slug}"
+            with self.subTest(path=path):
+                response = self.client.get(path, buffered=True)
+                try:
+                    html = response.get_data(as_text=True)
+                    self.assertIn("site-footer__trust", html)
+                    self.assertIn("SSL-verschlüsselt", html)
+                    self.assertIn("article-author", html)
+                    self.assertIn("Geschrieben von", html)
+                    self.assertIn("Xavier Escalante Castellar", html)
+                    self.assertIn("linkedin.com/in/xyesca", html)
+                    self.assertIn("certificates_xavier_escalante.pdf", html)
+                finally:
+                    response.close()
+
+    def test_legal_pages_have_trust_footer_and_no_broken_tel(self):
+        """Legal-Seiten: Footer-Trust vorhanden, tel:-Link ohne Platzhalter."""
+        for path in ("/impressum", "/datenschutz", "/agb", "/faq"):
+            with self.subTest(path=path):
+                response = self.client.get(path, buffered=True)
+                try:
+                    html = response.get_data(as_text=True)
+                    self.assertIn("site-footer__trust", html)
+                    self.assertIn("SSL-verschlüsselt", html)
+                    self.assertIn("legal-layout", html)
+                    # Kein maskierter/defekter tel:-Link (SENTINEL-Befund)
+                    self.assertNotIn("tel:+491***", html)
+                finally:
+                    response.close()
+
 
 if __name__ == "__main__":
     unittest.main()
