@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+{# Websites & Business Apps — Angebotsseite (LUMINA t_f59f5d89). Dedicated
+   Template; Copy dict-driven aus WEBSITES_APPS_COPY (seo_pages.py). #}
+{% set page = landing_page %}
+{% set page_url = page.canonical_url %}
+
+{% block title %}{{ page.title }}{% endblock %}
+{% block description %}{{ page.description }}{% endblock %}
+{% block canonical %}{{ page_url }}{% endblock %}
+{% block og_title %}{{ page.h1 }} – Skalantech{% endblock %}
+{% block og_description %}{{ page.description }}{% endblock %}
+{% block og_url %}{{ page_url }}{% endblock %}
+{% block twitter_title %}{{ page.h1 }} – Skalantech{% endblock %}
+{% block twitter_description %}{{ page.description }}{% endblock %}
+{% block body_class %}page-landing{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{{ page.jsonld|safe }}
+</script>
+{% endblock %}
+
+{% block body %}
+<main id="main-content">
+  {# ── 1 · HERO ── #}
+  <section class="landing-hero">
+    <div class="shell landing-hero__inner">
+      <nav class="landing-breadcrumb" aria-label="Brotkrumen-Navigation">
+        <a href="{{ url_for('public.index') }}">Startseite</a>
+        <span aria-hidden="true">/</span>
+        <span>{{ page.breadcrumb }}</span>
+      </nav>
+      <h1>{{ page.h1 }}</h1>
+      <p class="landing-hero__lead">{{ page.lead }}</p>
+      <div class="landing-hero__actions">
+        <a class="button button--accent" href="{{ page.cta_termin_url }}"{% if page.tracking %} data-track="{{ page.tracking.hero }}" data-track-label="hero"{% endif %}>{{ page.cta_primary }} <span aria-hidden="true">↗</span></a>
+        <a class="button button--quiet" href="{{ page.cta_contact_url }}">{{ page.cta_secondary }} <span aria-hidden="true">↗</span></a>
+      </div>
+      {% if page.hero_trust %}
+      <div class="landing-hero__meta">
+        <p class="landing-hero__trust">{{ page.hero_trust }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  {# ── 2 · PROBLEM ── #}
+  <section class="section section--landing">
+    <div class="shell landing-block">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Problem</p>
+          <h2>{{ page.problem_title }}</h2>
+        </div>
+      </div>
+      <ul class="landing-list landing-list--pain">
+        {% for item in page.problem %}
+        <li><span aria-hidden="true">✕</span>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  {# ── 3 · DAS ANGEBOT ── #}
+  <section class="section section--landing section--tint">
+    <div class="shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Das Angebot</p>
+          <h2>{{ page.offer_title }}</h2>
+        </div>
+        {% if page.offer_intro %}<p>{{ page.offer_intro }}</p>{% endif %}
+      </div>
+      <div class="landing-offer">
+        {% for item in page.offer %}
+        <article class="landing-offer__card">
+          <p class="landing-offer__label">{{ item.label }}</p>
+          <h3 class="landing-offer__title">{{ item.title }}</h3>
+          <p class="landing-offer__text">{{ item.text }}</p>
+          <ul class="landing-offer__features">
+            {% for feature in item.features %}
+            <li>{{ feature }}</li>
+            {% endfor %}
+          </ul>
+          {% if item.link_text and item.link_url %}
+          <a class="landing-offer__link" href="{{ item.link_url }}" data-track="roi_cta_click" data-track-label="offer-{{ loop.index }}">{{ item.link_text }} <span aria-hidden="true">↗</span></a>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  {# ── 4 · ABGRENZUNG (dunkles Band) ── #}
+  <section class="landing-abgrenzung">
+    <div class="shell">
+      <p class="section-label section-label--light">So arbeiten wir nicht</p>
+      <h2>{{ page.abgrenzung_title }}</h2>
+      <ul class="landing-abgrenzung__list">
+        {% for item in page.abgrenzung %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  {# ── 5 · ZWISCHEN-CTA ── #}
+  {% if page.cta_mid %}
+  <section class="section landing-cta--mid">
+    <div class="shell">
+      <a class="button button--accent" href="{{ page.cta_termin_url }}" data-track="hero_cta_click" data-track-label="mid">{{ page.cta_mid }} <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+  {% endif %}
+
+  {# ── 6 · PROZESS ── #}
+  <section class="section section--landing">
+    <div class="shell landing-block">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Vorgehen</p>
+          <h2>{{ page.process_title }}</h2>
+        </div>
+      </div>
+      <ol class="landing-process">
+        {% for name, text in page.process %}
+        <li data-reveal>
+          <span>0{{ loop.index }}</span>
+          <div>
+            <p>{{ name }}</p>
+            <h3>{{ text }}</h3>
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </section>
+
+  {# ── 7 · BEISPIELE ── #}
+  <section class="section section--landing section--tint">
+    <div class="shell landing-block">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Beispiele</p>
+          <h2>{{ page.cases_heading }}</h2>
+        </div>
+      </div>
+      <div class="landing-cases">
+        {% for name, text in page.use_cases %}
+        <article class="landing-case" data-reveal>
+          <h3>{{ name }}</h3>
+          <p>{{ text }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  {# ── 8 · PRICING ── #}
+  <section class="section section--landing">
+    <div class="shell">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Preise &amp; Retainer</p>
+          <h2>{{ page.pricing_title }}</h2>
+        </div>
+      </div>
+      <div class="landing-pricing">
+        {% for card in page.pricing %}
+        <article class="landing-pricing__card{% if card.highlight %} landing-pricing__card--highlight{% endif %}">
+          {% if card.badge %}<span class="landing-pricing__badge">{{ card.badge }}</span>{% endif %}
+          <h3 class="landing-pricing__name">{{ card.name }}</h3>
+          <p class="landing-pricing__price">{{ card.price }}</p>
+          <p class="landing-pricing__unit">{{ card.unit }}</p>
+          <p class="landing-pricing__text">{{ card.text }}</p>
+          <ul class="landing-pricing__features">
+            {% for feature in card.features %}
+            <li>{{ feature }}</li>
+            {% endfor %}
+          </ul>
+          <a class="button button--accent landing-pricing__cta" href="{{ page.cta_termin_url }}" data-track="hero_cta_click" data-track-label="pricing-{{ loop.index }}">{{ card.cta }} <span aria-hidden="true">↗</span></a>
+        </article>
+        {% endfor %}
+      </div>
+      {% if page.pricing_note %}
+      <p class="landing-pricing__note">{{ page.pricing_note }}</p>
+      {% endif %}
+    </div>
+  </section>
+
+  {# ── 9 · TECHNOLOGIEN ── #}
+  <section class="section section--landing section--tint">
+    <div class="shell landing-block">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Technologien</p>
+          <h2>Werkzeuge, mit denen das entsteht.</h2>
+        </div>
+      </div>
+      <ul class="tech-list" aria-label="Eingesetzte Technologien">
+        {% for tech in page.tech %}
+        <li>{{ tech }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  {# ── 10 · FAQ ── #}
+  <section class="section section--landing section--faq">
+    <div class="shell faq-grid">
+      <div>
+        <p class="section-label">FAQ</p>
+        <h2>Häufige Fragen.</h2>
+        <p>Antworten zu Websites &amp; Business Apps – sachlich und ohne Fachchinesisch.</p>
+      </div>
+      <div class="faq-list">
+        {% for q, a in page.faqs %}
+        <details>
+          <summary{% if page.tracking %} data-track="{{ page.tracking.faq }}" data-track-label="faq-{{ loop.index }}"{% endif %}>{{ q }}</summary>
+          <p>{{ a }}</p>
+        </details>
+        {% endfor %}
+      </div>
+      <div class="faq-cta">
+        <a class="button button--quiet" href="{{ page.cta_contact_url }}" data-track="check_cta_click" data-track-label="faq-check">Wo drückt's? 5-Minuten-Check <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  {# ── 11 · VERTRAUEN ── #}
+  <section class="section section--landing section--tint">
+    <div class="shell landing-block">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Vertrauen</p>
+          <h2>Worauf Sie sich verlassen können.</h2>
+        </div>
+      </div>
+      <div class="landing-trust">
+        {% for label, text in page.trust %}
+        <article class="landing-trust__item">
+          <h3>{{ label }}</h3>
+          <p>{{ text }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  {# ── 12 · AUTHOR ── #}
+  <section class="section section--landing landing-author">
+    <div class="shell landing-author__inner">
+      <div class="landing-author__photo">
+        <picture>
+          <source type="image/avif"
+            srcset="{{ url_for('static', filename='img/founder-400.avif') }} 400w,
+                    {{ url_for('static', filename='img/founder-600.avif') }} 600w"
+            sizes="(max-width: 680px) 96px, 120px">
+          <img
+            src="{{ url_for('static', filename='img/founder-400.webp') }}"
+            srcset="{{ url_for('static', filename='img/founder-400.webp') }} 400w,
+                    {{ url_for('static', filename='img/founder-600.webp') }} 600w"
+            sizes="(max-width: 680px) 96px, 120px"
+            width="600" height="750"
+            alt="Xavier Escalante Castellar – Gründer von Skalantech"
+            loading="lazy" decoding="async">
+        </picture>
+      </div>
+      <div class="landing-author__copy">
+        <p class="section-label">Wer dahintersteht</p>
+        <h2>Eine Person, die mitverantwortet – und erreichbar bleibt.</h2>
+        <p>
+          Xavier Escalante Castellar, IT-Infrastructure &amp; Automation Engineer,
+          baut und betreut die Systeme selbst. Direkter Kontakt, dokumentierte
+          Arbeit, keine Blackbox. Nachweise sind prüfbar: Zertifikate, LinkedIn
+          und GitHub.
+        </p>
+        <div class="landing-author__links">
+          <a href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate <span aria-hidden="true">↗</span></a>
+          <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+          <a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="{{ url_for('public.index') }}#about">Über mich <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="landing-author__trust">
+        <span><span aria-hidden="true">✓</span> SSL-verschlüsselt</span>
+        <span><span aria-hidden="true">✓</span> Keine externen Tracker</span>
+        <span><span aria-hidden="true">✓</span> Datenschutz-konforme Verarbeitung</span>
+      </div>
+    </div>
+  </section>
+
+  {# ── 13 · ABSCHLUSS-CTA (hell) ── #}
+  <section class="section section--landing landing-cta landing-cta--light">
+    <div class="shell">
+      <h2>{{ page.cta_final_title }}</h2>
+      <p>{{ page.cta_final_text }}</p>
+      <div class="landing-hero__actions">
+        <a class="button button--accent" href="{{ page.cta_termin_url }}">{{ page.cta_final }} <span aria-hidden="true">↗</span></a>
+        <a class="button button--quiet" href="{{ page.cta_contact_url }}">{{ page.cta_secondary }} <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

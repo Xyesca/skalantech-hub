@@ -55,7 +55,7 @@ LANDING_PAGES = {
             ("Setzen Sie nur auf Open Source?", "Nein. Open Source wird bevorzugt geprüft, wenn es fachlich und wirtschaftlich passt. Cloud- und Microsoft-Dienste werden dort eingesetzt, wo sie den größeren Nutzen bieten."),
             ("Wie schnell ist eine Infrastruktur-Modernisierung umsetzbar?", "Das hängt von Umfang und Risikobereitschaft ab. In der Regel beginnt die Zusammenarbeit mit einer Aufnahme, danach wird der erste konkrete Schritt priorisiert."),
         ],
-        "related": ["ki-integration", "n8n-automatisierung"],
+        "related": ["ki-integration", "n8n-automatisierung", "websites-apps"],
     },
     "ki-integration": {
         "nav_label": "KI-Integration",
@@ -151,7 +151,7 @@ LANDING_PAGES = {
             ("Was ist, wenn ein automatisierter Prozess Fehler macht?", "Workflows werden mit Fehlerbehandlung, Protokollierung und Alarmierung gebaut. Bei Abweichungen wird der Mensch informiert – nichts passiert still."),
             ("Müssen wir unsere Systeme dafür umstellen?", "Nein. Die Automatisierung läuft über die vorhandenen Schnittstellen. Bestehende Systeme bleiben in Betrieb."),
         ],
-        "related": ["n8n-automatisierung", "ki-agenten"],
+        "related": ["n8n-automatisierung", "ki-agenten", "websites-apps"],
     },
     "ki-agenten": {
         "nav_label": "KI-Agenten",
@@ -299,6 +299,128 @@ LANDING_PAGES = {
     },
 }
 
+# ── Websites & Business Apps (eigene Angebotsseite, dedicated Template) ──
+# Struktur & Wireframe: LUMINA (Kanban t_f59f5d89, 02_WIREFRAME.md). Copy = DRAFTS
+# aus dem LUMINA-Prototyp (03_COPY-SLOTS-VELA §4); VELA-Endfassung (t_d9baa082)
+# ersetzt die Texte als Follow-up (Muster: ROI-Rechner-VELA-Delta).
+WEBSITES_APPS_COPY = {
+    "nav_label": "Websites & Apps",
+    "breadcrumb": "Websites & Business Apps",
+    "title": "Websites & Business Apps für KMU – digitaler Vertrieb & Prozess-Tools | Skalantech",
+    "description": "Corporate Websites, die Anfragen bringen, und Business-Apps, die Prozesse automatisieren: gebaut, integriert und betreut von Skalantech in Köln.",
+    "h1": "Websites, die verkaufen. Apps, die Prozesse beschleunigen.",
+    "lead": "Skalantech baut keine Visitenkarten, sondern digitale Werkzeuge: High-Performance-Websites, die Anfragen bringen, und interne Business-Apps, die wiederkehrende Arbeit übernehmen – tief integriert in Ihre Prozesse.",
+    "hero_trust": "Server-gerendert · DSGVO-konform · Kein Vendor-Lock-in",
+    "cta_primary": "Kostenlose Business-Analyse",
+    "cta_secondary": "Projekt besprechen",
+    "cta_mid": "Jetzt Business-Analyse buchen",
+    "problem_title": "Eine Website, die nichts bringt, kostet Geld.",
+    "problem": [
+        "Ihre Website zählt Besucher, aber keine Anfragen.",
+        "Jede Änderung kostet Wochen und eine Agentur-Rechnung.",
+        "Prozesse laufen in Excel, E-Mails und Kopfarbeit – Daten doppelt, Fehler inklusive.",
+        "Tools werden gekauft, aber nie angebunden – sie bleiben Insellösungen.",
+    ],
+    "offer_title": "Zwei Produktlinien. Ein Ziel: Ihr Betrieb arbeitet digital.",
+    "offer_intro": "Beides entsteht aus Ihrem Geschäftsprozess – nicht aus einer Design-Vorlage.",
+    "offer": [
+        {
+            "label": "01 · Corporate Websites",
+            "title": "High-Performance Corporate Websites",
+            "text": "Websites, die nicht nur gut aussehen, sondern Anfragen produzieren: conversion-optimiert, server-gerendert für SEO und schnell geladen – auf Technik, die Sie nicht an ein Baukastensystem fesselt.",
+            "features": [
+                "Conversion-Pfad statt Visitenkarte: klare Struktur, CTA, Terminbuchung",
+                "SEO & Ladezeit: server-gerendert, gute Core Web Vitals, strukturierte Daten",
+                "Formulare direkt angebunden: Website → n8n → CRM, statt E-Mail-Anhang",
+                "Echte Fotos und Fakten statt generischer Stock-Ästhetik",
+            ],
+        },
+        {
+            "label": "02 · Business Apps & Portale",
+            "title": "Interne Business Apps & Portale",
+            "text": "Werkzeuge für Ihr Team und Ihre Kunden, die wiederkehrende Arbeit übernehmen: von der Angebots-Erstellung bis zum Kundenportal – gebaut auf Ihre Prozesse, nicht in eine Cloud, die Sie nicht kontrollieren.",
+            "features": [
+                "ROI-Rechner & Lead-Funnel: Besucher beziffern den Nutzen selbst und buchen Termine",
+                "Buchungssysteme & Kunden-Onboarding: Termine, Formulare, Verträge in einem Fluss",
+                "Interne Portale: Angebote, Rechnungen, Status – ohne E-Mail-Pingpong",
+                "Anbindung an n8n, CRM und Bestandssysteme – kein Vendor-Lock-in",
+            ],
+            "link_text": "Live-Beispiel: ROI-Rechner",
+            "link_url": "/branchen/handwerk#roi-rechner",
+        },
+    ],
+    "abgrenzung_title": "Keine WordPress-Agentur. Kein Baukasten. Kein Lock-in.",
+    "abgrenzung": [
+        "Wir starten beim Geschäftsprozess, nicht beim Design.",
+        "Website und App sind tief in Ihre IT integriert: n8n, CRM, Automatisierung.",
+        "Open-Source-first, dokumentiert, übergabebereit.",
+        "Code, Daten und Domains gehören Ihnen – jederzeit.",
+    ],
+    "process_title": "So läuft die Zusammenarbeit.",
+    "process": [
+        ("Business Audit", "Wir starten beim Geschäftsprozess: Wo entstehen Anfragen, wo verlieren Sie Zeit? Das ist der Anfang – nicht das Design."),
+        ("Architektur & UX", "Datenbasierte Wireframes, conversion-fokussiert und auf Ihre Zielgruppe ausgerichtet – bevor eine Zeile Code entsteht."),
+        ("Build & Integration", "State-of-the-art Tech-Stack, direkte Anbindung an Ihre IT-Infrastruktur, Tests inklusive."),
+        ("Launch & Operation", "Hosting, Security-Hardening, Analytics und laufende Optimierung – damit die Seite nicht veraltet."),
+    ],
+    "cases_heading": "Gebaut. Nicht versprochen.",
+    "use_cases": [
+        ("Lead-Funnel mit Terminbuchung (Handwerk / Immobilien)", "Eine Website, die qualifizierte Anfragen generiert, mit integrierter Terminbuchung, die automatisch im Kalender landet – inklusive Erinnerungen."),
+        ("Mandanten-Portal & ROI-Rechner (Kanzleien / B2B)", "Hochsichere Portale für Mandanten und interaktive ROI-Rechner, die den Nutzen Ihrer Leistung sofort beziffern – DSGVO-konform, lokal betreibbar."),
+    ],
+    "pricing_title": "Klare Preise. Zwei Stufen. Kein Kleingedrucktes.",
+    "pricing": [
+        {
+            "name": "Build",
+            "price": "ab 4.900 €",
+            "unit": "einmalig",
+            "text": "Corporate Website oder MVP einer Business-App – inklusive Audit, Architektur, Umsetzung und Launch.",
+            "features": [
+                "Business-Audit & Conversion-Struktur",
+                "Design & Umsetzung (Website oder App-MVP)",
+                "SEO-Grundlage: server-gerendert, strukturierte Daten",
+                "Launch, Security-Hardening, Übergabe",
+            ],
+            "cta": "Projekt skizzieren",
+        },
+        {
+            "name": "Operate & Grow",
+            "price": "ab 490 €",
+            "unit": "/ Monat",
+            "text": "Ihre Systeme bleiben sicher, aktuell und werden kontinuierlich besser – wir betreuen, messen und optimieren.",
+            "features": [
+                "Sicheres Hosting & Maintenance",
+                "Monitoring, Backups, Updates",
+                "Analytics & Conversion-Reporting",
+                "Kontinuierliche Optimierung (CRO)",
+            ],
+            "cta": "Betrieb besprechen",
+            "badge": "Für laufenden Betrieb",
+            "highlight": True,
+        },
+    ],
+    "pricing_note": "Die Preise sind Einstiegswerte aus typischen Projekten – Ihr individuelles Angebot entsteht nach dem kostenlosen Business-Audit.",
+    "tech": ["Next.js", "Python", "n8n", "Docker", "PostgreSQL", "Tailscale", "Caddy"],
+    "faqs": [
+        ("Müssen wir auf WordPress setzen?", "Nein. Wir setzen auf moderne, server-gerenderte Technik (z. B. Next.js), die schneller lädt und mehr Kontrolle lässt. Wenn WordPress bei Ihnen im Betrieb verankert ist, migrieren wir Schritt für Schritt – ohne Neubau um jeden Preis."),
+        ("Was kostet eine Website bei Skalantech?", "Corporate Websites starten bei 4.900 € einmalig. Der genaue Preis entsteht im Business-Audit aus Umfang, Integrationen und Tempo – Sie bekommen ein Festangebot, bevor etwas gebaut wird."),
+        ("Wie lange dauert ein Projekt?", "Eine Corporate Website ist typischerweise in 3–6 Wochen live, eine Business-App in 6–12 Wochen – abhängig von Integrationen und Freigaben."),
+        ("Können Sie meine bestehende Website übernehmen?", "Ja. Im Audit prüfen wir, ob Übernahme, Umbau oder Neubau wirtschaftlicher ist – und empfehlen ehrlich, was weniger kostet."),
+        ("Was passiert nach dem Launch?", "Mit dem Operate-&-Grow-Retainer ab 490 €/Monat bleiben Hosting, Sicherheit, Analytics und Optimierung in einer Hand. Ohne Retainer übergeben wir dokumentiert – Sie sind Eigentümer von Code, Daten und Domains."),
+        ("Arbeitet ihr mit unserem CRM zusammen?", "Ja. Formulare, Buchungen und Funnels binden wir per n8n an gängige CRMs und Systeme an. Welche Schnittstellen bei Ihnen nötig sind, prüfen wir im Audit."),
+    ],
+    "trust": [
+        ("Security-First", "TLS, DSGVO-konforme Verarbeitung, gehärtete Server – Sicherheit ist Teil des Builds, kein Extra."),
+        ("Keine externen Tracker", "First-Party-Analytics statt Tracking-Krake – die Daten bleiben bei Ihnen."),
+        ("Eigentum bleibt bei Ihnen", "Code, Daten und Domains gehören Ihnen. Kein Vendor-Lock-in."),
+        ("Ein Ansprechpartner", "Xavier baut und betreut die Systeme selbst – persönlich erreichbar, keine Blackbox."),
+    ],
+    "cta_final_title": "Kostenlose Business-Analyse?",
+    "cta_final_text": "30 Minuten, unverbindlich. Wir schauen uns Ihren Prozess an und sagen ehrlich, ob und wie eine Website oder Business-App Sie voranbringt.",
+    "cta_final": "Kostenlose Business-Analyse",
+    "tracking": {"hero": "hero_cta_click", "faq": "faq_open", "check": "check_cta_click"},
+}
+
 # ── Branchen-Landingpages (Stage 5 der Pipeline) ───────────────────────
 # Copy 1:1 aus VELA (Kanban t_7ccdf6ff). Schlüssel "branchen-{slug}" →
 # Routen /branchen/{slug} (explizit, kein Catch-All). In LANDING_ORDER
@@ -306,8 +428,13 @@ LANDING_PAGES = {
 # und werden in public.py separat in die Sitemap aufgenommen.
 LANDING_PAGES.update(LANDING_BRANCHEN)
 
+# Websites-&-Apps-Angebotsseite (dedicated Template websites_apps.html) —
+# in LANDING_PAGES, damit _render_landing + _landing_map + Sitemap sie finden.
+LANDING_PAGES["websites-apps"] = WEBSITES_APPS_COPY
+
 # Reihenfolge für Navigation, Sitemap und interne Verlinkung
 LANDING_ORDER = [
+    "websites-apps",
     "it-infrastruktur",
     "ki-integration",
     "ki-automatisierung",

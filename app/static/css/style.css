@@ -21,6 +21,12 @@
   --border-dark: rgba(226, 232, 240, 0.16);
   --success: #15803d;
   --danger: #b42318;
+  /* Akzent für Websites-&-Apps (LUMINA 04 §5): MOS = Meeres-Teal.
+     Kontrast-Fix: --accent-mos-ink nur für große Preiszahl auf hellem Grund,
+     --accent-mos-deep für kleinen MOS-Text. */
+  --accent-mos: #00bcd4;
+  --accent-mos-ink: #0b8ea0;
+  --accent-mos-deep: #087a8c;
   --shadow-sm: 0 14px 38px rgba(32, 64, 128, 0.09);
   --shadow-lg: 0 32px 80px rgba(30, 64, 128, 0.16);
   --radius-sm: 10px;
@@ -3543,6 +3549,268 @@ p:last-child {
 
 .landing-articles a:hover {
   text-decoration: underline;
+}
+
+/* ── Websites & Apps: Angebot, Abgrenzung, Pricing (LUMINA 04 §5) ──── */
+.landing-offer {
+  display: grid;
+  gap: 20px;
+}
+
+.landing-offer__card {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: 30px 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.landing-offer__label {
+  margin: 0;
+  color: var(--accent-mos-deep);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.landing-offer__title {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
+}
+
+.landing-offer__text {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.landing-offer__features {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.landing-offer__features li {
+  display: flex;
+  gap: 10px;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.landing-offer__features li::before {
+  content: "✓";
+  flex: 0 0 auto;
+  color: var(--success);
+  font-weight: 700;
+}
+
+.landing-offer__link {
+  justify-self: start;
+  margin-top: 4px;
+  color: var(--accent-deep);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.landing-offer__link:hover {
+  text-decoration: underline;
+}
+
+.landing-abgrenzung {
+  padding: 84px 0;
+  background: var(--surface-dark);
+  color: var(--text-light);
+}
+
+.landing-abgrenzung .section-label {
+  color: var(--accent-mos);
+}
+
+.landing-abgrenzung h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+}
+
+.landing-abgrenzung__list {
+  display: grid;
+  gap: 14px;
+  margin: 30px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.landing-abgrenzung__list li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  line-height: 1.6;
+}
+
+.landing-abgrenzung__list li::before {
+  content: "✓";
+  flex: 0 0 auto;
+  color: var(--accent-mos);
+  font-weight: 700;
+}
+
+.landing-pricing {
+  display: grid;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.landing-pricing__card {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: 34px 30px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.landing-pricing__card--highlight {
+  background: var(--surface-dark);
+  color: var(--text-light);
+  border: 0;
+}
+
+.landing-pricing__card--highlight .landing-pricing__name {
+  color: #fff;
+}
+
+.landing-pricing__name {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.15rem;
+}
+
+.landing-pricing__price {
+  margin: 0;
+  color: var(--accent-mos-ink);
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.landing-pricing__card--highlight .landing-pricing__price {
+  color: var(--accent-mos);
+}
+
+.landing-pricing__unit {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.landing-pricing__card--highlight .landing-pricing__unit {
+  color: var(--text-light);
+}
+
+.landing-pricing__text {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.landing-pricing__features {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.landing-pricing__features li {
+  display: flex;
+  gap: 10px;
+  line-height: 1.55;
+}
+
+.landing-pricing__features li::before {
+  content: "✓";
+  flex: 0 0 auto;
+  color: var(--success);
+  font-weight: 700;
+}
+
+.landing-pricing__card--highlight .landing-pricing__features li::before {
+  color: var(--accent-mos);
+}
+
+.landing-pricing__badge {
+  display: inline-block;
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 188, 212, 0.16);
+  color: var(--accent-mos);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.landing-pricing__note {
+  margin: 18px 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.landing-pricing__cta {
+  justify-self: start;
+}
+
+/* Abschluss-CTA auf der Websites-&-Apps-Seite hell (die dunkle Banderole ist
+   die Abgrenzung) — Modifier auf .landing-cta. */
+.landing-cta--light {
+  background: var(--paper-warm);
+  color: var(--text);
+}
+
+.landing-cta--light h2 {
+  color: var(--ink);
+}
+
+.landing-cta--light p {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+.landing-cta--light .button--quiet {
+  color: var(--ink);
+  border-color: var(--border);
+}
+
+@media (min-width: 860px) {
+  .landing-offer {
+    grid-template-columns: 1fr 1fr;
+  }
+  .landing-pricing {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 680px) {
+  .landing-abgrenzung__list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 400px) {
+  .landing-pricing__cta {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 /* ── Wissen ─────────────────────────────────────────────────────────── */
