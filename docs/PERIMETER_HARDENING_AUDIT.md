@@ -62,6 +62,11 @@ vereinheitlicht. Verifiziert durch `tests/test_ratelimit_storage.py`:
 8 Requests verteilt auf 2 App-Instanzen erlaubt, 9. → 429; Counter überlebt
 App-Neuinitialisierung (= Worker-Restart).
 
+**Fail-safe:** `swallow_errors=false`, kein In-Memory-Fallback → bei
+Redis-Ausfall antworten rate-limitierte Routen mit HTTP 500 (fail-closed),
+Limits werden nie stillschweigend umgangen. Docker: `restart:
+unless-stopped` + Healthcheck (siehe README „Zentrales Rate-Limiting“).
+
 ## 3. Fail2Ban
 
 - Verifiziert: fail2ban 1.1.0 aktiv, Jail `sshd` (3 Versuche → 24 h, banaction

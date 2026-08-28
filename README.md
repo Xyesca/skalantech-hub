@@ -102,6 +102,13 @@ Strategie: `moving-window` (gleitendes Fenster, keine Window-Boundary-Effekte).
 Bei Limit-Überschreitung liefern API-/AJAX-Routen ein 429-JSON, Browser-Formulare
 bekommen einen Flash + Redirect auf die Herkunftsseite.
 
+**Fail-safe (Redis-Ausfall):** flask-limiter läuft mit `swallow_errors=false`
+und ohne In-Memory-Fallback — fällt der Redis-Container aus, schlägt die
+Limit-Prüfung fehl und rate-limitierte Routen antworten mit HTTP 500
+(fail-closed). Limits werden dabei **nie** stillschweigend umgangen. Der
+Rest der Website (GET-Routen ohne Limit) bleibt erreichbar; Redis selbst ist
+per `restart: unless-stopped` + Healthcheck im docker-compose abgesichert.
+
 ## Demo-Sicherheitsmodell
 
 Die öffentliche Website darf **nie** direkt auf die n8n-UI oder interne Webhooks verlinken. `/api/demos/<slug>` erlaubt ausschließlich die drei bekannten Demo-Slugs, begrenzt Eingaben auf 2.000 Zeichen und ist serverseitig rate-limited. Secrets, Credential-IDs und interne n8n-Antwortdetails gehören nicht in den Browser.
