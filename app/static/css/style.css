@@ -552,32 +552,100 @@ p:last-child {
 }
 
 .hero__portrait {
-  margin: 0;
-  width: min(100%, 460px);
-  justify-self: end;
-  line-height: 0;
+  display: none;
 }
 
-.hero__portrait img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 24px;
-  /* weicher Übergang zum hellen Hero-Hintergrund: unterer + seitlicher Verlauf */
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    #000 72%,
-    rgba(0, 0, 0, 0.55) 92%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    #000 72%,
-    rgba(0, 0, 0, 0.55) 92%,
-    rgba(0, 0, 0, 0) 100%
-  );
+/* Hero-System-Visual: Eingänge → n8n/APIs → KI → Ausgänge */
+.hero__system {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: min(100%, 520px);
+  justify-self: end;
+  padding: 20px 16px;
+  border: 1px solid rgba(100, 116, 139, 0.25);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 18px 50px -22px rgba(30, 64, 175, 0.25);
+  backdrop-filter: blur(4px);
+}
+
+.sys-col {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.sys-node {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid rgba(100, 116, 139, 0.22);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px -6px rgba(30, 64, 175, 0.15);
+}
+
+.sys-core {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 0 4px;
+}
+
+.sys-core__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.sys-core__line {
+  width: 2px;
+  height: 46px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--accent), #9333ea);
+}
+
+.sys-core__badge {
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--accent), #7c3aed);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+@media (max-width: 680px) {
+  .hero__system {
+    width: 100%;
+    padding: 14px 10px;
+    gap: 6px;
+  }
+  .sys-node {
+    min-height: 30px;
+    padding: 5px 7px;
+    font-size: 10.5px;
+  }
+  .sys-core__line {
+    height: 34px;
+  }
+  .sys-core__label {
+    font-size: 9.5px;
+  }
+  .sys-core__badge {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
 }
 
 .hero__visual-note {
@@ -1211,21 +1279,40 @@ p:last-child {
   filter: saturate(0.9) contrast(1.02);
 }
 
-/* Gründerfoto: heller, ruhiger Rahmen – kein dunkler Gradient, keine Filter */
+/* Gründerfoto ersetzt durch System-/Kompetenzvisual */
 .about-visual__frame--portrait {
-  background: #ffffff;
-  border: 1px solid #dbe3ef;
-  box-shadow: var(--shadow-md);
+  display: none;
 }
 
-.about-visual__frame--portrait::after {
-  inset: 12px;
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  border-radius: 16px;
+.about-visual__frame--system {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(79, 124, 255, 0.35), transparent 55%),
+    var(--ink);
 }
 
-.about-visual__frame--portrait img {
-  filter: none;
+.about-system {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.about-system span {
+  padding: 12px 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  backdrop-filter: blur(3px);
 }
 
 .about-visual__caption {

@@ -61,28 +61,41 @@
           <a class="button button--quiet" href="{{ url_for('showcase.demos') }}">Live-Demos testen <span aria-hidden="true">→</span></a>
         </div>
         <ul class="hero__trust" aria-label="Warum Skalantech" data-reveal>
-          <li><span aria-hidden="true">✓</span> Direkt vom Gründer — kein Vertriebsteam</li>
-          <li><span aria-hidden="true">✓</span> 7+ Jahre IT-Praxiserfahrung</li>
-          <li><span aria-hidden="true">✓</span> Self-Hosting &amp; Datensouveränität statt Vendor-Lock-in</li>
+          <li><span aria-hidden="true">✓</span> Live-Automationen statt Konzepte</li>
+          <li><span aria-hidden="true">✓</span> Self-hosted Infrastruktur</li>
+          <li><span aria-hidden="true">✓</span> Von Analyse bis Betrieb</li>
         </ul>
       </div>
       <div class="hero__visual" data-reveal>
-        <figure class="hero__portrait">
-          <picture>
-            <source type="image/avif" srcset="{{ url_for('static', filename='img/portrait-480.avif') }} 480w, {{ url_for('static', filename='img/portrait-720.avif') }} 720w, {{ url_for('static', filename='img/portrait-1040.avif') }} 1040w" sizes="(max-width:680px) min(84vw,340px), 460px">
-            <img src="{{ url_for('static', filename='img/portrait-480.webp') }}" srcset="{{ url_for('static', filename='img/portrait-480.webp') }} 480w, {{ url_for('static', filename='img/portrait-720.webp') }} 720w, {{ url_for('static', filename='img/portrait-1040.webp') }} 1040w" sizes="(max-width:680px) min(84vw,340px), 460px" width="1040" height="1300" alt="Xavier Escalante – Gründer von Skalantech" fetchpriority="high" decoding="async">
-          </picture>
-        </figure>
-        <p class="hero__visual-note"><span aria-hidden="true">↳</span> Nicht nur beraten: bauen, integrieren, testen und betreiben.</p>
+        <div class="hero__system" role="img" aria-label="Skalantech Systemübersicht: Website, Formulare, E-Mail und CRM werden über n8n und APIs mit KI-Agenten, Datenbanken, Business Apps und Benachrichtigungen verbunden.">
+          <div class="sys-col sys-col--in">
+            <div class="sys-node"><span>Website</span></div>
+            <div class="sys-node"><span>Formulare</span></div>
+            <div class="sys-node"><span>E-Mail</span></div>
+            <div class="sys-node"><span>CRM</span></div>
+          </div>
+          <div class="sys-core">
+            <div class="sys-core__label">n8n · APIs</div>
+            <div class="sys-core__line"></div>
+            <div class="sys-core__badge">KI-Agenten</div>
+          </div>
+          <div class="sys-col sys-col--out">
+            <div class="sys-node"><span>Datenbanken</span></div>
+            <div class="sys-node"><span>Business Apps</span></div>
+            <div class="sys-node"><span>Benachrichtigungen</span></div>
+            <div class="sys-node"><span>Dokumente</span></div>
+          </div>
+        </div>
+        <p class="hero__visual-note"><span aria-hidden="true">↳</span> Gebaute Systeme: Prozesse verbinden, integrieren, testen und betreiben.</p>
       </div>
     </div>
   </section>
 
   <section class="signal-bar" aria-label="Erfahrung und Fokus">
     <div class="shell signal-bar__inner">
-      <div><strong>7+</strong><span>Jahre IT-Praxiserfahrung</span></div>
       <div><strong>3</strong><span>direkt testbare Automations-Demos</span></div>
-      <div><strong>1</strong><span>Ansprechpartner von Analyse bis Betrieb</span></div>
+      <div><strong>6+</strong><span>selbst gebaute Systeme</span></div>
+      <div><strong>100%</strong><span>Self-hosted Infrastruktur</span></div>
       <div class="signal-bar__statement"><span class="signal-bar__dot" aria-hidden="true"></span>Live-Stack: n8n · Python · Docker · Tailscale · Caddy · LLMs</div>
     </div>
   </section>
@@ -185,34 +198,89 @@
   <section class="section section--about" id="about">
     <div class="shell about-grid">
       <div class="about-visual" data-reveal>
-        <div class="about-visual__frame about-visual__frame--portrait"><picture><source type="image/avif" srcset="{{ url_for('static', filename='img/founder-400.avif') }} 400w, {{ url_for('static', filename='img/founder-600.avif') }} 600w, {{ url_for('static', filename='img/founder-800.avif') }} 800w"><img src="{{ url_for('static', filename='img/founder-600.webp') }}" alt="Xavier Escalante Castellar – Gründer von Skalantech" width="800" height="1000" loading="lazy" decoding="async"></picture></div>
-        <div class="about-visual__caption"><span>Xavier Escalante Castellar</span><span>Gründer · Köln · Remote</span></div>
+        <div class="about-visual__frame about-visual__frame--system">
+          <div class="about-system" role="img" aria-label="Skalantech Kompetenzbereiche: Automation Engineering, AI & Agents, Business Apps & Web, APIs & Integrationen, IT-Infrastruktur, Self-Hosting & Operations.">
+            <span>Automation Engineering</span>
+            <span>AI &amp; Agents</span>
+            <span>Business Apps &amp; Web</span>
+            <span>APIs &amp; Integrationen</span>
+            <span>IT-Infrastruktur</span>
+            <span>Self-Hosting &amp; Operations</span>
+          </div>
+        </div>
+        <div class="about-visual__caption"><span>Skalantech</span><span>Engineering-Studio · Köln · Remote in DACH</span></div>
       </div>
       <div class="about-copy" data-reveal>
-        <p class="section-label">Über Skalantech</p><h2>IT-Praxis plus KI-Management.</h2>
-        <p class="about-copy__lead">Ich bin Xavier Escalante – IT-Infrastructure &amp; Automation Engineer mit über sieben Jahren Praxiserfahrung.</p>
-        <p>Ich plane nicht nur, sondern baue, teste, dokumentiere und betreibe selbst. Der Schwerpunkt liegt dort, wo Infrastruktur, Automatisierung, Business-Software und KI zusammenkommen.</p>
+        <p class="section-label">Über Skalantech</p><h2>Ein Studio für Automation, Apps und Infrastruktur.</h2>
+        <p class="about-copy__lead">Skalantech entwickelt, automatisiert und betreibt digitale Systeme für kleine und mittelständische Unternehmen – von der ersten Prozessanalyse bis zum laufenden Betrieb.</p>
+        <p>Der Anspruch: Prozesse verbinden, wo heute noch kopiert und nachgefasst wird. Skalantech baut Workflows, Business Apps, Websites und KI-Integrationen auf einer selbst gehosteten, kontrollierten Infrastruktur – ohne unnötigen Vendor-Lock-in.</p>
         <div class="expertise-list"><span>Linux &amp; Docker</span><span>Microsoft 365 / Azure</span><span>n8n</span><span>Python / PowerShell</span><span>APIs &amp; Webhooks</span><span>AI Agents &amp; RAG</span><span>Self-Hosting</span></div>
-        <div class="training-card">
-          <div class="training-card__head"><span class="training-card__label">Weiterbildung</span><h3>KI-Manager:in Advanced</h3></div>
-          <p>Die achtwöchige Weiterbildung verbindet KI-Management, Agenten und n8n, Design Thinking, agile Methoden, Vibe Coding sowie KI-Strategie, Implementierung und Governance.</p>
-          <ul class="training-card__tags"><li>KI-Strategie</li><li>KI-Agenten</li><li>n8n</li><li>APIs &amp; Webhooks</li><li>Agile Methoden</li><li>Design Thinking</li><li>Governance</li><li>Vibe Coding</li></ul>
-        </div>
-        <div class="about-links"><a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate ↗</a></div>
+        <div class="about-links"><a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="{{ url_for('public.landing_websites_apps') }}">Leistungen ansehen →</a></div>
       </div>
     </div>
   </section>
 
   <section class="section section--credentials" id="nachweise">
     <div class="shell">
-      <div class="section-heading" data-reveal><div><p class="section-label">Nachweise</p><h2>Qualifikationen, die Sie prüfen können.</h2></div><p>Technische Praxis und Weiterbildung werden sichtbar verlinkt – ohne erfundene Kundenlogos oder Erfolgszahlen.</p></div>
-      <div class="credential-grid" data-reveal>
-        <article class="credential-card"><span class="credential-card__badge">Zert.</span><h3>ITIL Foundation</h3><p>Grundlagen für strukturierten IT-Service-Betrieb.</p><span class="credential-card__issuer">AXELOS</span></article>
-        <article class="credential-card"><span class="credential-card__badge">Zert.</span><h3>Azure Administrator (AZ-104)</h3><p>Planung und Betrieb von Microsoft-Azure-Infrastruktur.</p><span class="credential-card__issuer">Microsoft</span></article>
-        <article class="credential-card"><span class="credential-card__badge">Zert.</span><h3>NIS-2-Grundlagen</h3><p>Sicherheit, Resilienz und organisatorische Anforderungen.</p><span class="credential-card__issuer">2025</span></article>
-        <article class="credential-card credential-card--education"><span class="credential-card__badge">Bild.</span><h3>Fachinformatiker Systemintegration</h3><p>Technische Ausbildung mit Schwerpunkt Systemintegration.</p><span class="credential-card__issuer">GFN Köln</span></article>
+      <div class="section-heading" data-reveal><div><p class="section-label">Nachweise</p><h2>Gebaute Systeme statt Versprechen.</h2></div><p>Skalantech behauptet nicht nur, Automationen und KI-Systeme zu bauen – hier sind funktionierende Systeme. Jeder Nachweis zeigt: Problem, gebaute Lösung, Technik und was heute prüfbar ist.</p></div>
+      <div class="credential-grid credential-grid--projects" data-reveal>
+        <article class="project-card">
+          <span class="project-card__badge">Plattform</span>
+          <h3>Skalantech Hub</h3>
+          <p><strong>Problem:</strong> Website, Leads, Termine und Analytics liefen in getrennten Welten.</p>
+          <p><strong>Lösung:</strong> Self-hosted Plattform mit Landingpages, CRM-Pipeline, Live-Demos und n8n-Anbindung.</p>
+          <p><strong>Technologie:</strong> Flask · Docker · SQLite · n8n · GSC · Tailscale</p>
+          <p><strong>Nachweis:</strong> Diese Website – läuft produktiv auf eigener Infrastruktur.</p>
+        </article>
+        <article class="project-card">
+          <span class="project-card__badge">Automation</span>
+          <h3>InvoiceFlow</h3>
+          <p><strong>Problem:</strong> Rechnungsdaten müssen manuell aus Dokumenten übertragen werden.</p>
+          <p><strong>Lösung:</strong> Workflow zur Extraktion und Strukturierung relevanter Rechnungsinformationen.</p>
+          <p><strong>Technologie:</strong> n8n · APIs · KI · strukturierte Datenverarbeitung</p>
+          <p><strong>Nachweis:</strong> Live-Demo auf Skalantech.</p>
+        </article>
+        <article class="project-card">
+          <span class="project-card__badge">Automation</span>
+          <h3>OfferAI</h3>
+          <p><strong>Problem:</strong> Kundenanfragen werden zeitintensiv manuell in Angebote überführt.</p>
+          <p><strong>Lösung:</strong> Workflow, der Anfragen strukturiert und einen prüfbaren Angebotsentwurf erzeugt.</p>
+          <p><strong>Technologie:</strong> n8n · LLM · strukturierte Ausgabe · Freigabeprozess</p>
+          <p><strong>Nachweis:</strong> Live-Demo auf Skalantech.</p>
+        </article>
+        <article class="project-card">
+          <span class="project-card__badge">Automation</span>
+          <h3>MailAgent</h3>
+          <p><strong>Problem:</strong> Eingangs-E-Mails müssen klassifiziert und priorisiert werden.</p>
+          <p><strong>Lösung:</strong> Workflow, der Nachrichten einordnet, zusammenfasst und Antwortvorschläge liefert.</p>
+          <p><strong>Technologie:</strong> n8n · KI-Klassifikation · Routing · Freigabe</p>
+          <p><strong>Nachweis:</strong> Live-Demo auf Skalantech.</p>
+        </article>
+        <article class="project-card">
+          <span class="project-card__badge">Open Source</span>
+          <h3>DeepDive</h3>
+          <p><strong>Problem:</strong> Videoinhalte sind schwer durchsuchbar und aufbereitbar.</p>
+          <p><strong>Lösung:</strong> Open-Source-Pipeline: Transkription, KI-Analyse und Export als PDF/HTML + MP3.</p>
+          <p><strong>Technologie:</strong> Python · Whisper · LLMs · Automatisierung</p>
+          <p><strong>Nachweis:</strong> <a href="https://github.com/Xyesca/deepdive" target="_blank" rel="noopener noreferrer">Öffentliches Repository ↗</a></p>
+        </article>
+        <article class="project-card">
+          <span class="project-card__badge">KI-Plattform</span>
+          <h3>DebtPilot AI</h3>
+          <p><strong>Problem:</strong> Dokumentenanalyse und Fallbearbeitung sind manuell und ohne zentrale Ablage.</p>
+          <p><strong>Lösung:</strong> Self-hosted KI-Plattform mit RAG, lokalen LLMs und strukturierten Arbeitsabläufen.</p>
+          <p><strong>Technologie:</strong> Docker · Ollama · RAG · Microservices · Self-Hosting</p>
+          <p><strong>Nachweis:</strong> Läuft auf eigener Infrastruktur, lokale Verarbeitung.</p>
+        </article>
+        <article class="project-card">
+          <span class="project-card__badge">Agent-Orchestrierung</span>
+          <h3>Hermes / n8n Agent-Team</h3>
+          <p><strong>Problem:</strong> Wiederkehrende Aufgaben brauchen isolierte, spezialisierte Arbeitsabläufe.</p>
+          <p><strong>Lösung:</strong> Orchestriertes Agenten-Team mit Rollen, gemeinsamen Backlog und automatisierten Routinen.</p>
+          <p><strong>Technologie:</strong> Hermes Agent · n8n · Kanban · API-Integration · LLM-Routing</p>
+          <p><strong>Nachweis:</strong> Dieses System erstellt Inhalte, Reports und Workflows selbstständig.</p>
+        </article>
       </div>
-      <div class="credential-actions"><a class="button button--accent" href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate ansehen ↗</a></div>
     </div>
   </section>
 
@@ -233,7 +301,7 @@
       <div data-reveal>
         <p class="section-label">30-Minuten-Business-Analyse</p><h2>Welcher Prozess kostet Sie heute unnötig Zeit?</h2>
         <p>Unverbindlich und online. Wir klären den Engpass und ob eine Automatisierung, App oder Infrastrukturverbesserung sinnvoll ist.</p>
-        <ul class="booking-points"><li><span>✓</span> kostenlos &amp; unverbindlich</li><li><span>✓</span> konkrete Einordnung statt Produktpitch</li><li><span>✓</span> direkter Kontakt mit Xavier</li></ul>
+        <ul class="booking-points"><li><span>✓</span> kostenlos &amp; unverbindlich</li><li><span>✓</span> konkrete Einordnung statt Produktpitch</li><li><span>✓</span> direkter Kontakt zu Skalantech</li></ul>
         <div class="contact-direct"><span>Lieber direkt?</span><a href="mailto:xyesca@skalantech.store">xyesca@skalantech.store <span aria-hidden="true">↗</span></a></div>
       </div>
       <div class="booking-box" data-reveal>
@@ -248,14 +316,14 @@
           <label class="privacy-check" for="booking-privacy"><input type="checkbox" id="booking-privacy" name="privacy" value="accepted" required><span>Ich habe die <a href="{{ url_for('public.datenschutz') }}" target="_blank">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span></label>
           <button class="button button--accent button--submit" type="submit"><span>Business-Analyse anfragen</span><span aria-hidden="true">↗</span></button><p class="form-status" id="booking-status" aria-live="polite"></p>
         </form>
-        <div class="booking-success" id="booking-success" role="status" aria-live="polite" tabindex="-1" hidden><div class="booking-success__check" aria-hidden="true">✓</div><h2 class="booking-success__title">Anfrage ist angekommen.</h2><div class="booking-success__summary" id="booking-success-summary" hidden><p class="booking-success__slot">Ihr Wunschtermin: <strong id="booking-success-slot"></strong></p><p class="booking-success__hint">Sie erhalten die Bestätigung per E-Mail.</p></div><div class="booking-success__queued" id="booking-success-queued" hidden><p>Wir melden uns innerhalb von 24 h mit einem Terminvorschlag.</p></div><div class="booking-success__steps"><p>1. Anfrage prüfen</p><p>2. 30 Minuten Ausgangslage klären</p><p>3. Sinnvollen nächsten Schritt festlegen</p></div><p class="booking-success__trust">Direkt vom Gründer — kein Vertriebsteam.</p></div>
+        <div class="booking-success" id="booking-success" role="status" aria-live="polite" tabindex="-1" hidden><div class="booking-success__check" aria-hidden="true">✓</div><h2 class="booking-success__title">Anfrage ist angekommen.</h2><div class="booking-success__summary" id="booking-success-summary" hidden><p class="booking-success__slot">Ihr Wunschtermin: <strong id="booking-success-slot"></strong></p><p class="booking-success__hint">Sie erhalten die Bestätigung per E-Mail.</p></div><div class="booking-success__queued" id="booking-success-queued" hidden><p>Wir melden uns innerhalb von 24 h mit einem Terminvorschlag.</p></div><div class="booking-success__steps"><p>1. Anfrage prüfen</p><p>2. 30 Minuten Ausgangslage klären</p><p>3. Sinnvollen nächsten Schritt festlegen</p></div><p class="booking-success__trust">Direkter Kontakt zu Skalantech — kein Vertriebsteam.</p></div>
       </div>
     </div>
   </section>
 
   <section class="contact-section" id="contact">
     <div class="shell contact-grid">
-      <div class="contact-copy" data-reveal><p class="section-label section-label--light">Projektanfrage</p><h2>Schon konkreter?</h2><p>Drei Sätze zur Ausgangslage reichen. Ich prüfe persönlich, ob und wie Skalantech sinnvoll unterstützen kann.</p><div class="contact-fit"><p>Besonders passend für:</p><ul><li><span>✓</span> wiederkehrende manuelle Abläufe</li><li><span>✓</span> Website-, CRM- und Systemintegration</li><li><span>✓</span> KI-Use-Cases mit realen Daten und klarer Freigabe</li></ul></div><div class="contact-direct"><span>Direkt per E-Mail:</span><a href="mailto:xyesca@skalantech.store">xyesca@skalantech.store ↗</a></div></div>
+      <div class="contact-copy" data-reveal><p class="section-label section-label--light">Projektanfrage</p><h2>Schon konkreter?</h2><p>Drei Sätze zur Ausgangslage reichen. Skalantech prüft, ob und wie wir sinnvoll unterstützen können.</p><div class="contact-fit"><p>Besonders passend für:</p><ul><li><span>✓</span> wiederkehrende manuelle Abläufe</li><li><span>✓</span> Website-, CRM- und Systemintegration</li><li><span>✓</span> KI-Use-Cases mit realen Daten und klarer Freigabe</li></ul></div><div class="contact-direct"><span>Direkt per E-Mail:</span><a href="mailto:xyesca@skalantech.store">xyesca@skalantech.store ↗</a></div></div>
       <div class="contact-form-wrap" data-reveal>
         <form class="contact-form" id="contact-form" method="post" action="{{ url_for('public.contact') }}">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><div class="form-honeypot" aria-hidden="true"><label for="website">Website</label><input type="text" id="website" name="website" tabindex="-1" autocomplete="off"></div>
