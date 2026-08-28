@@ -228,9 +228,9 @@ class BranchenLandingTests(unittest.TestCase):
                 self.assertIn("landing-roi", html)
                 self.assertIn("landing-trust", html)
                 self.assertIn("landing-author", html)
-                self.assertIn("Wer dahintersteht", html)
-                self.assertIn("Xavier Escalante Castellar", html)
-                self.assertIn("certificates_xavier_escalante.pdf", html)
+                self.assertIn("Wie Skalantech arbeitet", html)
+                self.assertIn("Skalantech baut und betreut die Systeme selbst", html)
+                self.assertIn("github.com/Xyesca", html)
 
     def test_branch_footer_links_present(self):
         html = self._get("/branchen/handwerk").get_data(as_text=True)
