@@ -61,7 +61,7 @@ Zusätzliche Grenzen:
 - Upstream-Fehler werden als generische Fehlermeldung zurückgegeben
 - Nutzerhinweis: keine vertraulichen oder produktiven personenbezogenen Daten in die Demo eingeben
 
-Der aktuelle Flask-Limiter nutzt noch `memory://`. GitHub Issue #4 migriert dies auf einen zentralen Store, bevor mehrere App-Instanzen horizontal skaliert werden.
+Der aktuelle Flask-Limiter nutzt noch `memory://`. Gemessen 2026-08-28 (4 Gunicorn-Worker): 429 erscheint konsistent nach ~9–13 Requests pro IP, weil jeder Worker einen eigenen Zähler führt (Streuung durch Worker-Verteilung). Effektiv sind es damit bis zu ~8 Requests pro Stunde je Worker statt strikt 8/IP gesamt. GitHub Issue #4 migriert dies auf einen zentralen Store, bevor mehrere App-Instanzen horizontal skaliert werden.
 
 ## 4. Automations-Angebotsseite
 
@@ -146,6 +146,28 @@ Produktions-E2E nach Deployment durch Hermes:
 8. n8n ist weiterhin nicht direkt öffentlich erreichbar.
 9. Kontakt-/Demo-Benachrichtigung kommt über `xyesca@skalantech.store`.
 10. Testdaten anschließend löschen.
+
+### E2E-Verifikation Produktion (2026-08-28, NEXUS — Issue #7)
+
+Alle Punkte live gegen `https://skalantech.store` bzw. direkt gegen den Container verifiziert:
+
+| # | Check | Ergebnis |
+| --- | --- | --- |
+| 1 | `GET /demos` öffentlich | 200, 3 Demo-Karten gerendert, CSRF-Token in allen Formularen |
+| 2 | `POST /api/demos/invoiceflow` (Beispieltext) | 200, strukturierte Rechnungsdaten (`lieferant`, `rechnungsnummer`, `brutto`, …) in ~1.7 s |
+| 3 | `POST /api/demos/offerai` (Beispieltext) | 200, Angebotsentwurf (`angebotsnummer`, `leistungen`, …) in ~3.0 s |
+| 4 | `POST /api/demos/mailagent` (Beispieltext) | 200, Klassifikation + `antwort_vorschlag` in ~2.2 s |
+| 5 | `POST /api/demos/nope` | 404 `{"message":"Unbekannte Demo.","success":false}` |
+| 6 | `POST /api/demos/invoiceflow` mit „zu kurz“ | 400 (Minimum 20 Zeichen) |
+| 7 | Eingabe > 2000 Zeichen | Server kürzt auf 2000, 200 (Unit-Test `test_demo_proxy_truncates_input_to_2000_chars`) |
+| 8 | n8n-Ausfall (simuliert) | 503 generisch, kein `127.0.0.1`/`5678`/`webhook`/Stacktrace im Response (Unit-Test `test_demo_proxy_upstream_failure_is_generic_no_internal_leak`) |
+| 9 | n8n öffentlich erreichbar? | Nein: `217.160.53.90:5678` und `skalantech.store:5678` refused/timeout; n8n lauscht nur `127.0.0.1:5678`; n8n-UI nur über Tailscale-Caddy `:9443` |
+| 10 | Response-Leaks | Weder `/demos`-HTML noch Demo-JSON enthalten interne URLs, Webhook-Pfade oder Credential-IDs |
+| 11 | Rate-Limit | 429 bestätigt (siehe §3, memory://-Multi-Worker-Messung) |
+| 12 | Testdaten | `leads`, `contact_messages`, `bookings`, `lead_notes` nach E2E: 0 Zeilen (keine Testdatensätze) |
+| 13 | Unit-Suite | 128/128 Tests grün (`python -m unittest discover`) |
+
+Umgebung: Container `skalantech` (gunicorn 4 Worker, `N8N_DEMO_BASE_URL=http://127.0.0.1:5678/webhook` bestätigt in Container-Env), Caddy public → `127.0.0.1:5000`.
 
 ## 9. Rollback
 

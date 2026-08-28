@@ -84,6 +84,43 @@ class ShowcaseTests(unittest.TestCase):
         call.assert_called_once()
         self.assertEqual(call.call_args.args[0], "invoiceflow")
 
+    def test_demo_proxy_truncates_input_to_2000_chars(self):
+        from app.blueprints import automation_showcase as showcase
+        long_input = "Rechnung Muster GmbH über 100,00 EUR netto. " * 150  # ~4000 Zeichen
+        with mock.patch.object(
+            showcase,
+            "_call_internal_demo",
+            return_value={"success": True, "result": {"rechnungsnummer": "RE-2000"}},
+        ) as call:
+            response = self.client.post(
+                "/api/demos/invoiceflow",
+                data={"input": long_input},
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.get_json()["success"])
+        sent_value = call.call_args.args[1]
+        self.assertEqual(len(sent_value), 2000)
+
+    def test_demo_proxy_upstream_failure_is_generic_no_internal_leak(self):
+        """n8n-Ausfall -> 503 mit generischer Meldung, keine URLs/Fehlerdetails nach außen."""
+        from app.blueprints import automation_showcase as showcase
+        with mock.patch.object(
+            showcase,
+            "urlrequest",
+        ) as urlrequest:
+            urlrequest.urlopen.side_effect = OSError("Connection refused to 127.0.0.1:5678 (internal)")
+            response = self.client.post(
+                "/api/demos/invoiceflow",
+                data={"input": "Rechnung RE-1 vom 27.08.2026 über 100 Euro netto."},
+            )
+        self.assertEqual(response.status_code, 503)
+        payload = response.get_json()
+        self.assertFalse(payload["success"])
+        body = response.get_data(as_text=True)
+        for leak in ("127.0.0.1", "5678", "Connection refused", "OSError", "webhook"):
+            self.assertNotIn(leak, body)
+
+
     def test_sitemap_contains_showcase_routes(self):
         xml = self.client.get("/sitemap.xml").get_data(as_text=True)
         self.assertIn("https://skalantech.store/automationen</loc>", xml)
