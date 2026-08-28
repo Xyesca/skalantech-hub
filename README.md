@@ -38,7 +38,7 @@ Conversion-orientierte Website, CRM- und Automationsplattform für Skalantech: P
 | --- | --- |
 | Backend | Python 3.12, Flask, SQLAlchemy |
 | Frontend | Jinja2, semantisches HTML, Vanilla CSS und JavaScript |
-| Datenbank | SQLite, PostgreSQL-Migration geplant |
+| Datenbank | SQLite (produktiv), PostgreSQL vorbereitet (Alembic/Flask-Migrate, Issue #5) |
 | Automation | n8n über interne Loopback-/Tailscale-Verbindung |
 | Mail | IONOS SMTP/IMAP |
 | Auth & Formulare | Werkzeug, Flask-WTF, Flask-Limiter |
@@ -65,7 +65,7 @@ Die Website läuft im produktiven Compose-Setup ausschließlich auf `127.0.0.1:5
 | `ADMIN_PASSWORD` | Starkes Admin-Passwort |
 | `SECRET_KEY` | Persistenter, zufälliger Flask-Session-Key |
 | `SESSION_COOKIE_SECURE` | In Produktion `true` |
-| `DATABASE_URL` | SQLAlchemy-Datenbank-URL |
+| `DATABASE_URL` | SQLAlchemy-Datenbank-URL; leer = SQLite (`instance/app.db`). Für PostgreSQL-Umstellung siehe `docs/POSTGRES_MIGRATION.md` |
 | `CRM_API_KEY` | API-Key für n8n/Hermes |
 | `N8N_WEBHOOK_URL` | Interner Webhook für Terminbuchung |
 | `N8N_LEAD_WEBHOOK_URL` | Interner Webhook für Lead-Erfassung |

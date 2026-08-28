@@ -2,6 +2,7 @@
 import mimetypes
 import os
 import secrets
+from pathlib import Path
 
 from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 from markupsafe import Markup
@@ -9,8 +10,10 @@ from flask_wtf.csrf import CSRFError
 from flask_limiter.errors import RateLimitExceeded
 
 from app.config import config_map
-from app.extensions import db, csrf, limiter
+from app.extensions import db, csrf, limiter, migrate
 from app.utils.security import add_security_headers
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ── MIME types ─────────────────────────────────────────────────────────────
 # Flask/Python's mimetypes may not map .webp on minimal systems — register explicitly.
@@ -50,6 +53,12 @@ def create_app(config_name: str | None = None) -> Flask:
     db.init_app(app)
     csrf.init_app(app)
     limiter.init_app(app)
+    # Alembic-Migrationen (Issue #5): versionierte Schema-Migrationen statt
+    # ad-hoc ALTER TABLE beim Start. Das Migrationsverzeichnis (migrations/)
+    # liegt im Repo und wird mit dem Code deployed. Absoluter Pfad, damit
+    # upgrade()/stamp() unabhängig vom Working-Directory funktionieren
+    # (gunicorn startet in /app, CLI-Tools ggf. woanders).
+    migrate.init_app(app, db, directory=str(BASE_DIR / "migrations"))
 
     # ── Security headers on every response ────────────────────────────────
     app.after_request(add_security_headers)
@@ -138,50 +147,40 @@ def create_app(config_name: str | None = None) -> Flask:
         return {"crm_due_count": due}
 
     # ── Database bootstrap ────────────────────────────────────────────────
-    with app.app_context():
-        _migrate_db()
-        db.create_all()
-        _ensure_admin()
+    # Issue #5: Schema kommt aus versionierten Alembic-Migrationen
+    # (migrations/), NICHT aus ad-hoc ALTER TABLE beim Start. Bestehende
+    # SQLite-Bestände (ohne alembic_version) werden als Baseline übernommen
+    # (stamp head) — ihre Tabellen entsprechen bereits den Modellen
+    # (create_all + die alten ALTER-Statements haben sie synchron gehalten).
+    # SKIP_DB_BOOTSTRAP=1 lässt CLI-Werkzeuge (flask db init/migrate) die App
+    # importieren, ohne die Datenbank anzufassen.
+    if os.environ.get("SKIP_DB_BOOTSTRAP") != "1":
+        with app.app_context():
+            _init_db()
+            _ensure_admin()
 
     return app
 
 
-def _migrate_db() -> None:
-    """Add missing columns to existing SQLite tables (lightweight migration)."""
-    import sqlite3
+def _init_db() -> None:
+    """Flask-Migrate-Bootstrap: frisch → upgrade, verwaltet → upgrade,
+    Alt-Bestand ohne alembic_version → stamp (adopt as baseline)."""
+    from flask_migrate import upgrade, stamp
+    from sqlalchemy import inspect as sa_inspect
 
-    db_path = db.engine.url.database
-    if not db_path or not os.path.isfile(db_path):
-        return  # fresh database — create_all() will handle it
+    inspector = sa_inspect(db.engine)
+    tables = set(inspector.get_table_names())
 
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
-    migrations = [
-        ("admin", "last_login",      "DATETIME"),
-        ("admin", "failed_attempts", "INTEGER DEFAULT 0"),
-        ("admin", "locked_until",    "DATETIME"),
-        ("admin", "created_at",      "DATETIME"),
-        ("admin", "updated_at",      "DATETIME"),
-        ("settings", "updated_at",   "DATETIME"),
-        ("links", "created_at",      "DATETIME"),
-        ("projects", "created_at",   "DATETIME"),
-        ("contact_messages", "source",   "VARCHAR(120) DEFAULT ''"),
-        ("contact_messages", "medium",   "VARCHAR(60) DEFAULT ''"),
-        ("contact_messages", "campaign", "VARCHAR(160) DEFAULT ''"),
-        ("contact_messages", "referrer", "VARCHAR(512) DEFAULT ''"),
-        ("contact_messages", "session_id", "VARCHAR(64) DEFAULT ''"),
-        ("leads", "session_id", "VARCHAR(64) DEFAULT ''"),
-    ]
-
-    for table, column, col_type in migrations:
-        try:
-            cursor.execute(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}")
-        except sqlite3.OperationalError:
-            pass  # column already exists
-
-    conn.commit()
-    conn.close()
+    if not tables:
+        # Frische Datenbank: Baseline-Migration anwenden (erzeugt alles).
+        upgrade()
+        return
+    if "alembic_version" not in tables:
+        # Legacy-SQLite-Bestand: Schema entspricht bereits den Modellen →
+        # als Baseline stempeln, damit künftige Migrationen sauber andocken.
+        stamp()
+        return
+    upgrade()
 
 
 def _ensure_admin() -> None:

@@ -53,5 +53,34 @@ services:
       timeout: 5s
       retries: 3
 
+  # PostgreSQL (Issue #5) — NUR intern vorbereitet, NICHT Teil des
+  # Default-Stacks: SQLite bleibt kurzfristig produktiv. Der Service startet
+  # nur explizit via `docker compose --profile postgres up -d postgres`
+  # (Staging/Preview/Migration). Bindet ausschließlich an 127.0.0.1 — kein
+  # öffentlicher Port, keine Tailscale-Exposition; einziger Client ist der
+  # skalantech-Container (DATABASE_URL, Host-Netzwerk → 127.0.0.1:5432).
+  postgres:
+    image: postgres:16-alpine
+    container_name: skalantech-postgres
+    restart: unless-stopped
+    profiles: ["postgres"]
+    network_mode: host
+    command:
+      - postgres
+      - -c
+      - listen_addresses=127.0.0.1
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-skalantech}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD in .env setzen}
+      - POSTGRES_DB=${POSTGRES_DB:-skalantech}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U ${POSTGRES_USER:-skalantech} -d ${POSTGRES_DB:-skalantech}"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
 volumes:
   redis-data:
+  postgres-data:
