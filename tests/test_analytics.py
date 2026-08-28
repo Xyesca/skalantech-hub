@@ -492,7 +492,7 @@ class AnalyticsEventTests(unittest.TestCase):
         self.assertIn("keine Cookies", html)
 
     def test_rebrand_project_demo_hooks_present(self):
-        """Issue #3 (Studio-Rebrand): Projekt-Karten und Demo-Klicks sind
+        """Issue #3 (Studio-Rebrand) + Customer-First: Demo-Klicks sind
         trackbar — data-track-Hooks in index.html + Client-Selektoren.
         Regression-Guard: ein künftiger Rebrand darf diese Hooks nicht
         stillschweigend entfernen."""
@@ -502,13 +502,18 @@ class AnalyticsEventTests(unittest.TestCase):
         index_html = (repo_root / "app" / "templates" / "index.html").read_text(encoding="utf-8")
         analytics_js = (repo_root / "app" / "static" / "js" / "analytics.js").read_text(encoding="utf-8")
 
-        # Demo-Klicks trackbar (Hero + Demo-Karten + Projekt-Nachweise)
+        # Demo-Klicks trackbar (Hero + Demo-Karten)
         self.assertIn('data-track="demo_clicked" data-track-label="hero"', index_html)
         self.assertIn('data-track="demo_clicked" data-track-label="invoiceflow"', index_html)
         self.assertIn('data-track="demo_clicked" data-track-label="offerai"', index_html)
         self.assertIn('data-track="demo_clicked" data-track-label="mailagent"', index_html)
-        # Projekt-Klick trackbar (DeepDive-Repository im Nachweise-Bereich)
-        self.assertIn('data-track="case_study_click" data-track-label="DeepDive"', index_html)
+        # Customer-First: Projekt-Nachweise verlinken auf die Live-Demos
+        self.assertIn('data-track="demo_clicked" data-track-label="invoiceflow"', index_html)
+        self.assertIn('data-track="demo_clicked" data-track-label="offerai"', index_html)
+        self.assertIn('data-track="demo_clicked" data-track-label="mailagent"', index_html)
+        # case_study_click bleibt in der Event-Allowlist (Landingpages/Projekte),
+        # auch wenn die Homepage selbst keine DeepDive-Case-Study mehr trackt.
+        self.assertIn('"case_study_click"', analytics_js)
         # Neue Projekt-Karten zählen als Case Studies (Viewport)
         self.assertIn('".work-card, .project-card"', analytics_js)
         # Leistungs-Karten (usecase/pain) zählen als service_viewed

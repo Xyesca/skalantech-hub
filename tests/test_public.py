@@ -60,41 +60,63 @@ class PublicSiteTests(unittest.TestCase):
     def test_homepage_contains_conversion_and_seo_content(self):
         html = self.client.get("/").get_data(as_text=True)
         for phrase in (
-            "Arbeit, die heute Zeit frisst,",
-            "wird morgen zum digitalen Prozess.",
-            "Kostenlose Business-Analyse",
-            "Anfrage → Angebot",
-            "Rechnung → strukturierte Daten",
-            "E-Mail → CRM",
-            "Vier Bausteine. Ein digitaler Prozess.",
-            "Gebaut. Nicht nur beschrieben.",
+            "Digitale Prozesse für kleine und mittelständische Unternehmen",
+            "Weniger manuelle Arbeit.",
+            "Mehr Zeit für Kunden, Team und Wachstum.",
+            "Skalantech verbindet bestehende Systeme, automatisiert wiederkehrende Abläufe",
+            "Kostenlosen Potenzial-Check buchen",
+            "Live-Beispiele ansehen",
+            "Bestehende Systeme zuerst sinnvoll weiterverwenden",
+            "Nachvollziehbar umgesetzt und dokumentiert",
+            "Kundenanfragen bleiben liegen",
+            "Digitale Anwendungen für Ihren Ablauf",
+            "Eingangsrechnung → für Buchhaltung vorbereitet",
+            "Kundenanfrage → Angebot zur Prüfung",
+            "E-Mail → Bearbeitung + Antwortvorschlag",
             "InvoiceFlow",
             "OfferAI",
             "MailAgent",
-            "Gebaute Systeme statt Versprechen.",
+            "Nachweise, die man sehen und testen kann.",
+            "Technologie, die Arbeit abnimmt – statt neue Arbeit zu schaffen.",
+            "Xavier Escalante Castellar",
+            "30-minütigen Potenzial-Check",
             "Projektanfrage senden",
             "xyesca@skalantech.store",
             "skalantech-og.jpg",
             "brand/skalantech-mark.svg",
             "about-system",
             'id="services"',
+            'id="branchen"',
             'id="demos"',
             'id="about"',
             'id="contact"',
-            "Live-Automationen statt Konzepte",
-            "selbst gebaute Systeme",
-            "eigene Server und Daten",
+            'id="termin"',
+            "Keine externen Tracker",
         ):
             self.assertIn(phrase, html)
         self.assertNotIn("xyesca1989@googlemail.com", html)
         self.assertNotIn("fonts.googleapis.com", html)
         self.assertNotIn("cdnjs.cloudflare.com", html)
+        # Customer-First: keine alten Tool-/Stack-/Lebenslauf-Blöcke im Funnel
+        for removed in (
+            "Live-Stack",
+            "selbst gehostete Systeme im Mittelpunkt",
+            "100% Self-hosted",
+            "Vier Bausteine. Ein digitaler Prozess.",
+            "Gebaut. Nicht nur beschrieben.",
+        ):
+            self.assertNotIn(removed, html)
 
     def test_navigation_surfaces_automation_and_demos(self):
         html = self.client.get("/").get_data(as_text=True)
         self.assertIn('href="/automationen"', html)
         self.assertIn('href="/demos"', html)
-        self.assertIn("Business-Analyse buchen", html)
+        self.assertIn("Potenzial-Check buchen", html)
+        # Customer-First-Navigation: Lösungen · Branchen · Live-Demos · Projekte · Über uns
+        self.assertIn('href="/#services"', html)
+        self.assertIn('href="/#branchen"', html)
+        self.assertIn('href="/#work"', html)
+        self.assertIn('href="/#about"', html)
 
     def test_brand_assets_are_served(self):
         expected_types = {
