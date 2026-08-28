@@ -47,22 +47,34 @@
       <div class="demo-grid">
         {% for slug, demo in demos.items() %}
         <article class="demo-card" id="{{ slug }}">
-          <span class="demo-card__state">Live-Workflow</span>
-          <h2>{{ demo.name }}</h2>
-          <p class="demo-card__eyebrow">{{ demo.eyebrow }}</p>
-          <p class="demo-card__desc">{{ demo.description }}</p>
+          <header class="demo-card__header">
+            <span class="demo-card__state">Live-Workflow</span>
+            <h2>{{ demo.name }}</h2>
+            <p class="demo-card__eyebrow">{{ demo.eyebrow }}</p>
+            <p class="demo-card__desc">{{ demo.description }}</p>
+          </header>
 
           <form class="demo-form" method="post" action="{{ url_for('showcase.run_demo', slug=slug) }}" data-live-demo>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <label for="demo-input-{{ slug }}">Testeingabe</label>
-            <textarea id="demo-input-{{ slug }}" name="input" maxlength="2000" required placeholder="{{ demo.placeholder }}"></textarea>
-            <div class="demo-samples" aria-label="Beispiele für {{ demo.name }}">
-              {% for sample in demo.samples %}
-              <button class="demo-sample" type="button" data-demo-sample="{{ sample }}">Beispiel {{ loop.index }}</button>
-              {% endfor %}
+            <div class="demo-form__fields">
+              <label for="demo-input-{{ slug }}">Testeingabe</label>
+              <textarea id="demo-input-{{ slug }}" name="input" maxlength="2000" required placeholder="{{ demo.placeholder }}"></textarea>
+              <div class="demo-samples" aria-label="Beispiele für {{ demo.name }}">
+                {% for sample in demo.samples %}
+                <button class="demo-sample" type="button" data-demo-sample="{{ sample }}">Beispiel {{ loop.index }}</button>
+                {% endfor %}
+              </div>
             </div>
-            <button class="button button--accent" type="submit">{{ demo.name }} testen <span aria-hidden="true">↗</span></button>
-            <pre class="demo-result" data-demo-result hidden aria-live="polite"></pre>
+            <div class="demo-form__actions">
+              <button class="button button--accent" type="submit">{{ demo.name }} testen <span aria-hidden="true">↗</span></button>
+            </div>
+            <section class="demo-result" data-demo-result hidden aria-live="polite" aria-label="Ergebnis von {{ demo.name }}">
+              <div class="demo-result__header">
+                <span>Ergebnis</span>
+                <span>Strukturiert</span>
+              </div>
+              <div class="demo-result__output" data-demo-result-output></div>
+            </section>
           </form>
         </article>
         {% endfor %}

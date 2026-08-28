@@ -54,6 +54,9 @@ class ShowcaseTests(unittest.TestCase):
         for slug, name in (("invoiceflow", "InvoiceFlow"), ("offerai", "OfferAI"), ("mailagent", "MailAgent")):
             self.assertIn(name, html)
             self.assertIn(f'/api/demos/{slug}', html)
+        self.assertEqual(html.count('class="demo-card__header"'), 3)
+        self.assertEqual(html.count('data-demo-result-output'), 3)
+        self.assertNotIn('<pre class="demo-result', html)
         self.assertIn("maximal 2.000 Zeichen", html)
         self.assertIn("n8n selbst bleibt intern", html)
 
