@@ -107,6 +107,37 @@ class PublicSiteTests(unittest.TestCase):
         ):
             self.assertNotIn(removed, html)
 
+    def test_customer_first_funnel_cta_guards(self):
+        """C13 (CLOSER Fix-Liste): Verbindliche Kerntexte + Alt-CTA-Regression.
+
+        Homepage-Funnel: „Kostenlosen Potenzial-Check buchen" (Hero) und
+        „30-Minuten-Potenzial-Check" (Booking-Section, inkl. „kostenlos &
+        unverbindlich") sind Pflicht-Copy. Die alten „Business-Analyse"-CTAs
+        („Kostenlose Business-Analyse"/„Business-Analyse buchen") dürfen auf
+        der Homepage nicht zurückkehren.
+
+        Bewusst NICHT hier (folgt in C14, t_a15e6b09-Nachfolger, nach NOVA
+        C1–C11): (1) „Erstgespräch"/„Kostenloses Erstgespräch"-Absence — das
+        ROI-Widget auf der Homepage nutzt dieselben Strings wie seo_pages.py
+        (C8/NOVA, „Kostenloses Erstgespräch" noch live); (2) das versteckte
+        Formularfeld service=\"Business-Analyse\" (C11/NOVA); (3) Negativ-
+        Guards für /demos + /automationen (C1/C4/NOVA).
+        """
+        html = self.client.get("/").get_data(as_text=True)
+        for core in (
+            "Kostenlosen Potenzial-Check buchen",
+            "30-Minuten-Potenzial-Check",
+            "kostenlos &amp; unverbindlich",
+        ):
+            with self.subTest(core=core):
+                self.assertIn(core, html)
+        for old in (
+            "Kostenlose Business-Analyse",
+            "Business-Analyse buchen",
+        ):
+            with self.subTest(old=old):
+                self.assertNotIn(old, html)
+
     def test_navigation_surfaces_automation_and_demos(self):
         html = self.client.get("/").get_data(as_text=True)
         self.assertIn('href="/automationen"', html)
