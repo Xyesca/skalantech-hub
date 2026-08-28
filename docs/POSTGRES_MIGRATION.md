@@ -25,7 +25,8 @@
 | `app/extensions.py` | `migrate = Migrate()` zentral registriert |
 | `app/__init__.py` | `_migrate_db()` + `db.create_all()` **entfernt**; `_init_db()`: frisch → `upgrade()`, Alt-Bestand ohne `alembic_version` → `stamp()`, verwaltet → `upgrade()`; `SKIP_DB_BOOTSTRAP=1` für CLI-Werkzeuge |
 | `app/config.py` | `SQLALCHEMY_DATABASE_URI` unterstützt bereits `DATABASE_URL` (PG-URL) |
-| `docker-compose.yml` | + Service `postgres` (postgres:16-alpine, **nur** `127.0.0.1`, Profil `postgres`, Volume `postgres-data`) |
+| `docker-compose.yml` | unverändert (redis + skalantech) — der Default-Stack bleibt SQLite |
+| `docker-compose.postgres.yml` | NEU: Service `postgres` (postgres:16-alpine, **nur** `127.0.0.1`, Overlay-Datei, Volume `postgres-data`) — nur explizit ladbar |
 | `.env.example` | + `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` |
 | `scripts/migrate_sqlite_to_postgres.py` | Datenmigration SQLite → PG (Schema via `flask db upgrade`, IDs/FKs erhalten, Sequenzen gefixt, Row-Count-Verifikation, Schutz gegen Doppel-Migration) |
 | `scripts/test_pg_migration.sh` | Integrationstest: ephemerer PG-Container, Migration einer **Kopie** der Live-SQLite, App-Smoke, `pg_dump`/`pg_restore`-Restore-Test, UNIQUE-Doppelbuchungs-Test |
@@ -53,10 +54,12 @@ flask db upgrade                      # anwenden
 
 Der Service ist **nicht Teil des Default-Stacks** — `docker compose up -d`
 startet weiterhin nur `redis` + `skalantech` (SQLite bleibt produktiv).
+Er liegt in einer eigenen Overlay-Datei (`docker-compose.postgres.yml`),
+damit die Pflicht-Variable `POSTGRES_PASSWORD` den Normalbetrieb nicht blockt.
 
 ```bash
 # Explizit starten (Staging/Preview/Migration):
-docker compose --profile postgres up -d postgres
+docker compose -f docker-compose.yml -f docker-compose.postgres.yml up -d postgres
 
 # Sicherstellen: lauscht NUR auf 127.0.0.1
 ss -ltnp | grep 5432        # → 127.0.0.1:5432, KEIN 0.0.0.0
@@ -92,7 +95,7 @@ Restore-Test für den PG-Dump ist automatisierbar:
 
 ```bash
 # 1) PG starten
-docker compose --profile postgres up -d postgres
+docker compose -f docker-compose.yml -f docker-compose.postgres.yml up -d postgres
 
 # 2) Schema anlegen (Alembic — KEIN create_all)
 DATABASE_URL="postgresql+psycopg2://skalantech:${POSTGRES_PASSWORD}@127.0.0.1:5432/skalantech" \
@@ -120,7 +123,7 @@ Das Script verweigert den Start, wenn das Ziel bereits Daten enthält
 
 ```bash
 # Lokale Preview mit PostgreSQL (ohne Produktion anzufassen):
-docker compose --profile postgres up -d postgres
+docker compose -f docker-compose.yml -f docker-compose.postgres.yml up -d postgres
 DATABASE_URL="postgresql+psycopg2://skalantech:${POSTGRES_PASSWORD}@127.0.0.1:5432/skalantech" \
   FLASK_ENV=development python run.py
 # → http://127.0.0.1:5000, DB = PostgreSQL
@@ -135,7 +138,7 @@ Restore-Test und räumt danach vollständig auf (kein Bestand wird angefasst).
 - [ ] `backups/` mit SQLite-Kopie + pg_dump vorhanden, Restore-Test grün
 - [ ] SENTINEL-Abnahme: `scripts/test_pg_migration.sh` gegen Staging-PG
 - [ ] `.env` auf VPS: `DATABASE_URL=postgresql+psycopg2://...` gesetzt
-- [ ] `docker compose --profile postgres up -d postgres` (intern verifiziert)
+- [ ] `docker compose -f docker-compose.yml -f docker-compose.postgres.yml up -d postgres` (intern verifiziert)
 - [ ] `flask db upgrade` + `migrate_sqlite_to_postgres.py` ausgeführt,
       Row-Counts protokolliert
 - [ ] Rollback-Pfad schriftlich bestätigt (Abschnitt 4.3)
