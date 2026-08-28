@@ -1,6 +1,7 @@
 """Final E2E verification: booking with service=Business-Analyse fires the
 full server-side funnel chain (lead_created -> demo_completed -> meeting_booked)
-with the Customer-First templates — confirms kompatibel gehalten CTA mapping."""
+with the Customer-First templates — confirms the C15 canonicalization: legacy
+labels are mapped to 'Potenzial-Check' in all funnel events (t_5d32a4a3)."""
 import json
 import sys
 
@@ -20,8 +21,10 @@ with app.app_context():
     html = c.get('/').get_data(as_text=True)
     assert 'class="header-cta"' in html
     assert 'data-track="demo_started" data-track-label="footer"' in html
-    assert 'name="service" value="Business-Analyse"' in html
-    print('PASS homepage hooks')
+    assert 'name="service" value="' in html
+    hidden_service = html.split('name="service" value="', 1)[1].split('"', 1)[0]
+    assert hidden_service in ('Business-Analyse', 'Potenzial-Check'), hidden_service
+    print('PASS homepage hooks (hidden service:', hidden_service, ')')
 
     # 2) Simulate booking POST (exactly what the form sends: service=Business-Analyse)
     resp = c.post('/contact', data={
@@ -52,11 +55,11 @@ with app.app_context():
     assert 'lead_created' in names
     assert 'demo_completed' in names
 
-    # 4) props.service preserved as Business-Analyse (kompatibel)
+    # 4) props.service canonicalized to Potenzial-Check (C15 mapping)
     lead = next(e for e in events if e.event == 'lead_created')
     props = json.loads(lead.props) if isinstance(lead.props, str) else lead.props
     print('lead_created props:', props)
-    assert props.get('service') == 'Business-Analyse'
+    assert props.get('service') == 'Potenzial-Check', props
 
     # cleanup
     for e in events:
