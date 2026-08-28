@@ -18,7 +18,7 @@
           Entscheidend ist nicht der einzelne Bot, sondern dass ein realer Geschäftsprozess zuverlässig schneller wird.
         </p>
         <div class="showcase-actions">
-          <a class="button button--accent" href="{{ url_for('public.index') }}#termin">Kostenlose Business-Analyse <span aria-hidden="true">↗</span></a>
+          <a class="button button--accent" href="{{ url_for('public.index') }}#termin">Kostenlosen Potenzial-Check buchen <span aria-hidden="true">↗</span></a>
           <a class="button button--quiet" href="{{ url_for('showcase.demos') }}">Live-Demos testen <span aria-hidden="true">→</span></a>
         </div>
       </div>
@@ -67,7 +67,7 @@
       <div class="demo-grid">
         {% for slug, demo in demos.items() %}
         <article class="demo-card">
-          <span class="demo-card__state">Live-Workflow</span>
+          <span class="demo-card__state">Live-Beispiel</span>
           <h3>{{ demo.name }}</h3>
           <p class="demo-card__eyebrow">{{ demo.eyebrow }}</p>
           <p class="demo-card__desc">{{ demo.description }}</p>

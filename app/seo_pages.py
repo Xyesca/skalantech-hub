@@ -311,9 +311,9 @@ WEBSITES_APPS_COPY = {
     "h1": "Websites, die verkaufen. Apps, die Prozesse beschleunigen.",
     "lead": "Skalantech baut keine Visitenkarten, sondern digitale Werkzeuge: High-Performance-Websites, die Anfragen bringen, und interne Business-Apps, die wiederkehrende Arbeit übernehmen – tief integriert in Ihre Prozesse.",
     "hero_trust": "Server-gerendert · DSGVO-konform · Kein Vendor-Lock-in",
-    "cta_primary": "Kostenlose Business-Analyse",
+    "cta_primary": "Kostenlosen Potenzial-Check buchen",
     "cta_secondary": "Projekt besprechen",
-    "cta_mid": "Jetzt Business-Analyse buchen",
+    "cta_mid": "Jetzt Potenzial-Check buchen",
     "problem_title": "Eine Website, die nichts bringt, kostet Geld.",
     "problem": [
         "Ihre Website zählt Besucher, aber keine Anfragen.",
@@ -415,9 +415,9 @@ WEBSITES_APPS_COPY = {
         ("Eigentum bleibt bei Ihnen", "Code, Daten und Domains gehören Ihnen. Kein Vendor-Lock-in."),
         ("Ein Ansprechpartner", "Skalantech baut und betreut die Systeme selbst – persönlich erreichbar, keine Blackbox."),
     ],
-    "cta_final_title": "Kostenlose Business-Analyse?",
+    "cta_final_title": "Kostenloser Potenzial-Check?",
     "cta_final_text": "30 Minuten, unverbindlich. Wir schauen uns Ihren Prozess an und sagen ehrlich, ob und wie eine Website oder Business-App Sie voranbringt.",
-    "cta_final": "Kostenlose Business-Analyse",
+    "cta_final": "Kostenlosen Potenzial-Check buchen",
     "tracking": {"hero": "hero_cta_click", "faq": "faq_open", "check": "check_cta_click"},
 }
 

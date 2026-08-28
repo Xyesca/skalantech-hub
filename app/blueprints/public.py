@@ -113,6 +113,7 @@ def _forward_to_n8n(name, email, company, topic, message, preferred_day, preferr
 # Fehlversuche mit — Bots, die Spam posten, verbrauchen ihr Fenster schneller.
 
 _SERVICE_CHOICES = {
+    # Bestehende Werte (Alt-Formulare, Landingpages, CRM-Historie)
     "Infrastruktur & Cloud",
     "Prozessautomatisierung",
     "KI-Agenten & RAG",
@@ -120,6 +121,18 @@ _SERVICE_CHOICES = {
     "System-Check / Beratung",
     "Erstgespräch",
     "Etwas anderes",
+    # Customer-First: neuer CTA-Name "Potenzial-Check" + bewusst kompatibel
+    # gehaltener Alt-Wert "Business-Analyse" (Booking-Hidden-Field, alte
+    # Landingpages) — PULSE wertet lead_created.props.service weiterhin aus.
+    "Potenzial-Check",
+    "Business-Analyse",
+    # Customer-First: neue Contact-Select-Optionen (Proposal 2026-08-28)
+    "Manuellen Prozess vereinfachen",
+    "Kundenanfragen & Angebote",
+    "Rechnungen & Dokumente",
+    "Systeme & Daten verbinden",
+    "Website / Business-Anwendung",
+    "Stabiler IT-Betrieb",
 }
 
 _DEMO_CHOICES = {
@@ -304,7 +317,7 @@ def _render_landing(slug: str, template: str = "landing.html"):
     page["slug"] = slug
     page["url"] = path
     page["canonical_url"] = SITE_URL + path
-    page.setdefault("cta_primary", "Kostenlose Business-Analyse")
+    page.setdefault("cta_primary", "Kostenlosen Potenzial-Check buchen")
     page.setdefault("cta_secondary", "Projekt besprechen")
     page.setdefault("cta_final_title", "Klingt nach Ihrem Thema?")
     page.setdefault("cta_final_text", "30 Minuten, unverbindlich. Wir klären, ob und wie Skalantech Sie unterstützen kann.")
