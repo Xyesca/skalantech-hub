@@ -6,8 +6,6 @@ services:
     container_name: skalantech
     restart: unless-stopped
     network_mode: host  # Zugriff auf Host-localhost (n8n :5678); Caddy (Host) erreicht Container direkt über 127.0.0.1:5000
-    # gunicorn NUR auf localhost binden — kein 0.0.0.0 (kein öffentlicher
-    # Listen-Port, falls UFW je ausfällt). Caddy proxyt von 127.0.0.1:5000.
     command: ["gunicorn", "-w", "4", "-b", "127.0.0.1:5000", "--access-logfile", "-", "run:app"]
     volumes:
       - ./instance:/app/instance
@@ -23,6 +21,7 @@ services:
       - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL:-http://127.0.0.1:5678/webhook/skalantech-termin}
       - N8N_LEAD_WEBHOOK_URL=${N8N_LEAD_WEBHOOK_URL:-http://127.0.0.1:5678/webhook/lead-erfassung}
       - N8N_DEMO_BASE_URL=${N8N_DEMO_BASE_URL:-http://127.0.0.1:5678/webhook}
+      - N8N_AI_CONSULTANT_WEBHOOK_URL=${N8N_AI_CONSULTANT_WEBHOOK_URL:-}
       - BUSINESS_EMAIL=${BUSINESS_EMAIL:-xyesca@skalantech.store}
       - IONOS_SMTP_HOST=${IONOS_SMTP_HOST:-smtp.ionos.de}
       - IONOS_SMTP_PORT=${IONOS_SMTP_PORT:-465}

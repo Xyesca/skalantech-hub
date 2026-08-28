@@ -19,44 +19,42 @@ from app.models import AnalyticsEvent
 
 analytics_bp = Blueprint("analytics", __name__, url_prefix="/analytics")
 
-# ── Event-Taxonomie (PULSE, P0 Conversion Tracking) ────────────────────────
-# Jedes Event hat genau eine Bedeutung; Conversions (lead_created,
-# demo_completed, meeting_booked) werden serverseitig beim Formular-POST
-# geschrieben und sind damit die verlässliche Quelle der Wahrheit.
 ANALYTICS_EVENTS = frozenset({
-    "page_view",          # Seite wurde geladen (Funnel-Nenner für Conversion Rates)
-    "demo_started",       # CTA „Erstgespräch“ geklickt (Header/Hero/Sektion)
-    "demo_completed",     # Termin-Anfrage erfolgreich abgeschickt (Formular ok)
-    "contact_clicked",    # Kontakt-CTA / mailto geklickt
-    "calendar_opened",    # Datumsauswahl (Kalender) im Buchungsformular geöffnet
-    "meeting_booked",     # n8n-Terminwebhook hat die Buchung bestätigt
-    "booking_error",      # n8n down/timeout/invalid_response (Server; props reason unreachable|invalid_response)
-    "booking_confirmed",  # Bestätigungsansicht im Booking-Box sichtbar (Client)
-    "service_viewed",     # Leistungs-Karte im Viewport (einmal pro Session)
-    "case_study_viewed",  # Projekt-/Case-Study-Karte im Viewport (einmal pro Session)
-    "case_study_click",   # Klick auf Projekt-Link (Nachweise/Gebaute Systeme; label = Projektname)
-    "demo_clicked",       # Live-Demo geöffnet (hero | invoiceflow | offerai | mailagent)
-    "roi_calculated",     # ROI-Rechner ausgelöst (UI folgt; API/Event ist bereit)
-    "lead_created",       # Kontaktanfrage erfolgreich gespeichert (Lead in CRM)
-    # Landingpage-Events (LUMINA-Spez, Branchen-Seiten) — data-track-Attribute
-    "hero_cta_click",     # Hero-Primär-CTA auf Landingpages
-    "quickwin_cta_click", # Quick-Win-Karten-CTA (Angebot/Termine)
-    "erechnung_cta_click",# E-Rechnung-CTA (Stufe 3, Dringlichkeit)
-    "faq_open",           # FAQ-Accordion geöffnet
-    "check_cta_click",    # Stufe-0-CTA (5-Minuten-Check) im FAQ-Fuß
-    "form_start",         # Erstes Input im Kontakt-/Buchungsformular
-    "form_submit",        # Formular abgeschickt (Client-Event, serverseitige Conversions bleiben Quelle der Wahrheit)
-    # ROI-Rechner (LUMINA UX-Spez) — reine Dashboard-Signale, nie Lead-Wahrheit
-    "roi_slider_start",   # Erste Slider-Interaktion im ROI-Rechner (1×/Session)
-    "roi_calculated",     # Rechner-Ergebnis als BUCKET (h_lt_150 | h_150_400 | h_gt_400)
-    "roi_cta_click",      # Personalisierter Ergebnis-CTA (Bucket im Label)
-    # Formular-Feedback (DSGVO-konformer Demo-/Booking-Pfad, Client-Events)
-    "form_field_error",   # Feldvalidierung fehlgeschlagen (Client)
-    "form_success_view",  # Erfolgsansicht nach Formular-Abschluss sichtbar (Client)
+    "page_view",
+    "demo_started",
+    "demo_completed",
+    "contact_clicked",
+    "calendar_opened",
+    "meeting_booked",
+    "booking_error",
+    "booking_confirmed",
+    "service_viewed",
+    "case_study_viewed",
+    "case_study_click",
+    "demo_clicked",
+    "roi_calculated",
+    "lead_created",
+    "hero_cta_click",
+    "quickwin_cta_click",
+    "erechnung_cta_click",
+    "faq_open",
+    "check_cta_click",
+    "form_start",
+    "form_submit",
+    "roi_slider_start",
+    "roi_cta_click",
+    "form_field_error",
+    "form_success_view",
+    # AI Consultant: nur Funnel-Metadaten, niemals Nachrichteninhalt speichern.
+    "chat_opened",
+    "chat_message_sent",
+    "chat_reply_received",
+    "chat_action_clicked",
+    "chat_error",
 })
 
-MAX_EVENT_BODY = 8192      # Payload-Limit (Bytes) — verhindert Missbrauch
-MAX_PROPS_CHARS = 2000     # props-JSON-Limit in der DB
+MAX_EVENT_BODY = 8192
+MAX_PROPS_CHARS = 2000
 
 _FIELD_LIMITS = {
     "page": 255,
@@ -77,12 +75,7 @@ def _clean(value, limit):
 
 def _record_event(event, props=None, page=None, session_id=None,
                   source=None, medium=None, campaign=None, referrer=None):
-    """Serverseitig ein Analytics-Event schreiben (z. B. Conversion).
-
-    Wird von app/blueprints/public.py für lead_created / demo_completed /
-    meeting_booked aufgerufen — die Conversions sind an den DB-Write des
-    Formulars gekoppelt und gehen nie verloren (auch ohne JS-Client).
-    """
+    """Serverseitig ein Analytics-Event schreiben."""
     if event not in ANALYTICS_EVENTS:
         return None
 
@@ -109,7 +102,6 @@ def _parse_payload():
         if not isinstance(data, dict):
             return None
         return data
-    # sendBeacon-Fallback / Form-encoded: Felder direkt aus dem Formular lesen
     props_raw = request.form.get("props", "")
     props = {}
     if props_raw:
@@ -132,12 +124,7 @@ def _parse_payload():
 @analytics_bp.route("/event", methods=["POST"])
 @limiter.limit("120 per minute")
 def event():
-    """Anonymes Event entgegennehmen und speichern.
-
-    Erfolg: 204 No Content (sendBeacon-kompatibel). Bei ungültigen Events
-    ebenfalls 204, damit der Client keine Fehlerbehandlung braucht und
-    kein Retry-Loop entsteht — ungültige Daten werden still verworfen.
-    """
+    """Anonymes Event entgegennehmen und speichern."""
     if request.content_length and request.content_length > MAX_EVENT_BODY:
         return jsonify({"success": False, "error": "payload_too_large"}), 413
 
@@ -147,7 +134,6 @@ def event():
 
     event_name = _clean(data.get("event"), 64)
     if event_name not in ANALYTICS_EVENTS:
-        # Unbekannte Events: still verwerfen (kein 4xx — kein Client-Retry)
         return "", 204
 
     props = data.get("props") or {}

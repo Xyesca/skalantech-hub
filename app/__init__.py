@@ -11,12 +11,9 @@ from app.config import config_map
 from app.extensions import db, csrf, limiter
 from app.utils.security import add_security_headers
 
-# ── MIME types ─────────────────────────────────────────────────────────────
-# Flask/Python's mimetypes may not map .webp on minimal systems — register explicitly.
 mimetypes.add_type("image/webp", ".webp")
 mimetypes.add_type("image/avif", ".avif")
 
-# ── Icon SVGs (inline for zero-dependency rendering) ──────────────────────
 ICONS = {
     "github": '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.13-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.78 1.2 1.78 1.2 1.03 1.78 2.71 1.26 3.37.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a10.9 10.9 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .31.21.67.8.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>',
     "tiktok": '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82c-.92-.8-1.5-1.96-1.6-3.27h-3.1v13.6c0 1.67-1.36 3.02-3.03 3.02a3.03 3.03 0 0 1-3.03-3.02 3.03 3.03 0 0 1 3.03-3.03c.3 0 .58.04.85.12V10.1a6.3 6.3 0 0 0-.85-.06A6.18 6.18 0 0 0 3.65 16.2 6.18 6.18 0 0 0 9.87 22.4a6.18 6.18 0 0 0 6.18-6.18V9.1a8.3 8.3 0 0 0 4.85 1.55V7.55a4.9 4.9 0 0 1-4.3-1.73z"/></svg>',
@@ -35,55 +32,42 @@ def create_app(config_name: str | None = None) -> Flask:
     app = Flask(__name__)
     app.config.from_object(config_map.get(config_name, config_map["default"]))
 
-    # Trust the Caddy reverse proxy (X-Forwarded-Proto/For) so Flask treats
-    # requests behind TLS as secure — required for SESSION_COOKIE_SECURE + CSRF.
     from werkzeug.middleware.proxy_fix import ProxyFix
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
-    # Ensure required directories
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
     instance_dir = os.path.join(os.path.dirname(app.root_path), "instance")
     os.makedirs(instance_dir, exist_ok=True)
 
-    # ── Extensions ────────────────────────────────────────────────────────
     db.init_app(app)
     csrf.init_app(app)
     limiter.init_app(app)
-
-    # ── Security headers on every response ────────────────────────────────
     app.after_request(add_security_headers)
 
-    # ── CSRF error handler ────────────────────────────────────────────────
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e: CSRFError):
         flash("Sitzung abgelaufen. Bitte Seite neu laden.", "error")
         return redirect(request.referrer or url_for("public.index")), 400
 
-    # ── 404 error handler (SEO: echte 404s mit Auswegen statt toten Seiten) ─
     @app.errorhandler(404)
     def handle_404(e):
         return render_template("404.html"), 404
 
-    # ── 500 error handler: generische Seite, keine Interna/Stack/Env leaken.
-    # Der Exception-Stacktrace wird von Flask trotzdem geloggt (docker logs)
-    # und ist vom öffentlichen Response entkoppelt. DEBUG ist in Production
-    # aus (config.py) — doppelte Absicherung gegen Debug-Tracebacks.
     @app.errorhandler(500)
     def handle_500(e):
         return render_template("500.html"), 500
 
-    # ── Template globals ──────────────────────────────────────────────────
     @app.template_global()
     def icon_svg(platform: str) -> Markup:
         return Markup(ICONS.get(platform, ICONS["link"]))
 
-    # ── Register blueprints ───────────────────────────────────────────────
     from app.blueprints.public import public_bp
     from app.blueprints.auth import auth_bp
     from app.blueprints.admin import admin_bp
     from app.blueprints.crm_api import crm_api_bp
     from app.blueprints.analytics import analytics_bp
     from app.blueprints.automation_showcase import showcase_bp
+    from app.blueprints.ai_consultant import consultant_bp
 
     app.register_blueprint(public_bp)
     app.register_blueprint(auth_bp)
@@ -91,13 +75,11 @@ def create_app(config_name: str | None = None) -> Flask:
     app.register_blueprint(crm_api_bp)
     app.register_blueprint(analytics_bp)
     app.register_blueprint(showcase_bp)
-    # CRM-API ist maschinell (n8n/Hermes) — Auth via X-API-Key statt CSRF.
+    app.register_blueprint(consultant_bp)
     csrf.exempt(crm_api_bp)
-    # Analytics-Beacon (sendBeacon/fetch ohne Session-Token) — stattdessen
-    # Event-Allowlist, Payload-Limit und Rate-Limit im Blueprint.
     csrf.exempt(analytics_bp)
+    csrf.exempt(consultant_bp)
 
-    # ── Template global: fällige Follow-ups für die Admin-Sidebar ─────────
     @app.context_processor
     def inject_crm_stats():
         from datetime import datetime, timezone
@@ -116,7 +98,6 @@ def create_app(config_name: str | None = None) -> Flask:
                 due = 0
         return {"crm_due_count": due}
 
-    # ── Database bootstrap ────────────────────────────────────────────────
     with app.app_context():
         _migrate_db()
         db.create_all()
@@ -131,7 +112,7 @@ def _migrate_db() -> None:
 
     db_path = db.engine.url.database
     if not db_path or not os.path.isfile(db_path):
-        return  # fresh database — create_all() will handle it
+        return
 
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -157,7 +138,7 @@ def _migrate_db() -> None:
         try:
             cursor.execute(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}")
         except sqlite3.OperationalError:
-            pass  # column already exists
+            pass
 
     conn.commit()
     conn.close()
