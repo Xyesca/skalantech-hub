@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}Live-Demos · Skalantech Automatisierung{% endblock %}
-{% block description %}Testen Sie drei Skalantech-Automationen direkt im Browser: Rechnungsextraktion, Angebotsentwurf und E-Mail-Klassifikation. n8n bleibt intern geschützt.{% endblock %}
+{% block description %}Testen Sie drei typische KMU-Abläufe direkt im Browser: Eingangsrechnungen vorbereiten, Kundenanfragen in einen Angebotsentwurf überführen und eingehende E-Mails richtig zuordnen. Alle Beispiele sind vollständig fiktiv.{% endblock %}
 {% block canonical %}https://skalantech.store/demos{% endblock %}
 {% block og_title %}Skalantech Live-Demos · Automatisierung zum Ausprobieren{% endblock %}
 {% block og_url %}https://skalantech.store/demos{% endblock %}
@@ -11,18 +11,17 @@
   <section class="showcase-hero">
     <div class="shell showcase-hero__grid">
       <div>
-        <p class="showcase-kicker">Live · eigene n8n-Workflows</p>
-        <h1>Keine Folien. <span>Probieren Sie es aus.</span></h1>
+        <p class="showcase-kicker">Live-Demos · echte KMU-Abläufe</p>
+        <h1>Sehen Sie, was im Arbeitsalltag automatisch vorbereitet werden kann.</h1>
         <p class="showcase-hero__lead">
-          Drei kompakte Automationen zeigen, wie unstrukturierte Eingaben in nutzbare Ergebnisse verwandelt werden.
-          Die öffentliche Website spricht dabei nur mit Skalantech – n8n selbst bleibt intern auf dem VPS geschützt.
+          Testen Sie drei typische Abläufe aus kleinen und mittelständischen Unternehmen: Eingangsrechnungen vorbereiten, Kundenanfragen in einen Angebotsentwurf überführen und eingehende E-Mails richtig zuordnen. Alle Beispiele sind vollständig fiktiv.
         </p>
         <div class="showcase-actions">
-          <a class="button button--accent" href="#live-demos">Demos starten <span aria-hidden="true">↓</span></a>
-          <a class="button button--quiet" href="{{ url_for('showcase.automations') }}">Automationsideen ansehen <span aria-hidden="true">→</span></a>
+          <a class="button button--accent" href="#live-demos">Demos ausprobieren <span aria-hidden="true">↓</span></a>
+          <a class="button button--quiet" href="{{ url_for('showcase.automations') }}">Weitere Automationsideen <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <aside class="showcase-proof" aria-label="Demo-Architektur">
+      <aside class="showcase-proof" aria-label="Sicherer Datenweg">
         <p class="showcase-proof__label">Sicherer Datenweg</p>
         <ol class="showcase-flow">
           <li data-step="01">Browser · Eingabe</li>
@@ -38,10 +37,10 @@
     <div class="shell">
       <div class="showcase-heading">
         <div>
-          <p class="section-label">Interaktive Demos</p>
-          <h2>Drei typische Prozesse. Direkt testbar.</h2>
+          <p class="section-label">Interaktive Beispiele</p>
+          <h2>Typische Arbeit aus Handwerk, Praxis, Werkstatt und Büro.</h2>
         </div>
-        <p>Bitte verwenden Sie für die Demo keine vertraulichen, personenbezogenen oder produktiven Geschäftsdaten. Beispieltexte stehen bereit.</p>
+        <p>Wählen Sie ein Branchenbeispiel oder geben Sie einen eigenen fiktiven Testfall ein. Bitte verwenden Sie keine echten Kunden-, Patienten-, Mitarbeiter- oder Geschäftsdaten.</p>
       </div>
 
       <div class="demo-grid">
@@ -57,23 +56,27 @@
           <form class="demo-form" method="post" action="{{ url_for('showcase.run_demo', slug=slug) }}" data-live-demo>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="demo-form__fields">
-              <label for="demo-input-{{ slug }}">Testeingabe</label>
+              <label for="demo-input-{{ slug }}">{{ demo.input_label }}</label>
               <textarea id="demo-input-{{ slug }}" name="input" maxlength="2000" required placeholder="{{ demo.placeholder }}"></textarea>
               <div class="demo-samples" aria-label="Beispiele für {{ demo.name }}">
                 {% for sample in demo.samples %}
-                <button class="demo-sample" type="button" data-demo-sample="{{ sample }}">Beispiel {{ loop.index }}</button>
+                <button class="demo-sample" type="button" data-demo-sample="{{ sample.text }}">{{ sample.label }}</button>
                 {% endfor %}
               </div>
+              <p class="demo-samples__note">Fiktive Beispieldaten – bitte keine echten personenbezogenen oder vertraulichen Daten verwenden.</p>
             </div>
             <div class="demo-form__actions">
               <button class="button button--accent" type="submit">{{ demo.name }} testen <span aria-hidden="true">↗</span></button>
             </div>
             <section class="demo-result" data-demo-result hidden aria-live="polite" aria-label="Ergebnis von {{ demo.name }}">
               <div class="demo-result__header">
-                <span>Ergebnis</span>
-                <span>Strukturiert</span>
+                <span>{{ demo.result_status }}</span>
               </div>
               <div class="demo-result__output" data-demo-result-output></div>
+              <div class="demo-result__after">
+                <h3>Was passiert danach?</h3>
+                <p>{{ demo.after_text }}</p>
+              </div>
             </section>
           </form>
         </article>
@@ -81,7 +84,7 @@
       </div>
 
       <p class="demo-note">
-        Die Demos sind bewusst begrenzt: maximal 2.000 Zeichen pro Eingabe und acht Aufrufe pro Stunde und IP. Das schützt die interne Infrastruktur und verhindert unnötige KI-Kosten.
+        Die Demos sind bewusst begrenzt: maximal 2.000 Zeichen pro Eingabe und acht Aufrufe pro Stunde und Besucher. Das schützt die interne Infrastruktur und verhindert unnötige KI-Kosten.
       </p>
     </div>
   </section>

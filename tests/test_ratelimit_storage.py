@@ -124,9 +124,22 @@ class RateLimitCrossWorkerTests(unittest.TestCase):
         from app.blueprints import automation_showcase as showcase
 
         cls._orig_call = showcase._call_internal_demo
-        showcase._call_internal_demo = lambda slug, value: {
+        stub = lambda slug, value: {  # noqa: E731
             "success": True, "result": {"ok": True},
         }
+        showcase._call_internal_demo = stub
+        # app_a wurde vor dem letzten Modul-Import erzeugt und sieht den
+        # Modul-Mock nicht (eigene __globals__-Instanz). Ohne diesen Stub
+        # würde app_a in CI (ohne n8n) echte 503-Aufrufe machen — lokal nur
+        # deshalb grün, weil n8n dort erreichbar ist. Der View ist vom
+        # Rate-Limiter gewrappt → bis zur echten Funktion entpacken.
+        for _app in (cls.app_a, cls.app_b):
+            vf = _app.view_functions.get("showcase.run_demo")
+            target = vf
+            while target is not None and hasattr(target, "__wrapped__"):
+                target = target.__wrapped__
+            if target is not None:
+                target.__globals__["_call_internal_demo"] = stub
 
     @classmethod
     def tearDownClass(cls):

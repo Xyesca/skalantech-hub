@@ -5,41 +5,67 @@
   if (!forms.length) return;
 
   const LABELS = {
+    anfrage_typ: 'Anfragetyp',
+    angebotsentwurf: 'Angebotsentwurf',
+    angefragte_leistungen: 'Angefragte Leistungen',
     anmerkungen: 'Anmerkungen',
     angebot: 'Angebot',
     angebotsnummer: 'Angebotsnummer',
     ansprechpartner: 'Ansprechpartner',
     antwort_vorschlag: 'Antwortvorschlag',
+    bekannte_angaben: 'Bekannte Angaben',
     bic: 'BIC',
     brutto: 'Bruttobetrag',
     data: 'Ergebnisdaten',
     datum: 'Datum',
     dringend: 'Dringend',
+    dringlichkeit: 'Dringlichkeit',
     email: 'E-Mail',
     einzelpreis: 'Einzelpreis',
+    empfaenger: 'Empfänger',
+    empfohlene_bearbeitung: 'Empfohlene Bearbeitung',
+    eskalation: 'Eskalation',
     faelligkeitsdatum: 'Fälligkeitsdatum',
     firma: 'Firma',
     gesamt: 'Gesamtbetrag',
     gueltigkeit_tage: 'Gültigkeit',
+    human_review_required: 'Menschliche Prüfung erforderlich',
     iban: 'IBAN',
+    kategorie: 'Kategorie',
     klassifikation: 'Klassifikation',
     kunde: 'Kunde',
+    kunde_kontext: 'Kundenkontext',
+    kurzfassung: 'Kurzfassung',
     leistungen: 'Leistungen',
     lieferant: 'Lieferant',
+    medizinischer_inhalt: 'Medizinischer Inhalt',
+    muss_kalkuliert_werden: 'Kalkulation erforderlich',
     mwst: 'Umsatzsteuer',
+    mwst_betrag: 'Umsatzsteuer',
+    mwst_satz: 'Umsatzsteuersatz',
     name: 'Name',
     naechster_schritt: 'Nächster Schritt',
     netto: 'Nettobetrag',
+    offene_fragen: 'Offene Fragen',
+    offene_informationen: 'Offene Informationen',
     ort: 'Ort',
     positionen: 'Positionen',
     plz: 'PLZ',
+    pruefhinweis: 'Prüfhinweis',
     rechnungsdatum: 'Rechnungsdatum',
     rechnungsnummer: 'Rechnungsnummer',
+    referenz: 'Referenz',
     strasse: 'Straße',
     umsatzsteuer: 'Umsatzsteuer',
-    vertrauen: 'Konfidenz',
+    ust_id: 'USt-IdNr.',
+    waehrung: 'Währung',
     zahlungsziel: 'Zahlungsziel',
+    zahlungsziel_tage: 'Zahlungsziel',
   };
+
+  // Spec E7: Konfidenz nur anzeigen, wenn fachlich sinnvoll kalibriert.
+  // Die Demo-Workflows liefern keine belastbare Selbstbewertung → weglassen.
+  const SKIP_KEYS = new Set(['konfidenz', 'vertrauen']);
 
   const CURRENCY_KEYS = new Set(['brutto', 'einzelpreis', 'gesamt', 'netto', 'preis', 'summe', 'umsatzsteuer', 'mwst']);
 
@@ -58,6 +84,7 @@
         return new Intl.NumberFormat('de-DE', { style: 'percent', maximumFractionDigits: 0 }).format(value);
       }
       if (key === 'gueltigkeit_tage') return `${value} Tage`;
+      if (key === 'zahlungsziel_tage') return `${value} Tage`;
       if (CURRENCY_KEYS.has(key)) {
         return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(value);
       }
@@ -78,6 +105,7 @@
   const renderFields = (entries) => {
     const grid = makeElement('div', 'demo-result__fields');
     entries.forEach(([key, value]) => {
+      if (SKIP_KEYS.has(key)) return;
       const formatted = formatValue(value, key);
       const isWide = formatted.length > 70 || formatted.includes('\n');
       const field = makeElement('div', `demo-result__field${isWide ? ' demo-result__field--wide' : ''}`);
