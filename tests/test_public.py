@@ -116,12 +116,10 @@ class PublicSiteTests(unittest.TestCase):
         („Kostenlose Business-Analyse"/„Business-Analyse buchen") dürfen auf
         der Homepage nicht zurückkehren.
 
-        Bewusst NICHT hier (folgt in C14, t_a15e6b09-Nachfolger, nach NOVA
-        C1–C11): (1) „Erstgespräch"/„Kostenloses Erstgespräch"-Absence — das
-        ROI-Widget auf der Homepage nutzt dieselben Strings wie seo_pages.py
-        (C8/NOVA, „Kostenloses Erstgespräch" noch live); (2) das versteckte
-        Formularfeld service=\"Business-Analyse\" (C11/NOVA); (3) Negativ-
-        Guards für /demos + /automationen (C1/C4/NOVA).
+        Bewusst NICHT hier: (1) „Erstgespräch"/„Kostenloses Erstgespräch"-
+        Absence — folgt in C14 (test_customer_first_funnel_cta_guards_all_pages);
+        (2) Negativ-Guards für /demos + /automationen + /koeln + Landingpages
+        (C1/C4/C6/C7/NOVA) — folgt in C14.
         """
         html = self.client.get("/").get_data(as_text=True)
         for core in (
@@ -137,6 +135,40 @@ class PublicSiteTests(unittest.TestCase):
         ):
             with self.subTest(old=old):
                 self.assertNotIn(old, html)
+
+    def test_customer_first_funnel_cta_guards_all_pages(self):
+        """C14 (CLOSER Fix-Liste, nach NOVA C1–C11): Funnel-weite CTA-Sprache.
+
+        /demos, /automationen, /koeln und alle SEO-Landingpages
+        (seo_pages.py) tragen den kanonischen CTA „Kostenlosen Potenzial-Check
+        buchen". Alt-CTA-Phrasen („Kostenlose Business-Analyse",
+        „Business-Analyse buchen", „Kostenloses Erstgespräch") und das Wort
+        „Erstgespräch" dürfen im Funnel nicht zurückkehren. Das ROI-Widget
+        (seo_pages.py-Strings, C8/NOVA) erscheint AUCH auf der Homepage —
+        deshalb gilt der Erstgespräch-Guard hier für alle Funnel-Seiten.
+
+        Bewusst CTA-Phrasen statt rohem Substring „Business-Analyse": das
+        versteckte service-Feld (C11/NOVA, SERVICE_LABEL_MAP) und die
+        Server-Allowlist enthalten „Business-Analyse" weiterhin als Alt-Wert
+        für CRM/n8n-Kompatibilität — das ist kein Copy-Regress (PULSE C15).
+        """
+        pages = (
+            "/", "/demos", "/automationen", "/koeln",
+            "/ki-agenten", "/n8n-automatisierung", "/websites-apps",
+            "/it-infrastruktur", "/ki-integration", "/ki-automatisierung",
+            "/lokale-ki",
+        )
+        for path in pages:
+            with self.subTest(path=path):
+                html = self.client.get(path, buffered=True).get_data(as_text=True)
+                self.assertIn("Kostenlosen Potenzial-Check buchen", html)
+                for old in (
+                    "Kostenlose Business-Analyse",
+                    "Business-Analyse buchen",
+                    "Kostenloses Erstgespräch",
+                    "Erstgespräch",
+                ):
+                    self.assertNotIn(old, html)
 
     def test_navigation_surfaces_automation_and_demos(self):
         html = self.client.get("/").get_data(as_text=True)

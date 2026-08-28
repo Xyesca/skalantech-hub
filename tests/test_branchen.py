@@ -220,6 +220,35 @@ class BranchenLandingTests(unittest.TestCase):
         for service in ("/ki-agenten", "/n8n-automatisierung", "/lokale-ki"):
             self.assertIn(service, html)
 
+    def test_branch_cta_customer_first_language(self):
+        """C14 (CLOSER C9): Branchen-CTAs in Endkundensprache.
+
+        Kfz trägt den kanonischen Funnel-CTA exakt („Kostenlosen
+        Potenzial-Check buchen", CLOSER-Wortlaut). Die übrigen Branchen haben
+        bewusst eigene, branchenspezifische CTA-Varianten („Demo mit
+        Branchendaten", „Compliance-Check vereinbaren", „Integrations-Check
+        vereinbaren") — aber KEINE Alt-CTA-Phrasen („Kostenlose
+        Business-Analyse", „Business-Analyse buchen", „Kostenloses
+        Erstgespräch") und kein „Erstgespräch" als CTA-Kontext.
+        """
+        branch_ctas = {
+            "handwerk": "Demo mit Branchendaten",
+            "kfz": "Kostenlosen Potenzial-Check buchen",
+            "kanzleien": "Compliance-Check vereinbaren",
+            "immobilien": "Integrations-Check vereinbaren",
+        }
+        for slug in BRANCHES:
+            with self.subTest(slug=slug):
+                html = self._get(f"/branchen/{slug}").get_data(as_text=True)
+                self.assertIn(branch_ctas[slug], html)
+                for old in (
+                    "Kostenlose Business-Analyse",
+                    "Business-Analyse buchen",
+                    "Kostenloses Erstgespräch",
+                    "Erstgespräch",
+                ):
+                    self.assertNotIn(old, html)
+
     # ── Trust / ROI / Autor (DoD Trust Architecture) ───────────────────
 
     def test_branch_roi_and_trust_and_author(self):
