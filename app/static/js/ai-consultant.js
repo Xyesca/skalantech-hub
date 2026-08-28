@@ -145,5 +145,11 @@
       input.value = "";
       submitMessage(text);
     });
+
+    setSuggestions([
+      "Rechnungen automatisch verarbeiten",
+      "E-Mails ins CRM übertragen",
+      "Angebote vorbereiten"
+    ], null);
   });
 })();
