@@ -46,8 +46,9 @@ class CrmTests(unittest.TestCase):
         # Test-Isolation: Leads + Notizen + Analytics-Events + Nachrichten vor
         # jedem Test leeren, damit sich Tests nicht gegenseitig beeinflussen.
         with self.app.app_context():
-            from app.models import AnalyticsEvent, ContactMessage, Lead, LeadNote
+            from app.models import AnalyticsEvent, Booking, ContactMessage, Lead, LeadNote
 
+            Booking.query.delete()
             LeadNote.query.delete()
             Lead.query.delete()
             AnalyticsEvent.query.delete()
@@ -270,6 +271,76 @@ class CrmTests(unittest.TestCase):
             err = AnalyticsEvent.query.filter_by(event="booking_error").first()
             self.assertIsNotNone(err)
             self.assertEqual(json.loads(err.props), {"reason": "unreachable"})
+
+    # ══════════════════════════════════════════════════════════════════
+    # Booking-Reservierung (atomar, Google-frei)
+    # ══════════════════════════════════════════════════════════════════
+
+    def _reserve(self, start="2026-10-01T09:00:00Z", email="buchung@test.de", **extra):
+        payload = {
+            "start_at_utc": start,
+            "end_at_utc": "2026-10-01T09:30:00Z",
+            "name": "Bernd Buchung",
+            "email": email,
+            "company": "Buchung GmbH",
+            "topic": "Erstgespräch",
+            **extra,
+        }
+        return self.client.post(
+            "/api/crm/bookings/reserve", json=payload, headers=self._api_headers()
+        )
+
+    def test_booking_reserve_creates_confirmed(self):
+        r = self._reserve()
+        self.assertEqual(r.status_code, 201)
+        data = r.get_json()
+        self.assertTrue(data["booked"])
+        self.assertTrue(data["booking_id"])
+        with self.app.app_context():
+            from app.models import Booking
+            self.assertEqual(Booking.query.count(), 1)
+            b = Booking.query.first()
+            self.assertEqual(b.status, "confirmed")
+            self.assertEqual(b.timezone, "Europe/Berlin")
+
+    def test_booking_duplicate_slot_rejected(self):
+        first = self._reserve()
+        self.assertEqual(first.status_code, 201)
+        second = self._reserve(email="zweiter@test.de")
+        self.assertEqual(second.status_code, 409)
+        body = second.get_json()
+        self.assertFalse(body["booked"])
+        self.assertIn("bereits belegt", body["message"])
+        with self.app.app_context():
+            from app.models import Booking
+            self.assertEqual(Booking.query.count(), 1)  # nur eine Buchung
+
+    def test_booking_parallel_duplicate_only_one_wins(self):
+        """Parallele Doppelbuchung: genau EINE Buchung darf gewinnen."""
+        from concurrent.futures import ThreadPoolExecutor
+        with self.app.app_context():
+            from app.models import Booking
+
+            def reserve(i):
+                return self._reserve(email=f"para{i}@test.de").status_code
+
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                results = list(pool.map(reserve, range(2)))
+            self.assertEqual(sorted(results), [201, 409])
+            self.assertEqual(Booking.query.count(), 1)
+
+    def test_booking_requires_fields(self):
+        r = self._reserve(start="", email="")
+        self.assertEqual(r.status_code, 400)
+
+    def test_booking_list_and_delete(self):
+        bid = self._reserve().get_json()["booking_id"]
+        r = self.client.get("/api/crm/bookings", headers=self._api_headers())
+        self.assertEqual(r.get_json()["count"], 1)
+        r = self.client.delete(f"/api/crm/bookings/{bid}", headers=self._api_headers())
+        self.assertEqual(r.status_code, 200)
+        r = self.client.get("/api/crm/bookings", headers=self._api_headers())
+        self.assertEqual(r.get_json()["count"], 0)
 
     # ══════════════════════════════════════════════════════════════════
     # Admin-UI

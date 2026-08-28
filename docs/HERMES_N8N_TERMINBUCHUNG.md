@@ -8,32 +8,31 @@ Die bestehende Terminbuchung auf `skalantech.store` soll produktiv über den ber
 
 Die vollständige überarbeitete Workflow-Datei liegt im Repository unter:
 
-`docs/n8n-workflow-terminbuchung-v2.json`
+`docs/n8n/workflow-terminbuchung-v2-IONOS.json` (Google-frei, IONOS SMTP — Stand 08/2026)
 
 Bestehender produktiver Workflow:
 
 - Workflow-ID: `50fo5b3SqQjmEVrX`
 - Webhook-Pfad: `skalantech-termin`
 - Zeitzone: `Europe/Berlin`
-- Google Calendar Credential: `GDSnPRh9olMLb8hC`
-- Kalender: `xyescaescalante@gmail.com`
-- Gmail Credential: `a06hhqHnYwuiVbBU`
-- Lokales KI-Modell: `lfm25`
+- **Mail-Transport: IONOS SMTP** (`IONOS Skalantech Mail` Credential, smtp.ionos.de:465 SSL, Absender `xyesca@skalantech.store`)
+- **Booking-Store: Website-DB** (`POST http://127.0.0.1:5000/api/crm/bookings/reserve`, atomar via UNIQUE-Constraint)
+- Lokales KI-Modell: `lfm25` (Backup); DeepSeek primär
 
-## Was v2 verbessert
+## Was v2 (IONOS) verbessert / geändert
 
 1. Saubere Europe/Berlin-Zeitberechnung inklusive Sommer-/Winterzeit.
 2. Nur Montag bis Freitag.
 3. Nur die auf der Website angebotenen 30-Minuten-Slots.
 4. Maximal 90 Tage im Voraus.
-5. Google-Calendar-Availability verwendet `timeMin` / `timeMax`.
-6. Google-Calendar-Event erzeugt einen Google-Meet-Link.
-7. Kunde wird als Attendee hinzugefügt; Google sendet die Kalendereinladung (`sendUpdates=all`).
-8. Der HTTP-Erfolg an das Website-Formular wird nach erfolgreicher Kalenderbuchung nicht mehr von Ollama/Gmail blockiert.
-9. Ollama erzeugt nur einen kurzen persönlichen Absatz; Datum, Uhrzeit, Meet-Link und Signatur sind deterministisch.
+5. **Google Calendar komplett entfernt.** Slot-Prüfung + Buchung laufen jetzt über den atomaren Reserve-Endpoint der Website (UNIQUE-Constraint auf `start_at_utc`; parallele Doppelbuchung → genau eine gewinnt).
+6. **Gmail komplett entfernt.** Alle 4 Mail-Nodes nutzen Send Email / IONOS SMTP; Absender + Reply-To = `xyesca@skalantech.store`.
+7. Kunde bekommt eine **RFC-5545-ICS-Einladung** als Anhang (Code-Node `ICS erzeugen`, binary property `data`).
+8. Der HTTP-Erfolg an das Website-Formular wird nach erfolgreicher Slot-Reservierung nicht mehr von KI/Mail blockiert.
+9. KI erzeugt nur einen kurzen persönlichen Absatz; Datum, Uhrzeit und Signatur sind deterministisch.
 10. Prompt-Injection-Schutz: Kundentext wird als unvertrauenswürdige Eingabe behandelt.
 11. KI-Ausfall führt zu einem festen Fallback-Text statt zu einer fehlgeschlagenen Buchung.
-12. Gmail-Fehler dürfen eine bereits erfolgreiche Kalenderbuchung nicht zurückrollen.
+12. SMTP-/Mail-Fehler dürfen eine bereits bestätigte Buchung nicht zurückrollen (Buchung ist committed, bevor Mails rausgehen).
 
 ## Infrastruktur
 
@@ -48,14 +47,14 @@ Falls Ollama aktuell nur über seine Docker-IP erreichbar ist, die Docker-IP nur
 
 ## Hermes – Implementierungsauftrag
 
-1. Vor jeder Änderung den bestehenden n8n-Workflow `50fo5b3SqQjmEVrX` sichern/exportieren.
-2. `docs/n8n-workflow-terminbuchung-v2.json` prüfen und in den bestehenden Workflow übernehmen. Keinen zweiten aktiven Produktionsworkflow mit demselben Webhook-Pfad anlegen.
-3. Bestehende Google-Calendar-Credentials unverändert weiterverwenden.
-4. Prüfen, dass `Verfügbarkeit prüfen` exakt `timeMin={{$json.startIso}}` und `timeMax={{$json.endIso}}` verwendet.
-5. Prüfen, dass `Event anlegen` 30 Minuten bucht, den Kunden als Attendee setzt, Google Meet erzeugt und `sendUpdates=all` nutzt.
+1. Vor jeder Änderung den bestehenden n8n-Workflow `50fo5b3SqQjmEVrX` sichern/exportieren (Rollback: `docs/n8n/workflow-terminbuchung-v2-pre-IONOS-backup.json`).
+2. `docs/n8n/workflow-terminbuchung-v2-IONOS.json` prüfen und in den bestehenden Workflow übernehmen. Keinen zweiten aktiven Produktionsworkflow mit demselben Webhook-Pfad anlegen.
+3. IONOS-SMTP-Credential (`IONOS Skalantech Mail`) verwenden; kein Gmail/Google mehr.
+4. Prüfen, dass `Slot reservieren` exakt `POST http://127.0.0.1:5000/api/crm/bookings/reserve` mit X-API-Key (Credential `Skalantech CRM API`) aufruft.
+5. Prüfen, dass die Kundenmail den ICS-Anhang (binary property `data`) enthält und Reply-To `xyesca@skalantech.store` ist.
 6. Ollama-Verbindung bevorzugt auf `http://127.0.0.1:11434/api/chat` bereitstellen. Modell `lfm25` verwenden.
-7. Das Gmail-Credential ist möglicherweise abgelaufen. Nicht versuchen, OAuth-Tokens manuell zu manipulieren. Xavier verbindet es bei Bedarf in der n8n-Oberfläche neu.
-8. Kalenderbuchung muss unabhängig von Gmail/Ollama funktionieren.
+7. Booking-Endpoint der Website ist Source of Truth; Buchung wird VOR dem Mailversand committed.
+8. Buchung muss unabhängig von KI/Mail funktionieren.
 9. Workflow nach API-/DB-Änderungen deaktivieren und wieder aktivieren, damit n8n die aktive Version neu lädt.
 10. `docker restart apps-n8n-1` nicht verwenden.
 11. Website nicht auf einen öffentlichen n8n-Webhook umstellen; internen Loopback-Aufruf beibehalten.

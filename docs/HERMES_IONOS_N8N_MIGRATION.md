@@ -2,6 +2,20 @@
 
 Stand: 2026-08-28
 
+## Status: UMGESETZT (E2E grün)
+
+- IONOS SMTP-Credential in n8n: `IONOS Skalantech Mail` (smtp.ionos.de:465 SSL, user xyesca@skalantech.store) — angelegt via API, Passwort aus `/root/.hermes/secrets/ionos_smtp.env`
+- Gmail-Sende-Nodes ersetzt durch **Send Email / IONOS SMTP** (4 Nodes: Kundenbestätigung + 3 interne Benachrichtigungen)
+- Google Calendar **komplett entfernt**: `Verfügbarkeit prüfen` + `Event anlegen` raus
+- Slot-Speicherung: **Website-DB (SQLite) als Booking Source of Truth** — Model `Booking` mit UNIQUE-Constraint auf `start_at_utc`, atomarer Endpoint `POST /api/crm/bookings/reserve` (INSERT ... IntegrityError → 409), SQLite WAL + busy_timeout. n8n ruft ihn intern auf (localhost:5000). Kein neuer Container/Postgres nötig.
+- ICS (RFC 5545) wird per Code-Node erzeugt und als Anhang über IONOS SMTP mitgesendet
+- Absender/Reply-To überall `xyesca@skalantech.store`; kein Gmail/Google-Node mehr im aktiven Workflow `50fo5b3SqQjmEVrX`
+- Website: Lead wird vor n8n-Call committet (Lead-Verlust bei n8n/SMTP-Ausfall ausgeschlossen); `_send_email()` nutzt bereits IONOS-Env
+- E2E (9/9): freier Slot, Doppelbuchung, parallele Doppelbuchung (nur 1 gewinnt), Wochenende, ungültige Uhrzeit, Vergangenheit, >90 Tage, DST Europe/Berlin, SMTP-down → Buchung bleibt gespeichert
+- Workflow-Export (portabel, ohne Secrets): `docs/n8n/workflow-terminbuchung-v2-IONOS.json`
+- Rollback-Punkt: `docs/n8n/workflow-terminbuchung-v2-pre-IONOS-backup.json` (Stand vor Migration)
+- Alte Credentials (Gmail `a06hhqHnYwuiVbBU`, Kalender-Terminbuchung `GDSnPRh9olMLb8hC`) werden NICHT gelöscht (Skill-Regel: nur mit expliziter Freigabe) — können nach CEO-Freigabe entfernt werden. Der aktive Workflow `Google Kalender Assistent` nutzt ein eigenes Credential (`HtlDWDVotsN04Zg8`) und bleibt unberührt.
+
 ## Zielzustand
 
 Für die öffentliche Skalantech-Kommunikation ausschließlich verwenden:
