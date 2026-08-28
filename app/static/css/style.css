@@ -111,6 +111,11 @@ h4 {
   font-weight: 650;
   letter-spacing: -0.045em;
   line-height: 1.04;
+  /* LUMINA: lange zusammengesetzte Wörter (deutsche Komposita) dürfen auf
+     schmalen Viewports nie horizontal überlaufen; 'anywhere' reduziert auch
+     die min-content-Größe (anders als 'break-word') -> Grid-Spalten mit
+     '1fr' laufen nicht über */
+  overflow-wrap: anywhere;
 }
 
 p:last-child {
@@ -372,6 +377,9 @@ p:last-child {
 .contact-copy h2 {
   margin-bottom: 0;
   font-size: clamp(2.35rem, 4.5vw, 4.4rem);
+  /* LUMINA: lange Wörter (z. B. „Automatisierungs-Kompetenz“) dürfen auf
+     Mobile nicht die Grid-Spalte sprengen -> horizontaler Overflow vermeiden */
+  overflow-wrap: anywhere;
 }
 
 .section-heading > p {
