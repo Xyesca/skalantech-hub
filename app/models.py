@@ -244,6 +244,54 @@ class LeadNote(db.Model):
 
 
 # ══════════════════════════════════════════════════════════════════════════
+# Terminbuchung — Booking Source of Truth (Google-frei, concurrency-sicher)
+# ══════════════════════════════════════════════════════════════════════════
+
+
+class Booking(db.Model):
+    """Ein bestätigter Termin-Slot.
+
+    Concurrency-Sicherheit: ``start_at_utc`` hat einen UNIQUE-Index. Die
+    atomare Reservierung passiert per ``INSERT ... ON CONFLICT DO NOTHING``
+    (siehe crm_api.reserve_booking) — kein SELECT-then-INSERT, kein Race.
+    Ein Slot kann dadurch nur einmal als ``confirmed`` existieren.
+    """
+
+    __tablename__ = "bookings"
+    __table_args__ = (
+        db.UniqueConstraint("start_at_utc", name="uq_bookings_start_at_utc"),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    booking_id = db.Column(db.String(64), unique=True, nullable=False, index=True)
+    start_at_utc = db.Column(db.DateTime, nullable=False)
+    end_at_utc = db.Column(db.DateTime, nullable=False)
+    timezone = db.Column(db.String(40), default="Europe/Berlin")
+    name = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(254), nullable=False, index=True)
+    company = db.Column(db.String(160), default="")
+    topic = db.Column(db.String(120), default="Erstgespräch")
+    status = db.Column(db.String(24), default="confirmed", nullable=False, index=True)
+    lead_id = db.Column(db.Integer, db.ForeignKey("leads.id"))
+    created_at = db.Column(db.DateTime, default=_utcnow, index=True)
+
+    def to_dict(self) -> dict:
+        return {
+            "booking_id": self.booking_id,
+            "start_at_utc": self.start_at_utc.isoformat() if self.start_at_utc else None,
+            "end_at_utc": self.end_at_utc.isoformat() if self.end_at_utc else None,
+            "timezone": self.timezone,
+            "name": self.name,
+            "email": self.email,
+            "company": self.company,
+            "topic": self.topic,
+            "status": self.status,
+            "lead_id": self.lead_id,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+# ══════════════════════════════════════════════════════════════════════════
 # Analytics — First-Party Conversion-Tracking (cookie-less, kein externer Dienst)
 # ══════════════════════════════════════════════════════════════════════════
 

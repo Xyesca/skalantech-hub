@@ -111,6 +111,11 @@ h4 {
   font-weight: 650;
   letter-spacing: -0.045em;
   line-height: 1.04;
+  /* LUMINA: lange zusammengesetzte Wörter (deutsche Komposita) dürfen auf
+     schmalen Viewports nie horizontal überlaufen; 'anywhere' reduziert auch
+     die min-content-Größe (anders als 'break-word') -> Grid-Spalten mit
+     '1fr' laufen nicht über */
+  overflow-wrap: anywhere;
 }
 
 p:last-child {
@@ -372,6 +377,9 @@ p:last-child {
 .contact-copy h2 {
   margin-bottom: 0;
   font-size: clamp(2.35rem, 4.5vw, 4.4rem);
+  /* LUMINA: lange Wörter (z. B. „Automatisierungs-Kompetenz“) dürfen auf
+     Mobile nicht die Grid-Spalte sprengen -> horizontaler Overflow vermeiden */
+  overflow-wrap: anywhere;
 }
 
 .section-heading > p {
@@ -552,32 +560,100 @@ p:last-child {
 }
 
 .hero__portrait {
-  margin: 0;
-  width: min(100%, 460px);
-  justify-self: end;
-  line-height: 0;
+  display: none;
 }
 
-.hero__portrait img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 24px;
-  /* weicher Übergang zum hellen Hero-Hintergrund: unterer + seitlicher Verlauf */
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    #000 72%,
-    rgba(0, 0, 0, 0.55) 92%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    #000 72%,
-    rgba(0, 0, 0, 0.55) 92%,
-    rgba(0, 0, 0, 0) 100%
-  );
+/* Hero-System-Visual: Eingänge → n8n/APIs → KI → Ausgänge */
+.hero__system {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: min(100%, 520px);
+  justify-self: end;
+  padding: 20px 16px;
+  border: 1px solid rgba(100, 116, 139, 0.25);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 18px 50px -22px rgba(30, 64, 175, 0.25);
+  backdrop-filter: blur(4px);
+}
+
+.sys-col {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.sys-node {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid rgba(100, 116, 139, 0.22);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px -6px rgba(30, 64, 175, 0.15);
+}
+
+.sys-core {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 0 4px;
+}
+
+.sys-core__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  white-space: nowrap;
+}
+
+.sys-core__line {
+  width: 2px;
+  height: 46px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--accent), #9333ea);
+}
+
+.sys-core__badge {
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1d4ed8, #6d28d9);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+@media (max-width: 680px) {
+  .hero__system {
+    width: 100%;
+    padding: 14px 10px;
+    gap: 6px;
+  }
+  .sys-node {
+    min-height: 30px;
+    padding: 5px 7px;
+    font-size: 10.5px;
+  }
+  .sys-core__line {
+    height: 34px;
+  }
+  .sys-core__label {
+    font-size: 9.5px;
+  }
+  .sys-core__badge {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
 }
 
 .hero__visual-note {
@@ -1211,21 +1287,40 @@ p:last-child {
   filter: saturate(0.9) contrast(1.02);
 }
 
-/* Gründerfoto: heller, ruhiger Rahmen – kein dunkler Gradient, keine Filter */
+/* Gründerfoto ersetzt durch System-/Kompetenzvisual */
 .about-visual__frame--portrait {
-  background: #ffffff;
-  border: 1px solid #dbe3ef;
-  box-shadow: var(--shadow-md);
+  display: none;
 }
 
-.about-visual__frame--portrait::after {
-  inset: 12px;
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  border-radius: 16px;
+.about-visual__frame--system {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(79, 124, 255, 0.35), transparent 55%),
+    var(--ink);
 }
 
-.about-visual__frame--portrait img {
-  filter: none;
+.about-system {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.about-system span {
+  padding: 12px 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  backdrop-filter: blur(3px);
 }
 
 .about-visual__caption {
@@ -1235,7 +1330,7 @@ p:last-child {
   padding: 14px 3px 0;
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 11px;
   text-transform: uppercase;
 }
 
@@ -1651,7 +1746,7 @@ p:last-child {
 
 .footer-nav {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 40px;
 }
 
@@ -1936,6 +2031,37 @@ p:last-child {
   to { transform: rotate(360deg); }
 }
 
+  /* LUMINA (Issue #3-Review): Hero ab 1400px einspaltig — der primäre CTA
+   (Business-Analyse) liegt auf 768px-hohen Screens (Laptops 1366×768,
+   1280×768, Tablets) sonst unterhalb des Folds. Visual wandert unter den
+   Copy-Block, CTA landet über der Falz. */
+@media (max-width: 1400px) {
+  .hero__inner {
+    grid-template-columns: 1fr;
+    gap: 56px;
+    padding-top: 64px;
+    padding-bottom: 56px;
+  }
+
+  .hero__copy {
+    max-width: 780px;
+  }
+
+  .hero__visual {
+    width: min(100%, 610px);
+    justify-self: center;
+  }
+
+  .hero__system,
+  .hero__visual-note {
+    margin-inline: auto;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 5.6vw, 4.1rem);
+  }
+}
+
 @media (max-width: 1100px) {
   .site-header__inner {
     gap: 28px;
@@ -1943,15 +2069,6 @@ p:last-child {
 
   .site-nav {
     gap: 20px;
-  }
-
-  .hero__inner {
-    grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
-    gap: 50px;
-  }
-
-  .hero h1 {
-    font-size: clamp(2.5rem, 6.2vw, 4.6rem);
   }
 
   .signal-bar__inner {
@@ -4126,6 +4243,56 @@ p:last-child {
 .credential-card--education .credential-card__badge {
   color: #0f766e;
   background: rgba(13, 148, 136, 0.1);
+}
+
+/* Projekt-/Systemkarten (Issue #3: "Gebaute Systeme statt Versprechen") */
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.project-card__badge {
+  align-self: flex-start;
+  padding: 5px 8px;
+  color: var(--accent-deep);
+  background: rgba(79, 124, 255, 0.1);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-card h3 {
+  margin: 4px 0 0;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.project-card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.project-card p strong {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.project-card a {
+  color: var(--accent-deep);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .credential-actions {

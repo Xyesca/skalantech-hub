@@ -7,7 +7,7 @@
   <meta name="color-scheme" content="light">
   <title>{% block title %}Skalantech · IT-Infrastruktur & KI-Automation{% endblock %}</title>
   <meta name="description" content="{% block description %}Skalantech modernisiert IT-Infrastruktur, automatisiert Abläufe und bringt KI-Agenten zuverlässig in den Betrieb.{% endblock %}">
-  <meta name="author" content="Xavier Escalante Castellar">
+  <meta name="author" content="Skalantech">
   <meta name="robots" content="{% block robots %}index, follow, max-image-preview:large{% endblock %}">
   <link rel="canonical" href="{% block canonical %}https://skalantech.store/{% endblock %}">
   <meta property="og:type" content="website">
@@ -26,9 +26,9 @@
   <meta name="twitter:description" content="{% block twitter_description %}IT-Infrastruktur, Prozessautomatisierung und produktive KI-Systeme aus einer Hand.{% endblock %}">
   <meta name="twitter:image" content="https://skalantech.store/static/img/skalantech-og.jpg">
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=20">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=25">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/showcase.css') }}?v=1">
-  <script src="{{ url_for('static', filename='js/analytics.js') }}?v=18" defer></script>
+  <script src="{{ url_for('static', filename='js/analytics.js') }}?v=19" defer></script>
   <script src="{{ url_for('static', filename='js/roi-rechner.js') }}?v=1" defer></script>
   <script src="{{ url_for('static', filename='js/roi-calculator.js') }}?v=17" defer></script>
   <script src="{{ url_for('static', filename='js/main.js') }}?v=18" defer></script>
@@ -45,20 +45,6 @@
         "email": "mailto:xyesca@skalantech.store",
         "description": "IT-Infrastruktur, Prozessautomatisierung, Business Apps und produktive KI-Systeme für Unternehmen.",
         "areaServed": {"@type": "Country", "name": "Deutschland"},
-        "founder": {"@id": "https://skalantech.store/#xavier"},
-        "sameAs": [
-          "https://github.com/Xyesca",
-          "https://linkedin.com/in/xyesca/"
-        ]
-      },
-      {
-        "@type": "Person",
-        "@id": "https://skalantech.store/#xavier",
-        "name": "Xavier Escalante Castellar",
-        "url": "https://skalantech.store/",
-        "email": "mailto:xyesca@skalantech.store",
-        "jobTitle": "IT Infrastructure & Automation Engineer",
-        "worksFor": {"@id": "https://skalantech.store/#business"},
         "knowsAbout": [
           "IT-Infrastruktur",
           "Cloud Engineering",
@@ -66,7 +52,12 @@
           "n8n",
           "Business Apps",
           "KI-Agenten",
-          "Self-Hosting"
+          "Self-Hosting",
+          "API-Integration"
+        ],
+        "sameAs": [
+          "https://github.com/Xyesca",
+          "https://linkedin.com/in/xyesca/"
         ]
       },
       {
@@ -99,12 +90,12 @@
         <a href="{{ url_for('public.landing_rechner') }}">Rechner</a>
         <a href="{{ url_for('public.index') }}#services">Leistungen</a>
         <a href="{{ url_for('public.index') }}#work">Projekte</a>
-        <a href="{{ url_for('public.index') }}#about">Über mich</a>
+        <a href="{{ url_for('public.index') }}#about">Über Skalantech</a>
       </nav>
 
       <a class="header-cta" href="{{ url_for('public.index') }}#termin">
         <span class="header-cta__full">Business-Analyse buchen</span>
-        <span class="header-cta__short">Erstgespräch</span>
+        <span class="header-cta__short">Business-Analyse</span>
         <span aria-hidden="true">↗</span>
       </a>
 
@@ -183,7 +174,7 @@
       </div>
 
       <div class="site-footer__bottom">
-        <span>© 2026 Skalantech · Xavier Escalante Castellar</span>
+        <span>© 2026 Skalantech</span>
         <span>Köln · Remote in DACH</span>
       </div>
     </div>

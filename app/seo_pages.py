@@ -413,7 +413,7 @@ WEBSITES_APPS_COPY = {
         ("Security-First", "TLS, DSGVO-konforme Verarbeitung, gehärtete Server – Sicherheit ist Teil des Builds, kein Extra."),
         ("Keine externen Tracker", "First-Party-Analytics statt Tracking-Krake – die Daten bleiben bei Ihnen."),
         ("Eigentum bleibt bei Ihnen", "Code, Daten und Domains gehören Ihnen. Kein Vendor-Lock-in."),
-        ("Ein Ansprechpartner", "Xavier baut und betreut die Systeme selbst – persönlich erreichbar, keine Blackbox."),
+        ("Ein Ansprechpartner", "Skalantech baut und betreut die Systeme selbst – persönlich erreichbar, keine Blackbox."),
     ],
     "cta_final_title": "Kostenlose Business-Analyse?",
     "cta_final_text": "30 Minuten, unverbindlich. Wir schauen uns Ihren Prozess an und sagen ehrlich, ob und wie eine Website oder Business-App Sie voranbringt.",

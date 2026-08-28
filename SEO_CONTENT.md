@@ -1,6 +1,6 @@
 # SEO Content für skalantech.store
 
-Stand: 2026-08-27 — aktualisiert nach SEO-Umsetzung + Branchen-Landingpages (Stage 5).
+Stand: 2026-08-28 — aktualisiert nach Blog-Start (3 Artikel aus Content-Cluster, Stage P1).
 
 ## robots.txt (serviert via Route /robots.txt)
 
@@ -17,9 +17,13 @@ Sitemap: https://skalantech.store/sitemap.xml
 
 ## Sitemap (dynamisch via Route /sitemap.xml)
 
-Indexierbare Seiten (16):
+Indexierbare Seiten (24):
 
 - https://skalantech.store/ (priority 1.0)
+- https://skalantech.store/automationen (0.9)
+- https://skalantech.store/demos (0.8)
+- https://skalantech.store/koeln (0.8)
+- https://skalantech.store/websites-apps (0.8)
 - https://skalantech.store/it-infrastruktur (0.8)
 - https://skalantech.store/ki-integration (0.8)
 - https://skalantech.store/ki-automatisierung (0.8)
@@ -34,9 +38,36 @@ Indexierbare Seiten (16):
 - https://skalantech.store/wissen/was-ist-ein-ki-agent (0.7)
 - https://skalantech.store/wissen/n8n-selbst-hosten (0.7)
 - https://skalantech.store/wissen/lokale-ki-vs-cloud-ki (0.7)
+- https://skalantech.store/wissen/n8n-vs-power-automate (0.7)
+- https://skalantech.store/wissen/welche-prozesse-ki-automatisierung (0.7)
+- https://skalantech.store/wissen/rag-wissensassistenten (0.7)
+- https://skalantech.store/wissen/kosten-roi-ki-automatisierung (0.7)
 - https://skalantech.store/faq (0.6)
 
 Nicht indexiert (noindex/Disallow): /impressum, /datenschutz, /agb, /login, /admin, /auth, /uploads/*.
+
+## Wissen/Blog (Stage P1, Stand 2026-08-28)
+
+Sieben Artikel live (je 800–1200 Wörter, Business-Nutzen first), alle in der
+Sitemap, verlinkt über /wissen-Index + Related-Links auf den Landingpages.
+Artikel-Dicts in `app/wissen.py` (ARTICLES + ARTICLE_ORDER), Template
+`article.html` mit `Article`-JSON-LD (datePublished je Artikel gesetzt).
+
+| Artikel | Slug | Primär-Intent | Related-Service |
+|---|---|---|---|
+| Was ist ein KI-Agent? | was-ist-ein-ki-agent | Informational (KI-Agenten) | /ki-agenten |
+| n8n selbst hosten | n8n-selbst-hosten | Informational (n8n, Datenschutz) | /n8n-automatisierung |
+| Lokale KI vs. Cloud-KI | lokale-ki-vs-cloud-ki | Informational (Datenschutz, Betrieb) | /lokale-ki |
+| n8n vs. Power Automate | n8n-vs-power-automate | Informational (Vergleich) | /n8n-automatisierung |
+| Welche Prozesse für KI-Automatisierung? | welche-prozesse-ki-automatisierung | Informational (Prozessauswahl) | /ki-automatisierung |
+| RAG und Wissensassistenten | rag-wissensassistenten | Informational (RAG) | /ki-agenten |
+| Kosten und ROI von KI-Automatisierung | kosten-roi-ki-automatisierung | Informational (ROI) | /ki-automatisierung |
+
+Wortzahlen (2026-08-28, verifiziert): 977 / 834 / 882 / 1136 / 916 / 920 / 888.
+
+GSC-Submit: Sitemap eingereicht 2026-08-28 (HTTP 204, isPending=False,
+contents: 24 URLs). URL-Inspektion n8n-vs-power-automate: PASS (indexed);
+neue URLs brauchen Crawl-Zeit (NEUTRAL/unknown ist normal nach Einreichung).
 
 ## Branchen-Landingpages (Stage 5)
 

@@ -23,7 +23,7 @@
       "description": "{{ article.description }}",
       "inLanguage": "de-DE",
       "datePublished": "{{ article.published or article_published }}",
-      "author": { "@id": "https://skalantech.store/#xavier" },
+      "author": { "@id": "https://skalantech.store/#business" },
       "publisher": { "@id": "https://skalantech.store/#business" },
       "mainEntityOfPage": "{{ article_url }}"
     },
@@ -90,31 +90,18 @@
       </aside>
       {% endif %}
 
-      <aside class="article-author" aria-label="Über den Autor">
-        <div class="article-author__photo">
-          <picture>
-            <source type="image/avif"
-              srcset="{{ url_for('static', filename='img/founder-400.avif') }} 400w"
-              sizes="72px">
-            <img
-              src="{{ url_for('static', filename='img/founder-400.webp') }}"
-              width="400" height="500"
-              alt="Xavier Escalante Castellar – Autor des Artikels"
-              loading="lazy" decoding="async">
-          </picture>
-        </div>
+      <aside class="article-author" aria-label="Über Skalantech">
         <div class="article-author__copy">
-          <p class="article-author__label">Geschrieben von</p>
-          <h2>Xavier Escalante Castellar</h2>
+          <p class="article-author__label">Skalantech</p>
+          <h2>Aus der Praxis gebaut.</h2>
           <p>
-            IT-Infrastructure &amp; Automation Engineer bei Skalantech.
-            Er schreibt aus der Praxis – was hier beschrieben wird, hat er
-            selbst geplant, gebaut oder betrieben.
+            Skalantech entwickelt Automationen, Business Apps und KI-Integrationen
+            für kleine und mittelständische Unternehmen. Was hier beschrieben
+            wird, ist in eigenen Systemen geplant, gebaut und betrieben worden.
           </p>
           <div class="article-author__links">
             <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
             <a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-            <a href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate <span aria-hidden="true">↗</span></a>
             <a href="{{ url_for('public.index') }}#about">Über Skalantech <span aria-hidden="true">→</span></a>
           </div>
         </div>

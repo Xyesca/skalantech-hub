@@ -70,19 +70,19 @@ class PublicSiteTests(unittest.TestCase):
             "InvoiceFlow",
             "OfferAI",
             "MailAgent",
-            "KI-Manager:in Advanced",
+            "Gebaute Systeme statt Versprechen.",
             "Projektanfrage senden",
             "xyesca@skalantech.store",
             "skalantech-og.jpg",
             "brand/skalantech-mark.svg",
-            "founder-600.webp",
+            "about-system",
             'id="services"',
             'id="demos"',
             'id="about"',
             'id="contact"',
-            "Direkt vom Gründer",
-            "7+ Jahre IT-Praxiserfahrung",
-            "Self-Hosting &amp; Datensouveränität statt Vendor-Lock-in",
+            "Live-Automationen statt Konzepte",
+            "selbst gebaute Systeme",
+            "eigene Server und Daten",
         ):
             self.assertIn(phrase, html)
         self.assertNotIn("xyesca1989@googlemail.com", html)
@@ -309,6 +309,22 @@ class PublicSiteTests(unittest.TestCase):
                 self.assertIn("Keine externen Tracker", html)
                 self.assertIn("xyesca@skalantech.store", html)
                 self.assertNotIn("xyesca1989@googlemail.com", html)
+
+    def test_datenschutz_discloses_deepseek_processing(self):
+        html = self.client.get("/datenschutz").get_data(as_text=True)
+        for phrase in (
+            "Kontaktanfragen &amp; Terminbuchung",
+            "KI-gestützte Bearbeitung (DeepSeek)",
+            "api.deepseek.com",
+            "Hangzhou DeepSeek Artificial Intelligence Basic Technology Research Co., Ltd.",
+            "Drittland",
+            "Live-Demos",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, html)
+        # Kein überzogener Claim mehr auf der Startseite
+        home = self.client.get("/").get_data(as_text=True)
+        self.assertNotIn("100%</strong><span>Self-hosted", home)
 
     def test_trust_assets_and_local_page(self):
         for path in (

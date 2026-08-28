@@ -6,12 +6,14 @@ in der App-Factory per csrf.exempt() freigeschaltet.
 """
 import hmac
 import os
+import uuid
 from datetime import datetime, timezone
+from sqlalchemy.exc import IntegrityError
 
 from flask import Blueprint, jsonify, request
 
 from app.extensions import db
-from app.models import Lead, PIPELINE_STAGES, PIPELINE_TERMINAL
+from app.models import Lead, Booking, PIPELINE_STAGES, PIPELINE_TERMINAL
 
 crm_api_bp = Blueprint("crm_api", __name__, url_prefix="/api/crm")
 
@@ -79,6 +81,101 @@ def _apply_fields(lead: Lead, data: dict) -> None:
     if note:
         # Statuswechsel erzeugt bereits eine Notiz — nur zusätzliche Notiz anhängen
         lead.add_note(note, author="API")
+
+
+@crm_api_bp.route("/bookings/reserve", methods=["POST"])
+def reserve_booking():
+    """Atomare Slot-Reservierung (concurrency-sicher, Google-frei).
+
+    Nutzt den UNIQUE-Constraint auf ``bookings.start_at_utc``: der INSERT
+    schlägt fehl (IntegrityError), wenn der Slot bereits vergeben ist.
+    Kein SELECT-then-INSERT — die DB ist die atomare Sperre.
+
+    Body (JSON): start_at_utc (ISO 8601, UTC), end_at_utc, name, email,
+    company?, topic?, booking_id? (optional, sonst UUID), lead_id? (optional)
+    """
+    data = request.get_json(silent=True) or {}
+
+    start_raw = (data.get("start_at_utc") or "").strip()
+    end_raw = (data.get("end_at_utc") or "").strip()
+    name = (data.get("name") or "").strip()
+    email = (data.get("email") or "").strip().lower()
+
+    errors = []
+    start_dt = _parse_dt(start_raw)
+    end_dt = _parse_dt(end_raw)
+    if start_dt is None:
+        errors.append("start_at_utc ist erforderlich (ISO-8601)")
+    if end_dt is None:
+        errors.append("end_at_utc ist erforderlich (ISO-8601)")
+    if not name or len(name) > 120:
+        errors.append("name ist erforderlich (max. 120 Zeichen)")
+    if not email or "@" not in email or len(email) > 254:
+        errors.append("email ist erforderlich (gültige Adresse)")
+    if errors:
+        return jsonify({"success": False, "booked": False, "errors": errors}), 400
+
+    company = (data.get("company") or "").strip()[:160]
+    topic = (data.get("topic") or "Erstgespräch").strip()[:120]
+    booking_id = (data.get("booking_id") or str(uuid.uuid4())).strip()[:64]
+    lead_id = data.get("lead_id")
+
+    booking = Booking(
+        booking_id=booking_id,
+        start_at_utc=start_dt,
+        end_at_utc=end_dt,
+        timezone="Europe/Berlin",
+        name=name,
+        email=email,
+        company=company,
+        topic=topic,
+        status="confirmed",
+        lead_id=lead_id if isinstance(lead_id, int) else None,
+    )
+    db.session.add(booking)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({
+            "success": False,
+            "booked": False,
+            "message": "Der gewünschte Termin ist leider bereits belegt. Bitte wählen Sie eine andere Zeit.",
+        }), 409
+
+    return jsonify({
+        "success": True,
+        "booked": True,
+        "booking_id": booking.booking_id,
+        "start_at_utc": booking.start_at_utc.isoformat(),
+        "end_at_utc": booking.end_at_utc.isoformat(),
+    }), 201
+
+
+@crm_api_bp.route("/bookings", methods=["GET"])
+def list_bookings():
+    """Buchungen auflisten (für E2E-Tests & Admin). Filter: status=…"""
+    query = Booking.query
+    status = (request.args.get("status") or "").strip().lower()
+    if status:
+        query = query.filter_by(status=status)
+    bookings = query.order_by(Booking.start_at_utc.asc()).limit(200).all()
+    return jsonify({
+        "success": True,
+        "count": len(bookings),
+        "bookings": [b.to_dict() for b in bookings],
+    })
+
+
+@crm_api_bp.route("/bookings/<booking_id>", methods=["DELETE"])
+def delete_booking(booking_id):
+    """Buchung löschen (nur für Tests/Aufräumen)."""
+    booking = Booking.query.filter_by(booking_id=booking_id).first()
+    if booking is None:
+        return jsonify({"success": False, "error": "Not found"}), 404
+    db.session.delete(booking)
+    db.session.commit()
+    return jsonify({"success": True, "deleted": booking_id})
 
 
 @crm_api_bp.route("/leads", methods=["POST"])

@@ -123,6 +123,19 @@ class AnalyticsEventTests(unittest.TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(len(self._events()), 0)
 
+    def test_rebrand_events_accepted(self):
+        """Issue #3 (Studio-Rebrand): Nachweise-/Demo-Tracking-Events
+        (case_study_click, demo_clicked) sind serverseitig erlaubt."""
+        for event in ("case_study_click", "demo_clicked"):
+            with self.subTest(event=event):
+                response = self._post_event({
+                    "event": event, "page": "/", "props": {"label": "hero"},
+                })
+                self.assertEqual(response.status_code, 204)
+        stored = {e.event for e in self._events()}
+        self.assertIn("case_study_click", stored)
+        self.assertIn("demo_clicked", stored)
+
     def test_invalid_json_returns_400(self):
         response = self.client.post(
             "/analytics/event",
@@ -472,7 +485,7 @@ class AnalyticsEventTests(unittest.TestCase):
     def test_homepage_loads_analytics_script(self):
         response = self.client.get("/")
         html = response.get_data(as_text=True)
-        self.assertIn("js/analytics.js?v=18", html)
+        self.assertIn("js/analytics.js?v=19", html)
         # Reihenfolge: analytics.js VOR main.js (Attribution vor Formular-Submit)
         self.assertLess(html.index("analytics.js"), html.index("main.js"))
 
@@ -481,6 +494,32 @@ class AnalyticsEventTests(unittest.TestCase):
         html = response.get_data(as_text=True)
         self.assertIn("anonyme Interaktions-Events", html)
         self.assertIn("keine Cookies", html)
+
+    def test_rebrand_project_demo_hooks_present(self):
+        """Issue #3 (Studio-Rebrand): Projekt-Karten und Demo-Klicks sind
+        trackbar — data-track-Hooks in index.html + Client-Selektoren.
+        Regression-Guard: ein künftiger Rebrand darf diese Hooks nicht
+        stillschweigend entfernen."""
+        from pathlib import Path
+
+        repo_root = Path(__file__).resolve().parent.parent
+        index_html = (repo_root / "app" / "templates" / "index.html").read_text(encoding="utf-8")
+        analytics_js = (repo_root / "app" / "static" / "js" / "analytics.js").read_text(encoding="utf-8")
+
+        # Demo-Klicks trackbar (Hero + Demo-Karten + Projekt-Nachweise)
+        self.assertIn('data-track="demo_clicked" data-track-label="hero"', index_html)
+        self.assertIn('data-track="demo_clicked" data-track-label="invoiceflow"', index_html)
+        self.assertIn('data-track="demo_clicked" data-track-label="offerai"', index_html)
+        self.assertIn('data-track="demo_clicked" data-track-label="mailagent"', index_html)
+        # Projekt-Klick trackbar (DeepDive-Repository im Nachweise-Bereich)
+        self.assertIn('data-track="case_study_click" data-track-label="DeepDive"', index_html)
+        # Neue Projekt-Karten zählen als Case Studies (Viewport)
+        self.assertIn('".work-card, .project-card"', analytics_js)
+        # Leistungs-Karten (usecase/pain) zählen als service_viewed
+        self.assertIn('".service-card, .usecase-card, .pain-card"', analytics_js)
+        # Client-Allowlist enthält die neuen Events
+        self.assertIn('"case_study_click"', analytics_js)
+        self.assertIn('"demo_clicked"', analytics_js)
 
 
 if __name__ == "__main__":
