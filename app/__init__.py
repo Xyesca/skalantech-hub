@@ -113,6 +113,10 @@ def create_app(config_name: str | None = None) -> Flask:
     # Analytics-Beacon (sendBeacon/fetch ohne Session-Token) — stattdessen
     # Event-Allowlist, Payload-Limit und Rate-Limit im Blueprint.
     csrf.exempt(analytics_bp)
+    # Öffentliche Live-Demos (POST /api/demos/<slug>) — Browser-Besucher
+    # haben kein Session-Token; Schutz stattdessen über Allowlist (nur
+    # bekannte Slugs), Input-Länge, Rate-Limit (8/h/IP) und n8n-Loopback.
+    csrf.exempt(showcase_bp)
 
     # ── Template global: fällige Follow-ups für die Admin-Sidebar ─────────
     @app.context_processor
