@@ -235,6 +235,8 @@
       window.SkalantechAnalytics.track("booking_confirmed", {
         status: isConfirmed ? "confirmed" : "queued"
       });
+      // LUMINA-Spez: Erfolgsansicht sichtbar (ein Signal pro Buchung)
+      window.SkalantechAnalytics.track("form_success_view", { form: form.id });
     }
 
     // Accessibility: Fokus auf die Erfolgsansicht (tabindex="-1" + focus()).
@@ -250,7 +252,17 @@
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
 
-      if (!form.reportValidity()) return;
+      if (!form.reportValidity()) {
+        // LUMINA-Spez: form_field_error — erstes ungültiges Feld, keine PII
+        if (typeof window.SkalantechAnalytics !== "undefined") {
+          var invalidField = form.querySelector(":invalid");
+          window.SkalantechAnalytics.track("form_field_error", {
+            form: form.id,
+            field: invalidField ? (invalidField.name || invalidField.id || "unknown") : "unknown"
+          });
+        }
+        return;
+      }
 
       // Wunschtag: Wochenende + Vergangenheit vor dem Absenden blocken
       if (form.id === "booking-form") {
@@ -316,6 +328,10 @@
         if (statusEl) {
           statusEl.textContent = payload.message;
           statusEl.classList.add("is-success");
+        }
+        // LUMINA-Spez: form_success_view — Erfolgsansicht sichtbar (Client-Signal)
+        if (typeof window.SkalantechAnalytics !== "undefined") {
+          window.SkalantechAnalytics.track("form_success_view", { form: form.id });
         }
       } catch (error) {
         if (statusEl) {
