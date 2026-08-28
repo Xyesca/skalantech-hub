@@ -416,7 +416,7 @@ class AnalyticsEventTests(unittest.TestCase):
     def test_homepage_loads_analytics_script(self):
         response = self.client.get("/")
         html = response.get_data(as_text=True)
-        self.assertIn("js/analytics.js?v=18", html)
+        self.assertIn("js/analytics.js?v=19", html)
         # Reihenfolge: analytics.js VOR main.js (Attribution vor Formular-Submit)
         self.assertLess(html.index("analytics.js"), html.index("main.js"))
 
