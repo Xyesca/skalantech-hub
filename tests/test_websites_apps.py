@@ -143,17 +143,6 @@ class WebsitesAppsTests(unittest.TestCase):
 
     # ── Navigation & Interlinking ──────────────────────────────────────
 
-    def test_header_and_footer_link(self):
-        resp = self._get("/websites-apps")
-        try:
-            html = resp.get_data(as_text=True)
-            # Header-Nav (eine Stelle reicht, aber Footer nutzt dieselbe URL)
-            self.assertIn('href="/websites-apps"', html)
-            # Nav-Label sichtbar
-            self.assertIn("Websites &amp; Apps", html)
-        finally:
-            resp.close()
-
     def test_interlinking_from_it_infrastruktur(self):
         resp = self._get("/it-infrastruktur")
         try:

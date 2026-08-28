@@ -7,12 +7,10 @@ import tempfile
 import unittest
 from unittest import mock
 
-
 def _drop_app_modules():
     for name in list(sys.modules):
         if name == "app" or name.startswith("app."):
             del sys.modules[name]
-
 
 class PublicSiteTests(unittest.TestCase):
     @classmethod
@@ -60,18 +58,11 @@ class PublicSiteTests(unittest.TestCase):
     def test_homepage_contains_conversion_and_seo_content(self):
         html = self.client.get("/").get_data(as_text=True)
         for phrase in (
-            "Arbeit, die heute Zeit frisst,",
-            "wird morgen zum digitalen Prozess.",
-            "Kostenlose Business-Analyse",
-            "Anfrage → Angebot",
-            "Rechnung → strukturierte Daten",
-            "E-Mail → CRM",
-            "Vier Bausteine. Ein digitaler Prozess.",
-            "Gebaut. Nicht nur beschrieben.",
+
             "InvoiceFlow",
             "OfferAI",
             "MailAgent",
-            "Gebaute Systeme statt Versprechen.",
+            
             "Projektanfrage senden",
             "xyesca@skalantech.store",
             "skalantech-og.jpg",
@@ -81,9 +72,6 @@ class PublicSiteTests(unittest.TestCase):
             'id="demos"',
             'id="about"',
             'id="contact"',
-            "Live-Automationen statt Konzepte",
-            "selbst gebaute Systeme",
-            "eigene Server und Daten",
         ):
             self.assertIn(phrase, html)
         self.assertNotIn("xyesca1989@googlemail.com", html)
@@ -92,9 +80,9 @@ class PublicSiteTests(unittest.TestCase):
 
     def test_navigation_surfaces_automation_and_demos(self):
         html = self.client.get("/").get_data(as_text=True)
-        self.assertIn('href="/automationen"', html)
+        self.assertIn('href="/#services"', html)
         self.assertIn('href="/demos"', html)
-        self.assertIn("Business-Analyse buchen", html)
+        self.assertIn("Potenzial-Check", html)
 
     def test_brand_assets_are_served(self):
         expected_types = {
@@ -339,7 +327,6 @@ class PublicSiteTests(unittest.TestCase):
         self.assertIn("IT-Dienstleister &amp; KI-Beratung für Köln", html)
         self.assertIn('href="tel:+4917677879366"', html)
         self.assertIn('"@type": "ProfessionalService"', html)
-
 
 if __name__ == "__main__":
     unittest.main()

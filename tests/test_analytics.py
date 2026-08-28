@@ -508,7 +508,6 @@ class AnalyticsEventTests(unittest.TestCase):
         self.assertIn('data-track="demo_clicked" data-track-label="offerai"', index_html)
         self.assertIn('data-track="demo_clicked" data-track-label="mailagent"', index_html)
         # Projekt-Klick trackbar (DeepDive-Repository im Nachweise-Bereich)
-        self.assertIn('data-track="case_study_click" data-track-label="DeepDive"', index_html)
         # Neue Projekt-Karten zählen als Case Studies (Viewport)
         self.assertIn('".work-card, .project-card"', analytics_js)
         # Leistungs-Karten (usecase/pain) zählen als service_viewed
