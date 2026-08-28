@@ -174,7 +174,7 @@ LANDING_BRANCHEN = {
             ("Verwaltung", "HU/TÜV-Erinnerungen und Bewertungsmanagement laufen automatisch mit."),
         ],
         "roi_note": "Angaben sind typische Projekterfahrungen, keine Garantie. Der Nutzen wird vor dem Start gemeinsam konkret beziffert.",
-        "cta_primary": "Potenzial-Check für Ihre Werkstatt",
+        "cta_primary": "Kostenlosen Potenzial-Check buchen",
         "cta_secondary": "Projekt besprechen",
         "cta_mid": "Jetzt Werkstatt-Termin sichern",
         "cta_final_title": "Werkstatt entlasten – konkret besprechen",
