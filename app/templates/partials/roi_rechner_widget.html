@@ -1,0 +1,111 @@
+{# ROI-Rechner-Widget — gemeinsames Markup für /rechner und Homepage.
+   DOM-Kontrakt exakt nach 01_DESIGN-SPEC §1 (LUMINA t_ce7fda15):
+   [data-roi-rechner] [data-source] / .roi-grid / .roi-result__cost|detail|cta
+   IDs: roi-process, roi-minutes, roi-frequency, roi-error, roi-rate, roi-auto
+   (+ -out Outputs). Mehrere Instanzen pro Seite: JS generiert eindeutige Suffixe.
+   Variablen: copy (ROI_RECHNER_COPY), roi_source ("page"|"homepage"). #}
+{% set roi_source = roi_source|default("page") %}
+{% set roi_utm_content = "page" if roi_source == "rechner" or roi_source == "page" else roi_source %}
+<section class="roi-card" data-roi-rechner data-source="{{ roi_source }}" aria-label="ROI-Rechner">
+  <div class="roi-grid">
+
+    {# ── Linke Spalte: Eingaben ── #}
+    <div class="roi-inputs">
+      <fieldset class="roi-step">
+        <legend><span class="roi-step__no">01</span> {{ copy.roi_step1_legend }}</legend>
+        <div class="roi-field">
+          <label for="roi-process" id="roi-process-label">{{ copy.roi_process_label }}</label>
+          <select id="roi-process" class="roi-input">
+            <option value="angebote">{{ copy.roi_process_angebote }}</option>
+            <option value="rechnungen">{{ copy.roi_process_rechnungen }}</option>
+            <option value="termine">{{ copy.roi_process_termine }}</option>
+            <option value="daten">{{ copy.roi_process_daten }}</option>
+            <option value="berichte">{{ copy.roi_process_berichte }}</option>
+            <option value="kommunikation">{{ copy.roi_process_kommunikation }}</option>
+            <option value="sonstiges">{{ copy.roi_process_sonstiges }}</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <fieldset class="roi-step">
+        <legend><span class="roi-step__no">02</span> {{ copy.roi_step2_legend }}</legend>
+
+        <div class="roi-field">
+          <div class="roi-field__head">
+            <label for="roi-minutes" id="roi-minutes-label">{{ copy.roi_minutes_label }}</label>
+            <output id="roi-minutes-out" for="roi-minutes">30 {{ copy.roi_minutes_unit }}</output>
+          </div>
+          <input type="range" id="roi-minutes" class="roi-input"
+                 min="5" max="240" step="5" value="30"
+                 aria-labelledby="roi-minutes-label" aria-valuetext="30 Minuten pro Durchlauf">
+        </div>
+
+        <div class="roi-field">
+          <div class="roi-field__head">
+            <label for="roi-frequency" id="roi-frequency-label">{{ copy.roi_frequency_label }}</label>
+            <output id="roi-frequency-out" for="roi-frequency">5 {{ copy.roi_frequency_unit }}</output>
+          </div>
+          <div class="roi-number-row">
+            <input type="number" id="roi-frequency" class="roi-input"
+                   min="1" max="100" step="1" value="5" inputmode="numeric">
+            <span>{{ copy.roi_frequency_unit }}</span>
+          </div>
+        </div>
+
+        <div class="roi-field">
+          <div class="roi-field__head">
+            <label for="roi-error" id="roi-error-label">{{ copy.roi_error_label }}</label>
+            <output id="roi-error-out" for="roi-error">10 %</output>
+          </div>
+          <input type="range" id="roi-error" class="roi-input"
+                 min="0" max="50" step="5" value="10"
+                 aria-labelledby="roi-error-label" aria-valuetext="10 Prozent Nacharbeit">
+          <p class="roi-field__hint">{{ copy.roi_error_hint }}</p>
+        </div>
+      </fieldset>
+
+      <fieldset class="roi-step">
+        <legend><span class="roi-step__no">03</span> {{ copy.roi_step3_legend }}</legend>
+        <div class="roi-field">
+          <div class="roi-field__head">
+            <label for="roi-rate" id="roi-rate-label">{{ copy.roi_rate_label }}</label>
+            <output id="roi-rate-out" for="roi-rate">55 {{ copy.roi_rate_unit }}</output>
+          </div>
+          <div class="roi-number-row">
+            <input type="number" id="roi-rate" class="roi-input"
+                   min="20" max="200" step="5" value="55" inputmode="numeric">
+            <span>{{ copy.roi_rate_unit }}</span>
+          </div>
+          <p class="roi-field__hint">{{ copy.roi_rate_hint }}</p>
+        </div>
+      </fieldset>
+
+      <fieldset class="roi-step">
+        <legend><span class="roi-step__no">04</span> {{ copy.roi_step4_legend }}</legend>
+        <div class="roi-field">
+          <div class="roi-field__head">
+            <label for="roi-auto" id="roi-auto-label">{{ copy.roi_auto_label }}</label>
+            <output id="roi-auto-out" for="roi-auto">70 %</output>
+          </div>
+          <input type="range" id="roi-auto" class="roi-input"
+                 min="20" max="95" step="5" value="70"
+                 aria-labelledby="roi-auto-label" aria-valuetext="70 Prozent automatiserbar">
+          <p class="roi-field__hint">{{ copy.roi_auto_note }}</p>
+        </div>
+      </fieldset>
+    </div>
+
+    {# ── Rechte Spalte: Ergebnis ── #}
+    <aside class="roi-result" aria-live="polite">
+      <p class="roi-result__kicker">{{ copy.roi_result_kicker }}</p>
+      <p class="roi-result__cost"><span id="roi-cost" class="roi-cost-val">≈ 7.100 €</span> <span class="roi-result__cost-unit">{{ copy.roi_result_cost_unit }}</span></p>
+      <p class="roi-result__detail">{{ copy.roi_result_auto_label }}: <strong id="roi-savings" class="roi-savings-val">5.000 €</strong> · <span id="roi-hours" class="roi-hours-val">90 h</span> pro Jahr</p>
+      <hr class="roi-result__sep">
+      <a class="roi-result__cta roi-cta-link" id="roi-cta" href="{{ url_for('public.index') }}?utm_source=organic&amp;utm_medium=rechner&amp;utm_campaign=roi-rechner&amp;utm_content={{ roi_utm_content }}#termin">
+        {{ copy.roi_result_cta }} <span aria-hidden="true">↗</span>
+      </a>
+      <p class="roi-result__note">{{ copy.roi_result_note }}</p>
+    </aside>
+
+  </div>
+</section>

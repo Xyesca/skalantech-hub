@@ -26,9 +26,10 @@
   <meta name="twitter:description" content="{% block twitter_description %}IT-Infrastruktur, Prozessautomatisierung und produktive KI-Systeme aus einer Hand.{% endblock %}">
   <meta name="twitter:image" content="https://skalantech.store/static/img/skalantech-og.jpg">
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=19">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=20">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/showcase.css') }}?v=1">
   <script src="{{ url_for('static', filename='js/analytics.js') }}?v=18" defer></script>
+  <script src="{{ url_for('static', filename='js/roi-rechner.js') }}?v=1" defer></script>
   <script src="{{ url_for('static', filename='js/roi-calculator.js') }}?v=17" defer></script>
   <script src="{{ url_for('static', filename='js/main.js') }}?v=18" defer></script>
   <script src="{{ url_for('static', filename='js/showcase.js') }}?v=1" defer></script>
@@ -95,6 +96,7 @@
         <a href="{{ url_for('showcase.automations') }}">Automationen</a>
         <a href="{{ url_for('showcase.demos') }}">Live-Demos</a>
         <a href="{{ url_for('public.landing_websites_apps') }}">Websites &amp; Apps</a>
+        <a href="{{ url_for('public.landing_rechner') }}">Rechner</a>
         <a href="{{ url_for('public.index') }}#services">Leistungen</a>
         <a href="{{ url_for('public.index') }}#work">Projekte</a>
         <a href="{{ url_for('public.index') }}#about">Über mich</a>
@@ -143,6 +145,7 @@
             <p class="footer-nav__title">Leistungen</p>
             <a href="{{ url_for('showcase.automations') }}">Automationen</a>
             <a href="{{ url_for('showcase.demos') }}">Live-Demos</a>
+            <a href="{{ url_for('public.landing_rechner') }}">ROI-Rechner</a>
             <a href="{{ url_for('public.landing_websites_apps') }}">Websites &amp; Apps</a>
             <a href="{{ url_for('public.landing_it_infrastruktur') }}">IT-Infrastruktur</a>
             <a href="{{ url_for('public.landing_ki_integration') }}">KI-Integration</a>

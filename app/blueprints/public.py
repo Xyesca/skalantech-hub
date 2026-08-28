@@ -10,7 +10,7 @@ from urllib import request as urlrequest
 from flask import Blueprint, render_template, send_from_directory, current_app, request, flash, redirect, url_for, jsonify, Response, abort
 from app.models import Settings, Link, Project, ContactMessage, Lead
 from app.extensions import db
-from app.seo_pages import LANDING_PAGES, LANDING_ORDER
+from app.seo_pages import LANDING_PAGES, LANDING_ORDER, ROI_RECHNER_COPY, ROI_RECHNER_FAQS
 from app.branchen import BRANCH_ORDER
 from app.wissen import ARTICLES, ARTICLE_ORDER, ARTICLE_PUBLISHED
 from app.blueprints.analytics import _record_event
@@ -33,6 +33,7 @@ SITEMAP_PAGES = [
     {"loc": "/automationen", "priority": "0.9"},
     {"loc": "/demos", "priority": "0.8"},
     {"loc": "/koeln", "priority": "0.8"},
+    {"loc": "/rechner", "priority": "0.8"},
     *[{"loc": f"/{slug}", "priority": "0.8"} for slug in LANDING_ORDER],
     *[{"loc": f"/branchen/{slug}", "priority": "0.8"} for slug in BRANCH_ORDER],
     {"loc": "/wissen", "priority": "0.7"},
@@ -257,7 +258,15 @@ def index():
     projects = Project.query.filter_by(visible=True).order_by(Project.position.asc(), Project.id.asc()).all()
     today = time.strftime("%Y-%m-%d")
     max_booking_day = time.strftime("%Y-%m-%d", time.localtime(time.time() + 90 * 86400))
-    return render_template("index.html", settings=settings, links=links, projects=projects, today=today, max_booking_day=max_booking_day)
+    return render_template(
+        "index.html",
+        settings=settings,
+        links=links,
+        projects=projects,
+        today=today,
+        max_booking_day=max_booking_day,
+        copy=ROI_RECHNER_COPY,
+    )
 
 
 def _landing_map():
@@ -379,6 +388,20 @@ def landing_lokale_ki():
 @public_bp.route("/websites-apps")
 def landing_websites_apps():
     return _render_landing("websites-apps", template="websites_apps.html")
+
+
+@public_bp.route("/rechner")
+def landing_rechner():
+    """P1 ROI-Rechner — interaktives Tool (Formel/Events: LUMINA t_ce7fda15)."""
+    today = time.strftime("%Y-%m-%d")
+    max_booking_day = time.strftime("%Y-%m-%d", time.localtime(time.time() + 90 * 86400))
+    return render_template(
+        "rechner.html",
+        copy=ROI_RECHNER_COPY,
+        faqs=ROI_RECHNER_FAQS,
+        today=today,
+        max_booking_day=max_booking_day,
+    )
 
 
 @public_bp.route("/branchen/handwerk")
