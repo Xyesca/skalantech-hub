@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Skalantech · Automatisierung, Business Apps & IT für KMU{% endblock %}
-{% block description %}Skalantech automatisiert Geschäftsprozesse, baut Business Apps und Websites und schafft die passende IT-Basis – mit n8n, KI, APIs und Self-Hosting für KMU.{% endblock %}
-{% block og_title %}Skalantech · Weniger Handarbeit. Mehr digitaler Prozess.{% endblock %}
-{% block og_description %}Automationen, Business Apps, Websites und IT-Infrastruktur für KMU – von der Analyse bis zum laufenden Betrieb.{% endblock %}
+{% block title %}Skalantech · Digitale Prozesse & Automatisierung für KMU{% endblock %}
+{% block description %}Skalantech reduziert manuelle Arbeit in kleinen und mittelständischen Unternehmen: Kundenanfragen, Angebote, Rechnungen, E-Mails und bestehende Systeme werden zu klaren digitalen Abläufen verbunden.{% endblock %}
+{% block og_title %}Skalantech · Weniger manuelle Arbeit. Mehr Zeit fürs Kerngeschäft.{% endblock %}
+{% block og_description %}Digitale Prozesse, Automatisierung und Business-Anwendungen für KMU – verständlich, schrittweise und passend zu vorhandenen Systemen.{% endblock %}
 
 {% block head %}
 <script type="application/ld+json">
@@ -12,23 +12,16 @@
   "@type": "FAQPage",
   "@id": "https://skalantech.store/#faq",
   "mainEntity": [
-    {"@type":"Question","name":"Welche Prozesse kann Skalantech automatisieren?","acceptedAnswer":{"@type":"Answer","text":"Typische Fälle sind Kundenanfragen, Angebotsvorbereitung, Rechnungsverarbeitung, E-Mail-Klassifikation, CRM-Übergaben, Follow-ups, Dokumentenanalyse und wiederkehrende interne Abläufe."}},
-    {"@type":"Question","name":"Muss dafür die bestehende Software ersetzt werden?","acceptedAnswer":{"@type":"Answer","text":"Nicht zwingend. Zuerst wird geprüft, welche vorhandenen Systeme über APIs, Webhooks, Dateien oder andere Schnittstellen verbunden werden können."}},
-    {"@type":"Question","name":"Ist Self-Hosting möglich?","acceptedAnswer":{"@type":"Answer","text":"Ja. Open-Source- und Self-Hosting-Optionen werden bevorzugt geprüft, wenn sie fachlich, wirtschaftlich und betrieblich sinnvoll sind."}},
-    {"@type":"Question","name":"Wie startet ein Projekt?","acceptedAnswer":{"@type":"Answer","text":"Mit einer 30-minütigen Business-Analyse. Dabei werden Engpass, Ziel, Datenquellen, Risiken und ein sinnvoller erster Umsetzungsschritt eingeordnet."}}
+    {"@type":"Question","name":"Welche Abläufe kann Skalantech verbessern?","acceptedAnswer":{"@type":"Answer","text":"Besonders geeignet sind wiederkehrende Abläufe rund um Kundenanfragen, Angebote, Rechnungen, E-Mails, Terminabstimmung, Dokumente und die Übergabe von Informationen zwischen vorhandenen Systemen."}},
+    {"@type":"Question","name":"Muss dafür unsere bestehende Software ersetzt werden?","acceptedAnswer":{"@type":"Answer","text":"Nein, nicht automatisch. Zuerst wird geprüft, was sinnvoll weiterverwendet und miteinander verbunden werden kann. Neue Software kommt nur dort hinzu, wo sie einen klaren Nutzen bringt."}},
+    {"@type":"Question","name":"Bleibt die Kontrolle bei unserem Unternehmen?","acceptedAnswer":{"@type":"Answer","text":"Ja. Kritische Entscheidungen und Freigaben können bewusst beim Menschen bleiben. Automatisiert wird nur, was fachlich, technisch und organisatorisch sinnvoll ist."}},
+    {"@type":"Question","name":"Wie beginnt ein Projekt?","acceptedAnswer":{"@type":"Answer","text":"Mit einem kostenlosen 30-minütigen Potenzial-Check. Dabei wird ein konkreter Engpass betrachtet und ein sinnvoller erster Schritt eingeordnet."}}
   ]
 }
 </script>
 {% endblock %}
 
 {% block body %}
-{% set project_alts = {
-  'DeepDive': 'DeepDive verarbeitet Video zu Transkript, KI-Analyse, Dokument und Audio',
-  'AI Job Agent': 'Automatisierter Prozess von der Stellensuche bis zur personalisierten Bewerbung',
-  'DebtPilot AI': 'Geschützte lokale KI-Analyse von Dokumenten mit strukturiertem Maßnahmenplan',
-  'Skalantech Hub': 'Self-hosted Website-Plattform mit Administration, Projekten und Kontaktkanal',
-  'Hermes Agent': 'Modulare KI-Orchestrierung mit Werkzeugen, Modellen und privaten Workflows'
-} %}
 <main id="main-content">
   <section class="hero" id="top">
     <div class="hero__grid-bg" aria-hidden="true"></div>
@@ -37,91 +30,132 @@
       <div class="hero__copy">
         <div class="eyebrow eyebrow--light" data-reveal>
           <span class="eyebrow__pulse" aria-hidden="true"></span>
-          Skalantech · Automatisierung, Business Apps &amp; IT
+          Digitale Prozesse für kleine und mittelständische Unternehmen
         </div>
         <h1 data-reveal>
-          Arbeit, die heute Zeit frisst,
-          <span>wird morgen zum digitalen Prozess.</span>
+          Weniger manuelle Arbeit.
+          <span>Mehr Zeit für Kunden, Team und Wachstum.</span>
         </h1>
         <p class="hero__lead" data-reveal>
-          Für kleine und mittelständische Unternehmen: Skalantech verbindet E-Mails,
-          Formulare, CRM, Dokumente, Websites und interne Systeme mit n8n, APIs und KI –
-          damit weniger kopiert, gesucht und nachgefasst werden muss.
+          Skalantech verbindet bestehende Systeme, automatisiert wiederkehrende Abläufe und entwickelt digitale Lösungen,
+          die Ihr Tagesgeschäft spürbar entlasten – schrittweise, nachvollziehbar und passend zu Ihrem Unternehmen.
         </p>
-        <ul class="hero__pains" aria-label="Typische Automationsziele" data-reveal>
-          <li><span aria-hidden="true">→</span> Anfrage → Angebot</li>
-          <li><span aria-hidden="true">→</span> Rechnung → strukturierte Daten</li>
-          <li><span aria-hidden="true">→</span> E-Mail → CRM &amp; Aufgabe</li>
-          <li><span aria-hidden="true">→</span> Lead → Follow-up</li>
-          <li><span aria-hidden="true">→</span> Formular → interner Prozess</li>
-          <li><span aria-hidden="true">→</span> Dokument → Wissen</li>
+        <ul class="hero__pains" aria-label="Typische Ergebnisse" data-reveal>
+          <li><span aria-hidden="true">→</span> Kundenanfragen schneller bearbeiten</li>
+          <li><span aria-hidden="true">→</span> Angebote besser vorbereiten</li>
+          <li><span aria-hidden="true">→</span> Rechnungen für die Buchhaltung aufbereiten</li>
+          <li><span aria-hidden="true">→</span> E-Mails zuverlässig zuordnen</li>
+          <li><span aria-hidden="true">→</span> Daten nicht mehrfach eingeben</li>
+          <li><span aria-hidden="true">→</span> Wiederkehrende Aufgaben automatisch anstoßen</li>
         </ul>
         <div class="hero__actions" data-reveal>
-          <a class="button button--accent" href="#termin">Kostenlose Business-Analyse <span aria-hidden="true">↗</span></a>
-          <a class="button button--quiet" href="{{ url_for('showcase.demos') }}" data-track="demo_clicked" data-track-label="hero">Live-Demos testen <span aria-hidden="true">→</span></a>
+          <a class="button button--accent" href="#termin">Kostenlosen Potenzial-Check buchen <span aria-hidden="true">↗</span></a>
+          <a class="button button--quiet" href="{{ url_for('showcase.demos') }}" data-track="demo_clicked" data-track-label="hero">Live-Beispiele ansehen <span aria-hidden="true">→</span></a>
         </div>
-        <ul class="hero__trust" aria-label="Warum Skalantech" data-reveal>
-          <li><span aria-hidden="true">✓</span> Live-Automationen statt Konzepte</li>
-          <li><span aria-hidden="true">✓</span> Eigene Server und Daten</li>
-          <li><span aria-hidden="true">✓</span> Von Analyse bis Betrieb</li>
+        <ul class="hero__trust" aria-label="Arbeitsprinzipien von Skalantech" data-reveal>
+          <li><span aria-hidden="true">✓</span> Bestehende Systeme zuerst sinnvoll weiterverwenden</li>
+          <li><span aria-hidden="true">✓</span> Mit einem klar abgegrenzten Prozess starten</li>
+          <li><span aria-hidden="true">✓</span> Nachvollziehbar umgesetzt und dokumentiert</li>
         </ul>
       </div>
       <div class="hero__visual" data-reveal>
-        <div class="hero__system" role="img" aria-label="Skalantech Systemübersicht: Website, Formulare, E-Mail und CRM werden über n8n und APIs mit KI-Agenten, Datenbanken, Business Apps und Benachrichtigungen verbunden.">
+        <div class="hero__system" role="img" aria-label="Beispielhafter Kundenprozess von einer eingehenden Anfrage bis zur menschlich geprüften Übergabe an bestehende Systeme.">
           <div class="sys-col sys-col--in">
-            <div class="sys-node"><span>Website</span></div>
-            <div class="sys-node"><span>Formulare</span></div>
+            <div class="sys-node"><span>Kundenanfrage</span></div>
+            <div class="sys-node"><span>Rechnung</span></div>
             <div class="sys-node"><span>E-Mail</span></div>
-            <div class="sys-node"><span>CRM</span></div>
+            <div class="sys-node"><span>Formular</span></div>
           </div>
           <div class="sys-core">
-            <div class="sys-core__label">n8n · APIs</div>
+            <div class="sys-core__label">Informationen erkennen</div>
             <div class="sys-core__line"></div>
-            <div class="sys-core__badge">KI-Agenten</div>
+            <div class="sys-core__badge">Prüfen &amp; vorbereiten</div>
           </div>
           <div class="sys-col sys-col--out">
-            <div class="sys-node"><span>Datenbanken</span></div>
-            <div class="sys-node"><span>Business Apps</span></div>
-            <div class="sys-node"><span>Benachrichtigungen</span></div>
-            <div class="sys-node"><span>Dokumente</span></div>
+            <div class="sys-node"><span>Aufgabe</span></div>
+            <div class="sys-node"><span>Entwurf</span></div>
+            <div class="sys-node"><span>Termin</span></div>
+            <div class="sys-node"><span>Bestehendes System</span></div>
           </div>
         </div>
-        <p class="hero__visual-note"><span aria-hidden="true">↳</span> Gebaute Systeme: Prozesse verbinden, integrieren, testen und betreiben.</p>
+        <p class="hero__visual-note"><span aria-hidden="true">↳</span> Ziel: weniger Übertragen, Suchen und Nachfassen – ohne unnötigen Systemwechsel.</p>
       </div>
     </div>
   </section>
 
-  <section class="signal-bar" aria-label="Erfahrung und Fokus">
+  <section class="signal-bar" aria-label="Was Skalantech auszeichnet">
     <div class="shell signal-bar__inner">
-      <div><strong>3</strong><span>direkt testbare Automations-Demos</span></div>
-      <div><strong>6+</strong><span>selbst gebaute Systeme</span></div>
-      <div><strong>100%</strong><span>eigene Server und Daten</span></div>
-      <div class="signal-bar__statement"><span class="signal-bar__dot" aria-hidden="true"></span>Live-Stack: n8n · Python · Docker · Tailscale · Caddy · LLMs</div>
+      <div><strong>3</strong><span>direkt testbare Live-Beispiele</span></div>
+      <div><strong>6+</strong><span>eigene digitale Systeme und Prototypen</span></div>
+      <div><strong>1</strong><span>klarer Weg von Analyse bis Betrieb</span></div>
+      <div class="signal-bar__statement"><span class="signal-bar__dot" aria-hidden="true"></span>Technologie wird nach Ihrem Prozess ausgewählt – nicht umgekehrt.</div>
     </div>
   </section>
 
-  <section class="usecase-section" id="use-cases">
+  <section class="usecase-section" id="pain-points">
     <div class="shell">
       <div class="showcase-heading" data-reveal>
-        <div><p class="section-label">Konkrete Anwendungsfälle</p><h2>Nicht „KI einführen“. Einen Engpass entfernen.</h2></div>
-        <p>Wir starten bei Arbeit, die häufig vorkommt, klar beschrieben werden kann und messbar Zeit kostet. Erst dann wählen wir Workflow, Software und KI.</p>
+        <div><p class="section-label">Typische Ausgangslagen</p><h2>Wo im Alltag unnötig Zeit verloren geht.</h2></div>
+        <p>Gute Digitalisierung beginnt nicht mit einem Tool, sondern mit einem Ablauf, der regelmäßig Arbeit bindet, Fehler erzeugt oder liegen bleibt.</p>
       </div>
       <div class="usecase-grid">
         {% for title, text in [
-          ('Anfrage → Angebot','Kundenanfragen erfassen, strukturieren und einen prüfbaren Angebotsentwurf vorbereiten.'),
-          ('Rechnung → Daten','Rechnungsinformationen extrahieren und für Buchhaltung oder ERP bereitstellen.'),
-          ('E-Mail → CRM','Nachrichten klassifizieren, Kontakte zuordnen und nächste Aufgaben erzeugen.'),
-          ('Lead → Follow-up','Neue Leads qualifizieren und fällige Nachfassaktionen zuverlässig sichtbar machen.'),
-          ('Dokument → Wissen','Dokumente analysieren und relevante Informationen für Teams auffindbar machen.'),
-          ('Formular → Prozess','Webformulare ohne Medienbruch mit n8n, CRM und internen Systemen verbinden.')
+          ('Kundenanfragen bleiben liegen','E-Mails, Formulare und Anrufe werden manuell verteilt. Rückfragen und Angebote verzögern sich.'),
+          ('Informationen werden mehrfach übertragen','Daten werden aus E-Mails, Dokumenten oder Formularen per Hand in andere Programme kopiert.'),
+          ('Wiederkehrende Aufgaben hängen an einzelnen Personen','Nachfassen, Terminbestätigungen und interne Übergaben funktionieren nur, wenn jemand daran denkt.'),
+          ('Vorhandene Systeme arbeiten nicht zusammen','Die eingesetzte Software ist grundsätzlich brauchbar, aber wichtige Informationen fließen nicht automatisch weiter.'),
+          ('Dokumente kosten unnötig Bearbeitungszeit','Rechnungen, Anhänge und Formulare müssen gelesen, sortiert und für den nächsten Arbeitsschritt vorbereitet werden.'),
+          ('Wachstum erzeugt mehr Verwaltung','Mehr Kunden und Aufträge führen zu mehr Koordination, obwohl die eigentliche Wertschöpfung nicht komplizierter geworden ist.')
         ] %}
         <article class="usecase-card" data-reveal>
           <span class="usecase-card__index">{{ "%02d"|format(loop.index) }}</span><h3>{{ title }}</h3><p>{{ text }}</p>
         </article>
         {% endfor %}
       </div>
-      <div class="credential-actions" data-reveal>
-        <a class="button button--accent" href="{{ url_for('showcase.automations') }}">Alle Automationsideen ansehen <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <section class="section section--services" id="services">
+    <div class="shell">
+      <div class="section-heading" data-reveal>
+        <div><p class="section-label">Lösungen</p><h2>Digitalisierung, die im Tagesgeschäft ankommt.</h2></div>
+        <p>Je nach Ausgangslage wird ein einzelner Ablauf verbessert oder mehrere Bausteine werden sinnvoll miteinander verbunden.</p>
+      </div>
+      <div class="pain-grid">
+        <article class="pain-card" data-reveal><span class="pain-card__index">01</span><h3>Kundenanfragen schneller bearbeiten</h3><p>Anfragen automatisch erfassen, vorsortieren, zuständig machen und nächste Schritte vorbereiten.</p><a href="{{ url_for('showcase.automations') }}"><span>→</span> Beispiele ansehen</a></article>
+        <article class="pain-card" data-reveal><span class="pain-card__index">02</span><h3>Angebote und Dokumente vorbereiten</h3><p>Informationen aus E-Mails, Formularen und Rechnungen erkennen und für die weitere Bearbeitung bereitstellen.</p><a href="{{ url_for('showcase.demos') }}"><span>→</span> Live-Beispiele ansehen</a></article>
+        <article class="pain-card" data-reveal><span class="pain-card__index">03</span><h3>Systeme und Daten verbinden</h3><p>Vorhandene Programme miteinander verbinden, damit Informationen nicht mehrfach eingegeben oder manuell weitergereicht werden müssen.</p><a href="#termin"><span>→</span> Prozess prüfen lassen</a></article>
+        <article class="pain-card" data-reveal><span class="pain-card__index">04</span><h3>Digitale Anwendungen für Ihren Ablauf</h3><p>Websites, Kundenportale und interne Anwendungen entwickeln, die nicht nur Informationen zeigen, sondern konkrete Arbeitsschritte auslösen.</p><a href="{{ url_for('public.landing_websites_apps') }}"><span>→</span> Anwendungen ansehen</a></article>
+        <article class="pain-card" data-reveal><span class="pain-card__index">05</span><h3>Stabiler und sicherer Betrieb</h3><p>Die technische Grundlage so aufbauen und betreiben, dass digitale Prozesse zuverlässig verfügbar bleiben und kontrollierbar sind.</p><a href="{{ url_for('public.landing_it_infrastruktur') }}"><span>→</span> Betrieb ansehen</a></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="usecase-section" id="branchen">
+    <div class="shell">
+      <div class="showcase-heading" data-reveal>
+        <div><p class="section-label">Branchen</p><h2>Typische Abläufe aus dem echten KMU-Alltag.</h2></div>
+        <p>Die technische Lösung ist je Betrieb unterschiedlich. Die wiederkehrenden Engpässe ähneln sich jedoch oft.</p>
+      </div>
+      <div class="usecase-grid">
+        <article class="usecase-card" data-reveal><span class="usecase-card__index">01</span><h3>Handwerk</h3><p>Kundenanfragen erfassen, Informationen für Angebote vorbereiten, Termine bestätigen und Materialrechnungen für die Buchhaltung aufbereiten.</p></article>
+        <article class="usecase-card" data-reveal><span class="usecase-card__index">02</span><h3>Arztpraxen</h3><p>Administrative E-Mails vorsortieren, Terminverschiebungen vorbereiten, Lieferantenrechnungen erfassen und interne Aufgaben zuordnen. Medizinische Entscheidungen bleiben bei qualifiziertem Personal.</p></article>
+        <article class="usecase-card" data-reveal><span class="usecase-card__index">03</span><h3>Kfz-Werkstätten</h3><p>Terminanfragen erfassen, Fahrzeugdaten und Anliegen vorbereiten, Flottenanfragen koordinieren und Teile- oder Lieferantenrechnungen aufbereiten.</p></article>
+        <article class="usecase-card" data-reveal><span class="usecase-card__index">04</span><h3>Immobilienverwaltung</h3><p>Schadenmeldungen erfassen und priorisieren, zuständige Dienstleister zuordnen, Rückmeldungen vorbereiten und Bearbeitungsstände nachvollziehbar halten.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" id="demos">
+    <div class="shell">
+      <div class="showcase-heading" data-reveal>
+        <div><p class="section-label">Live-Beispiele</p><h2>Sehen Sie einen typischen Ablauf in Aktion.</h2></div>
+        <p>Keine Präsentation, sondern direkt testbare Beispiele. So wird sichtbar, welche Vorarbeit ein digitaler Prozess übernehmen kann und wo die menschliche Prüfung bleibt.</p>
+      </div>
+      <div class="demo-grid">
+        <article class="demo-card"><span class="demo-card__state">Live-Beispiel</span><h3>InvoiceFlow</h3><p class="demo-card__eyebrow">Eingangsrechnung → für Buchhaltung vorbereitet</p><p class="demo-card__desc">Wichtige Rechnungsangaben werden erkannt und für die Prüfung sowie die anschließende Übergabe an Buchhaltung oder ERP vorbereitet.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#invoiceflow" data-track="demo_clicked" data-track-label="invoiceflow">InvoiceFlow testen →</a></article>
+        <article class="demo-card"><span class="demo-card__state">Live-Beispiel</span><h3>OfferAI</h3><p class="demo-card__eyebrow">Kundenanfrage → Angebot zur Prüfung</p><p class="demo-card__desc">Leistungswunsch, bekannte Angaben und offene Fragen werden erkannt und als Arbeitsgrundlage für ein Angebot vorbereitet.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#offerai" data-track="demo_clicked" data-track-label="offerai">OfferAI testen →</a></article>
+        <article class="demo-card"><span class="demo-card__state">Live-Beispiel</span><h3>MailAgent</h3><p class="demo-card__eyebrow">E-Mail → Bearbeitung + Antwortvorschlag</p><p class="demo-card__desc">Anliegen und Dringlichkeit werden eingeordnet, der nächste Bearbeitungsschritt vorgeschlagen und ein Antwortentwurf zur Freigabe vorbereitet.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#mailagent" data-track="demo_clicked" data-track-label="mailagent">MailAgent testen →</a></article>
       </div>
     </div>
   </section>
@@ -141,71 +175,61 @@
     </div>
   </section>
 
-  <section class="section section--services" id="services">
-    <div class="shell">
-      <div class="section-heading" data-reveal>
-        <div><p class="section-label">Leistungen</p><h2>Vier Bausteine. Ein digitaler Prozess.</h2></div>
-        <p>Je nach Ausgangslage reicht ein Workflow – oder es braucht Website, App, CRM und Infrastruktur zusammen.</p>
-      </div>
-      <div class="pain-grid">
-        <article class="pain-card" data-reveal><span class="pain-card__index">01</span><h3>Automationen &amp; KI-Agenten</h3><p>n8n-Workflows, APIs, Webhooks, Datenverarbeitung, KI-Schritte, Freigaben, Fehlerpfade und Monitoring.</p><a href="{{ url_for('showcase.automations') }}"><span>→</span> Automationen ansehen</a></article>
-        <article class="pain-card" data-reveal><span class="pain-card__index">02</span><h3>Websites &amp; Business Apps</h3><p>Websites, Portale und interne Apps, die nicht nur aussehen, sondern Leads erfassen und Prozesse auslösen.</p><a href="{{ url_for('public.landing_websites_apps') }}"><span>→</span> Websites &amp; Apps ansehen</a></article>
-        <article class="pain-card" data-reveal><span class="pain-card__index">03</span><h3>CRM &amp; Lead-Funnel</h3><p>Vom ersten Website-Kontakt über Qualifizierung und Termin bis Follow-up: nachvollziehbar und automatisierbar.</p><a href="#termin"><span>→</span> Funnel besprechen</a></article>
-        <article class="pain-card" data-reveal><span class="pain-card__index">04</span><h3>IT-Infrastruktur &amp; Betrieb</h3><p>Linux, Docker, Cloud/Hybrid, sichere Deployments, Monitoring, Backup und die technische Basis für zuverlässige Automation.</p><a href="{{ url_for('public.landing_it_infrastruktur') }}"><span>→</span> Infrastruktur ansehen</a></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="demo-section" id="demos">
-    <div class="shell">
-      <div class="showcase-heading" data-reveal>
-        <div><p class="section-label">Live-Demos</p><h2>Gebaut. Nicht nur beschrieben.</h2></div>
-        <p>Drei n8n-Workflows zeigen typische Muster. Die Demos laufen hinter der Website; die n8n-Instanz selbst bleibt intern geschützt.</p>
-      </div>
-      <div class="demo-grid">
-        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>InvoiceFlow</h3><p class="demo-card__eyebrow">Rechnung → strukturierte Daten</p><p class="demo-card__desc">Rechnungstext wird in Felder zerlegt, die sich an nachgelagerte Systeme übergeben lassen.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#invoiceflow" data-track="demo_clicked" data-track-label="invoiceflow">Demo testen →</a></article>
-        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>OfferAI</h3><p class="demo-card__eyebrow">Anfrage → Angebotsentwurf</p><p class="demo-card__desc">Eine unstrukturierte Kundenanfrage wird zu einem strukturierten Entwurf für die menschliche Prüfung.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#offerai" data-track="demo_clicked" data-track-label="offerai">Demo testen →</a></article>
-        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>MailAgent</h3><p class="demo-card__eyebrow">E-Mail → Klassifikation + Antwort</p><p class="demo-card__desc">Nachrichten werden eingeordnet und erhalten einen Antwortvorschlag für die Freigabe.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#mailagent" data-track="demo_clicked" data-track-label="mailagent">Demo testen →</a></article>
-      </div>
-    </div>
-  </section>
-
   <section class="section section--dark" id="process">
     <div class="shell process-grid">
       <div class="process-intro" data-reveal>
-        <p class="section-label section-label--light">Vorgehen</p><h2>Vom Engpass zum laufenden Prozess.</h2>
-        <p>Kein Big-Bang. Wir bauen zuerst den kleinsten Ablauf, der einen echten Nutzen nachweist.</p>
-        <a class="button button--outline-light" href="#termin">Business-Analyse buchen <span aria-hidden="true">↗</span></a>
+        <p class="section-label section-label--light">Vorgehen</p><h2>Mit einem klaren Problem starten. Nicht mit einem Großprojekt.</h2>
+        <p>Der erste Schritt soll schnell zeigen, ob eine Verbesserung im Alltag wirklich trägt. Erst danach wird erweitert.</p>
+        <a class="button button--outline-light" href="#termin">Potenzial-Check buchen <span aria-hidden="true">↗</span></a>
       </div>
       <ol class="process-list">
-        <li data-reveal><span>01</span><div><p>Analysieren</p><h3>Engpass und Ziel klären</h3><p>Welche Arbeit kostet Zeit, welche Daten liegen vor und woran messen wir Verbesserung?</p></div></li>
-        <li data-reveal><span>02</span><div><p>Entwerfen</p><h3>Prozess und Grenzen definieren</h3><p>Trigger, Regeln, Freigaben, Fehlerpfade, Datenschutz und Schnittstellen werden vor dem Build festgelegt.</p></div></li>
-        <li data-reveal><span>03</span><div><p>Bauen</p><h3>Klein starten und testen</h3><p>Der erste Workflow wird integriert, mit realistischen Fällen getestet und messbar gemacht.</p></div></li>
-        <li data-reveal><span>04</span><div><p>Betreiben</p><h3>Dokumentieren und verbessern</h3><p>Monitoring, Übergabe und Iteration machen aus der Demo einen belastbaren Betriebsprozess.</p></div></li>
+        <li data-reveal><span>01</span><div><p>Verstehen</p><h3>Engpass und Ziel klären</h3><p>Welcher Ablauf kostet heute Zeit, wo entstehen Fehler und welches Ergebnis soll besser werden?</p></div></li>
+        <li data-reveal><span>02</span><div><p>Priorisieren</p><h3>Den sinnvollsten ersten Schritt wählen</h3><p>Vorhandene Systeme, Daten, Verantwortlichkeiten und notwendige Freigaben werden berücksichtigt.</p></div></li>
+        <li data-reveal><span>03</span><div><p>Umsetzen</p><h3>Klein starten und realistisch testen</h3><p>Der erste Ablauf wird mit typischen Fällen aus Ihrem Alltag geprüft, bevor er breiter eingesetzt wird.</p></div></li>
+        <li data-reveal><span>04</span><div><p>Verbessern</p><h3>Wirkung beobachten und gezielt erweitern</h3><p>Erst wenn der Nutzen sichtbar ist, werden weitere Schritte automatisiert oder angebunden.</p></div></li>
       </ol>
     </div>
   </section>
 
-  <section class="section section--work" id="work">
+  <section class="section section--credentials" id="work">
     <div class="shell">
-      <div class="section-heading" data-reveal><div><p class="section-label">Eigene Systeme</p><h2>Technik aus eigener Praxis.</h2></div><p>Produkte und Plattformen, an denen Architektur, Self-Hosting, KI und Automatisierung praktisch umgesetzt werden.</p></div>
-      <div class="work-grid">
-        {% if projects %}
-          {% for project in projects %}
-          <article class="work-card" data-reveal>
-            <div class="work-card__meta"><span>0{{ loop.index }}</span><span>Eigenentwicklung</span></div>
-            <div class="work-card__graphic" {% if not project.image_path %}aria-hidden="true"{% endif %}>
-              {% if project.image_path %}{% set img_base = project.image_path|replace('.webp','') %}<picture><source type="image/avif" srcset="/{{ img_base }}-800.avif 800w, /{{ img_base }}-1200.avif 1200w"><img src="/{{ img_base }}-800.webp" alt="{{ project_alts.get(project.title, project.title) }}" loading="lazy" decoding="async" width="1200" height="800" class="work-card__img"></picture>{% else %}<span></span><span></span><span></span><i></i>{% endif %}
-            </div>
-            <h3>{{ project.title }}</h3><p>{{ project.description or 'Technisches Produkt aus dem Skalantech-Ökosystem.' }}</p>
-            {% if project.url %}<a href="{{ project.url }}" target="_blank" rel="noopener noreferrer">Projekt öffnen <span aria-hidden="true">↗</span></a>{% endif %}
-          </article>
-          {% endfor %}
-        {% else %}
-          <article class="work-card"><div class="work-card__meta"><span>01</span><span>AI Product</span></div><div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div><h3>DeepDive</h3><p>Videos transkribieren, analysieren und als Dokument oder Audio weiterverarbeiten.</p><a href="https://github.com/Xyesca/deepdive" target="_blank" rel="noopener noreferrer">Projekt öffnen ↗</a></article>
-          <article class="work-card"><div class="work-card__meta"><span>02</span><span>AI Platform</span></div><div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div><h3>DebtPilot AI</h3><p>Self-hosted Plattform für Dokumentenanalyse, RAG und strukturierte Arbeitsabläufe.</p></article>
-          <article class="work-card"><div class="work-card__meta"><span>03</span><span>Automation</span></div><div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div><h3>Skalantech Hub</h3><p>Website, CRM, Analytics, Demos, Lead-Funnel und n8n-Integration in einer eigenen Plattform.</p></article>
-        {% endif %}
+      <div class="section-heading" data-reveal>
+        <div><p class="section-label">Gebaute Lösungen</p><h2>Nachweise, die man sehen und testen kann.</h2></div>
+        <p>Statt Lebenslauf und Zertifikaten stehen konkrete Systeme im Vordergrund: Ausgangslage, gebaute Lösung und sichtbarer Nutzen.</p>
+      </div>
+      <div class="credential-grid credential-grid--projects" data-reveal>
+        <article class="project-card">
+          <span class="project-card__badge">Plattform</span>
+          <h3>Skalantech Hub</h3>
+          <p><strong>Ausgangslage:</strong> Website, Anfragen, Termine und Vertriebsinformationen waren voneinander getrennt.</p>
+          <p><strong>Gebaut:</strong> Eine eigene Plattform, die Website, Lead-Erfassung, CRM, Terminbuchung, Analytics und Automationen verbindet.</p>
+          <p><strong>Sichtbarer Nutzen:</strong> Ein durchgängiger Prozess vom ersten Besuch bis zur qualifizierten Anfrage.</p>
+          <p><strong>Nachweis:</strong> Diese Website läuft produktiv.</p>
+        </article>
+        <article class="project-card">
+          <span class="project-card__badge">Rechnungsverarbeitung</span>
+          <h3>InvoiceFlow</h3>
+          <p><strong>Ausgangslage:</strong> Rechnungsangaben müssen manuell gelesen und übertragen werden.</p>
+          <p><strong>Gebaut:</strong> Ein Ablauf, der die relevanten Informationen erkennt und für die Prüfung vorbereitet.</p>
+          <p><strong>Sichtbarer Nutzen:</strong> Weniger Übertragungsarbeit und eine klarere Vorbereitung für die Buchhaltung.</p>
+          <p><strong>Nachweis:</strong> <a href="{{ url_for('showcase.demos') }}#invoiceflow" data-track="demo_clicked" data-track-label="invoiceflow">Live-Beispiel testen ↗</a></p>
+        </article>
+        <article class="project-card">
+          <span class="project-card__badge">Angebotsvorbereitung</span>
+          <h3>OfferAI</h3>
+          <p><strong>Ausgangslage:</strong> Kundenanfragen müssen manuell ausgewertet und in Angebotsentwürfe übertragen werden.</p>
+          <p><strong>Gebaut:</strong> Ein System, das Leistungen, bekannte Angaben und offene Fragen erkennt und einen Arbeitsentwurf vorbereitet.</p>
+          <p><strong>Sichtbarer Nutzen:</strong> Die Angebotsvorbereitung startet schneller und bleibt unter menschlicher Kontrolle.</p>
+          <p><strong>Nachweis:</strong> <a href="{{ url_for('showcase.demos') }}#offerai" data-track="demo_clicked" data-track-label="offerai">Live-Beispiel testen ↗</a></p>
+        </article>
+        <article class="project-card">
+          <span class="project-card__badge">Postfach &amp; Bearbeitung</span>
+          <h3>MailAgent</h3>
+          <p><strong>Ausgangslage:</strong> Gemeinsame Postfächer enthalten unterschiedliche Anliegen und Dringlichkeiten.</p>
+          <p><strong>Gebaut:</strong> Ein System, das Nachrichten einordnet und einen Bearbeitungsschritt samt Antwortentwurf vorbereitet.</p>
+          <p><strong>Sichtbarer Nutzen:</strong> Schnellere Zuordnung und weniger wiederkehrende Schreibarbeit.</p>
+          <p><strong>Nachweis:</strong> <a href="{{ url_for('showcase.demos') }}#mailagent" data-track="demo_clicked" data-track-label="mailagent">Live-Beispiel testen ↗</a></p>
+        </article>
       </div>
     </div>
   </section>
@@ -214,86 +238,38 @@
     <div class="shell about-grid">
       <div class="about-visual" data-reveal>
         <div class="about-visual__frame about-visual__frame--system">
-          <div class="about-system" role="img" aria-label="Skalantech Kompetenzbereiche: Automation Engineering, AI & Agents, Business Apps & Web, APIs & Integrationen, IT-Infrastruktur, Self-Hosting & Operations.">
-            <span>Automation Engineering</span>
-            <span>AI &amp; Agents</span>
-            <span>Business Apps &amp; Web</span>
-            <span>APIs &amp; Integrationen</span>
-            <span>IT-Infrastruktur</span>
-            <span>Self-Hosting &amp; Operations</span>
+          <div class="about-system" role="img" aria-label="Skalantech Arbeitsprinzipien: verstehen, verbinden, vereinfachen, kontrollieren, betreiben.">
+            <span>Verstehen</span>
+            <span>Verbinden</span>
+            <span>Vereinfachen</span>
+            <span>Kontrollieren</span>
+            <span>Betreiben</span>
           </div>
         </div>
-        <div class="about-visual__caption"><span>Skalantech</span><span>Engineering-Studio · Köln · Remote in DACH</span></div>
+        <div class="about-visual__caption"><span>Skalantech</span><span>Digitale Prozesse für KMU · Köln · Remote in DACH</span></div>
       </div>
       <div class="about-copy" data-reveal>
-        <p class="section-label">Über Skalantech</p><h2>Ein Studio für Automation, Apps und Infrastruktur.</h2>
-        <p class="about-copy__lead">Skalantech entwickelt, automatisiert und betreibt digitale Systeme für kleine und mittelständische Unternehmen – von der ersten Prozessanalyse bis zum laufenden Betrieb.</p>
-        <p>Der Anspruch: Prozesse verbinden, wo heute noch kopiert und nachgefasst wird. Skalantech baut Workflows, Business Apps, Websites und KI-Integrationen auf einer selbst gehosteten, kontrollierten Infrastruktur – ohne unnötigen Vendor-Lock-in.</p>
-        <div class="expertise-list"><span>Linux &amp; Docker</span><span>Microsoft 365 / Azure</span><span>n8n</span><span>Python / PowerShell</span><span>APIs &amp; Webhooks</span><span>AI Agents &amp; RAG</span><span>Self-Hosting</span></div>
-        <div class="about-links"><a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="{{ url_for('public.landing_websites_apps') }}">Leistungen ansehen →</a></div>
+        <p class="section-label">Über Skalantech</p><h2>Technologie, die Arbeit abnimmt – statt neue Arbeit zu schaffen.</h2>
+        <p class="about-copy__lead">Skalantech entwickelt digitale Prozesse und Anwendungen für kleine und mittelständische Unternehmen. Im Mittelpunkt steht nicht ein bestimmtes Tool, sondern die Frage: Welcher Ablauf kostet heute unnötig Zeit, erzeugt Fehler oder bleibt regelmäßig liegen?</p>
+        <p>Daraus entsteht eine Lösung, die vorhandene Systeme verbindet, wiederkehrende Aufgaben vorbereitet oder automatisiert und Mitarbeitern klare Kontroll- und Freigabepunkte lässt.</p>
+        <div class="expertise-list"><span>Bestehendes sinnvoll nutzen</span><span>Klein beginnen</span><span>Messbar verbessern</span><span>Kontrolle im Unternehmen behalten</span></div>
+        <div class="about-links"><a href="#termin">Potenzial prüfen →</a><a href="{{ url_for('showcase.demos') }}">Live-Beispiele ansehen →</a></div>
       </div>
     </div>
   </section>
 
-  <section class="section section--credentials" id="nachweise">
+  <section class="section section--credentials" id="geschaeftsfuehrung">
     <div class="shell">
-      <div class="section-heading" data-reveal><div><p class="section-label">Nachweise</p><h2>Gebaute Systeme statt Versprechen.</h2></div><p>Skalantech behauptet nicht nur, Automationen und KI-Systeme zu bauen – hier sind funktionierende Systeme. Jeder Nachweis zeigt: Problem, gebaute Lösung, Technik und was heute prüfbar ist.</p></div>
-      <div class="credential-grid credential-grid--projects" data-reveal>
+      <div class="section-heading" data-reveal>
+        <div><p class="section-label">Geschäftsführung &amp; technische Leitung</p><h2>Xavier Escalante Castellar</h2></div>
+        <p>Verantwortet bei Skalantech Strategie, Lösungsarchitektur und Qualitätssicherung. Der fachliche Schwerpunkt liegt auf Prozessautomatisierung, KI-Integration und moderner IT-Infrastruktur.</p>
+      </div>
+      <div class="credential-grid" data-reveal>
         <article class="project-card">
-          <span class="project-card__badge">Plattform</span>
-          <h3>Skalantech Hub</h3>
-          <p><strong>Problem:</strong> Website, Leads, Termine und Analytics liefen in getrennten Welten.</p>
-          <p><strong>Lösung:</strong> Self-hosted Plattform mit Landingpages, CRM-Pipeline, Live-Demos und n8n-Anbindung.</p>
-          <p><strong>Technologie:</strong> Flask · Docker · SQLite · n8n · GSC · Tailscale</p>
-          <p><strong>Nachweis:</strong> Diese Website – läuft produktiv auf eigener Infrastruktur.</p>
-        </article>
-        <article class="project-card">
-          <span class="project-card__badge">Automation</span>
-          <h3>InvoiceFlow</h3>
-          <p><strong>Problem:</strong> Rechnungsdaten müssen manuell aus Dokumenten übertragen werden.</p>
-          <p><strong>Lösung:</strong> Workflow zur Extraktion und Strukturierung relevanter Rechnungsinformationen.</p>
-          <p><strong>Technologie:</strong> n8n · APIs · KI · strukturierte Datenverarbeitung</p>
-          <p><strong>Nachweis:</strong> <a href="{{ url_for('showcase.demos') }}#invoiceflow" data-track="demo_clicked" data-track-label="invoiceflow">Live-Demo auf Skalantech ↗</a></p>
-        </article>
-        <article class="project-card">
-          <span class="project-card__badge">Automation</span>
-          <h3>OfferAI</h3>
-          <p><strong>Problem:</strong> Kundenanfragen werden zeitintensiv manuell in Angebote überführt.</p>
-          <p><strong>Lösung:</strong> Workflow, der Anfragen strukturiert und einen prüfbaren Angebotsentwurf erzeugt.</p>
-          <p><strong>Technologie:</strong> n8n · LLM · strukturierte Ausgabe · Freigabeprozess</p>
-          <p><strong>Nachweis:</strong> <a href="{{ url_for('showcase.demos') }}#offerai" data-track="demo_clicked" data-track-label="offerai">Live-Demo auf Skalantech ↗</a></p>
-        </article>
-        <article class="project-card">
-          <span class="project-card__badge">Automation</span>
-          <h3>MailAgent</h3>
-          <p><strong>Problem:</strong> Eingangs-E-Mails müssen klassifiziert und priorisiert werden.</p>
-          <p><strong>Lösung:</strong> Workflow, der Nachrichten einordnet, zusammenfasst und Antwortvorschläge liefert.</p>
-          <p><strong>Technologie:</strong> n8n · KI-Klassifikation · Routing · Freigabe</p>
-          <p><strong>Nachweis:</strong> <a href="{{ url_for('showcase.demos') }}#mailagent" data-track="demo_clicked" data-track-label="mailagent">Live-Demo auf Skalantech ↗</a></p>
-        </article>
-        <article class="project-card">
-          <span class="project-card__badge">Open Source</span>
-          <h3>DeepDive</h3>
-          <p><strong>Problem:</strong> Videoinhalte sind schwer durchsuchbar und aufbereitbar.</p>
-          <p><strong>Lösung:</strong> Open-Source-Pipeline: Transkription, KI-Analyse und Export als PDF/HTML + MP3.</p>
-          <p><strong>Technologie:</strong> Python · Whisper · LLMs · Automatisierung</p>
-          <p><strong>Nachweis:</strong> <a href="https://github.com/Xyesca/deepdive" target="_blank" rel="noopener noreferrer" data-track="case_study_click" data-track-label="DeepDive">Öffentliches Repository ↗</a></p>
-        </article>
-        <article class="project-card">
-          <span class="project-card__badge">KI-Plattform</span>
-          <h3>DebtPilot AI</h3>
-          <p><strong>Problem:</strong> Dokumentenanalyse und Fallbearbeitung sind manuell und ohne zentrale Ablage.</p>
-          <p><strong>Lösung:</strong> Self-hosted KI-Plattform mit RAG, lokalen LLMs und strukturierten Arbeitsabläufen.</p>
-          <p><strong>Technologie:</strong> Docker · Ollama · RAG · Microservices · Self-Hosting</p>
-          <p><strong>Nachweis:</strong> Läuft auf eigener Infrastruktur, lokale Verarbeitung.</p>
-        </article>
-        <article class="project-card">
-          <span class="project-card__badge">Agent-Orchestrierung</span>
-          <h3>Hermes / n8n Agent-Team</h3>
-          <p><strong>Problem:</strong> Wiederkehrende Aufgaben brauchen isolierte, spezialisierte Arbeitsabläufe.</p>
-          <p><strong>Lösung:</strong> Orchestriertes Agenten-Team mit Rollen, gemeinsamen Backlog und automatisierten Routinen.</p>
-          <p><strong>Technologie:</strong> Hermes Agent · n8n · Kanban · API-Integration · LLM-Routing</p>
-          <p><strong>Nachweis:</strong> Dieses System erstellt Inhalte, Reports und Workflows selbstständig.</p>
+          <span class="project-card__badge">Technischer Fokus</span>
+          <h3>Von der Prozessidee bis zum stabilen Betrieb</h3>
+          <p>Im technischen Alltag arbeitet die Geschäftsführung unter anderem mit n8n, Python, Microsoft 365 / Azure, APIs und selbst gehosteten KI-Systemen. Diese Werkzeuge stehen bewusst hier – und nicht im Mittelpunkt des Kundennutzens.</p>
+          <p><a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></p>
         </article>
       </div>
     </div>
@@ -301,12 +277,12 @@
 
   <section class="section section--faq" id="faq">
     <div class="shell faq-grid">
-      <div data-reveal><p class="section-label">FAQ</p><h2>Vor der Business-Analyse.</h2><p>Vier Fragen, die häufig vor dem ersten Gespräch entstehen.</p></div>
+      <div data-reveal><p class="section-label">FAQ</p><h2>Was Kunden vor dem ersten Gespräch wissen wollen.</h2><p>Vier Fragen, die für eine sinnvolle Entscheidung wichtiger sind als die verwendete Technik.</p></div>
       <div class="faq-list" data-reveal>
-        <details><summary>Welche Prozesse kann Skalantech automatisieren?</summary><p>Typische Fälle sind Kundenanfragen, Angebotsvorbereitung, Rechnungsverarbeitung, E-Mail-Klassifikation, CRM-Übergaben, Follow-ups, Dokumentenanalyse und wiederkehrende interne Abläufe.</p></details>
-        <details><summary>Muss dafür die bestehende Software ersetzt werden?</summary><p>Nicht zwingend. Zuerst prüfen wir vorhandene Schnittstellen und verbinden bestehende Systeme, wenn das wirtschaftlich und technisch sinnvoll ist.</p></details>
-        <details><summary>Ist Self-Hosting möglich?</summary><p>Ja. Open Source und Self-Hosting werden bevorzugt geprüft, wenn sie fachlich, wirtschaftlich und betrieblich passen.</p></details>
-        <details><summary>Wie startet ein Projekt?</summary><p>Mit einer 30-minütigen Business-Analyse. Wir klären Engpass, Ziel, Datenquellen und einen sinnvollen ersten Umsetzungsschritt.</p></details>
+        <details><summary>Welche Abläufe kann Skalantech verbessern?</summary><p>Besonders geeignet sind wiederkehrende Abläufe rund um Kundenanfragen, Angebote, Rechnungen, E-Mails, Terminabstimmung, Dokumente und die Übergabe von Informationen zwischen vorhandenen Systemen.</p></details>
+        <details><summary>Muss dafür unsere bestehende Software ersetzt werden?</summary><p>Nein, nicht automatisch. Zuerst wird geprüft, was sinnvoll weiterverwendet und miteinander verbunden werden kann. Neue Software kommt nur dort hinzu, wo sie einen klaren Nutzen bringt.</p></details>
+        <details><summary>Bleibt die Kontrolle bei unserem Unternehmen?</summary><p>Ja. Kritische Entscheidungen und Freigaben können bewusst beim Menschen bleiben. Automatisiert wird nur, was fachlich, technisch und organisatorisch sinnvoll ist.</p></details>
+        <details><summary>Wie beginnt ein Projekt?</summary><p>Mit einem kostenlosen 30-minütigen Potenzial-Check. Wir betrachten einen konkreten Engpass und ordnen ein, welcher erste Schritt sinnvoll und realistisch ist.</p></details>
       </div>
     </div>
   </section>
@@ -314,9 +290,9 @@
   <section class="section section--booking" id="termin">
     <div class="shell booking-grid">
       <div data-reveal>
-        <p class="section-label">30-Minuten-Business-Analyse</p><h2>Welcher Prozess kostet Sie heute unnötig Zeit?</h2>
-        <p>Unverbindlich und online. Wir klären den Engpass und ob eine Automatisierung, App oder Infrastrukturverbesserung sinnvoll ist.</p>
-        <ul class="booking-points"><li><span>✓</span> kostenlos &amp; unverbindlich</li><li><span>✓</span> konkrete Einordnung statt Produktpitch</li><li><span>✓</span> direkter Kontakt zu Skalantech</li></ul>
+        <p class="section-label">30-Minuten-Potenzial-Check</p><h2>Welcher Ablauf kostet Sie heute unnötig Zeit?</h2>
+        <p>Kostenlos und unverbindlich. Wir betrachten einen konkreten Prozess und klären, ob und wie sich die Arbeit sinnvoll vereinfachen lässt.</p>
+        <ul class="booking-points"><li><span>✓</span> kostenlos &amp; unverbindlich</li><li><span>✓</span> ein konkreter Ablauf statt allgemeinem KI-Pitch</li><li><span>✓</span> klare Einordnung des nächsten sinnvollen Schritts</li></ul>
         <div class="contact-direct"><span>Lieber direkt?</span><a href="mailto:xyesca@skalantech.store">xyesca@skalantech.store <span aria-hidden="true">↗</span></a></div>
       </div>
       <div class="booking-box" data-reveal>
@@ -329,23 +305,23 @@
           <div class="form-grid"><div class="field"><label for="booking-day">Wunschtag <span>*</span></label><input type="date" id="booking-day" name="preferred_day" required min="{{ today }}" max="{{ max_booking_day }}"></div><div class="field"><label for="booking-time">Wunschzeit <span>*</span></label><select id="booking-time" name="preferred_time" required><option value="">Bitte wählen</option>{% for t in ['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30'] %}<option value="{{ t }}">{{ t }}</option>{% endfor %}</select></div></div>
           <div class="field"><label for="booking-message">Worum geht es? <span>*</span></label><textarea id="booking-message" name="message" rows="4" maxlength="2000" required placeholder="Welcher Ablauf kostet heute Zeit oder läuft noch manuell?"></textarea></div>
           <label class="privacy-check" for="booking-privacy"><input type="checkbox" id="booking-privacy" name="privacy" value="accepted" required><span>Ich habe die <a href="{{ url_for('public.datenschutz') }}" target="_blank">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span></label>
-          <button class="button button--accent button--submit" type="submit"><span>Business-Analyse anfragen</span><span aria-hidden="true">↗</span></button><p class="form-status" id="booking-status" aria-live="polite"></p>
+          <button class="button button--accent button--submit" type="submit"><span>Potenzial-Check anfragen</span><span aria-hidden="true">↗</span></button><p class="form-status" id="booking-status" aria-live="polite"></p>
         </form>
-        <div class="booking-success" id="booking-success" role="status" aria-live="polite" tabindex="-1" hidden><div class="booking-success__check" aria-hidden="true">✓</div><h2 class="booking-success__title">Anfrage ist angekommen.</h2><div class="booking-success__summary" id="booking-success-summary" hidden><p class="booking-success__slot">Ihr Wunschtermin: <strong id="booking-success-slot"></strong></p><p class="booking-success__hint">Sie erhalten die Bestätigung per E-Mail.</p></div><div class="booking-success__queued" id="booking-success-queued" hidden><p>Wir melden uns innerhalb von 24 h mit einem Terminvorschlag.</p></div><div class="booking-success__steps"><p>1. Anfrage prüfen</p><p>2. 30 Minuten Ausgangslage klären</p><p>3. Sinnvollen nächsten Schritt festlegen</p></div><p class="booking-success__trust">Direkter Kontakt zu Skalantech — kein Vertriebsteam.</p></div>
+        <div class="booking-success" id="booking-success" role="status" aria-live="polite" tabindex="-1" hidden><div class="booking-success__check" aria-hidden="true">✓</div><h2 class="booking-success__title">Anfrage ist angekommen.</h2><div class="booking-success__summary" id="booking-success-summary" hidden><p class="booking-success__slot">Ihr Wunschtermin: <strong id="booking-success-slot"></strong></p><p class="booking-success__hint">Sie erhalten die Bestätigung per E-Mail.</p></div><div class="booking-success__queued" id="booking-success-queued" hidden><p>Wir melden uns innerhalb von 24 h mit einem Terminvorschlag.</p></div><div class="booking-success__steps"><p>1. Anfrage prüfen</p><p>2. 30 Minuten Ausgangslage klären</p><p>3. Sinnvollen nächsten Schritt festlegen</p></div><p class="booking-success__trust">Direkter Kontakt zu Skalantech.</p></div>
       </div>
     </div>
   </section>
 
   <section class="contact-section" id="contact">
     <div class="shell contact-grid">
-      <div class="contact-copy" data-reveal><p class="section-label section-label--light">Projektanfrage</p><h2>Schon konkreter?</h2><p>Drei Sätze zur Ausgangslage reichen. Skalantech prüft, ob und wie wir sinnvoll unterstützen können.</p><div class="contact-fit"><p>Besonders passend für:</p><ul><li><span>✓</span> wiederkehrende manuelle Abläufe</li><li><span>✓</span> Website-, CRM- und Systemintegration</li><li><span>✓</span> KI-Use-Cases mit realen Daten und klarer Freigabe</li></ul></div><div class="contact-direct"><span>Direkt per E-Mail:</span><a href="mailto:xyesca@skalantech.store">xyesca@skalantech.store ↗</a></div></div>
+      <div class="contact-copy" data-reveal><p class="section-label section-label--light">Projektanfrage</p><h2>Sie haben bereits einen konkreten Ablauf im Kopf?</h2><p>Drei Sätze zur Ausgangslage reichen. Skalantech prüft, ob und wie sich der Prozess sinnvoll verbessern lässt.</p><div class="contact-fit"><p>Besonders passend für:</p><ul><li><span>✓</span> wiederkehrende manuelle Abläufe</li><li><span>✓</span> Informationen, die zwischen Programmen übertragen werden</li><li><span>✓</span> Prozesse mit klaren Regeln und menschlicher Freigabe</li></ul></div><div class="contact-direct"><span>Direkt per E-Mail:</span><a href="mailto:xyesca@skalantech.store">xyesca@skalantech.store ↗</a></div></div>
       <div class="contact-form-wrap" data-reveal>
         <form class="contact-form" id="contact-form" method="post" action="{{ url_for('public.contact') }}">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><div class="form-honeypot" aria-hidden="true"><label for="website">Website</label><input type="text" id="website" name="website" tabindex="-1" autocomplete="off"></div>
           <div class="form-grid"><div class="field"><label for="name">Name <span>*</span></label><input type="text" id="name" name="name" autocomplete="name" maxlength="120" required placeholder="Ihr Name"></div><div class="field"><label for="company">Unternehmen</label><input type="text" id="company" name="company" autocomplete="organization" maxlength="160" placeholder="Optional"></div></div>
           <div class="field"><label for="email">E-Mail <span>*</span></label><input type="email" id="email" name="email" autocomplete="email" maxlength="254" required placeholder="name@unternehmen.de"></div>
-          <div class="field"><label for="service">Worum geht es?</label><select id="service" name="service"><option value="">Bitte auswählen</option><option>Infrastruktur & Cloud</option><option>Prozessautomatisierung</option><option>KI-Agenten & RAG</option><option>Betrieb & Reliability</option><option>System-Check / Beratung</option><option>Etwas anderes</option></select></div>
-          <div class="field"><label for="message">Ausgangslage und Ziel <span>*</span></label><textarea id="message" name="message" rows="6" maxlength="5000" required placeholder="Was läuft heute noch manuell oder unzuverlässig – und was soll stattdessen möglich sein?"></textarea><span class="field__hint"><span id="message-count">0</span> / 5.000 Zeichen</span></div>
+          <div class="field"><label for="service">Worum geht es?</label><select id="service" name="service"><option value="">Bitte auswählen</option><option>Manuellen Prozess vereinfachen</option><option>Kundenanfragen & Angebote</option><option>Rechnungen & Dokumente</option><option>Systeme & Daten verbinden</option><option>Website / Business-Anwendung</option><option>Stabiler IT-Betrieb</option><option>Etwas anderes</option></select></div>
+          <div class="field"><label for="message">Ausgangslage und Ziel <span>*</span></label><textarea id="message" name="message" rows="6" maxlength="5000" required placeholder="Was läuft heute noch manuell, doppelt oder unzuverlässig – und was soll stattdessen einfacher werden?"></textarea><span class="field__hint"><span id="message-count">0</span> / 5.000 Zeichen</span></div>
           <label class="privacy-check" for="contact-privacy"><input type="checkbox" id="contact-privacy" name="privacy" value="accepted" required><span>Ich habe die <a href="{{ url_for('public.datenschutz') }}" target="_blank">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span></label>
           <button class="button button--accent button--submit" type="submit"><span>Projektanfrage senden</span><span aria-hidden="true">↗</span></button><p class="form-status" id="form-status" aria-live="polite"></p>
         </form>
