@@ -12,7 +12,7 @@
 | Für wen? | ✗ | Nur „Unternehmen“ — keine Zielgruppe (KMU/Mittelstand) im Hero |
 | Problem? | ✓ | Pain-Liste im Hero (manuelle Prozesse, Systeme, KI-Unsicherheit) |
 | Warum Skalantech? | ✗ | Kein Differenzierer im Hero; Signal-Bar zeigte schwache Claims („100% remote-fähig“, „3 echte Projekte“) |
-| Nächster Schritt? | ✓ | CTA „Kostenloses Erstgespräch“ prominent (Header + Hero) |
+| Nächster Schritt? | ✓ | CTA „Potenzial-Check buchen“ prominent (Header + Hero) — seit Customer-First-Relaunch (t_345e37a3); Events unverändert `demo_started` |
 
 ## 2. Conversion-Baseline (vor Optimierung, gemessen 2026-08-27)
 

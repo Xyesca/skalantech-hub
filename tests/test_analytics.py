@@ -500,6 +500,7 @@ class AnalyticsEventTests(unittest.TestCase):
 
         repo_root = Path(__file__).resolve().parent.parent
         index_html = (repo_root / "app" / "templates" / "index.html").read_text(encoding="utf-8")
+        base_html = (repo_root / "app" / "templates" / "base.html").read_text(encoding="utf-8")
         analytics_js = (repo_root / "app" / "static" / "js" / "analytics.js").read_text(encoding="utf-8")
 
         # Demo-Klicks trackbar (Hero + Demo-Karten)
@@ -521,6 +522,33 @@ class AnalyticsEventTests(unittest.TestCase):
         # Client-Allowlist enthält die neuen Events
         self.assertIn('"case_study_click"', analytics_js)
         self.assertIn('"demo_clicked"', analytics_js)
+
+    def test_customer_first_cta_mapping_kept_compatible(self):
+        """Customer-First (t_345e37a3): Der CTA-Text ist von „Business-Analyse“
+        auf „Potenzial-Check“ umbenannt, aber das Analytics-Vertragsgerüst bleibt
+        kompatibel: (1) Header-CTA trägt weiterhin die Klasse `header-cta`
+        (demo_started-Label „header“), (2) alle „Potenzial-Check“-CTA-Links
+        zeigen weiterhin auf `#termin` (demo_started-Labels hero/section),
+        (3) das versteckte service-Feld im Buchungsformular behält den Wert
+        „Business-Analyse“ (Server-Kette lead_created/demo_completed/meeting_booked
+        bleibt stabil), (4) der neue Footer-Potenzial-Check ist als
+        demo_started/footer getrackt. Regression-Guard gegen stillschweigende
+        Entkopplung von Copy und Tracking."""
+        from pathlib import Path
+
+        repo_root = Path(__file__).resolve().parent.parent
+        index_html = (repo_root / "app" / "templates" / "index.html").read_text(encoding="utf-8")
+        base_html = (repo_root / "app" / "templates" / "base.html").read_text(encoding="utf-8")
+
+        # 1) Header-CTA: Klasse bleibt → analytics.js wireClick('.header-cta, …')
+        self.assertIn('class="header-cta"', base_html)
+        self.assertIn("Potenzial-Check buchen", base_html)
+        # 2) CTA-Links → #termin (hero + section)
+        self.assertIn('href="#termin"', index_html)
+        # 3) Service-Wert stabil (Server-Kette; bewusst kompatibel gehalten)
+        self.assertIn('name="service" value="Business-Analyse"', index_html)
+        # 4) Footer-Potenzial-Check getrackt (demo_started, Label footer)
+        self.assertIn('data-track="demo_started" data-track-label="footer"', base_html)
 
 
 if __name__ == "__main__":

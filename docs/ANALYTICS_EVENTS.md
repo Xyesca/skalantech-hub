@@ -1,6 +1,26 @@
 # Analytics & Conversion Tracking — Event-Spezifikation (PULSE)
 
-**Stand:** 2026-08-28 · **Verantwortlich:** PULSE (Analytics) · **Status:** implementiert + verifiziert (P0) — Lead-Funnel-Erweiterung (booking_error/booking_confirmed) verifiziert (t_14c947e2); Rebrand-Review Issue #3 (t_debcb0eb): `case_study_click`/`demo_clicked` ergänzt, `service_viewed`-/`case_study_viewed`-Selektoren auf aktuelle Karten-Klassen erweitert (`.usecase-card`/`.pain-card`/`.project-card`); P1 `roi_calculated` für ROI-Rechner `/rechner` finalisiert + live verifiziert (t_28ab613d)
+**Stand:** 2026-08-28 · **Verantwortlich:** PULSE (Analytics) · **Status:** implementiert + verifiziert (P0) — Lead-Funnel-Erweiterung (booking_error/booking_confirmed) verifiziert (t_14c947e2); Rebrand-Review Issue #3 (t_debcb0eb): `case_study_click`/`demo_clicked` ergänzt, `service_viewed`-/`case_study_viewed`-Selektoren auf aktuelle Karten-Klassen erweitert (`.usecase-card`/`.pain-card`/`.project-card`); P1 `roi_calculated` für ROI-Rechner `/rechner` finalisiert + live verifiziert (t_28ab613d); **Customer-First (t_345e37a3): CTA-Rename „Business-Analyse“ → „Potenzial-Check“ bewusst KOMPATIBEL gehalten — kein Event-/Props-Bruch, Footer-CTA neu getrackt (demo_started/footer)**
+
+## 0. CTA-Namensgebung & Kompatibilität (Customer-First, t_345e37a3)
+
+Die sichtbare CTA-Copy wurde im Rahmen des Customer-First-Relaunchs (Branch
+`feat/customer-first-website`, Referenz `docs/CUSTOMER_FIRST_WEBSITE_PROPOSAL.md`)
+von „Business-Analyse buchen“ auf „Potenzial-Check buchen“ umbenannt. **Bewusste
+Entscheidung: kompatibel halten, kein Event-Rename.** Begründung:
+
+- Die Event-Allowlist, alle Event-Namen und die Props-Kontrakte bleiben unverändert —
+  ein Rename würde die KPI-Baselines (CONVERSION_BASELINE) und die Funnel-SQLs brechen.
+- `demo_started` wird über **Klassen-/Href-Selektoren** gefeuert (`.header-cta`,
+  `a[href='#termin']`), nicht über den sichtbaren Text. Die Labels (`header`/`hero`/`section`)
+  sind positionsbasiert (ctaLabel) — der Text spielt keine Rolle.
+- Das versteckte `service`-Feld im Buchungsformular bleibt `value="Business-Analyse"`.
+  Dadurch bleibt die Server-Kette `lead_created {service}` → `demo_completed {Erstgespräch}`
+  → `meeting_booked {Erstgespräch}` stabil und mit historischen Daten vergleichbar.
+- Neu: der Footer-CTA „Potenzial-Check“ (`base.html`, Kontakt-Spalte, `/#termin`) wird
+  jetzt als `demo_started` mit `label: "footer"` getrackt (data-track-Hook, t_345e37a3).
+- Mapping-Hinweis für Reports: „Potenzial-Check“ (neu) ≡ „Business-Analyse“ (alt) ≡
+  Erstgespräch/30-min-Check. Kein separates Event nötig.
 
 ## 1. Architektur
 
