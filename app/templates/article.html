@@ -23,7 +23,7 @@
       "description": "{{ article.description }}",
       "inLanguage": "de-DE",
       "datePublished": "{{ article.published or article_published }}",
-      "author": { "@id": "https://skalantech.store/#xavier" },
+      "author": { "@id": "https://skalantech.store/#business" },
       "publisher": { "@id": "https://skalantech.store/#business" },
       "mainEntityOfPage": "{{ article_url }}"
     },
@@ -102,7 +102,6 @@
           <div class="article-author__links">
             <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
             <a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-            <a href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate <span aria-hidden="true">↗</span></a>
             <a href="{{ url_for('public.index') }}#about">Über Skalantech <span aria-hidden="true">→</span></a>
           </div>
         </div>

@@ -316,7 +316,7 @@ def _render_landing(slug: str, template: str = "landing.html"):
     page["slug"] = slug
     page["url"] = path
     page["canonical_url"] = SITE_URL + path
-    page.setdefault("cta_primary", "Kostenloses Erstgespräch")
+    page.setdefault("cta_primary", "Kostenlose Business-Analyse")
     page.setdefault("cta_secondary", "Projekt besprechen")
     page.setdefault("cta_final_title", "Klingt nach Ihrem Thema?")
     page.setdefault("cta_final_text", "30 Minuten, unverbindlich. Wir klären, ob und wie Skalantech Sie unterstützen kann.")

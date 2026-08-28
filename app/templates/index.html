@@ -58,7 +58,7 @@
         </ul>
         <div class="hero__actions" data-reveal>
           <a class="button button--accent" href="#termin">Kostenlose Business-Analyse <span aria-hidden="true">↗</span></a>
-          <a class="button button--quiet" href="{{ url_for('showcase.demos') }}">Live-Demos testen <span aria-hidden="true">→</span></a>
+          <a class="button button--quiet" href="{{ url_for('showcase.demos') }}" data-track="demo_clicked" data-track-label="hero">Live-Demos testen <span aria-hidden="true">→</span></a>
         </div>
         <ul class="hero__trust" aria-label="Warum Skalantech" data-reveal>
           <li><span aria-hidden="true">✓</span> Live-Automationen statt Konzepte</li>
@@ -148,9 +148,9 @@
         <p>Drei n8n-Workflows zeigen typische Muster. Die Demos laufen hinter der Website; die n8n-Instanz selbst bleibt intern geschützt.</p>
       </div>
       <div class="demo-grid">
-        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>InvoiceFlow</h3><p class="demo-card__eyebrow">Rechnung → strukturierte Daten</p><p class="demo-card__desc">Rechnungstext wird in Felder zerlegt, die sich an nachgelagerte Systeme übergeben lassen.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#invoiceflow">Demo testen →</a></article>
-        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>OfferAI</h3><p class="demo-card__eyebrow">Anfrage → Angebotsentwurf</p><p class="demo-card__desc">Eine unstrukturierte Kundenanfrage wird zu einem strukturierten Entwurf für die menschliche Prüfung.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#offerai">Demo testen →</a></article>
-        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>MailAgent</h3><p class="demo-card__eyebrow">E-Mail → Klassifikation + Antwort</p><p class="demo-card__desc">Nachrichten werden eingeordnet und erhalten einen Antwortvorschlag für die Freigabe.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#mailagent">Demo testen →</a></article>
+        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>InvoiceFlow</h3><p class="demo-card__eyebrow">Rechnung → strukturierte Daten</p><p class="demo-card__desc">Rechnungstext wird in Felder zerlegt, die sich an nachgelagerte Systeme übergeben lassen.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#invoiceflow" data-track="demo_clicked" data-track-label="invoiceflow">Demo testen →</a></article>
+        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>OfferAI</h3><p class="demo-card__eyebrow">Anfrage → Angebotsentwurf</p><p class="demo-card__desc">Eine unstrukturierte Kundenanfrage wird zu einem strukturierten Entwurf für die menschliche Prüfung.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#offerai" data-track="demo_clicked" data-track-label="offerai">Demo testen →</a></article>
+        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>MailAgent</h3><p class="demo-card__eyebrow">E-Mail → Klassifikation + Antwort</p><p class="demo-card__desc">Nachrichten werden eingeordnet und erhalten einen Antwortvorschlag für die Freigabe.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#mailagent" data-track="demo_clicked" data-track-label="mailagent">Demo testen →</a></article>
       </div>
     </div>
   </section>
@@ -238,7 +238,7 @@
           <p><strong>Problem:</strong> Rechnungsdaten müssen manuell aus Dokumenten übertragen werden.</p>
           <p><strong>Lösung:</strong> Workflow zur Extraktion und Strukturierung relevanter Rechnungsinformationen.</p>
           <p><strong>Technologie:</strong> n8n · APIs · KI · strukturierte Datenverarbeitung</p>
-          <p><strong>Nachweis:</strong> Live-Demo auf Skalantech.</p>
+          <p><strong>Nachweis:</strong> <a href="{{ url_for('showcase.demos') }}#invoiceflow" data-track="demo_clicked" data-track-label="invoiceflow">Live-Demo auf Skalantech ↗</a></p>
         </article>
         <article class="project-card">
           <span class="project-card__badge">Automation</span>
@@ -246,7 +246,7 @@
           <p><strong>Problem:</strong> Kundenanfragen werden zeitintensiv manuell in Angebote überführt.</p>
           <p><strong>Lösung:</strong> Workflow, der Anfragen strukturiert und einen prüfbaren Angebotsentwurf erzeugt.</p>
           <p><strong>Technologie:</strong> n8n · LLM · strukturierte Ausgabe · Freigabeprozess</p>
-          <p><strong>Nachweis:</strong> Live-Demo auf Skalantech.</p>
+          <p><strong>Nachweis:</strong> <a href="{{ url_for('showcase.demos') }}#offerai" data-track="demo_clicked" data-track-label="offerai">Live-Demo auf Skalantech ↗</a></p>
         </article>
         <article class="project-card">
           <span class="project-card__badge">Automation</span>
@@ -254,7 +254,7 @@
           <p><strong>Problem:</strong> Eingangs-E-Mails müssen klassifiziert und priorisiert werden.</p>
           <p><strong>Lösung:</strong> Workflow, der Nachrichten einordnet, zusammenfasst und Antwortvorschläge liefert.</p>
           <p><strong>Technologie:</strong> n8n · KI-Klassifikation · Routing · Freigabe</p>
-          <p><strong>Nachweis:</strong> Live-Demo auf Skalantech.</p>
+          <p><strong>Nachweis:</strong> <a href="{{ url_for('showcase.demos') }}#mailagent" data-track="demo_clicked" data-track-label="mailagent">Live-Demo auf Skalantech ↗</a></p>
         </article>
         <article class="project-card">
           <span class="project-card__badge">Open Source</span>
@@ -262,7 +262,7 @@
           <p><strong>Problem:</strong> Videoinhalte sind schwer durchsuchbar und aufbereitbar.</p>
           <p><strong>Lösung:</strong> Open-Source-Pipeline: Transkription, KI-Analyse und Export als PDF/HTML + MP3.</p>
           <p><strong>Technologie:</strong> Python · Whisper · LLMs · Automatisierung</p>
-          <p><strong>Nachweis:</strong> <a href="https://github.com/Xyesca/deepdive" target="_blank" rel="noopener noreferrer">Öffentliches Repository ↗</a></p>
+          <p><strong>Nachweis:</strong> <a href="https://github.com/Xyesca/deepdive" target="_blank" rel="noopener noreferrer" data-track="case_study_click" data-track-label="DeepDive">Öffentliches Repository ↗</a></p>
         </article>
         <article class="project-card">
           <span class="project-card__badge">KI-Plattform</span>
@@ -307,7 +307,7 @@
       <div class="booking-box" data-reveal>
         <div class="booking-box__status"><span class="booking-box__dot" aria-hidden="true"></span>Online-Terminanfrage</div>
         <form class="booking-form" id="booking-form" method="post" action="{{ url_for('public.contact') }}">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="book_slot" value="1"><input type="hidden" name="service" value="Erstgespräch"><input type="hidden" name="roi_context" id="roi-context" value="">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="book_slot" value="1"><input type="hidden" name="service" value="Business-Analyse"><input type="hidden" name="roi_context" id="roi-context" value="">
           <div class="form-honeypot" aria-hidden="true"><label for="booking-website">Website</label><input type="text" id="booking-website" name="website" tabindex="-1" autocomplete="off"></div>
           <div class="form-grid"><div class="field"><label for="booking-name">Name <span>*</span></label><input type="text" id="booking-name" name="name" autocomplete="name" maxlength="120" required placeholder="Ihr Name"></div><div class="field"><label for="booking-company">Unternehmen</label><input type="text" id="booking-company" name="company" autocomplete="organization" maxlength="160" placeholder="Optional"></div></div>
           <div class="field"><label for="booking-email">E-Mail <span>*</span></label><input type="email" id="booking-email" name="email" autocomplete="email" maxlength="254" required placeholder="name@unternehmen.de"></div>
