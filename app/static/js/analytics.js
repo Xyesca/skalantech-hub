@@ -30,6 +30,8 @@
     "booking_confirmed",
     "service_viewed",
     "case_study_viewed",
+    "case_study_click",
+    "demo_clicked",
     "roi_calculated",
     "lead_created",
     "hero_cta_click",
@@ -264,8 +266,8 @@
       });
     }
 
-    wireView(".service-card", "service_viewed", function (el) { return textOf(el, "h3"); });
-    wireView(".work-card", "case_study_viewed", function (el) { return textOf(el, "h3"); });
+    wireView(".service-card, .usecase-card, .pain-card", "service_viewed", function (el) { return textOf(el, "h3"); });
+    wireView(".work-card, .project-card", "case_study_viewed", function (el) { return textOf(el, "h3"); });
 
     wireDataTrack();
     wireForms();

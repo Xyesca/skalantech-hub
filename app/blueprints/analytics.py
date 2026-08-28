@@ -34,6 +34,8 @@ ANALYTICS_EVENTS = frozenset({
     "booking_confirmed",  # Bestätigungsansicht im Booking-Box sichtbar (Client)
     "service_viewed",     # Leistungs-Karte im Viewport (einmal pro Session)
     "case_study_viewed",  # Projekt-/Case-Study-Karte im Viewport (einmal pro Session)
+    "case_study_click",   # Klick auf Projekt-Link (Nachweise/Gebaute Systeme; label = Projektname)
+    "demo_clicked",       # Live-Demo geöffnet (hero | invoiceflow | offerai | mailagent)
     "roi_calculated",     # ROI-Rechner ausgelöst (UI folgt; API/Event ist bereit)
     "lead_created",       # Kontaktanfrage erfolgreich gespeichert (Lead in CRM)
     # Landingpage-Events (LUMINA-Spez, Branchen-Seiten) — data-track-Attribute

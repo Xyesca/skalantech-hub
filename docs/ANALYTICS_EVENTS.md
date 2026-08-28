@@ -1,6 +1,6 @@
 # Analytics & Conversion Tracking — Event-Spezifikation (PULSE)
 
-**Stand:** 2026-08-27 · **Verantwortlich:** PULSE (Analytics) · **Status:** implementiert + verifiziert (P0) — Lead-Funnel-Erweiterung (booking_error/booking_confirmed) verifiziert (t_14c947e2)
+**Stand:** 2026-08-28 · **Verantwortlich:** PULSE (Analytics) · **Status:** implementiert + verifiziert (P0) — Lead-Funnel-Erweiterung (booking_error/booking_confirmed) verifiziert (t_14c947e2); Rebrand-Review Issue #3 (t_debcb0eb): `case_study_click`/`demo_clicked` ergänzt, `service_viewed`-/`case_study_viewed`-Selektoren auf aktuelle Karten-Klassen erweitert (`.usecase-card`/`.pain-card`/`.project-card`)
 
 ## 1. Architektur
 
@@ -35,7 +35,9 @@ SQLite: analytics_events  (Modell AnalyticsEvent)
 | `booking_error` | n8n down/timeout oder ungültige Antwort — **nur** bei echter Störung, **nie** bei „Slot belegt“ (normaler Nutzerpfad) | **Server** (n8n-Fehlerklassifikation) | `{"reason": "unreachable"\|"invalid_response"}` |
 | `booking_confirmed` | Bestätigungsansicht im `.booking-box` sichtbar (Erfolg oder queued) — 1×/Submit | Client (main.js `showBookingSuccess`) | `{"status": "confirmed"\|"queued"}` |
 | `service_viewed` | Leistungs-Karte im Viewport (1×/Session) | Client (IntersectionObserver) | `{"label": "<Karten-Titel>"}` |
-| `case_study_viewed` | Projekt-Karte im Viewport (1×/Session) | Client (IntersectionObserver) | `{"label": "<Projekt-Titel>"}` |
+| `case_study_viewed` | Projekt-Karte im Viewport (1×/Session) — `.work-card` **und** `.project-card` (Nachweise, Issue #3) | Client (IntersectionObserver) | `{"label": "<Projekt-Titel>"}` |
+| `case_study_click` | Klick auf Projekt-Link im Nachweise-Bereich (Issue #3, Studio-Rebrand) | Client (data-track) | `{"label": "DeepDive"}` |
+| `demo_clicked` | Live-Demo geöffnet — Hero, Demo-Karten oder Projekt-Nachweis (Issue #3) | Client (data-track) | `{"label": "hero"\|"invoiceflow"\|"offerai"\|"mailagent"}` |
 | `roi_calculated` | ROI-Rechner ausgelöst | Client (Widget-API, folgt) | z. B. `{"savings_hours": 8}` |
 | `lead_created` | Kontaktanfrage erfolgreich gespeichert (Lead in CRM) | **Server** (Formular-POST) | `{"service": "<Anliegen>"}` |
 | `hero_cta_click` | Hero-Primär-CTA auf Landingpages (LUMINA-Spez) | Client (data-track) | `{"label": "hero"}` |
