@@ -23,6 +23,10 @@ class CrmTests(unittest.TestCase):
         cls.temp_dir = tempfile.TemporaryDirectory()
         os.environ["SECRET_KEY"] = "test-secret"
         os.environ["ADMIN_PASSWORD"] = "test-admin-password"
+        # Hermetisch: explizit setzen, sonst erbt der Test den (ggf. leeren)
+        # ADMIN_USERNAME aus der Container-Umgebung → _ensure_admin seedet
+        # einen Admin mit leerem Username → Login unmöglich.
+        os.environ["ADMIN_USERNAME"] = "admin"
         os.environ["SESSION_COOKIE_SECURE"] = "false"
         os.environ["DATABASE_URL"] = f"sqlite:///{cls.temp_dir.name}/site.db"
         os.environ["CRM_API_KEY"] = API_KEY
