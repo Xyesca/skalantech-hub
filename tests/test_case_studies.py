@@ -214,6 +214,24 @@ class CaseStudyTests(unittest.TestCase):
         self.assertNotIn("#termin?utm_source", html)
         self.assertIn("case_handwerk", html)
 
+    # ── Analytics (DoD: Events vorhanden + serverseitig erlaubt) ────────
+
+    def test_cta_tracking_events_present_and_allowed(self):
+        html = self._get(PATH).get_data(as_text=True)
+        # Generisches data-track-API (analytics.js) auf allen CTAs
+        self.assertIn('data-track="case_study_click"', html)
+        for label in ("case-study-cta-primary", "case-study-cta-secondary",
+                      "related-landing", "related-article"):
+            with self.subTest(label=label):
+                self.assertIn(f'data-track-label="{label}"', html)
+        # Serverseitige Allowlist akzeptiert das Event (PULSE-Review)
+        resp = self.client.post(
+            "/analytics/event",
+            json={"event": "case_study_click", "page": PATH,
+                  "session_id": "cs-sess", "props": {"label": "case-study-cta-primary"}},
+        )
+        self.assertEqual(resp.status_code, 204, "case_study_click muss erlaubt sein")
+
     # ── JSON-LD ────────────────────────────────────────────────────────
 
     def test_jsonld_valid_and_complete(self):

@@ -139,10 +139,10 @@
       <aside class="article-cta">
         <h2>Weniger Büro. Mehr Handwerk.</h2>
         <p>Rechnen Sie den Nutzen mit Ihren eigenen Werten durch – oder sehen Sie die Automatisierung in einer Demo mit Branchendaten.</p>
-        <a class="button button--accent" href="{{ cs.cta_primary_url }}">{{ cs.cta_primary }} <span aria-hidden="true">↗</span></a>
-        <a class="button button--quiet" href="{{ cs.cta_secondary_url }}">{{ cs.cta_secondary }} <span aria-hidden="true">↗</span></a>
+        <a class="button button--accent" href="{{ cs.cta_primary_url }}" data-track="case_study_click" data-track-label="case-study-cta-primary">{{ cs.cta_primary }} <span aria-hidden="true">↗</span></a>
+        <a class="button button--quiet" href="{{ cs.cta_secondary_url }}" data-track="case_study_click" data-track-label="case-study-cta-secondary">{{ cs.cta_secondary }} <span aria-hidden="true">↗</span></a>
         {% if cs.related_landing_resolved %}
-        <a class="button button--quiet" href="{{ cs.related_landing_resolved.url }}">Mehr zur Automatisierung im Handwerk <span aria-hidden="true">↗</span></a>
+        <a class="button button--quiet" href="{{ cs.related_landing_resolved.url }}" data-track="case_study_click" data-track-label="related-landing">Mehr zur Automatisierung im Handwerk <span aria-hidden="true">↗</span></a>
         {% endif %}
       </aside>
 
@@ -151,7 +151,7 @@
         <h2>Weiterlesen</h2>
         <ul class="landing-articles">
           {% for art in cs.related_articles_resolved %}
-          <li><a href="{{ art.url }}">{{ art.title }} <span aria-hidden="true">↗</span></a></li>
+          <li><a href="{{ art.url }}" data-track="case_study_click" data-track-label="related-article">{{ art.title }} <span aria-hidden="true">↗</span></a></li>
           {% endfor %}
         </ul>
       </aside>
