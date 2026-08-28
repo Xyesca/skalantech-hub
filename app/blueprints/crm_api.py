@@ -13,7 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from flask import Blueprint, jsonify, request
 
 from app.extensions import db
-from app.models import Lead, Booking, PIPELINE_STAGES, PIPELINE_TERMINAL
+from app.models import Lead, Booking, PIPELINE_STAGES, PIPELINE_TERMINAL, SERVICE_LABEL_MAP, BOOKING_SERVICE_LABEL
 
 crm_api_bp = Blueprint("crm_api", __name__, url_prefix="/api/crm")
 
@@ -116,7 +116,10 @@ def reserve_booking():
         return jsonify({"success": False, "booked": False, "errors": errors}), 400
 
     company = (data.get("company") or "").strip()[:160]
-    topic = (data.get("topic") or "Erstgespräch").strip()[:120]
+    # C15 (PULSE): Kanonisches Label — Alt-Werte („Business-Analyse“/„Erstgespräch“)
+    # aus Legacy-Clients werden auf „Potenzial-Check“ gemappt.
+    raw_topic = (data.get("topic") or BOOKING_SERVICE_LABEL).strip()[:120]
+    topic = SERVICE_LABEL_MAP.get(raw_topic, raw_topic)
     booking_id = (data.get("booking_id") or str(uuid.uuid4())).strip()[:64]
     lead_id = data.get("lead_id")
 

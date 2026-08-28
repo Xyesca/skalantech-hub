@@ -259,7 +259,7 @@ class AnalyticsEventTests(unittest.TestCase):
         self.assertEqual(len(meeting), 1)
         self.assertEqual(
             json.loads(meeting[0].props),
-            {"day": "2026-09-15", "time": "10:00", "service": "Erstgespräch"},
+            {"day": "2026-09-15", "time": "10:00", "service": "Potenzial-Check"},
         )
         self.assertIn("demo_completed", {e.event for e in events})
 
@@ -327,7 +327,7 @@ class AnalyticsEventTests(unittest.TestCase):
         self.assertEqual(len(meeting_events), 1)
         self.assertEqual(
             json.loads(meeting_events[0].props),
-            {"day": "2026-09-15", "time": "10:00", "service": "Erstgespräch"},
+            {"day": "2026-09-15", "time": "10:00", "service": "Potenzial-Check"},
         )
 
     def test_booking_error_invalid_response_reason(self):
@@ -523,17 +523,16 @@ class AnalyticsEventTests(unittest.TestCase):
         self.assertIn('"case_study_click"', analytics_js)
         self.assertIn('"demo_clicked"', analytics_js)
 
-    def test_customer_first_cta_mapping_kept_compatible(self):
-        """Customer-First (t_345e37a3): Der CTA-Text ist von „Business-Analyse“
-        auf „Potenzial-Check“ umbenannt, aber das Analytics-Vertragsgerüst bleibt
-        kompatibel: (1) Header-CTA trägt weiterhin die Klasse `header-cta`
-        (demo_started-Label „header“), (2) alle „Potenzial-Check“-CTA-Links
-        zeigen weiterhin auf `#termin` (demo_started-Labels hero/section),
-        (3) das versteckte service-Feld im Buchungsformular behält den Wert
-        „Business-Analyse“ (Server-Kette lead_created/demo_completed/meeting_booked
-        bleibt stabil), (4) der neue Footer-Potenzial-Check ist als
+    def test_customer_first_service_label_canonical(self):
+        """Customer-First (C15, PULSE): Das service-Label des Buchungs-Funnels ist
+        kanonisch „Potenzial-Check“. (1) Header-CTA trägt weiterhin die Klasse
+        `header-cta` (demo_started-Label „header“), (2) alle „Potenzial-Check“-
+        CTA-Links zeigen weiterhin auf `#termin` (demo_started-Labels hero/section),
+        (3) das versteckte service-Feld im Buchungsformular ist vom dokumentierten
+        Label-Mapping abgedeckt (Legacy „Business-Analyse“ wird serverseitig auf
+        „Potenzial-Check“ kanonisiert), (4) der neue Footer-Potenzial-Check ist als
         demo_started/footer getrackt. Regression-Guard gegen stillschweigende
-        Entkopplung von Copy und Tracking."""
+        Entkopplung von Copy und Tracking (Mapping: docs/ANALYTICS_EVENTS.md §0)."""
         from pathlib import Path
 
         repo_root = Path(__file__).resolve().parent.parent
@@ -545,10 +544,47 @@ class AnalyticsEventTests(unittest.TestCase):
         self.assertIn("Potenzial-Check buchen", base_html)
         # 2) CTA-Links → #termin (hero + section)
         self.assertIn('href="#termin"', index_html)
-        # 3) Service-Wert stabil (Server-Kette; bewusst kompatibel gehalten)
-        self.assertIn('name="service" value="Business-Analyse"', index_html)
+        # 3) Hidden service-Feld: Wert ist vom Label-Mapping abgedeckt
+        #    („Business-Analyse“ → kanonisch „Potenzial-Check“; C15)
+        self.assertIn('name="service" value="', index_html)
+        hidden_service = index_html.split('name="service" value="', 1)[1].split('"', 1)[0]
+        self.assertIn(hidden_service, ("Business-Analyse", "Potenzial-Check"))
         # 4) Footer-Potenzial-Check getrackt (demo_started, Label footer)
         self.assertIn('data-track="demo_started" data-track-label="footer"', base_html)
+
+    def test_booking_service_label_canonicalized_to_potenzial_check(self):
+        """C15 (PULSE): Alt-Labels „Business-Analyse“ (Formular-Hidden-Field) und
+        „Erstgespräch“ (CRM-Historie) werden beim Formular-POST auf das kanonische
+        Label „Potenzial-Check“ gemappt — lead_created, demo_completed und
+        meeting_booked tragen damit in derselben Buchung ein einheitliches
+        service-Label. Event-Namen bleiben unverändert (keine Breaking-Change)."""
+        from app.extensions import db as _db
+
+        original = self.public_module._forward_to_n8n
+        self.public_module._forward_to_n8n = lambda *a, **kw: {
+            "success": True,
+            "status": "confirmed",
+            "message": "ok",
+        }
+        try:
+            for legacy in ("Business-Analyse", "Erstgespräch"):
+                with self.subTest(legacy=legacy):
+                    with self.app.app_context():
+                        self.AnalyticsEvent.query.delete()
+                        _db.session.commit()
+                    response = self._submit_contact(extra={
+                        "book_slot": "1",
+                        "preferred_day": "2026-09-15",
+                        "preferred_time": "10:00",
+                        "service": legacy,
+                    })
+                    self.assertEqual(response.status_code, 200)
+                    events = {e.event: json.loads(e.props) for e in self._events()}
+                    self.assertEqual(events["lead_created"]["service"], "Potenzial-Check")
+                    self.assertEqual(events["demo_completed"]["service"], "Potenzial-Check")
+                    self.assertEqual(events["meeting_booked"]["service"], "Potenzial-Check")
+        finally:
+            self.public_module._forward_to_n8n = original
 
 
 if __name__ == "__main__":

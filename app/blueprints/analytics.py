@@ -25,7 +25,7 @@ analytics_bp = Blueprint("analytics", __name__, url_prefix="/analytics")
 # geschrieben und sind damit die verlässliche Quelle der Wahrheit.
 ANALYTICS_EVENTS = frozenset({
     "page_view",          # Seite wurde geladen (Funnel-Nenner für Conversion Rates)
-    "demo_started",       # CTA „Erstgespräch“ geklickt (Header/Hero/Sektion)
+    "demo_started",       # CTA „Potenzial-Check“ geklickt (Header/Hero/Sektion)
     "demo_completed",     # Termin-Anfrage erfolgreich abgeschickt (Formular ok)
     "contact_clicked",    # Kontakt-CTA / mailto geklickt
     "calendar_opened",    # Datumsauswahl (Kalender) im Buchungsformular geöffnet

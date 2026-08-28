@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 from urllib import request as urlrequest
 
 from flask import Blueprint, render_template, send_from_directory, current_app, request, flash, redirect, url_for, jsonify, Response, abort
-from app.models import Settings, Link, Project, ContactMessage, Lead
+from app.models import Settings, Link, Project, ContactMessage, Lead, SERVICE_LABEL_MAP, BOOKING_SERVICE_LABEL
 from app.extensions import db, limiter
 from app.seo_pages import LANDING_PAGES, LANDING_ORDER, ROI_RECHNER_COPY, ROI_RECHNER_FAQS
 from app.branchen import BRANCH_ORDER
@@ -66,7 +66,7 @@ def _forward_to_n8n(name, email, company, topic, message, preferred_day, preferr
         "name": name,
         "email": email,
         "company": company,
-        "topic": topic or "Erstgespräch",
+        "topic": topic or BOOKING_SERVICE_LABEL,
         "message": message,
         "preferred_day": preferred_day,
         "preferred_time": preferred_time,
@@ -499,6 +499,10 @@ def contact():
     email = request.form.get("email", "").strip()
     company = " ".join(request.form.get("company", "").split())
     service = request.form.get("service", "").strip()
+    # C15 (PULSE): Alt-Labels („Business-Analyse“/„Erstgespräch“) kanonisieren →
+    # „Potenzial-Check“. Analytics-Events, CRM-Lead und n8n-Topic sprechen damit
+    # eine Sprache (Mapping: docs/ANALYTICS_EVENTS.md §0).
+    service = SERVICE_LABEL_MAP.get(service, service)
     message_text = request.form.get("message", "").strip()
     privacy = request.form.get("privacy", "")
     honeypot = request.form.get("website", "").strip()
@@ -573,12 +577,12 @@ def contact():
 
     n8n_result = None
     if request.form.get("book_slot") == "1":
-        _record_event("demo_completed", props={"service": "Erstgespräch"}, **_attribution)
+        _record_event("demo_completed", props={"service": BOOKING_SERVICE_LABEL}, **_attribution)
         day = request.form.get("preferred_day", "").strip()
         slot = request.form.get("preferred_time", "").strip()
         n8n_result = _forward_to_n8n(
             name=name, email=email, company=company,
-            topic=service or "Erstgespräch", message=message_text,
+            topic=service or BOOKING_SERVICE_LABEL, message=message_text,
             preferred_day=day, preferred_time=slot,
         )
         if n8n_result and n8n_result.get("success"):
@@ -589,7 +593,7 @@ def contact():
             db.session.commit()
             _record_event(
                 "meeting_booked",
-                props={"day": day, "time": slot, "service": "Erstgespräch"},
+                props={"day": day, "time": slot, "service": BOOKING_SERVICE_LABEL},
                 **_attribution,
             )
         elif n8n_result and n8n_result.get("status") in ("unreachable", "invalid_response"):

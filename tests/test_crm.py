@@ -282,7 +282,7 @@ class CrmTests(unittest.TestCase):
             "name": "Bernd Buchung",
             "email": email,
             "company": "Buchung GmbH",
-            "topic": "Erstgespräch",
+            "topic": "Potenzial-Check",
             **extra,
         }
         return self.client.post(

@@ -240,19 +240,19 @@ class PublicSiteTests(unittest.TestCase):
             return cm
 
         with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, b'{"success": true, "message": "ok"}')):
-            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Potenzial-Check", "m", "2026-09-10", "10:00")
         self.assertEqual(r["status"], "confirmed")
 
         with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, json.dumps({"success": False, "message": "Slot belegt"}).encode())):
-            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Potenzial-Check", "m", "2026-09-10", "10:00")
         self.assertEqual(r["status"], "slot_taken")
 
         with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, b"")):
-            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Potenzial-Check", "m", "2026-09-10", "10:00")
         self.assertEqual(r["status"], "invalid_response")
 
         with mock.patch.object(pub.urlrequest, "urlopen", side_effect=Exception("down")):
-            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Potenzial-Check", "m", "2026-09-10", "10:00")
         self.assertEqual(r["status"], "unreachable")
 
     def test_security_headers_are_present(self):

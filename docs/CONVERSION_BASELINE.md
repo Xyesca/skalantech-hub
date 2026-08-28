@@ -52,7 +52,7 @@
 | Metrik | Baseline | Ziel (30 Tage nach Indexierung) |
 |---|---|---|
 | Besuch → Kontakt/Lead | 0 % | ≥ 1,0 % |
-| CTA-Klickrate Hero (Erstgespräch) | n/a | ≥ 2,5 % der Besucher |
+| CTA-Klickrate Hero (Potenzial-Check) | n/a | ≥ 2,5 % der Besucher |
 | Terminbuchungs-Startrate | n/a | ≥ 40 % der Formular-Besucher |
 | Absprungrate Homepage | n/a | < 60 % |
 

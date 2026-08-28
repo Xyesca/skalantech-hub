@@ -213,3 +213,24 @@ Beispiel `{{erkenntnisse}}` (value-basiert, keine Technik):
 - [x] T0-Stil-Prompt für n8n bereit (§4.1, als Konstanten nutzbar)
 - [x] Datei im Repo: `docs/followup-texte.md` (Commit + Push, master)
 - [x] Kein Kunden-Versand aktiviert — Versandkanal bleibt intern bis Freigabe
+
+## 10. Anhang: service-Label-Mapping (C15, PULSE)
+
+Damit CRM-Pipeline und Follow-up-Texte dieselbe Sprache sprechen wie die Website
+(Customer-First: „Potenzial-Check“ statt „Business-Analyse“/„Erstgespräch“), gilt
+seit C15 (t_5d32a4a3) ein kanonisches service-Label. Die Kanonisierung passiert
+serverseitig beim Formular-POST (`SERVICE_LABEL_MAP` in `app/models.py`, angewendet
+in `public.contact()` und `crm_api.reserve_booking()`):
+
+| Eingang (Formular/API/CRM-Historie) | Kanonisches Label |
+|---|---|
+| `Business-Analyse` | `Potenzial-Check` |
+| `Erstgespräch` | `Potenzial-Check` |
+
+Konsequenzen für Follow-ups:
+
+- Leads aus dem Buchungs-Funnel (30-Minuten-Potenzial-Check) führen `service`/`topic`
+  = „Potenzial-Check“ — T0–T7-Texte dürfen den Begriff „Potenzial-Check“ verwenden.
+- Alt-Leads mit „Business-Analyse“/„Erstgespräch“ im CRM sind identisch zu behandeln
+  (Mapping beim Reporting, keine separate Behandlung nötig).
+- Referenz: `docs/ANALYTICS_EVENTS.md` §0 (Analytics-Taxonomie).

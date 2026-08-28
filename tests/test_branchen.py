@@ -171,7 +171,7 @@ class BranchenLandingTests(unittest.TestCase):
             data={
                 "name": "Branche Test",
                 "email": "branche@example.com",
-                "service": "Erstgespräch",
+                "service": "Potenzial-Check",
                 "message": "Automatisierung im Handwerksbetrieb prüfen.",
                 "privacy": "accepted",
                 "website": "",
@@ -340,7 +340,7 @@ class BranchenLandingTests(unittest.TestCase):
             data={
                 "name": "ROI Test",
                 "email": "roi@example.com",
-                "service": "Erstgespräch",
+                "service": "Potenzial-Check",
                 "message": "Automatisierung im Handwerksbetrieb prüfen.",
                 "privacy": "accepted",
                 "website": "",
@@ -360,7 +360,7 @@ class BranchenLandingTests(unittest.TestCase):
             data={
                 "name": "ROI Bad",
                 "email": "roi-bad@example.com",
-                "service": "Erstgespräch",
+                "service": "Potenzial-Check",
                 "message": "Test ungültiger Kontext.",
                 "privacy": "accepted",
                 "website": "",
