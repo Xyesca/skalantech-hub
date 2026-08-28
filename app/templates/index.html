@@ -1,46 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}Skalantech · IT-Infrastruktur & KI-Automation für Unternehmen{% endblock %}
-{% block description %}Xavier Escalante modernisiert IT-Infrastruktur, automatisiert Prozesse und bringt KI-Agenten zuverlässig in den Betrieb – selbst gehostet, dokumentiert und praxisnah.{% endblock %}
-{% block og_title %}Skalantech · Stabile IT. Weniger Handarbeit. Mehr Wirkung.{% endblock %}
-{% block og_description %}IT-Infrastruktur, Cloud Engineering, Prozessautomatisierung und produktive KI-Agenten aus einer Hand.{% endblock %}
+{% block title %}Skalantech · Automatisierung, Business Apps & IT für KMU{% endblock %}
+{% block description %}Skalantech automatisiert Geschäftsprozesse, baut Business Apps und Websites und schafft die passende IT-Basis – mit n8n, KI, APIs und Self-Hosting für KMU.{% endblock %}
+{% block og_title %}Skalantech · Weniger Handarbeit. Mehr digitaler Prozess.{% endblock %}
+{% block og_description %}Automationen, Business Apps, Websites und IT-Infrastruktur für KMU – von der Analyse bis zum laufenden Betrieb.{% endblock %}
 
 {% block head %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "FAQPage",
-      "@id": "https://skalantech.store/#faq",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Für welche Unternehmen passt Skalantech?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Für kleine und mittelständische Unternehmen sowie Teams, die ihre IT modernisieren, Abläufe automatisieren oder KI kontrolliert einsetzen möchten – ohne sofort ein großes internes Spezialistenteam aufzubauen." }
-        },
-        {
-          "@type": "Question",
-          "name": "Übernimmst du auch bestehende, gewachsene Umgebungen?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Gerade bei heterogenen Bestandsumgebungen starte ich mit einer strukturierten Aufnahme, identifiziere Risiken und entwickle einen realistischen Migrations- oder Verbesserungsplan." }
-        },
-        {
-          "@type": "Question",
-          "name": "Ist Self-Hosting möglich?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Open-Source- und Self-Hosting-Optionen werden bevorzugt geprüft, wenn sie fachlich und wirtschaftlich sinnvoll sind. Cloud-Dienste sind kein Selbstzweck." }
-        },
-        {
-          "@type": "Question",
-          "name": "Kannst du von der Idee bis zum Betrieb begleiten?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Die Zusammenarbeit kann Analyse, Architektur, Implementierung, Tests, Dokumentation, Übergabe und auf Wunsch die laufende technische Begleitung umfassen." }
-        },
-        {
-          "@type": "Question",
-          "name": "Wie startet ein Projekt?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Mit einer kurzen Beschreibung Ihrer Ausgangslage und des gewünschten Ergebnisses. Danach klären wir, ob ein kompakter System-Check oder direkt ein abgegrenztes Umsetzungsprojekt sinnvoll ist." }
-        }
-      ]
-    }
+  "@type": "FAQPage",
+  "@id": "https://skalantech.store/#faq",
+  "mainEntity": [
+    {"@type":"Question","name":"Welche Prozesse kann Skalantech automatisieren?","acceptedAnswer":{"@type":"Answer","text":"Typische Fälle sind Kundenanfragen, Angebotsvorbereitung, Rechnungsverarbeitung, E-Mail-Klassifikation, CRM-Übergaben, Follow-ups, Dokumentenanalyse und wiederkehrende interne Abläufe."}},
+    {"@type":"Question","name":"Muss dafür die bestehende Software ersetzt werden?","acceptedAnswer":{"@type":"Answer","text":"Nicht zwingend. Zuerst wird geprüft, welche vorhandenen Systeme über APIs, Webhooks, Dateien oder andere Schnittstellen verbunden werden können."}},
+    {"@type":"Question","name":"Ist Self-Hosting möglich?","acceptedAnswer":{"@type":"Answer","text":"Ja. Open-Source- und Self-Hosting-Optionen werden bevorzugt geprüft, wenn sie fachlich, wirtschaftlich und betrieblich sinnvoll sind."}},
+    {"@type":"Question","name":"Wie startet ein Projekt?","acceptedAnswer":{"@type":"Answer","text":"Mit einer 30-minütigen Business-Analyse. Dabei werden Engpass, Ziel, Datenquellen, Risiken und ein sinnvoller erster Umsetzungsschritt eingeordnet."}}
   ]
 }
 </script>
@@ -62,146 +37,78 @@
       <div class="hero__copy">
         <div class="eyebrow eyebrow--light" data-reveal>
           <span class="eyebrow__pulse" aria-hidden="true"></span>
-          Skalantech · Xavier Escalante — IT-Infrastruktur, Automation &amp; KI
+          Skalantech · Automatisierung, Business Apps &amp; IT
         </div>
-
         <h1 data-reveal>
-          IT, Automatisierung und KI,
-          <span>die im Alltag wirklich funktionieren.</span>
+          Arbeit, die heute Zeit frisst,
+          <span>wird morgen zum digitalen Prozess.</span>
         </h1>
-
         <p class="hero__lead" data-reveal>
-          Für kleine und mittelständische Unternehmen: Ich mache Ihre IT stabil,
-          automatisiere wiederkehrende Prozesse und bringe KI so in den Betrieb,
-          dass Ihr Team sie täglich nutzt — statt nur ins Konzept.
+          Für kleine und mittelständische Unternehmen: Skalantech verbindet E-Mails,
+          Formulare, CRM, Dokumente, Websites und interne Systeme mit n8n, APIs und KI –
+          damit weniger kopiert, gesucht und nachgefasst werden muss.
         </p>
-
-        <ul class="hero__pains" aria-label="Typische Herausforderungen" data-reveal>
-          <li><span aria-hidden="true">✕</span> Zu viele manuelle Prozesse</li>
-          <li><span aria-hidden="true">✕</span> Systeme, die nicht sauber zusammenspielen</li>
-          <li><span aria-hidden="true">✕</span> Wiederkehrende administrative Arbeit</li>
-          <li><span aria-hidden="true">✕</span> Unsicherheit beim sinnvollen Einsatz von KI</li>
-          <li><span aria-hidden="true">✕</span> Fehlende Automatisierung zwischen vorhandenen Tools</li>
+        <ul class="hero__pains" aria-label="Typische Automationsziele" data-reveal>
+          <li><span aria-hidden="true">→</span> Anfrage → Angebot</li>
+          <li><span aria-hidden="true">→</span> Rechnung → strukturierte Daten</li>
+          <li><span aria-hidden="true">→</span> E-Mail → CRM &amp; Aufgabe</li>
+          <li><span aria-hidden="true">→</span> Lead → Follow-up</li>
+          <li><span aria-hidden="true">→</span> Formular → interner Prozess</li>
+          <li><span aria-hidden="true">→</span> Dokument → Wissen</li>
         </ul>
-
         <div class="hero__actions" data-reveal>
-          <a class="button button--accent" href="#termin">
-            Kostenloses Erstgespräch
-            <span aria-hidden="true">↗</span>
-          </a>
-          <a class="button button--quiet" href="#services">
-            Lösungen ansehen
-            <span aria-hidden="true">↓</span>
-          </a>
+          <a class="button button--accent" href="#termin">Kostenlose Business-Analyse <span aria-hidden="true">↗</span></a>
+          <a class="button button--quiet" href="{{ url_for('showcase.demos') }}">Live-Demos testen <span aria-hidden="true">→</span></a>
         </div>
-
         <ul class="hero__trust" aria-label="Warum Skalantech" data-reveal>
           <li><span aria-hidden="true">✓</span> Direkt vom Gründer — kein Vertriebsteam</li>
           <li><span aria-hidden="true">✓</span> 7+ Jahre IT-Praxiserfahrung</li>
           <li><span aria-hidden="true">✓</span> Self-Hosting &amp; Datensouveränität statt Vendor-Lock-in</li>
         </ul>
       </div>
-
       <div class="hero__visual" data-reveal>
         <figure class="hero__portrait">
           <picture>
-            <source type="image/avif"
-              srcset="{{ url_for('static', filename='img/portrait-480.avif') }} 480w,
-                      {{ url_for('static', filename='img/portrait-720.avif') }} 720w,
-                      {{ url_for('static', filename='img/portrait-1040.avif') }} 1040w"
-              sizes="(max-width: 680px) min(84vw, 340px), (max-width: 1100px) 340px, 460px">
-            <img
-              src="{{ url_for('static', filename='img/portrait-480.webp') }}"
-              srcset="{{ url_for('static', filename='img/portrait-480.webp') }} 480w,
-                      {{ url_for('static', filename='img/portrait-720.webp') }} 720w,
-                      {{ url_for('static', filename='img/portrait-1040.webp') }} 1040w"
-              sizes="(max-width: 680px) min(84vw, 340px), (max-width: 1100px) 340px, 460px"
-              width="1040" height="1300"
-              alt="Xavier Escalante – IT-Infrastructure & Automation Engineer"
-              fetchpriority="high" decoding="async">
+            <source type="image/avif" srcset="{{ url_for('static', filename='img/portrait-480.avif') }} 480w, {{ url_for('static', filename='img/portrait-720.avif') }} 720w, {{ url_for('static', filename='img/portrait-1040.avif') }} 1040w" sizes="(max-width:680px) min(84vw,340px), 460px">
+            <img src="{{ url_for('static', filename='img/portrait-480.webp') }}" srcset="{{ url_for('static', filename='img/portrait-480.webp') }} 480w, {{ url_for('static', filename='img/portrait-720.webp') }} 720w, {{ url_for('static', filename='img/portrait-1040.webp') }} 1040w" sizes="(max-width:680px) min(84vw,340px), 460px" width="1040" height="1300" alt="Xavier Escalante – Gründer von Skalantech" fetchpriority="high" decoding="async">
           </picture>
         </figure>
-        <p class="hero__visual-note">
-          <span aria-hidden="true">↳</span>
-          Technologie ist erst dann gut, wenn Ihr Team damit arbeiten kann.
-        </p>
+        <p class="hero__visual-note"><span aria-hidden="true">↳</span> Nicht nur beraten: bauen, integrieren, testen und betreiben.</p>
       </div>
     </div>
   </section>
 
   <section class="signal-bar" aria-label="Erfahrung und Fokus">
     <div class="shell signal-bar__inner">
-      <div>
-        <strong>7+</strong>
-        <span>Jahre IT-Praxiserfahrung</span>
-      </div>
-      <div>
-        <strong>6+</strong>
-        <span>selbst gehostete Produkte</span>
-      </div>
-      <div>
-        <strong>100%</strong>
-        <span>persönlich · direkter Draht zum Gründer</span>
-      </div>
-      <div class="signal-bar__statement">
-        <span class="signal-bar__dot" aria-hidden="true"></span>
-        Live: Hermes · n8n · DebtPilot AI · Docker · Caddy · Tailscale
-      </div>
+      <div><strong>7+</strong><span>Jahre IT-Praxiserfahrung</span></div>
+      <div><strong>3</strong><span>direkt testbare Automations-Demos</span></div>
+      <div><strong>1</strong><span>Ansprechpartner von Analyse bis Betrieb</span></div>
+      <div class="signal-bar__statement"><span class="signal-bar__dot" aria-hidden="true"></span>Live-Stack: n8n · Python · Docker · Tailscale · Caddy · LLMs</div>
     </div>
   </section>
 
-  <section class="section section--pain">
+  <section class="usecase-section" id="use-cases">
     <div class="shell">
-      <div class="section-heading" data-reveal>
-        <div>
-          <p class="section-label">Typische Ausgangslage</p>
-          <h2>Kommt dir das bekannt vor?</h2>
-        </div>
-        <p>
-          Diese Muster sehe ich häufig in kleinen und mittelständischen Unternehmen –
-          und für jedes gibt es einen pragmatischen Weg.
-        </p>
+      <div class="showcase-heading" data-reveal>
+        <div><p class="section-label">Konkrete Anwendungsfälle</p><h2>Nicht „KI einführen“. Einen Engpass entfernen.</h2></div>
+        <p>Wir starten bei Arbeit, die häufig vorkommt, klar beschrieben werden kann und messbar Zeit kostet. Erst dann wählen wir Workflow, Software und KI.</p>
       </div>
-
-      <div class="pain-grid">
-        <article class="pain-card" data-reveal>
-          <span class="pain-card__index" aria-hidden="true">01</span>
-          <h3>Zu viele manuelle Abläufe</h3>
-          <p>
-            Mitarbeiter übertragen Informationen zwischen verschiedenen Systemen
-            oder erledigen jeden Tag dieselben Aufgaben.
-          </p>
-          <a href="#services"><span aria-hidden="true">→</span> Prozesse analysieren und automatisieren</a>
+      <div class="usecase-grid">
+        {% for title, text in [
+          ('Anfrage → Angebot','Kundenanfragen erfassen, strukturieren und einen prüfbaren Angebotsentwurf vorbereiten.'),
+          ('Rechnung → Daten','Rechnungsinformationen extrahieren und für Buchhaltung oder ERP bereitstellen.'),
+          ('E-Mail → CRM','Nachrichten klassifizieren, Kontakte zuordnen und nächste Aufgaben erzeugen.'),
+          ('Lead → Follow-up','Neue Leads qualifizieren und fällige Nachfassaktionen zuverlässig sichtbar machen.'),
+          ('Dokument → Wissen','Dokumente analysieren und relevante Informationen für Teams auffindbar machen.'),
+          ('Formular → Prozess','Webformulare ohne Medienbruch mit n8n, CRM und internen Systemen verbinden.')
+        ] %}
+        <article class="usecase-card" data-reveal>
+          <span class="usecase-card__index">{{ "%02d"|format(loop.index) }}</span><h3>{{ title }}</h3><p>{{ text }}</p>
         </article>
-
-        <article class="pain-card" data-reveal>
-          <span class="pain-card__index" aria-hidden="true">02</span>
-          <h3>Systeme arbeiten nebeneinander</h3>
-          <p>
-            Software, Datenquellen und Infrastruktur sind vorhanden, aber kaum
-            miteinander verbunden.
-          </p>
-          <a href="#services"><span aria-hidden="true">→</span> Systeme über Schnittstellen und Workflows verbinden</a>
-        </article>
-
-        <article class="pain-card" data-reveal>
-          <span class="pain-card__index" aria-hidden="true">03</span>
-          <h3>KI ist interessant – aber der konkrete Nutzen fehlt</h3>
-          <p>
-            Viele Unternehmen testen ChatGPT und andere KI-Tools, wissen aber
-            nicht, welche Prozesse sich wirklich eignen.
-          </p>
-          <a href="#ki"><span aria-hidden="true">→</span> KI-Use-Cases identifizieren, bewerten und technisch integrieren</a>
-        </article>
-
-        <article class="pain-card" data-reveal>
-          <span class="pain-card__index" aria-hidden="true">04</span>
-          <h3>Die IT muss erst zuverlässig funktionieren</h3>
-          <p>
-            KI und Automatisierung benötigen eine stabile technische Grundlage.
-          </p>
-          <a href="#services"><span aria-hidden="true">→</span> Infrastruktur zuerst sauber und zuverlässig aufbauen</a>
-        </article>
+        {% endfor %}
+      </div>
+      <div class="credential-actions" data-reveal>
+        <a class="button button--accent" href="{{ url_for('showcase.automations') }}">Alle Automationsideen ansehen <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>
@@ -209,153 +116,28 @@
   <section class="section section--services" id="services">
     <div class="shell">
       <div class="section-heading" data-reveal>
-        <div>
-          <p class="section-label">Lösungen</p>
-          <h2>IT und KI aus einer Hand.</h2>
-        </div>
-        <p>
-          Drei Kompetenzbereiche, die aufeinander aufbauen: stabile Infrastruktur,
-          Automatisierung und sinnvoll integrierte KI.
-        </p>
+        <div><p class="section-label">Leistungen</p><h2>Vier Bausteine. Ein digitaler Prozess.</h2></div>
+        <p>Je nach Ausgangslage reicht ein Workflow – oder es braucht Website, App, CRM und Infrastruktur zusammen.</p>
       </div>
-
-      <div class="service-grid service-grid--three">
-        <article class="service-card service-card--featured" data-reveal>
-          <div class="service-card__top">
-            <span class="service-card__number">01</span>
-            <span class="service-card__tag">Fundament</span>
-          </div>
-          <div class="service-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48">
-              <rect x="5" y="7" width="38" height="10" rx="3"></rect>
-              <rect x="5" y="21" width="38" height="10" rx="3"></rect>
-              <rect x="5" y="35" width="38" height="8" rx="3"></rect>
-              <path d="M12 12h1M12 26h1M12 39h1M20 12h16M20 26h16M20 39h16"></path>
-            </svg>
-          </div>
-          <h3>IT-Infrastruktur</h3>
-          <p class="service-card__claim">Zuverlässige technische Grundlagen</p>
-          <p>
-            Aufbau, Optimierung und Betreuung moderner IT-Umgebungen –
-            damit Automatisierung und KI ein stabiles Fundament haben.
-          </p>
-          <ul>
-            <li>Server- und Systemadministration</li>
-            <li>Docker-basierte Services</li>
-            <li>Netzwerk- und Infrastrukturkonzepte</li>
-            <li>Cloud- und Hybrid-Infrastruktur</li>
-            <li>Monitoring</li>
-            <li>Backup- und Wiederherstellungskonzepte</li>
-            <li>Sichere Systemintegration</li>
-          </ul>
-          <a href="#contact" data-service-choice="Infrastruktur & Cloud">Infrastruktur besprechen <span aria-hidden="true">↗</span></a>
-          <a class="service-card__detail" href="{{ url_for('public.landing_it_infrastruktur') }}">Mehr zur Leistung: IT-Infrastruktur <span aria-hidden="true">→</span></a>
-        </article>
-
-        <article class="service-card" data-reveal>
-          <div class="service-card__top">
-            <span class="service-card__number">02</span>
-            <span class="service-card__tag">Automatisierung</span>
-          </div>
-          <div class="service-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48">
-              <circle cx="10" cy="24" r="5"></circle>
-              <circle cx="38" cy="10" r="5"></circle>
-              <circle cx="38" cy="38" r="5"></circle>
-              <path d="M15 22l18-10M15 26l18 10"></path>
-            </svg>
-          </div>
-          <h3>Automatisierung &amp; KI-Agenten</h3>
-          <p class="service-card__claim">Weniger manuelle Arbeit. Mehr automatisierte Abläufe.</p>
-          <p>
-            Unternehmensprozesse werden durch Workflows und KI-Agenten miteinander
-            verbunden und teilweise automatisiert.
-          </p>
-          <ul>
-            <li>n8n-Workflows</li>
-            <li>KI-Agenten</li>
-            <li>APIs und Webhooks</li>
-            <li>Automatisierte Datenverarbeitung</li>
-            <li>Recherche-Agenten</li>
-            <li>Content- und Informationsworkflows</li>
-            <li>Anbindung bestehender Systeme</li>
-            <li>LLM-Integration</li>
-          </ul>
-          <a href="#contact" data-service-choice="Prozessautomatisierung">Workflow prüfen <span aria-hidden="true">↗</span></a>
-          <a class="service-card__detail" href="{{ url_for('public.landing_ki_automatisierung') }}">Mehr zur Leistung: KI-Automatisierung <span aria-hidden="true">→</span></a>
-        </article>
-
-        <article class="service-card" data-reveal>
-          <div class="service-card__top">
-            <span class="service-card__number">03</span>
-            <span class="service-card__tag">KI-Integration</span>
-          </div>
-          <div class="service-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48">
-              <path d="M16 10h16a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8H16a8 8 0 0 1-8-8V18a8 8 0 0 1 8-8Z"></path>
-              <circle cx="18" cy="24" r="2"></circle>
-              <circle cx="30" cy="24" r="2"></circle>
-              <path d="M18 31h12M24 10V5M20 5h8"></path>
-            </svg>
-          </div>
-          <h3>KI-Integration &amp; Beratung</h3>
-          <p class="service-card__claim">KI sinnvoll in bestehende Prozesse integrieren</p>
-          <p>
-            Nicht jedes Unternehmen benötigt sofort ein großes KI-Projekt. Zuerst
-            werden Prozesse und mögliche Anwendungsfälle analysiert, dann die
-            passenden Lösungen ausgewählt.
-          </p>
-          <ul>
-            <li>Identifikation sinnvoller KI-Use-Cases</li>
-            <li>KI-Readiness</li>
-            <li>Auswahl geeigneter KI-Systeme</li>
-            <li>Prompt Engineering</li>
-            <li>Dokumenten- und Informationsanalyse</li>
-            <li>KI-gestützte Datenanalyse</li>
-            <li>Integration von KI in bestehende Systeme</li>
-            <li>Datenschutz und verantwortungsvoller KI-Einsatz</li>
-            <li>Bewertung von Aufwand und Nutzen</li>
-          </ul>
-          <a href="#contact" data-service-choice="KI-Agenten & RAG">KI-Use-Case einordnen <span aria-hidden="true">↗</span></a>
-          <a class="service-card__detail" href="{{ url_for('public.landing_ki_integration') }}">Mehr zur Leistung: KI-Integration <span aria-hidden="true">→</span></a>
-        </article>
+      <div class="pain-grid">
+        <article class="pain-card" data-reveal><span class="pain-card__index">01</span><h3>Automationen &amp; KI-Agenten</h3><p>n8n-Workflows, APIs, Webhooks, Datenverarbeitung, KI-Schritte, Freigaben, Fehlerpfade und Monitoring.</p><a href="{{ url_for('showcase.automations') }}"><span>→</span> Automationen ansehen</a></article>
+        <article class="pain-card" data-reveal><span class="pain-card__index">02</span><h3>Websites &amp; Business Apps</h3><p>Websites, Portale und interne Apps, die nicht nur aussehen, sondern Leads erfassen und Prozesse auslösen.</p><a href="{{ url_for('public.landing_websites_apps') }}"><span>→</span> Websites &amp; Apps ansehen</a></article>
+        <article class="pain-card" data-reveal><span class="pain-card__index">03</span><h3>CRM &amp; Lead-Funnel</h3><p>Vom ersten Website-Kontakt über Qualifizierung und Termin bis Follow-up: nachvollziehbar und automatisierbar.</p><a href="#termin"><span>→</span> Funnel besprechen</a></article>
+        <article class="pain-card" data-reveal><span class="pain-card__index">04</span><h3>IT-Infrastruktur &amp; Betrieb</h3><p>Linux, Docker, Cloud/Hybrid, sichere Deployments, Monitoring, Backup und die technische Basis für zuverlässige Automation.</p><a href="{{ url_for('public.landing_it_infrastruktur') }}"><span>→</span> Infrastruktur ansehen</a></article>
       </div>
     </div>
   </section>
 
-  <section class="section section--ki" id="ki">
-    <div class="shell ki-grid">
-      <div data-reveal>
-        <p class="section-label">KI-Kompetenz</p>
-        <h2>KI-Kompetenz trifft IT-Praxis.</h2>
+  <section class="demo-section" id="demos">
+    <div class="shell">
+      <div class="showcase-heading" data-reveal>
+        <div><p class="section-label">Live-Demos</p><h2>Gebaut. Nicht nur beschrieben.</h2></div>
+        <p>Drei n8n-Workflows zeigen typische Muster. Die Demos laufen hinter der Website; die n8n-Instanz selbst bleibt intern geschützt.</p>
       </div>
-      <div class="ki-copy" data-reveal>
-        <p>
-          Moderne KI entfaltet ihren Nutzen erst dann, wenn sie sinnvoll mit
-          Prozessen, Daten und bestehender IT-Infrastruktur verbunden wird.
-        </p>
-        <p>
-          Neben meiner praktischen Erfahrung im IT-Umfeld erweitere ich meine
-          Kompetenz gezielt im Bereich KI-Management, Automatisierung und
-          KI-Integration.
-        </p>
-        <p>
-          Der Schwerpunkt liegt dabei nicht nur auf einzelnen KI-Tools, sondern
-          auf der technischen und organisatorischen Integration von KI in reale
-          Unternehmensprozesse.
-        </p>
-        <ul class="ki-tags" aria-label="Kompetenzbereiche">
-          <li>KI-Agenten</li>
-          <li>n8n</li>
-          <li>Prompt Engineering</li>
-          <li>APIs</li>
-          <li>Webhooks</li>
-          <li>LLMs</li>
-          <li>Datenanalyse</li>
-          <li>Copilot</li>
-          <li>Automatisierung</li>
-          <li>KI-Strategie</li>
-        </ul>
+      <div class="demo-grid">
+        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>InvoiceFlow</h3><p class="demo-card__eyebrow">Rechnung → strukturierte Daten</p><p class="demo-card__desc">Rechnungstext wird in Felder zerlegt, die sich an nachgelagerte Systeme übergeben lassen.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#invoiceflow">Demo testen →</a></article>
+        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>OfferAI</h3><p class="demo-card__eyebrow">Anfrage → Angebotsentwurf</p><p class="demo-card__desc">Eine unstrukturierte Kundenanfrage wird zu einem strukturierten Entwurf für die menschliche Prüfung.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#offerai">Demo testen →</a></article>
+        <article class="demo-card"><span class="demo-card__state">Live-Workflow</span><h3>MailAgent</h3><p class="demo-card__eyebrow">E-Mail → Klassifikation + Antwort</p><p class="demo-card__desc">Nachrichten werden eingeordnet und erhalten einen Antwortvorschlag für die Freigabe.</p><a class="button button--quiet" href="{{ url_for('showcase.demos') }}#mailagent">Demo testen →</a></article>
       </div>
     </div>
   </section>
@@ -363,478 +145,85 @@
   <section class="section section--dark" id="process">
     <div class="shell process-grid">
       <div class="process-intro" data-reveal>
-        <p class="section-label section-label--light">Vorgehen</p>
-        <h2>Von „müsste man mal“ zu einem System, das läuft.</h2>
-        <p>
-          Sie behalten jederzeit den Überblick über Ziel, Aufwand und nächste
-          Entscheidung. Kein Big-Bang, keine Blackbox.
-        </p>
-        <a class="button button--outline-light" href="#contact">Ersten Schritt klären <span aria-hidden="true">↗</span></a>
+        <p class="section-label section-label--light">Vorgehen</p><h2>Vom Engpass zum laufenden Prozess.</h2>
+        <p>Kein Big-Bang. Wir bauen zuerst den kleinsten Ablauf, der einen echten Nutzen nachweist.</p>
+        <a class="button button--outline-light" href="#termin">Business-Analyse buchen <span aria-hidden="true">↗</span></a>
       </div>
-
       <ol class="process-list">
-        <li data-reveal>
-          <span>01</span>
-          <div>
-            <p>Verstehen</p>
-            <h3>Ausgangslage und Engpass klären</h3>
-            <p>Systeme, Risiken und tatsächliche Arbeitsabläufe werden sichtbar. Das Ergebnis ist ein klar priorisierter nächster Schritt.</p>
-          </div>
-        </li>
-        <li data-reveal>
-          <span>02</span>
-          <div>
-            <p>Entscheiden</p>
-            <h3>Zielbild und Scope festziehen</h3>
-            <p>Architektur, Technologie und Verantwortlichkeiten werden so gewählt, dass sie zu Team, Budget und Betrieb passen.</p>
-          </div>
-        </li>
-        <li data-reveal>
-          <span>03</span>
-          <div>
-            <p>Liefern</p>
-            <h3>In kleinen, prüfbaren Schritten umsetzen</h3>
-            <p>Frühe Ergebnisse, transparente Zwischenstände und getestete Übergaben reduzieren Risiko und Überraschungen.</p>
-          </div>
-        </li>
-        <li data-reveal>
-          <span>04</span>
-          <div>
-            <p>Befähigen</p>
-            <h3>Dokumentieren, übergeben, verbessern</h3>
-            <p>Ihr Team versteht das System und kann es betreiben. Wenn gewünscht, begleite ich Optimierung und Weiterentwicklung.</p>
-          </div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="section section--models">
-    <div class="shell">
-      <div class="section-heading" data-reveal>
-        <div>
-          <p class="section-label">Zusammenarbeit</p>
-          <h2>Passend zu Ihrem Bedarf.</h2>
-        </div>
-        <p>Ein klarer Einstieg statt eines überdimensionierten Projekts.</p>
-      </div>
-
-      <div class="model-grid">
-        <article data-reveal>
-          <span>01 · Klarheit</span>
-          <h3>System-Check</h3>
-          <p>Bestandsaufnahme, technische Einordnung und priorisierte Roadmap für Ihre konkrete Situation.</p>
-          <strong>Gut für: Entscheidungen vor Migration oder Automatisierung</strong>
-        </article>
-        <article data-reveal>
-          <span>02 · Umsetzung</span>
-          <h3>Delivery-Projekt</h3>
-          <p>Ein klar abgegrenztes Vorhaben von der Architektur bis zur getesteten, dokumentierten Lösung.</p>
-          <strong>Gut für: Migrationen, Integrationen und neue Workflows</strong>
-        </article>
-        <article data-reveal>
-          <span>03 · Kontinuität</span>
-          <h3>Engineering-Partner</h3>
-          <p>Regelmäßige technische Begleitung für Betrieb, Optimierung und neue Anforderungen.</p>
-          <strong>Gut für: Teams ohne eigene Spezialisten für jedes Thema</strong>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--bridge">
-    <div class="shell">
-      <div class="bridge-intro" data-reveal>
-        <p class="section-label">Der Weg zur KI</p>
-        <h2>IT-Infrastruktur → Daten &amp; Systeme → Automatisierung → KI</h2>
-        <p>
-          Ein Unternehmen besitzt bereits Server, Microsoft 365, Datenbanken,
-          interne Anwendungen oder Webservices. Skalantech unterstützt dabei,
-          diese Systeme über APIs, Workflows und KI miteinander zu verbinden –
-          Schritt für Schritt, ohne Parallelwelten.
-        </p>
-      </div>
-      <ol class="bridge-steps" aria-label="Verbindung von IT und KI">
-        <li data-reveal><span>01</span><strong>IT-Infrastruktur</strong><small>Server, Cloud, Microsoft 365, Netzwerk</small></li>
-        <li data-reveal><span>02</span><strong>Daten &amp; Systeme</strong><small>Datenbanken, Anwendungen, Webservices</small></li>
-        <li data-reveal><span>03</span><strong>Automatisierung</strong><small>APIs, Workflows, n8n, Webhooks</small></li>
-        <li data-reveal><span>04</span><strong>KI</strong><small>Agenten, LLMs, Analyse – sicher integriert</small></li>
+        <li data-reveal><span>01</span><div><p>Analysieren</p><h3>Engpass und Ziel klären</h3><p>Welche Arbeit kostet Zeit, welche Daten liegen vor und woran messen wir Verbesserung?</p></div></li>
+        <li data-reveal><span>02</span><div><p>Entwerfen</p><h3>Prozess und Grenzen definieren</h3><p>Trigger, Regeln, Freigaben, Fehlerpfade, Datenschutz und Schnittstellen werden vor dem Build festgelegt.</p></div></li>
+        <li data-reveal><span>03</span><div><p>Bauen</p><h3>Klein starten und testen</h3><p>Der erste Workflow wird integriert, mit realistischen Fällen getestet und messbar gemacht.</p></div></li>
+        <li data-reveal><span>04</span><div><p>Betreiben</p><h3>Dokumentieren und verbessern</h3><p>Monitoring, Übergabe und Iteration machen aus der Demo einen belastbaren Betriebsprozess.</p></div></li>
       </ol>
     </div>
   </section>
 
   <section class="section section--work" id="work">
     <div class="shell">
-      <div class="section-heading" data-reveal>
-        <div>
-          <p class="section-label">Ausgewählte Systeme</p>
-          <h2>Gebaut, betrieben, weitergedacht.</h2>
-        </div>
-        <p>Eigene Produkte und technische Plattformen – nicht nur Konzepte.</p>
-      </div>
-
+      <div class="section-heading" data-reveal><div><p class="section-label">Eigene Systeme</p><h2>Technik aus eigener Praxis.</h2></div><p>Produkte und Plattformen, an denen Architektur, Self-Hosting, KI und Automatisierung praktisch umgesetzt werden.</p></div>
       <div class="work-grid">
         {% if projects %}
           {% for project in projects %}
-            <article class="work-card" data-reveal>
-              <div class="work-card__meta">
-                <span>0{{ loop.index }}</span>
-                <span>Eigenentwicklung</span>
-              </div>
-              <div class="work-card__graphic" {% if not project.image_path %}aria-hidden="true"{% endif %}>
-                {% if project.image_path %}
-                  {% set img_base = project.image_path|replace('.webp', '') %}
-                  <picture>
-                    <source type="image/avif"
-                      srcset="/{{ img_base }}-800.avif 800w, /{{ img_base }}-1200.avif 1200w"
-                      sizes="(max-width: 680px) calc(100vw - 64px), (max-width: 1100px) calc(50vw - 40px), 560px">
-                    <img src="/{{ img_base }}-800.webp"
-                      srcset="/{{ img_base }}-800.webp 800w, /{{ img_base }}-1200.webp 1200w"
-                      sizes="(max-width: 680px) calc(100vw - 64px), (max-width: 1100px) calc(50vw - 40px), 560px"
-                      alt="{{ project_alts.get(project.title, project.title) }}"
-                      loading="lazy" decoding="async" width="1200" height="800" class="work-card__img">
-                  </picture>
-                {% else %}
-                  <span></span><span></span><span></span>
-                  <i></i>
-                {% endif %}
-              </div>
-              <h3>{{ project.title }}</h3>
-              <p>{{ project.description or 'Technisches Produkt aus dem Skalantech-Ökosystem.' }}</p>
-              {% if project.url %}
-                <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer">
-                  Projekt öffnen <span aria-hidden="true">↗</span>
-                </a>
-              {% endif %}
-            </article>
+          <article class="work-card" data-reveal>
+            <div class="work-card__meta"><span>0{{ loop.index }}</span><span>Eigenentwicklung</span></div>
+            <div class="work-card__graphic" {% if not project.image_path %}aria-hidden="true"{% endif %}>
+              {% if project.image_path %}{% set img_base = project.image_path|replace('.webp','') %}<picture><source type="image/avif" srcset="/{{ img_base }}-800.avif 800w, /{{ img_base }}-1200.avif 1200w"><img src="/{{ img_base }}-800.webp" alt="{{ project_alts.get(project.title, project.title) }}" loading="lazy" decoding="async" width="1200" height="800" class="work-card__img"></picture>{% else %}<span></span><span></span><span></span><i></i>{% endif %}
+            </div>
+            <h3>{{ project.title }}</h3><p>{{ project.description or 'Technisches Produkt aus dem Skalantech-Ökosystem.' }}</p>
+            {% if project.url %}<a href="{{ project.url }}" target="_blank" rel="noopener noreferrer">Projekt öffnen <span aria-hidden="true">↗</span></a>{% endif %}
+          </article>
           {% endfor %}
         {% else %}
-          <article class="work-card" data-reveal>
-            <div class="work-card__meta"><span>01</span><span>AI Product</span></div>
-            <div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div>
-            <h3>DeepDive</h3>
-            <p>Open-Source: Videos transkribieren, per KI analysieren und als PDF, HTML oder Audio exportieren.</p>
-            <a href="https://github.com/Xyesca/deepdive" target="_blank" rel="noopener noreferrer">
-              Projekt öffnen <span aria-hidden="true">↗</span>
-            </a>
-          </article>
-          <article class="work-card" data-reveal>
-            <div class="work-card__meta"><span>02</span><span>AI Platform</span></div>
-            <div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div>
-            <h3>DebtPilot AI</h3>
-            <p>Self-hosted Plattform mit lokalen Modellen, RAG-Dokumentenanalyse und modularer Architektur.</p>
-          </article>
-          <article class="work-card" data-reveal>
-            <div class="work-card__meta"><span>03</span><span>AI Automation</span></div>
-            <div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div>
-            <h3>AI Job Agent</h3>
-            <p>Sucht Stellenangebote, analysiert Anforderungen und erstellt automatisch personalisierte Bewerbungen mit KI.</p>
-          </article>
+          <article class="work-card"><div class="work-card__meta"><span>01</span><span>AI Product</span></div><div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div><h3>DeepDive</h3><p>Videos transkribieren, analysieren und als Dokument oder Audio weiterverarbeiten.</p><a href="https://github.com/Xyesca/deepdive" target="_blank" rel="noopener noreferrer">Projekt öffnen ↗</a></article>
+          <article class="work-card"><div class="work-card__meta"><span>02</span><span>AI Platform</span></div><div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div><h3>DebtPilot AI</h3><p>Self-hosted Plattform für Dokumentenanalyse, RAG und strukturierte Arbeitsabläufe.</p></article>
+          <article class="work-card"><div class="work-card__meta"><span>03</span><span>Automation</span></div><div class="work-card__graphic" aria-hidden="true"><span></span><span></span><span></span><i></i></div><h3>Skalantech Hub</h3><p>Website, CRM, Analytics, Demos, Lead-Funnel und n8n-Integration in einer eigenen Plattform.</p></article>
         {% endif %}
       </div>
-    </div>
-  </section>
-
-  <section class="section section--tech">
-    <div class="shell">
-      <div class="tech-heading" data-reveal>
-        <p class="section-label">Technologie</p>
-        <h2>Technologien, mit denen ich arbeite.</h2>
-      </div>
-      <ul class="tech-list" aria-label="Eingesetzte Technologien">
-        <li data-reveal>Docker</li>
-        <li data-reveal>n8n</li>
-        <li data-reveal>GitHub</li>
-        <li data-reveal>Microsoft 365</li>
-        <li data-reveal>Azure</li>
-        <li data-reveal>OpenAI / ChatGPT</li>
-        <li data-reveal>Microsoft Copilot</li>
-        <li data-reveal>Linux</li>
-        <li data-reveal>Python</li>
-        <li data-reveal>PowerShell</li>
-        <li data-reveal>Tailscale</li>
-        <li data-reveal>Caddy</li>
-      </ul>
-      <p class="tech-note" data-reveal>
-        Kein offizielles Partnerprogramm – eine Auswahl der Werkzeuge, mit denen
-        ich im Alltag arbeite und die ich für Ihre Umgebung einbringe.
-      </p>
     </div>
   </section>
 
   <section class="section section--about" id="about">
     <div class="shell about-grid">
       <div class="about-visual" data-reveal>
-        <div class="about-visual__frame about-visual__frame--portrait">
-          <picture>
-            <source type="image/avif"
-              srcset="{{ url_for('static', filename='img/founder-400.avif') }} 400w,
-                      {{ url_for('static', filename='img/founder-600.avif') }} 600w,
-                      {{ url_for('static', filename='img/founder-800.avif') }} 800w"
-              sizes="(max-width: 720px) calc(100vw - 64px), (max-width: 1100px) 300px, 360px">
-            <img
-              src="{{ url_for('static', filename='img/founder-600.webp') }}"
-              srcset="{{ url_for('static', filename='img/founder-400.webp') }} 400w,
-                      {{ url_for('static', filename='img/founder-600.webp') }} 600w,
-                      {{ url_for('static', filename='img/founder-800.webp') }} 800w"
-              sizes="(max-width: 720px) calc(100vw - 64px), (max-width: 1100px) 300px, 360px"
-              alt="Xavier Escalante Castellar – Gründer und IT-Infrastructure & Automation Engineer bei Skalantech"
-              width="800"
-              height="1000"
-              loading="lazy"
-              decoding="async">
-          </picture>
-        </div>
-        <div class="about-visual__caption">
-          <span>Xavier Escalante Castellar</span>
-          <span>Gründer · Köln · Remote</span>
-        </div>
+        <div class="about-visual__frame about-visual__frame--portrait"><picture><source type="image/avif" srcset="{{ url_for('static', filename='img/founder-400.avif') }} 400w, {{ url_for('static', filename='img/founder-600.avif') }} 600w, {{ url_for('static', filename='img/founder-800.avif') }} 800w"><img src="{{ url_for('static', filename='img/founder-600.webp') }}" alt="Xavier Escalante Castellar – Gründer von Skalantech" width="800" height="1000" loading="lazy" decoding="async"></picture></div>
+        <div class="about-visual__caption"><span>Xavier Escalante Castellar</span><span>Gründer · Köln · Remote</span></div>
       </div>
-
       <div class="about-copy" data-reveal>
-        <p class="section-label">Über mich</p>
-        <h2>Technik verstehen.<br>Verantwortung übernehmen.</h2>
-        <p class="about-copy__lead">
-          Ich bin Xavier Escalante – IT-Infrastructure & Automation Engineer
-          mit über sieben Jahren Praxiserfahrung.
-        </p>
-        <p>
-          Mein Schwerpunkt liegt dort, wo klassische Infrastruktur und moderne
-          Automatisierung zusammenkommen. Ich plane nicht nur, sondern baue,
-          teste, dokumentiere und betreibe selbst. Dadurch entstehen Lösungen,
-          die technisch sauber und im Arbeitsalltag wirklich nutzbar sind.
-        </p>
-        <p>
-          Skalantech steht für offene Systeme, Datensouveränität und pragmatische
-          Entscheidungen. Kein unnötiger Vendor-Lock-in. Keine Technologie um
-          ihrer selbst willen.
-        </p>
-
-        <div class="expertise-list" aria-label="Technologie-Schwerpunkte">
-          <span>Microsoft 365</span>
-          <span>Azure</span>
-          <span>VMware / Hyper-V</span>
-          <span>Linux & Docker</span>
-          <span>n8n</span>
-          <span>Python / PowerShell</span>
-          <span>AI Agents & RAG</span>
-          <span>Self-Hosting</span>
-        </div>
-
+        <p class="section-label">Über Skalantech</p><h2>IT-Praxis plus KI-Management.</h2>
+        <p class="about-copy__lead">Ich bin Xavier Escalante – IT-Infrastructure &amp; Automation Engineer mit über sieben Jahren Praxiserfahrung.</p>
+        <p>Ich plane nicht nur, sondern baue, teste, dokumentiere und betreibe selbst. Der Schwerpunkt liegt dort, wo Infrastruktur, Automatisierung, Business-Software und KI zusammenkommen.</p>
+        <div class="expertise-list"><span>Linux &amp; Docker</span><span>Microsoft 365 / Azure</span><span>n8n</span><span>Python / PowerShell</span><span>APIs &amp; Webhooks</span><span>AI Agents &amp; RAG</span><span>Self-Hosting</span></div>
         <div class="training-card">
-          <div class="training-card__head">
-            <span class="training-card__label">Weiterbildung</span>
-            <h3>KI-Manager:in Advanced</h3>
-          </div>
-          <p>
-            Praxisnahe Weiterbildung (8 Wochen, Live-Online) mit Schwerpunkt auf
-            der strukturierten, verantwortungsvollen Integration von KI in
-            Organisationen – als Kompetenznachweis neben der IT-Praxiserfahrung.
-          </p>
-          <ul class="training-card__tags" aria-label="Schwerpunkte der Weiterbildung">
-            <li>KI-Management &amp; KI-Strategie</li>
-            <li>Prompt Engineering &amp; LLMs</li>
-            <li>KI-Agenten &amp; Workflow-Automatisierung</li>
-            <li>n8n</li>
-            <li>APIs &amp; Webhooks</li>
-            <li>Microsoft Copilot / Copilot Studio</li>
-            <li>Datenanalyse &amp; Visualisierung</li>
-            <li>KI-Readiness &amp; Use-Case-Analyse</li>
-            <li>KI-Integration</li>
-            <li>Governance, Datenschutz &amp; verantwortungsvoller KI-Einsatz</li>
-            <li>Vibe Coding &amp; prototypische KI-Anwendungen</li>
-          </ul>
+          <div class="training-card__head"><span class="training-card__label">Weiterbildung</span><h3>KI-Manager:in Advanced</h3></div>
+          <p>Die achtwöchige Weiterbildung verbindet KI-Management, Agenten und n8n, Design Thinking, agile Methoden, Vibe Coding sowie KI-Strategie, Implementierung und Governance.</p>
+          <ul class="training-card__tags"><li>KI-Strategie</li><li>KI-Agenten</li><li>n8n</li><li>APIs &amp; Webhooks</li><li>Agile Methoden</li><li>Design Thinking</li><li>Governance</li><li>Vibe Coding</li></ul>
         </div>
-
-        <div class="about-links">
-          <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
-          <a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-          <a href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate <span aria-hidden="true">↗</span></a>
-        </div>
-
-        <p class="about-copy__personal">
-          Sie arbeiten direkt mit mir – ohne Account-Manager, ohne Übergaben ins
-          Unbekannte. Ich verantworte Ihre Anfrage persönlich und melde mich
-          nach der Prüfung mit einer ehrlichen Einschätzung zurück.
-        </p>
-        <a class="about-copy__cta" href="#termin">
-          Direkt ins Gespräch kommen
-          <span aria-hidden="true">↗</span>
-        </a>
+        <div class="about-links"><a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate ↗</a></div>
       </div>
     </div>
   </section>
 
   <section class="section section--credentials" id="nachweise">
     <div class="shell">
-      <div class="section-heading" data-reveal>
-        <div>
-          <p class="section-label">Nachweise</p>
-          <h2>Qualifikationen, die Sie prüfen können.</h2>
-        </div>
-        <p>
-          Kein Buzzword-Bingo. Diese Abschlüsse und Zertifikate belegen,
-          worauf die Arbeit aufbaut – die Originale liegen vor und können
-          auf Anfrage gezeigt werden.
-        </p>
-      </div>
-
+      <div class="section-heading" data-reveal><div><p class="section-label">Nachweise</p><h2>Qualifikationen, die Sie prüfen können.</h2></div><p>Technische Praxis und Weiterbildung werden sichtbar verlinkt – ohne erfundene Kundenlogos oder Erfolgszahlen.</p></div>
       <div class="credential-grid" data-reveal>
-        <article class="credential-card">
-          <span class="credential-card__badge" aria-hidden="true">Zert.</span>
-          <h3>ITIL Foundation</h3>
-          <p>IT-Service-Management nach AXELOS – Grundlagen für strukturierten Betrieb.</p>
-          <span class="credential-card__issuer">AXELOS</span>
-        </article>
-        <article class="credential-card">
-          <span class="credential-card__badge" aria-hidden="true">Zert.</span>
-          <h3>Azure Administrator (AZ-104)</h3>
-          <p>Planung und Betrieb von Cloud-Infrastruktur mit Microsoft Azure.</p>
-          <span class="credential-card__issuer">Microsoft</span>
-        </article>
-        <article class="credential-card">
-          <span class="credential-card__badge" aria-hidden="true">Zert.</span>
-          <h3>Windows Troubleshooting</h3>
-          <p>Systematische Fehleranalyse in Windows-Umgebungen.</p>
-          <span class="credential-card__issuer">Microsoft</span>
-        </article>
-        <article class="credential-card">
-          <span class="credential-card__badge" aria-hidden="true">Zert.</span>
-          <h3>Azure Automation</h3>
-          <p>Automatisierung von Abläufen und Ressourcen in der Microsoft-Cloud.</p>
-          <span class="credential-card__issuer">Microsoft</span>
-        </article>
-        <article class="credential-card">
-          <span class="credential-card__badge" aria-hidden="true">Zert.</span>
-          <h3>NIS-2-Grundlagen</h3>
-          <p>Anforderungen an Sicherheit und Resilienz kritischer Infrastrukturen.</p>
-          <span class="credential-card__issuer">2025</span>
-        </article>
-        <article class="credential-card credential-card--education">
-          <span class="credential-card__badge" aria-hidden="true">Bild.</span>
-          <h3>Fachinformatiker Systemintegration</h3>
-          <p>Ausbildung am GFN Köln Bildungscenter, 2019–2021.</p>
-          <span class="credential-card__issuer">GFN Köln</span>
-        </article>
-        <article class="credential-card credential-card--education">
-          <span class="credential-card__badge" aria-hidden="true">Bild.</span>
-          <h3>Wirtschaftspsychologie</h3>
-          <p>Studium an der FH Bonn-Rhein-Sieg, 2013–2017.</p>
-          <span class="credential-card__issuer">FH Bonn-Rhein-Sieg</span>
-        </article>
+        <article class="credential-card"><span class="credential-card__badge">Zert.</span><h3>ITIL Foundation</h3><p>Grundlagen für strukturierten IT-Service-Betrieb.</p><span class="credential-card__issuer">AXELOS</span></article>
+        <article class="credential-card"><span class="credential-card__badge">Zert.</span><h3>Azure Administrator (AZ-104)</h3><p>Planung und Betrieb von Microsoft-Azure-Infrastruktur.</p><span class="credential-card__issuer">Microsoft</span></article>
+        <article class="credential-card"><span class="credential-card__badge">Zert.</span><h3>NIS-2-Grundlagen</h3><p>Sicherheit, Resilienz und organisatorische Anforderungen.</p><span class="credential-card__issuer">2025</span></article>
+        <article class="credential-card credential-card--education"><span class="credential-card__badge">Bild.</span><h3>Fachinformatiker Systemintegration</h3><p>Technische Ausbildung mit Schwerpunkt Systemintegration.</p><span class="credential-card__issuer">GFN Köln</span></article>
       </div>
-
-      <div class="credential-actions" data-reveal>
-        <a class="button button--accent" href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">
-          Zertifikate als PDF ansehen <span aria-hidden="true">↗</span>
-        </a>
-        <a class="button button--quiet" href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">
-          Profil auf LinkedIn <span aria-hidden="true">↗</span>
-        </a>
-        <a class="button button--quiet" href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">
-          Arbeit auf GitHub <span aria-hidden="true">↗</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--trust" id="referenzen">
-    <div class="shell">
-      <div class="section-heading" data-reveal>
-        <div>
-          <p class="section-label">Vertrauen</p>
-          <h2>Worauf Sie sich verlassen können.</h2>
-        </div>
-        <p>
-          Referenzen sind hier keine behaupteten Namen, sondern prüfbare
-          Fakten: laufende Systeme, echte Nachweise und ein direkter Draht
-          zur verantwortlichen Person.
-        </p>
-      </div>
-
-      <div class="trust-grid" data-reveal>
-        <article class="trust-card">
-          <div class="trust-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><path d="M14 26l7 7 13-15"></path><rect x="6" y="8" width="36" height="32" rx="4"></rect></svg>
-          </div>
-          <h3>Echte Projekte, live im Betrieb</h3>
-          <p>
-            DeepDive, DebtPilot AI, dieser Hub, die n8n-Instanz: Was auf der
-            Website gezeigt wird, ist kein Pitch-Deck, sondern läuft.
-          </p>
-          <a href="#work">Projekte ansehen <span aria-hidden="true">→</span></a>
-        </article>
-        <article class="trust-card">
-          <div class="trust-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><circle cx="24" cy="15" r="7"></circle><path d="M10 40c0-9 6-15 14-15s14 6 14 15"></path></svg>
-          </div>
-          <h3>Direkter Draht, persönliche Verantwortung</h3>
-          <p>
-            Sie sprechen mit der Person, die Ihre Systeme baut und betreut –
-            kein Account-Manager, keine Übergaben ins Unbekannte.
-          </p>
-          <a href="#about">Über die Person hinter Skalantech <span aria-hidden="true">→</span></a>
-        </article>
-        <article class="trust-card">
-          <div class="trust-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><rect x="8" y="20" width="32" height="20" rx="4"></rect><path d="M15 20v-5a9 9 0 0 1 18 0v5"></path></svg>
-          </div>
-          <h3>Datenschutz als Standard, nicht als Feature</h3>
-          <p>
-            Diese Website nutzt keine externen Tracker, keine externen
-            Webfonts, keine Tracking-Cookies. Open Source und Self-Hosting
-            werden bevorzugt, wo sie sinnvoll sind.
-          </p>
-          <a href="{{ url_for('public.datenschutz') }}">Datenschutzerklärung <span aria-hidden="true">→</span></a>
-        </article>
-        <article class="trust-card">
-          <div class="trust-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><path d="M8 26a16 16 0 0 1 32 0"></path><path d="M8 26l4-7 8 2 4-6 4 6 8-2 4 7"></path><circle cx="24" cy="26" r="3"></circle></svg>
-          </div>
-          <h3>Nachweise statt Behauptungen</h3>
-          <p>
-            Zertifikate, Profile und Repositories sind verlinkt und prüfbar.
-            Erfundene Referenzen und geschönte Zahlen finden Sie hier nicht.
-          </p>
-          <a href="#nachweise">Nachweise ansehen <span aria-hidden="true">→</span></a>
-        </article>
-      </div>
-
-      <p class="trust-note" data-reveal>
-        <span aria-hidden="true">✓</span>
-        Ehrlich, belegbar, direkt: Wenn Skalantech etwas behauptet, können Sie es prüfen.
-      </p>
+      <div class="credential-actions"><a class="button button--accent" href="{{ url_for('static', filename='documents/certificates_xavier_escalante.pdf') }}" target="_blank" rel="noopener noreferrer">Zertifikate ansehen ↗</a></div>
     </div>
   </section>
 
   <section class="section section--faq" id="faq">
     <div class="shell faq-grid">
-      <div data-reveal>
-        <p class="section-label">FAQ</p>
-        <h2>Vor dem ersten Gespräch.</h2>
-        <p>Die häufigsten Fragen zu Projekten, Technologien und Zusammenarbeit.</p>
-      </div>
+      <div data-reveal><p class="section-label">FAQ</p><h2>Vor der Business-Analyse.</h2><p>Vier Fragen, die häufig vor dem ersten Gespräch entstehen.</p></div>
       <div class="faq-list" data-reveal>
-        <details>
-          <summary>Für welche Unternehmen passt Skalantech?</summary>
-          <p>Für kleine und mittelständische Unternehmen sowie Teams, die ihre IT modernisieren, Abläufe automatisieren oder KI kontrolliert einsetzen möchten – ohne sofort ein großes internes Spezialistenteam aufzubauen.</p>
-        </details>
-        <details>
-          <summary>Übernimmst du auch bestehende, gewachsene Umgebungen?</summary>
-          <p>Ja. Gerade bei heterogenen Bestandsumgebungen starte ich mit einer strukturierten Aufnahme, identifiziere Risiken und entwickle einen realistischen Migrations- oder Verbesserungsplan.</p>
-        </details>
-        <details>
-          <summary>Ist Self-Hosting möglich?</summary>
-          <p>Ja. Open-Source- und Self-Hosting-Optionen werden bevorzugt geprüft, wenn sie fachlich und wirtschaftlich sinnvoll sind. Cloud-Dienste sind kein Selbstzweck.</p>
-        </details>
-        <details>
-          <summary>Kannst du von der Idee bis zum Betrieb begleiten?</summary>
-          <p>Ja. Die Zusammenarbeit kann Analyse, Architektur, Implementierung, Tests, Dokumentation, Übergabe und auf Wunsch die laufende technische Begleitung umfassen.</p>
-        </details>
-        <details>
-          <summary>Wie startet ein Projekt?</summary>
-          <p>Mit einer kurzen Beschreibung Ihrer Ausgangslage und des gewünschten Ergebnisses. Danach klären wir, ob ein kompakter System-Check oder direkt ein abgegrenztes Umsetzungsprojekt sinnvoll ist.</p>
-        </details>
+        <details><summary>Welche Prozesse kann Skalantech automatisieren?</summary><p>Typische Fälle sind Kundenanfragen, Angebotsvorbereitung, Rechnungsverarbeitung, E-Mail-Klassifikation, CRM-Übergaben, Follow-ups, Dokumentenanalyse und wiederkehrende interne Abläufe.</p></details>
+        <details><summary>Muss dafür die bestehende Software ersetzt werden?</summary><p>Nicht zwingend. Zuerst prüfen wir vorhandene Schnittstellen und verbinden bestehende Systeme, wenn das wirtschaftlich und technisch sinnvoll ist.</p></details>
+        <details><summary>Ist Self-Hosting möglich?</summary><p>Ja. Open Source und Self-Hosting werden bevorzugt geprüft, wenn sie fachlich, wirtschaftlich und betrieblich passen.</p></details>
+        <details><summary>Wie startet ein Projekt?</summary><p>Mit einer 30-minütigen Business-Analyse. Wir klären Engpass, Ziel, Datenquellen und einen sinnvollen ersten Umsetzungsschritt.</p></details>
       </div>
     </div>
   </section>
@@ -842,203 +231,40 @@
   <section class="section section--booking" id="termin">
     <div class="shell booking-grid">
       <div data-reveal>
-        <p class="section-label">Termin</p>
-        <h2>Erstgespräch vereinbaren.</h2>
-        <p>
-          30 Minuten, unverbindlich, online. Wir klären Ihre Ausgangslage und
-          ob – und wie – ich Sie sinnvoll unterstützen kann.
-        </p>
-        <ul class="booking-points">
-          <li><span aria-hidden="true">✓</span> Kostenlos &amp; unverbindlich</li>
-          <li><span aria-hidden="true">✓</span> 30 Minuten per Videocall</li>
-          <li><span aria-hidden="true">✓</span> Konkrete Einschätzung zu Ihrer Ausgangslage</li>
-        </ul>
-        <div class="contact-direct">
-          <span>Lieber direkt?</span>
-          <a href="mailto:xyesca1989@googlemail.com">xyesca1989@googlemail.com <span aria-hidden="true">↗</span></a>
-        </div>
+        <p class="section-label">30-Minuten-Business-Analyse</p><h2>Welcher Prozess kostet Sie heute unnötig Zeit?</h2>
+        <p>Unverbindlich und online. Wir klären den Engpass und ob eine Automatisierung, App oder Infrastrukturverbesserung sinnvoll ist.</p>
+        <ul class="booking-points"><li><span>✓</span> kostenlos &amp; unverbindlich</li><li><span>✓</span> konkrete Einordnung statt Produktpitch</li><li><span>✓</span> direkter Kontakt mit Xavier</li></ul>
+        <div class="contact-direct"><span>Lieber direkt?</span><a href="mailto:xyesca@skalantech.store">xyesca@skalantech.store <span aria-hidden="true">↗</span></a></div>
       </div>
       <div class="booking-box" data-reveal>
-        <div class="booking-box__status">
-          <span class="booking-box__dot" aria-hidden="true"></span>
-          Online-Terminbuchung
-        </div>
+        <div class="booking-box__status"><span class="booking-box__dot" aria-hidden="true"></span>Online-Terminanfrage</div>
         <form class="booking-form" id="booking-form" method="post" action="{{ url_for('public.contact') }}">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-          <input type="hidden" name="book_slot" value="1">
-          <input type="hidden" name="service" value="Erstgespräch">
-          <input type="hidden" name="roi_context" id="roi-context" value="">
-          <div class="form-honeypot" aria-hidden="true">
-            <label for="booking-website">Website</label>
-            <input type="text" id="booking-website" name="website" tabindex="-1" autocomplete="off">
-          </div>
-          <div class="form-grid">
-            <div class="field">
-              <label for="booking-name">Name <span>*</span></label>
-              <input type="text" id="booking-name" name="name" autocomplete="name" maxlength="120" required placeholder="Ihr Name">
-            </div>
-            <div class="field">
-              <label for="booking-company">Unternehmen</label>
-              <input type="text" id="booking-company" name="company" autocomplete="organization" maxlength="160" placeholder="Optional">
-            </div>
-          </div>
-          <div class="field">
-            <label for="booking-email">E-Mail <span>*</span></label>
-            <input type="email" id="booking-email" name="email" autocomplete="email" maxlength="254" required placeholder="name@unternehmen.de">
-          </div>
-          <div class="form-grid">
-            <div class="field">
-              <label for="booking-day">Wunschtag <span>*</span></label>
-              <input type="date" id="booking-day" name="preferred_day" required min="{{ today }}" max="{{ max_booking_day }}">
-            </div>
-            <div class="field">
-              <label for="booking-time">Wunschzeit <span>*</span></label>
-              <select id="booking-time" name="preferred_time" required>
-                <option value="">Bitte wählen</option>
-                <option value="09:00">09:00</option>
-                <option value="09:30">09:30</option>
-                <option value="10:00">10:00</option>
-                <option value="10:30">10:30</option>
-                <option value="11:00">11:00</option>
-                <option value="11:30">11:30</option>
-                <option value="13:00">13:00</option>
-                <option value="13:30">13:30</option>
-                <option value="14:00">14:00</option>
-                <option value="14:30">14:30</option>
-                <option value="15:00">15:00</option>
-                <option value="15:30">15:30</option>
-                <option value="16:00">16:00</option>
-                <option value="16:30">16:30</option>
-              </select>
-            </div>
-          </div>
-          <div class="field">
-            <label for="booking-message">Worum geht es? <span>*</span></label>
-            <textarea id="booking-message" name="message" rows="4" maxlength="2000" required placeholder="Kurze Beschreibung Ihrer Ausgangslage (2–3 Sätze reichen)."></textarea>
-          </div>
-          <label class="privacy-check" for="booking-privacy">
-            <input type="checkbox" id="booking-privacy" name="privacy" value="accepted" required>
-            <span>Ich habe die <a href="{{ url_for('public.datenschutz') }}" target="_blank">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span>
-          </label>
-          <button class="button button--accent button--submit" type="submit">
-            <span>Termin anfragen</span>
-            <span aria-hidden="true">↗</span>
-          </button>
-          <p class="form-status" id="booking-status" aria-live="polite"></p>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="book_slot" value="1"><input type="hidden" name="service" value="Erstgespräch"><input type="hidden" name="roi_context" id="roi-context" value="">
+          <div class="form-honeypot" aria-hidden="true"><label for="booking-website">Website</label><input type="text" id="booking-website" name="website" tabindex="-1" autocomplete="off"></div>
+          <div class="form-grid"><div class="field"><label for="booking-name">Name <span>*</span></label><input type="text" id="booking-name" name="name" autocomplete="name" maxlength="120" required placeholder="Ihr Name"></div><div class="field"><label for="booking-company">Unternehmen</label><input type="text" id="booking-company" name="company" autocomplete="organization" maxlength="160" placeholder="Optional"></div></div>
+          <div class="field"><label for="booking-email">E-Mail <span>*</span></label><input type="email" id="booking-email" name="email" autocomplete="email" maxlength="254" required placeholder="name@unternehmen.de"></div>
+          <div class="form-grid"><div class="field"><label for="booking-day">Wunschtag <span>*</span></label><input type="date" id="booking-day" name="preferred_day" required min="{{ today }}" max="{{ max_booking_day }}"></div><div class="field"><label for="booking-time">Wunschzeit <span>*</span></label><select id="booking-time" name="preferred_time" required><option value="">Bitte wählen</option>{% for t in ['09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30'] %}<option value="{{ t }}">{{ t }}</option>{% endfor %}</select></div></div>
+          <div class="field"><label for="booking-message">Worum geht es? <span>*</span></label><textarea id="booking-message" name="message" rows="4" maxlength="2000" required placeholder="Welcher Ablauf kostet heute Zeit oder läuft noch manuell?"></textarea></div>
+          <label class="privacy-check" for="booking-privacy"><input type="checkbox" id="booking-privacy" name="privacy" value="accepted" required><span>Ich habe die <a href="{{ url_for('public.datenschutz') }}" target="_blank">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span></label>
+          <button class="button button--accent button--submit" type="submit"><span>Business-Analyse anfragen</span><span aria-hidden="true">↗</span></button><p class="form-status" id="booking-status" aria-live="polite"></p>
         </form>
-        <div class="booking-success" id="booking-success" role="status" aria-live="polite" tabindex="-1" hidden>
-          <div class="booking-success__check" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true">
-              <circle cx="12" cy="12" r="11" fill="currentColor" fill-opacity="0.12"></circle>
-              <path d="M7 12.5l3.2 3.2L17 9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-          </div>
-          <h2 class="booking-success__title">Anfrage ist angekommen.</h2>
-
-          <div class="booking-success__summary" id="booking-success-summary" hidden>
-            <p class="booking-success__slot">Ihr Wunschtermin: <strong id="booking-success-slot"></strong></p>
-            <p class="booking-success__hint">Die Kalendereinladung kommt gleich per E-Mail. Sollte die Zeit doch nicht passen, antworten Sie einfach auf die Einladung.</p>
-          </div>
-
-          <div class="booking-success__queued" id="booking-success-queued" hidden>
-            <p>Wir melden uns innerhalb von 24 h mit einem Terminvorschlag.</p>
-          </div>
-
-          <div class="booking-success__steps">
-            <p>1. E-Mail-Check — Einladung + Terminbestätigung</p>
-            <p>2. 30 Minuten Videocall — wir klären Ihre Ausgangslage</p>
-            <p>3. Konkrete Einschätzung — was sich lohnt, was nicht</p>
-          </div>
-
-          <p class="booking-success__trust">Direkt vom Gründer — kein Vertriebsteam.</p>
-
-          <div class="booking-success__cta">
-            <a href="#faq">Vorab mehr erfahren → FAQ</a>
-            <span>Termin verschieben? → einfach auf die Einladung antworten</span>
-          </div>
-        </div>
+        <div class="booking-success" id="booking-success" role="status" aria-live="polite" tabindex="-1" hidden><div class="booking-success__check" aria-hidden="true">✓</div><h2 class="booking-success__title">Anfrage ist angekommen.</h2><div class="booking-success__summary" id="booking-success-summary" hidden><p class="booking-success__slot">Ihr Wunschtermin: <strong id="booking-success-slot"></strong></p><p class="booking-success__hint">Sie erhalten die Bestätigung per E-Mail.</p></div><div class="booking-success__queued" id="booking-success-queued" hidden><p>Wir melden uns innerhalb von 24 h mit einem Terminvorschlag.</p></div><div class="booking-success__steps"><p>1. Anfrage prüfen</p><p>2. 30 Minuten Ausgangslage klären</p><p>3. Sinnvollen nächsten Schritt festlegen</p></div><p class="booking-success__trust">Direkt vom Gründer — kein Vertriebsteam.</p></div>
       </div>
     </div>
   </section>
 
   <section class="contact-section" id="contact">
     <div class="shell contact-grid">
-      <div class="contact-copy" data-reveal>
-        <p class="section-label section-label--light">Projektanfrage</p>
-        <h2>Was soll in Ihrer IT einfacher werden?</h2>
-        <p>
-          Drei Sätze zur Ausgangslage reichen für den Anfang. Ich prüfe persönlich,
-          ob und wie ich sinnvoll unterstützen kann.
-        </p>
-
-        <div class="contact-fit">
-          <p>Besonders passend für:</p>
-          <ul>
-            <li><span aria-hidden="true">✓</span> Infrastruktur- und Plattformwechsel</li>
-            <li><span aria-hidden="true">✓</span> wiederkehrende manuelle Abläufe</li>
-            <li><span aria-hidden="true">✓</span> konkrete KI-Use-Cases mit eigenen Daten</li>
-          </ul>
-        </div>
-
-        <div class="contact-direct">
-          <span>Lieber direkt?</span>
-          <a href="mailto:xyesca1989@googlemail.com">xyesca1989@googlemail.com <span aria-hidden="true">↗</span></a>
-        </div>
-      </div>
-
+      <div class="contact-copy" data-reveal><p class="section-label section-label--light">Projektanfrage</p><h2>Schon konkreter?</h2><p>Drei Sätze zur Ausgangslage reichen. Ich prüfe persönlich, ob und wie Skalantech sinnvoll unterstützen kann.</p><div class="contact-fit"><p>Besonders passend für:</p><ul><li><span>✓</span> wiederkehrende manuelle Abläufe</li><li><span>✓</span> Website-, CRM- und Systemintegration</li><li><span>✓</span> KI-Use-Cases mit realen Daten und klarer Freigabe</li></ul></div><div class="contact-direct"><span>Direkt per E-Mail:</span><a href="mailto:xyesca@skalantech.store">xyesca@skalantech.store ↗</a></div></div>
       <div class="contact-form-wrap" data-reveal>
         <form class="contact-form" id="contact-form" method="post" action="{{ url_for('public.contact') }}">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-          <div class="form-honeypot" aria-hidden="true">
-            <label for="website">Website</label>
-            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
-          </div>
-
-          <div class="form-grid">
-            <div class="field">
-              <label for="name">Name <span>*</span></label>
-              <input type="text" id="name" name="name" autocomplete="name" maxlength="120" required placeholder="Ihr Name">
-            </div>
-            <div class="field">
-              <label for="company">Unternehmen</label>
-              <input type="text" id="company" name="company" autocomplete="organization" maxlength="160" placeholder="Optional">
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="email">E-Mail <span>*</span></label>
-            <input type="email" id="email" name="email" autocomplete="email" maxlength="254" required placeholder="name@unternehmen.de">
-          </div>
-
-          <div class="field">
-            <label for="service">Worum geht es?</label>
-            <select id="service" name="service">
-              <option value="">Bitte auswählen</option>
-              <option>Infrastruktur & Cloud</option>
-              <option>Prozessautomatisierung</option>
-              <option>KI-Agenten & RAG</option>
-              <option>Betrieb & Reliability</option>
-              <option>System-Check / Beratung</option>
-              <option>Etwas anderes</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="message">Ausgangslage und Ziel <span>*</span></label>
-            <textarea id="message" name="message" rows="6" maxlength="5000" required placeholder="Was läuft heute noch manuell oder unzuverlässig – und was soll stattdessen möglich sein?"></textarea>
-            <span class="field__hint"><span id="message-count">0</span> / 5.000 Zeichen</span>
-          </div>
-
-          <label class="privacy-check" for="contact-privacy">
-            <input type="checkbox" id="contact-privacy" name="privacy" value="accepted" required>
-            <span>Ich habe die <a href="{{ url_for('public.datenschutz') }}" target="_blank">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span>
-          </label>
-
-          <button class="button button--accent button--submit" type="submit">
-            <span>Projektanfrage senden</span>
-            <span aria-hidden="true">↗</span>
-          </button>
-          <p class="form-status" id="form-status" aria-live="polite"></p>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><div class="form-honeypot" aria-hidden="true"><label for="website">Website</label><input type="text" id="website" name="website" tabindex="-1" autocomplete="off"></div>
+          <div class="form-grid"><div class="field"><label for="name">Name <span>*</span></label><input type="text" id="name" name="name" autocomplete="name" maxlength="120" required placeholder="Ihr Name"></div><div class="field"><label for="company">Unternehmen</label><input type="text" id="company" name="company" autocomplete="organization" maxlength="160" placeholder="Optional"></div></div>
+          <div class="field"><label for="email">E-Mail <span>*</span></label><input type="email" id="email" name="email" autocomplete="email" maxlength="254" required placeholder="name@unternehmen.de"></div>
+          <div class="field"><label for="service">Worum geht es?</label><select id="service" name="service"><option value="">Bitte auswählen</option><option>Infrastruktur & Cloud</option><option>Prozessautomatisierung</option><option>KI-Agenten & RAG</option><option>Betrieb & Reliability</option><option>System-Check / Beratung</option><option>Etwas anderes</option></select></div>
+          <div class="field"><label for="message">Ausgangslage und Ziel <span>*</span></label><textarea id="message" name="message" rows="6" maxlength="5000" required placeholder="Was läuft heute noch manuell oder unzuverlässig – und was soll stattdessen möglich sein?"></textarea><span class="field__hint"><span id="message-count">0</span> / 5.000 Zeichen</span></div>
+          <label class="privacy-check" for="contact-privacy"><input type="checkbox" id="contact-privacy" name="privacy" value="accepted" required><span>Ich habe die <a href="{{ url_for('public.datenschutz') }}" target="_blank">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage zu.</span></label>
+          <button class="button button--accent button--submit" type="submit"><span>Projektanfrage senden</span><span aria-hidden="true">↗</span></button><p class="form-status" id="form-status" aria-live="polite"></p>
         </form>
       </div>
     </div>

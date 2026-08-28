@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Live-Demos · Skalantech Automatisierung{% endblock %}
+{% block description %}Testen Sie drei Skalantech-Automationen direkt im Browser: Rechnungsextraktion, Angebotsentwurf und E-Mail-Klassifikation. n8n bleibt intern geschützt.{% endblock %}
+{% block canonical %}https://skalantech.store/demos{% endblock %}
+{% block og_title %}Skalantech Live-Demos · Automatisierung zum Ausprobieren{% endblock %}
+{% block og_url %}https://skalantech.store/demos{% endblock %}
+
+{% block body %}
+<main id="main-content">
+  <section class="showcase-hero">
+    <div class="shell showcase-hero__grid">
+      <div>
+        <p class="showcase-kicker">Live · eigene n8n-Workflows</p>
+        <h1>Keine Folien. <span>Probieren Sie es aus.</span></h1>
+        <p class="showcase-hero__lead">
+          Drei kompakte Automationen zeigen, wie unstrukturierte Eingaben in nutzbare Ergebnisse verwandelt werden.
+          Die öffentliche Website spricht dabei nur mit Skalantech – n8n selbst bleibt intern auf dem VPS geschützt.
+        </p>
+        <div class="showcase-actions">
+          <a class="button button--accent" href="#live-demos">Demos starten <span aria-hidden="true">↓</span></a>
+          <a class="button button--quiet" href="{{ url_for('showcase.automations') }}">Automationsideen ansehen <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <aside class="showcase-proof" aria-label="Demo-Architektur">
+        <p class="showcase-proof__label">Sicherer Datenweg</p>
+        <ol class="showcase-flow">
+          <li data-step="01">Browser · Eingabe</li>
+          <li data-step="02">Flask · Validierung + Rate-Limit</li>
+          <li data-step="03">n8n intern · Workflow</li>
+          <li data-step="04">Ergebnis · zurück im Browser</li>
+        </ol>
+      </aside>
+    </div>
+  </section>
+
+  <section class="demo-section" id="live-demos">
+    <div class="shell">
+      <div class="showcase-heading">
+        <div>
+          <p class="section-label">Interaktive Demos</p>
+          <h2>Drei typische Prozesse. Direkt testbar.</h2>
+        </div>
+        <p>Bitte verwenden Sie für die Demo keine vertraulichen, personenbezogenen oder produktiven Geschäftsdaten. Beispieltexte stehen bereit.</p>
+      </div>
+
+      <div class="demo-grid">
+        {% for slug, demo in demos.items() %}
+        <article class="demo-card" id="{{ slug }}">
+          <span class="demo-card__state">Live-Workflow</span>
+          <h2>{{ demo.name }}</h2>
+          <p class="demo-card__eyebrow">{{ demo.eyebrow }}</p>
+          <p class="demo-card__desc">{{ demo.description }}</p>
+
+          <form class="demo-form" method="post" action="{{ url_for('showcase.run_demo', slug=slug) }}" data-live-demo>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="demo-input-{{ slug }}">Testeingabe</label>
+            <textarea id="demo-input-{{ slug }}" name="input" maxlength="2000" required placeholder="{{ demo.placeholder }}"></textarea>
+            <div class="demo-samples" aria-label="Beispiele für {{ demo.name }}">
+              {% for sample in demo.samples %}
+              <button class="demo-sample" type="button" data-demo-sample="{{ sample }}">Beispiel {{ loop.index }}</button>
+              {% endfor %}
+            </div>
+            <button class="button button--accent" type="submit">{{ demo.name }} testen <span aria-hidden="true">↗</span></button>
+            <pre class="demo-result" data-demo-result hidden aria-live="polite"></pre>
+          </form>
+        </article>
+        {% endfor %}
+      </div>
+
+      <p class="demo-note">
+        Die Demos sind bewusst begrenzt: maximal 2.000 Zeichen pro Eingabe und acht Aufrufe pro Stunde und IP. Das schützt die interne Infrastruktur und verhindert unnötige KI-Kosten.
+      </p>
+    </div>
+  </section>
+
+  <section class="offer-strip">
+    <div class="shell offer-strip__inner">
+      <div>
+        <h2>Ihr Prozess sieht anders aus?</h2>
+        <p>In 30 Minuten prüfen wir, welcher Ablauf sich zuerst automatisieren lässt und welche Systeme dafür angebunden werden müssen.</p>
+      </div>
+      <a class="button button--accent" href="{{ url_for('public.index') }}#termin">Kostenlose Business-Analyse <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+</main>
+{% endblock %}
