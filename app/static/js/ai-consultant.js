@@ -5,6 +5,7 @@
   "use strict";
 
   var API = "/api/ai-consultant/message";
+  var ANALYTICS_API = "/analytics/event";
   var SESSION_KEY = "skalantech:ai-consultant-id";
   var MAX_MESSAGE = 1500;
 
@@ -25,9 +26,27 @@
   }
 
   function track(name, props) {
+    var handled = false;
     if (window.SkalantechAnalytics && typeof window.SkalantechAnalytics.track === "function") {
-      window.SkalantechAnalytics.track(name, props || {});
+      handled = window.SkalantechAnalytics.track(name, props || {}) === true;
     }
+    if (handled) return;
+
+    // The main analytics bundle may predate chat events. Send only anonymous
+    // funnel metadata directly; chat message content is never included.
+    try {
+      fetch(ANALYTICS_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        keepalive: true,
+        body: JSON.stringify({
+          event: name,
+          page: window.location.pathname,
+          session_id: conversationId(),
+          props: props || {}
+        })
+      }).catch(function () {});
+    } catch (e) {}
   }
 
   ready(function () {
