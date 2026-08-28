@@ -29,6 +29,7 @@ class CrmTests(unittest.TestCase):
         os.environ["ADMIN_USERNAME"] = "admin"
         os.environ["SESSION_COOKIE_SECURE"] = "false"
         os.environ["DATABASE_URL"] = f"sqlite:///{cls.temp_dir.name}/site.db"
+        os.environ["RATELIMIT_STORAGE_URI"] = "memory://"  # hermetisch; zentraler Storage (Redis) wird in test_ratelimit_storage.py getestet
         os.environ["CRM_API_KEY"] = API_KEY
 
         _drop_app_modules()
@@ -58,12 +59,6 @@ class CrmTests(unittest.TestCase):
             AnalyticsEvent.query.delete()
             ContactMessage.query.delete()
             db.session.commit()
-
-        # Rate-Limiter (in-memory) zurücksetzen — sonst kumulieren sich die
-        # /contact-POSTs über die Tests hinweg und lösen 400 aus.
-        from app.blueprints.public import _CONTACT_LIMITS
-
-        _CONTACT_LIMITS.clear()
 
     def _login(self):
         return self.client.post(

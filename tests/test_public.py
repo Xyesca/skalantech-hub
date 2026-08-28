@@ -22,6 +22,7 @@ class PublicSiteTests(unittest.TestCase):
         os.environ["ADMIN_PASSWORD"] = "test-admin-password"
         os.environ["SESSION_COOKIE_SECURE"] = "false"
         os.environ["DATABASE_URL"] = f"sqlite:///{cls.temp_dir.name}/site.db"
+        os.environ["RATELIMIT_STORAGE_URI"] = "memory://"  # hermetisch; zentraler Storage (Redis) wird in test_ratelimit_storage.py getestet
         _drop_app_modules()
         from app import create_app
         cls.app = create_app("production")

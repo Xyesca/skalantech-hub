@@ -9,7 +9,7 @@ from urllib import request as urlrequest
 
 from flask import Blueprint, render_template, send_from_directory, current_app, request, flash, redirect, url_for, jsonify, Response, abort
 from app.models import Settings, Link, Project, ContactMessage, Lead
-from app.extensions import db
+from app.extensions import db, limiter
 from app.seo_pages import LANDING_PAGES, LANDING_ORDER, ROI_RECHNER_COPY, ROI_RECHNER_FAQS
 from app.branchen import BRANCH_ORDER
 from app.wissen import ARTICLES, ARTICLE_ORDER, ARTICLE_PUBLISHED
@@ -106,10 +106,11 @@ def _forward_to_n8n(name, email, company, topic, message, preferred_day, preferr
             "message": "Termindienst nicht erreichbar.",
         }
 
-# ── Contact form rate-limiting (in-memory, single-instance) ──────────────
-_CONTACT_LIMITS: dict[str, list[float]] = {}
-_CONTACT_MAX = 3
-_CONTACT_WINDOW = 3600
+# ── Contact form rate-limiting: flask-limiter (zentral, Issue #4) ────────
+# 3 POSTs/h/IP, Storage = Redis in Production (shared über alle Worker),
+# memory:// in Dev/Tests. In Tests (TESTING=True) via exempt_when deaktiviert,
+# damit die Suite hermetisch bleibt. Der Limiter zählt auch Validierungs-
+# Fehlversuche mit — Bots, die Spam posten, verbrauchen ihr Fenster schneller.
 
 _SERVICE_CHOICES = {
     "Infrastruktur & Cloud",
@@ -133,28 +134,6 @@ _DEMO_PRODUCTS = [
     ("OfferAI", "Kundenanfrage → Angebotsentwurf"),
     ("MailAgent", "E-Mail → Klassifikation + Antwortvorschlag"),
 ]
-
-
-def _client_ip() -> str:
-    """Get real client IP behind reverse proxy."""
-    forwarded = request.headers.get("X-Forwarded-For", "")
-    if forwarded:
-        return forwarded.split(",")[0].strip()
-    return request.remote_addr or "127.0.0.1"
-
-
-def _check_contact_limit(ip: str) -> bool:
-    """Sliding-window rate limit. Returns True if allowed."""
-    now = time.time()
-    window_start = now - _CONTACT_WINDOW
-    timestamps = _CONTACT_LIMITS.get(ip, [])
-    timestamps = [t for t in timestamps if t > window_start]
-    if len(timestamps) >= _CONTACT_MAX:
-        _CONTACT_LIMITS[ip] = timestamps
-        return False
-    timestamps.append(now)
-    _CONTACT_LIMITS[ip] = timestamps
-    return True
 
 
 def _send_email(name: str, email: str, text: str) -> bool:
@@ -498,6 +477,10 @@ def faq():
 
 
 @public_bp.route("/contact", methods=["POST"])
+# Zentrales Rate-Limit (Redis in Production, shared über alle Worker):
+# max. 3 POSTs/h/IP — schützt Kontaktformular + Terminbuchung (läuft durch
+# /contact) vor Spam und Missbrauch. In Tests (TESTING=True) deaktiviert.
+@limiter.limit("3 per hour", methods=["POST"], exempt_when=lambda: bool(current_app.config.get("TESTING")))
 def contact():
     name = " ".join(request.form.get("name", "").split())
     email = request.form.get("email", "").strip()
@@ -527,11 +510,6 @@ def contact():
         errors.append("Nachricht ist zu lang (max. 5000 Zeichen).")
     if privacy != "accepted":
         errors.append("Bitte bestätigen Sie die Datenschutzerklärung.")
-
-    if not errors:
-        ip = _client_ip()
-        if not _check_contact_limit(ip):
-            errors.append("Zu viele Anfragen. Bitte versuchen Sie es später erneut.")
 
     if errors:
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -644,6 +622,10 @@ def contact():
 
 
 @public_bp.route("/demo", methods=["POST"])
+# Zentrales Rate-Limit (Redis in Production, shared über alle Worker):
+# max. 3 POSTs/h/IP für Demo-Anfragen der Branchen-Landingpages.
+# In Tests (TESTING=True) deaktiviert.
+@limiter.limit("3 per hour", methods=["POST"], exempt_when=lambda: bool(current_app.config.get("TESTING")))
 def demo():
     """Demo-Anfrage der Branchen-Landingpages."""
     name = " ".join(request.form.get("name", "").split())
@@ -669,11 +651,6 @@ def demo():
         errors.append("Bitte wählen Sie eine gültige Demo aus.")
     if len(message_text) > 5000:
         errors.append("Nachricht ist zu lang (max. 5000 Zeichen).")
-
-    if not errors:
-        ip = _client_ip()
-        if not _check_contact_limit(ip):
-            errors.append("Zu viele Anfragen. Bitte versuchen Sie es später erneut.")
 
     if errors:
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':

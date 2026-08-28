@@ -8,7 +8,13 @@ from sqlalchemy.engine import Engine
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
-limiter = Limiter(key_func=get_remote_address, storage_uri="memory://")
+
+# Zentrales Rate-Limiting (Issue #4): KEIN storage_uri im Konstruktor setzen —
+# sonst gewinnt der Konstruktor-Wert in init_app() und die App-Config
+# (RATELIMIT_STORAGE_URI) wird ignoriert. Ohne storage_uri liest init_app()
+# die Config: Production → Redis (shared über alle gunicorn-Worker),
+# Development/Tests → memory:// (hermetisch). Siehe app/config.py.
+limiter = Limiter(key_func=get_remote_address)
 
 
 @event.listens_for(Engine, "connect")

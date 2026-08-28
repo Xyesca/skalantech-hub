@@ -32,9 +32,10 @@ def _safe_next_url(default_endpoint: str = "admin.settings") -> str:
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 # Nur POST (Login-Versuche) limitieren, GET-Seitenaufrufe zählen nicht.
-# Hinweis: memory://-Storage ist pro gunicorn-Worker — effektives IP-Limit
-# = Limit × Worker. Primärer Brute-Force-Schutz ist der Account-Lockout
-# (5 Fehlversuche → 5 min Sperre, DB-basiert, shared über alle Worker).
+# Storage ist zentral (Redis, shared über alle gunicorn-Worker, Issue #4):
+# effektives IP-Limit = exakt 5/min — kein Pro-Worker-Aufweichen mehr.
+# Primärer Brute-Force-Schutz bleibt der Account-Lockout (5 Fehlversuche →
+# 5 min Sperre, DB-basiert, shared über alle Worker).
 @limiter.limit("5 per minute", methods=["POST"], exempt_when=lambda: bool(current_app.config.get("TESTING")))
 @csrf.exempt
 def login():

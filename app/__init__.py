@@ -3,9 +3,10 @@ import mimetypes
 import os
 import secrets
 
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 from markupsafe import Markup
 from flask_wtf.csrf import CSRFError
+from flask_limiter.errors import RateLimitExceeded
 
 from app.config import config_map
 from app.extensions import db, csrf, limiter
@@ -58,6 +59,22 @@ def create_app(config_name: str | None = None) -> Flask:
     def handle_csrf_error(e: CSRFError):
         flash("Sitzung abgelaufen. Bitte Seite neu laden.", "error")
         return redirect(request.referrer or url_for("public.index")), 400
+
+    # ── Rate-Limit error handler (zentrales Rate-Limiting, Issue #4) ─────
+    # API-/AJAX-Clients bekommen ein sauberes 429-JSON; Browser-Formulare
+    # werden mit Flash-Meldung zurück auf die Seite geleitet (bestehende UX).
+    @app.errorhandler(RateLimitExceeded)
+    def handle_rate_limit_exceeded(e: RateLimitExceeded):
+        message = "Zu viele Anfragen. Bitte versuchen Sie es später erneut."
+        wants_json = (
+            request.headers.get("X-Requested-With") == "XMLHttpRequest"
+            or request.path.startswith("/api/")
+            or request.path.startswith("/analytics/")
+        )
+        if wants_json:
+            return jsonify(success=False, message=message), 429
+        flash(message, "error")
+        return redirect(request.referrer or url_for("public.index"))
 
     # ── 404 error handler (SEO: echte 404s mit Auswegen statt toten Seiten) ─
     @app.errorhandler(404)

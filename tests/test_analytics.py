@@ -54,10 +54,6 @@ class AnalyticsEventTests(unittest.TestCase):
 
     def setUp(self):
         self.client = self.app.test_client()
-        # In-Memory-Kontakt-Rate-Limit (public._CONTACT_LIMITS) ist ein
-        # Modul-Singleton und überlebt Tests — für Isolation zurücksetzen,
-        # sonst schlagen spätere /contact-POSTs mit 400 fehl.
-        self.public_module._CONTACT_LIMITS.clear()
         with self.app.app_context():
             self.AnalyticsEvent.query.delete()
             self.ContactMessage.query.delete()

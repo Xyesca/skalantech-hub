@@ -77,6 +77,30 @@ Die Website läuft im produktiven Compose-Setup ausschließlich auf `127.0.0.1:5
 | `IONOS_MAIL_PASSWORD` | Nur im VPS-/n8n-Secret-Store setzen, niemals committen |
 | `IONOS_IMAP_HOST` | Optional für eingehende Mail-Automationen |
 | `IONOS_IMAP_PORT` | IMAP-Port, `993` |
+| `RATELIMIT_STORAGE_URI` | Rate-Limit-Storage; Production-Default `redis://127.0.0.1:6379/0` (Container `skalantech-redis`, nur loopback). Für Tests/Dev `memory://` |
+
+## Zentrales Rate-Limiting (Issue #4)
+
+Alle öffentlichen Limits (Login, Kontakt-/Demo-Formulare, `/api/demos`,
+`/analytics/event`) laufen über flask-limiter mit **zentralem Redis-Storage**
+(`redis://127.0.0.1:6379/0`, Container `skalantech-redis`). gunicorn startet
+mit `-w 4` — ohne zentralen Storage wäre jedes Limit pro Worker separat
+(`memory://` = effektiv Limit × 4). Mit Redis gilt jedes Limit exakt über
+alle Worker hinweg; der Zähler überlebt Worker-Restarts. Der Redis-Container
+lauscht ausschließlich auf `127.0.0.1` (Host-Netzwerk, kein öffentlicher
+Port, keine Tailscale-Exposition) und nutzt AOF-Persistenz.
+
+| Route | Limit | Storage |
+| --- | --- | --- |
+| `POST /login` | 5/min | Redis (zentral) + DB-Lockout |
+| `POST /contact` (inkl. Terminbuchung) | 3/h | Redis (zentral) |
+| `POST /demo` | 3/h | Redis (zentral) |
+| `POST /api/demos/<slug>` | 8/h | Redis (zentral) |
+| `POST /analytics/event` | 120/min | Redis (zentral) |
+
+Strategie: `moving-window` (gleitendes Fenster, keine Window-Boundary-Effekte).
+Bei Limit-Überschreitung liefern API-/AJAX-Routen ein 429-JSON, Browser-Formulare
+bekommen einen Flash + Redirect auf die Herkunftsseite.
 
 ## Demo-Sicherheitsmodell
 
@@ -114,7 +138,7 @@ python -m compileall app tests
 python -m unittest discover -v
 ```
 
-GitHub Actions führt Compile- und Regressionstests auf Pull Requests gegen `master` aus. Die Tests decken u. a. öffentliche Routen, Homepage-CRO, Live-Demo-Proxy, IONOS-Mail-Konfiguration, Kontaktvalidierung, CSRF, Datenspeicherung, SEO und Security-Header ab.
+GitHub Actions führt Compile- und Regressionstests auf Pull Requests gegen `master` aus (mit Redis-Service-Container, damit die Multi-Worker-Sharing-Tests laufen). Die Tests decken u. a. öffentliche Routen, Homepage-CRO, Live-Demo-Proxy, IONOS-Mail-Konfiguration, Kontaktvalidierung, CSRF, Datenspeicherung, SEO, Security-Header und zentrales Rate-Limiting ab. Die restliche Suite ist hermetisch (`RATELIMIT_STORAGE_URI=memory://` pro Testklasse); nur `tests/test_ratelimit_storage.py` braucht Redis (Test-DB 15) und wird ohne erreichbares Redis übersprungen.
 
 ## Architektur
 

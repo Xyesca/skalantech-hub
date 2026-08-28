@@ -1,10 +1,13 @@
 """Regression: Brute-Force-Schutz auf /login (Rate-Limit + Lockout).
 
-SENTINEL-Härtung t_3124abb3: /login POST wird mit 5/min limitiert
-(methods=["POST"], memory://-Storage = pro gunicorn-Worker; primärer Schutz
-ist der Account-Lockout: 5 Fehlversuche → 5 min Sperre, DB-basiert/shared).
-In Tests (TESTING=True) ist das Limit via exempt_when deaktiviert — dieser
-Test setzt TESTING=False, um den echten Limiter-Pfad zu prüfen.
+SENTINEL-Härtung t_3124abb3 + Issue #4: /login POST wird mit 5/min limitiert
+(methods=["POST"]). Storage ist zentral (Redis in Production, shared über
+alle gunicorn-Worker — exakt 5/min/IP, kein Pro-Worker-Aufweichen). Primärer
+Schutz bleibt der Account-Lockout (5 Fehlversuche → 5 min Sperre, DB-basiert).
+
+Dieser Test ist hermetisch: RATELIMIT_STORAGE_URI=memory:// (die zentrale
+Redis-Sharing-Semantik wird in tests/test_ratelimit_storage.py getestet).
+TESTING=False aktiviert den echten Limiter-Pfad.
 """
 import os
 import sys
@@ -27,6 +30,7 @@ class LoginRateLimitTests(unittest.TestCase):
         os.environ["ADMIN_PASSWORD"] = "test-admin-password"
         os.environ["SESSION_COOKIE_SECURE"] = "false"
         os.environ["DATABASE_URL"] = f"sqlite:///{cls.temp_dir.name}/site.db"
+        os.environ["RATELIMIT_STORAGE_URI"] = "memory://"  # hermetisch; zentraler Storage (Redis) wird in test_ratelimit_storage.py getestet
 
         _drop_app_modules()
         from app import create_app
@@ -49,12 +53,26 @@ class LoginRateLimitTests(unittest.TestCase):
         )
 
     def test_login_post_gets_rate_limited(self):
-        """Mehr als 5 Login-POSTs innerhalb einer Minute → 429 (Rate-Limit oder Lockout)."""
+        """Mehr als 5 Login-POSTs innerhalb einer Minute → abgewiesen.
+
+        Ab dem 6. Versuch greift der zentrale Limiter (5/min, Redis in
+        Production): der RateLimitExceeded-Handler leitet Browser-Flows mit
+        Flash auf die Herkunftsseite weiter (302; API-Clients bekämen 429).
+        Zusätzlich sperrt der Account-Lockout (DB-basiert) nach 5 Fehlversuchen
+        für 5 Minuten. Beide Schutzschichten zählen als Abweisung.
+        """
         statuses = [self._post_login().status_code for _ in range(7)]
-        # Die ersten Antworten sind 200 (Login-Seite mit Flash), danach muss
-        # der Schutz greifen: 429 vom Limiter oder vom Account-Lockout.
-        limited = [s for s in statuses if s == 429]
-        self.assertGreaterEqual(len(limited), 1, f"kein 429 nach 7 Versuchen: {statuses}")
+        # Erlaubt sind maximal 5 Versuche (200 = Login-Seite mit Flash).
+        # Alles danach muss abgewiesen sein: 302 (Limiter-Redirect) oder 429
+        # (Lockout / Limiter-Default).
+        allowed = [s for s in statuses if s == 200]
+        rejected = [s for s in statuses if s in (302, 429)]
+        self.assertLessEqual(
+            len(allowed), 5, f"zu viele erlaubte Versuche: {statuses}"
+        )
+        self.assertGreaterEqual(
+            len(rejected), 1, f"keine Abweisung nach 7 Versuchen: {statuses}"
+        )
 
     def test_login_get_not_rate_limited(self):
         """GET /login (Seitenaufruf) wird NICHT gezählt — Limit nur auf POST."""

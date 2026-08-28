@@ -118,6 +118,9 @@ def _call_internal_demo(slug: str, value: str) -> dict:
 
 
 @showcase_bp.route("/api/demos/<slug>", methods=["POST"])
+# Zentrales Rate-Limit (Redis in Production, shared über alle Worker):
+# max. 8 Demo-Aufrufe/h/IP — die n8n-Demos sind teuer (LLM), daher bewusst
+# eng. Kein TESTING-Exempt: test_showcase hält sich unter dem Limit.
 @limiter.limit("8 per hour")
 def run_demo(slug: str):
     if slug not in DEMOS:

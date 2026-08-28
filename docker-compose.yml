@@ -1,4 +1,21 @@
 services:
+  redis:
+    image: redis:7-alpine
+    container_name: skalantech-redis
+    restart: unless-stopped
+    # Host-Netzwerk wie die App; Redis lauscht NUR auf 127.0.0.1 (kein
+    # öffentlicher Port, keine Tailscale-Exposition) — einziger Client ist
+    # der skalantech-Container (RATELIMIT_STORAGE_URI, Issue #4).
+    network_mode: host
+    command: ["redis-server", "--bind", "127.0.0.1", "--port", "6379", "--appendonly", "yes", "--appendfsync", "everysec", "--maxmemory", "64mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-h", "127.0.0.1", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
   skalantech:
     build:
       context: .
@@ -35,3 +52,6 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+
+volumes:
+  redis-data:

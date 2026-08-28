@@ -28,7 +28,12 @@ class BaseConfig:
     ALLOWED_VIDEO_EXT = {"mp4", "webm", "mov"}
 
     # ── Rate limiting ─────────────────────────────────────────────────────
+    # Dev/Tests: memory:// (hermetisch). Production überschreibt mit Redis,
+    # damit Limits über alle gunicorn-Worker hinweg geteilt sind (Issue #4).
     RATELIMIT_STORAGE_URI = "memory://"
+    # Gleitendes Fenster statt fester Minuten/Stunden — verhindert
+    # Window-Boundary-Effekte (z. B. 6 statt 3 Anfragen in 2 Minuten bei 3/h).
+    RATELIMIT_STRATEGY = "moving-window"
 
 
 class ProductionConfig(BaseConfig):
@@ -45,6 +50,14 @@ class ProductionConfig(BaseConfig):
     PREFERRED_URL_SCHEME = "https"
 
     SEND_FILE_MAX_AGE_DEFAULT = 604800
+
+    # Zentraler Rate-Limit-Storage: Redis (Issue #4) — der Container
+    # `skalantech-redis` läuft im Host-Netzwerk, nur an 127.0.0.1 gebunden.
+    # Alle 4 gunicorn-Worker teilen sich diesen Storage → Limits gelten
+    # worker-übergreifend (kein memory://-Pro-Worker mehr).
+    RATELIMIT_STORAGE_URI = (
+        os.environ.get("RATELIMIT_STORAGE_URI") or "redis://127.0.0.1:6379/0"
+    )
 
 
 class DevelopmentConfig(BaseConfig):

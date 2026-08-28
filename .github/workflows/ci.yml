@@ -13,6 +13,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    services:
+      # Zentraler Rate-Limit-Storage (Issue #4): Redis für die
+      # Multi-Worker-Sharing-Tests in tests/test_ratelimit_storage.py
+      # (Test-DB 15; der Rest der Suite ist hermetisch via memory://).
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

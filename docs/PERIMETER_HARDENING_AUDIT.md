@@ -34,13 +34,33 @@ Referrer/-Server am Edge als Defense-in-Depth).
 
 ## 2. Rate-Limiting öffentlicher Routen
 
+> **Nachtrag (Issue #4, 2026-08-28):** Storage ist jetzt zentral (Redis)
+> statt `memory://` — Limits gelten exakt über alle 4 gunicorn-Worker.
+> Siehe Abschnitt „Zentrales Rate-Limiting“ unten.
+
 - `/login` (POST): flask-limiter 5/min + Account-Lockout 5×→5 min (DB, shared
   über Worker) — primärer Brute-Force-Schutz
-- `/contact` (POST): In-Memory-Sliding-Window 3/h/IP + Honeypot + Feld-Limits
-  (Vorsicht: memory pro gunicorn-Worker ⇒ effektiv 3×4/h/IP)
+- `/contact` (POST): flask-limiter 3/h/IP (Redis, zentral) + Honeypot +
+  Feld-Limits — Terminbuchung läuft durch `/contact` und ist abgedeckt
+- `/demo` (POST): flask-limiter 3/h/IP (Redis, zentral) — Demo-Anfragen der
+  Branchen-Landingpages
+- `/api/demos/<slug>` (POST): 8/h/IP (Redis, zentral) — n8n-Demos sind teuer
+  (LLM), bewusst eng
 - `/analytics/event` (POST): 120/min + Event-Allowlist + Payload-Limit 8 KB
-- Terminbuchung läuft durch `/contact` → durch dessen Rate-Limit abgedeckt;
-  n8n-Webhook selbst ist intern (127.0.0.1)
+- Storage: `skalantech-redis` Container (Host-Netzwerk, nur `127.0.0.1:6379`,
+  AOF), Strategie `moving-window`; bei Breach 429-JSON für API/AJAX, sonst
+  Flash + Redirect
+- n8n-Webhooks selbst bleiben intern (127.0.0.1)
+
+### Zentrales Rate-Limiting (Issue #4)
+
+Problem: `memory://`-Storage ist pro gunicorn-Worker — mit `-w 4` war das
+effektive Limit `Limit × 4` und pro Worker getrennt. Lösung: Redis als
+zentraler Storage (`RATELIMIT_STORAGE_URI=redis://127.0.0.1:6379/0`), der
+Kontaktformular-Limiter wurde von In-Memory-Dict auf flask-limiter
+vereinheitlicht. Verifiziert durch `tests/test_ratelimit_storage.py`:
+8 Requests verteilt auf 2 App-Instanzen erlaubt, 9. → 429; Counter überlebt
+App-Neuinitialisierung (= Worker-Restart).
 
 ## 3. Fail2Ban
 
@@ -135,5 +155,6 @@ CNAME-Records selbst löschen (DNS-Änderung, benötigt IONOS-Zugriff).
    (bereits als Empfehlung aus t_3124abb3 dokumentiert)
 3. Hermes-Dashboard bindet 0.0.0.0:9119 (UFW blockt public) — auf
    127.0.0.1 umbinden als Defense-in-Depth (Hermes-Konfig)
-4. Kontaktformular-Limiter von In-Memory-Dict auf flask-limiter vereinheitlichen
-   (aktuell äquivalent, memory pro Worker)
+4. ✅ **Erledigt (Issue #4, 2026-08-28):** Kontaktformular-Limiter von
+   In-Memory-Dict auf flask-limiter vereinheitlicht + zentraler Redis-Storage
+   (siehe Abschnitt „Zentrales Rate-Limiting“).
