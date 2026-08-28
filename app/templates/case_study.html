@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{# Case Study / Anwendungsbeispiel — Dict-driven aus app/case_studies.py.
+   Sperren (CLOSER/SENTINEL P0):
+   1. Label „Anwendungsbeispiel Handwerk" sichtbar (Badge/Kicker + H1).
+   2. Kein „Live-Terminbuchung"-Claim — Text sagt „erprobt"/„selbst betrieben".
+   3. Keine Steigerungsraten/Prozent-Claims.
+   4. Disclaimer roi_note zwingend unter der Zahlenbox.
+   5. Zahlen NUR aus dem Dict (520h/65Tg/33.800€ + Sensitivität 187h/23Tg/12.200€). #}
+{% set cs = case_study %}
+{% set cs_url = "https://skalantech.store/case-studies/" + cs.slug %}
+
+{# SEO-Meta-Title: cs.title ist bereits auf <=60 Zeichen optimiert (VELA-DoD),
+   deshalb NICHT um „ | Skalantech" verlängern. #}
+{% block title %}{{ cs.title }}{% endblock %}
+{% block description %}{{ cs.description }}{% endblock %}
+{% block canonical %}{{ cs_url }}{% endblock %}
+{% block og_title %}{{ cs.title }}{% endblock %}
+{% block og_description %}{{ cs.description }}{% endblock %}
+{% block og_url %}{{ cs_url }}{% endblock %}
+{% block twitter_title %}{{ cs.title }}{% endblock %}
+{% block twitter_description %}{{ cs.description }}{% endblock %}
+{% block body_class %}page-legal{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "{{ cs_url }}#article",
+      "headline": "{{ cs.title_redaktion }}",
+      "description": "{{ cs.description }}",
+      "inLanguage": "de-DE",
+      "author": { "@id": "https://skalantech.store/#business" },
+      "publisher": { "@id": "https://skalantech.store/#business" },
+      "mainEntityOfPage": "{{ cs_url }}"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "{{ cs_url }}#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://skalantech.store/" },
+        { "@type": "ListItem", "position": 2, "name": "{{ cs.label }}", "item": "{{ cs_url }}" }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block body %}
+<main class="legal-page" id="main-content">
+  <div class="shell">
+    <nav class="landing-breadcrumb" aria-label="Brotkrumen-Navigation">
+      <a href="{{ url_for('public.index') }}">Startseite</a>
+      <span aria-hidden="true">/</span>
+      <span>{{ cs.label }}</span>
+    </nav>
+
+    <article class="article-page">
+      <header class="article-page__header">
+        <p class="section-label">Case Study · {{ cs.label }}</p>
+        <h1>{{ cs.title_redaktion }}</h1>
+        <p class="article-page__intro">{{ cs.intro }}</p>
+      </header>
+
+      <section class="article-page__section">
+        <h2>{{ cs.problem_title }}</h2>
+        <ul class="landing-list landing-list--pain">
+          {% for item in cs.problem %}
+          <li><span aria-hidden="true">✕</span>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="article-page__section">
+        <h2>{{ cs.solution_title }}</h2>
+        {% for heading, text in cs.solution %}
+        <h3>{{ heading }}</h3>
+        <p>{{ text }}</p>
+        {% endfor %}
+        <p class="case-study__note">{{ cs.setup_note }}</p>
+      </section>
+
+      <section class="article-page__section" id="ergebnis">
+        <h2>{{ cs.ergebnis_title }}</h2>
+        <div class="case-zahlen">
+          <div class="case-zahlen__block">
+            <h3>Typische Ausgangslage (ROI-Rechner-Defaults)</h3>
+            <p class="case-zahlen__annahmen">{{ cs.zahlen.defaults.annahmen }}</p>
+            <p class="case-zahlen__formel">{{ cs.zahlen.defaults.formel }}</p>
+            <p class="case-zahlen__big"><strong>{{ cs.zahlen_display.defaults.stunden_pro_jahr }}</strong> Stunden pro Jahr</p>
+            <p class="case-zahlen__sub">≈ {{ cs.zahlen_display.defaults.arbeitstage_pro_jahr }} Arbeitstage · ≈ {{ cs.zahlen_display.defaults.eur_display }} €/Jahr bei {{ cs.zahlen_display.defaults.durchsatz }} €/h</p>
+          </div>
+          <div class="case-zahlen__block case-zahlen__block--sensitivity">
+            <h3>Konservative Sensitivität</h3>
+            <p class="case-zahlen__annahmen">{{ cs.zahlen.sensitivitaet.annahmen }}</p>
+            <p class="case-zahlen__big"><strong>{{ cs.zahlen_display.sensitivitaet.stunden_pro_jahr }}</strong> Stunden pro Jahr</p>
+            <p class="case-zahlen__sub">≈ {{ cs.zahlen_display.sensitivitaet.arbeitstage_pro_jahr }} Arbeitstage · ≈ {{ cs.zahlen_display.sensitivitaet.eur_display }} €/Jahr bei {{ cs.zahlen_display.defaults.durchsatz }} €/h</p>
+          </div>
+          <p class="case-zahlen__quelle">{{ cs.zahlen.quelle }}</p>
+          <p class="case-zahlen__disclaimer">{{ cs.zahlen.roi_note }}</p>
+        </div>
+      </section>
+
+      <section class="article-page__section" id="e-rechnung">
+        <h2>{{ cs.erechnung_title }}</h2>
+        <ul class="landing-list landing-list--facts">
+          {% for fact in cs.erechnung_facts %}
+          <li>{{ fact }}</li>
+          {% endfor %}
+        </ul>
+        <p class="case-study__note">{{ cs.erechnung_note }}</p>
+      </section>
+
+      <section class="article-page__section">
+        <h2>{{ cs.process_title }}</h2>
+        <ol class="landing-process">
+          {% for heading, text in cs.process %}
+          <li data-reveal>
+            <span>0{{ loop.index }}</span>
+            <div>
+              <p>{{ heading }}</p>
+              <h3>{{ text }}</h3>
+            </div>
+          </li>
+          {% endfor %}
+        </ol>
+      </section>
+
+      <section class="article-page__section">
+        <h2>{{ cs.fazit_title }}</h2>
+        {% for paragraph in cs.fazit_paragraphs %}
+        <p>{{ paragraph }}</p>
+        {% endfor %}
+      </section>
+
+      <aside class="article-cta">
+        <h2>Weniger Büro. Mehr Handwerk.</h2>
+        <p>Rechnen Sie den Nutzen mit Ihren eigenen Werten durch – oder sehen Sie die Automatisierung in einer Demo mit Branchendaten.</p>
+        <a class="button button--accent" href="{{ cs.cta_primary_url }}">{{ cs.cta_primary }} <span aria-hidden="true">↗</span></a>
+        <a class="button button--quiet" href="{{ cs.cta_secondary_url }}">{{ cs.cta_secondary }} <span aria-hidden="true">↗</span></a>
+        {% if cs.related_landing_resolved %}
+        <a class="button button--quiet" href="{{ cs.related_landing_resolved.url }}">Mehr zur Automatisierung im Handwerk <span aria-hidden="true">↗</span></a>
+        {% endif %}
+      </aside>
+
+      {% if cs.related_articles_resolved %}
+      <aside class="article-page__section case-related" aria-label="Passende Artikel">
+        <h2>Weiterlesen</h2>
+        <ul class="landing-articles">
+          {% for art in cs.related_articles_resolved %}
+          <li><a href="{{ art.url }}">{{ art.title }} <span aria-hidden="true">↗</span></a></li>
+          {% endfor %}
+        </ul>
+      </aside>
+      {% endif %}
+
+      <aside class="article-author" aria-label="Über Skalantech">
+        <div class="article-author__copy">
+          <p class="article-author__label">Skalantech</p>
+          <h2>Aus der Praxis gebaut.</h2>
+          <p>
+            Skalantech entwickelt Automationen, Business Apps und KI-Integrationen
+            für kleine und mittelständische Unternehmen. Was hier beschrieben
+            wird, ist in eigenen Systemen geplant, gebaut und betrieben worden.
+          </p>
+          <div class="article-author__links">
+            <a href="https://linkedin.com/in/xyesca/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+            <a href="https://github.com/Xyesca" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+            <a href="{{ url_for('public.index') }}#about">Über Skalantech <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </aside>
+    </article>
+  </div>
+</main>
+{% endblock %}

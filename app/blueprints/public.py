@@ -13,6 +13,7 @@ from app.extensions import db
 from app.seo_pages import LANDING_PAGES, LANDING_ORDER
 from app.branchen import BRANCH_ORDER
 from app.wissen import ARTICLES, ARTICLE_ORDER, ARTICLE_PUBLISHED
+from app.case_studies import CASE_STUDIES, CASE_STUDY_ORDER
 from app.blueprints.analytics import _record_event
 
 public_bp = Blueprint("public", __name__)
@@ -37,6 +38,7 @@ SITEMAP_PAGES = [
     *[{"loc": f"/branchen/{slug}", "priority": "0.8"} for slug in BRANCH_ORDER],
     {"loc": "/wissen", "priority": "0.7"},
     *[{"loc": f"/wissen/{slug}", "priority": "0.7"} for slug in ARTICLE_ORDER],
+    *[{"loc": f"/case-studies/{slug}", "priority": "0.8"} for slug in CASE_STUDY_ORDER],
     {"loc": "/faq", "priority": "0.6"},
 ]
 
@@ -426,6 +428,60 @@ def article(slug: str):
         "article.html",
         article_data=article_data,
         article_published=ARTICLE_PUBLISHED,
+        landing_map=_landing_map(),
+    )
+
+
+def _fmt_eur(value: int) -> str:
+    """Deutsches Tausendertrennzeichen: 33800 -> '33.800'."""
+    return f"{value:,}".replace(",", ".")
+
+
+def _case_study_view_data(slug: str) -> dict:
+    """Case-Study-Daten + aufgelöste Referenzen + formatierte Anzeige-Werte."""
+    cs = {**CASE_STUDIES[slug], "slug": slug}
+    cs["canonical_url"] = SITE_URL + url_for("public.case_study", slug=slug)
+
+    # Zahlenbox: Anzeige-Werte (deutsche Schreibweise), Dict selbst unangetastet.
+    z = cs["zahlen"]
+    cs["zahlen_display"] = {
+        "defaults": {
+            **z["defaults"],
+            "eur_display": _fmt_eur(z["defaults"]["eur_pro_jahr_bei_65eur_h"]),
+        },
+        "sensitivitaet": {
+            **z["sensitivitaet"],
+            "eur_display": _fmt_eur(z["sensitivitaet"]["eur_pro_jahr_bei_65eur_h"]),
+        },
+    }
+
+    # Verweis auf die bestehende Branchen-Landing (related_landing).
+    rel = cs.get("related_landing")
+    if rel and rel in LANDING_PAGES:
+        cs["related_landing_resolved"] = {
+            "slug": rel,
+            "nav_label": LANDING_PAGES[rel].get("nav_label", rel),
+            "h1": LANDING_PAGES[rel].get("h1", ""),
+            "url": url_for(f"public.landing_{rel.replace('-', '_')}"),
+        }
+    else:
+        cs["related_landing_resolved"] = None
+
+    cs["related_articles_resolved"] = [
+        {"slug": a_slug, "title": ARTICLES[a_slug]["h1"], "url": url_for("public.article", slug=a_slug)}
+        for a_slug in cs.get("related_articles", []) if a_slug in ARTICLES
+    ]
+    return cs
+
+
+@public_bp.route("/case-studies/<slug>")
+def case_study(slug: str):
+    if slug not in CASE_STUDIES:
+        abort(404)
+    cs = _case_study_view_data(slug)
+    return render_template(
+        "case_study.html",
+        case_study=cs,
         landing_map=_landing_map(),
     )
 
