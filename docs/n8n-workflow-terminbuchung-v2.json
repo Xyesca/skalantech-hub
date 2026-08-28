@@ -1,5 +1,6 @@
 {
   "name": "Skalantech Terminanfrage (KI) v2",
+  "description": null,
   "nodes": [
     {
       "id": "wki-86fdc8a4",
@@ -15,8 +16,7 @@
         0
       ],
       "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "webhookId": "3bfc4417-0e77-48ba-acf3-6778852bdcde"
+      "typeVersion": 2
     },
     {
       "id": "wki-8d636ebe",
@@ -92,42 +92,10 @@
       "typeVersion": 2
     },
     {
-      "id": "wki-4c8d1e5f",
-      "name": "Verfügbarkeit prüfen",
-      "parameters": {
-        "resource": "calendar",
-        "operation": "availability",
-        "calendar": {
-          "__rl": true,
-          "cachedResultName": "xyescaescalante@gmail.com",
-          "mode": "list",
-          "value": "xyescaescalante@gmail.com"
-        },
-        "timeMin": "={{ $json.startIso }}",
-        "timeMax": "={{ $json.endIso }}",
-        "options": {}
-      },
-      "position": [
-        896,
-        0
-      ],
-      "type": "n8n-nodes-base.googleCalendar",
-      "typeVersion": 1.3,
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "GDSnPRh9olMLb8hC",
-          "name": "Skalantech Kalender (Terminbuchung)"
-        }
-      },
-      "retryOnFail": true,
-      "maxTries": 2,
-      "waitBetweenTries": 1000
-    },
-    {
       "id": "wki-2b6d4f8a",
       "name": "Kontext wiederherstellen",
       "parameters": {
-        "jsCode": "const req = $('Validieren & Slot').first().json;\nreturn [{ json: { ...req, available: $json.available === true } }];"
+        "jsCode": "const req = $('Validieren & Slot').first().json;\nconst r = $json || {};\nreturn [{ json: { ...req, booked: r.booked === true, booking_id: r.booking_id || '' } }];"
       },
       "position": [
         1120,
@@ -144,7 +112,7 @@
           "conditions": [
             {
               "id": "cond-wki-3",
-              "leftValue": "={{ $json.available }}",
+              "leftValue": "={{ $json.booked }}",
               "operator": {
                 "operation": "equals",
                 "type": "boolean"
@@ -167,59 +135,10 @@
       "typeVersion": 2
     },
     {
-      "id": "wki-5d9b2e4f",
-      "name": "Event anlegen",
-      "parameters": {
-        "resource": "event",
-        "operation": "create",
-        "calendar": {
-          "__rl": true,
-          "cachedResultName": "xyescaescalante@gmail.com",
-          "mode": "list",
-          "value": "xyescaescalante@gmail.com"
-        },
-        "start": "={{ $json.startIso }}",
-        "end": "={{ $json.endIso }}",
-        "useDefaultReminders": true,
-        "additionalFields": {
-          "attendees": [
-            "={{ $json.email }}"
-          ],
-          "conferenceDataUi": {
-            "conferenceDataValues": {
-              "conferenceSolution": "hangoutsMeet"
-            }
-          },
-          "description": "={{ 'Skalantech Erstgespräch\\n\\nAnfrage von: ' + $json.name + ' (' + $json.email + ')' + ($json.company ? '\\nUnternehmen: ' + $json.company : '') + '\\nThema: ' + $json.topic + ($json.message ? '\\n\\nNachricht:\\n' + $json.message : '') }}",
-          "summary": "=Skalantech Erstgespräch · {{ $json.name }}{{ $json.company ? ' · ' + $json.company : '' }}",
-          "sendUpdates": "all",
-          "guestsCanInviteOthers": false,
-          "guestsCanModify": false,
-          "guestsCanSeeOtherGuests": false
-        },
-        "options": {}
-      },
-      "position": [
-        1568,
-        0
-      ],
-      "type": "n8n-nodes-base.googleCalendar",
-      "typeVersion": 1.3,
-      "credentials": {
-        "googleCalendarOAuth2Api": {
-          "id": "GDSnPRh9olMLb8hC",
-          "name": "Skalantech Kalender (Terminbuchung)"
-        }
-      },
-      "retryOnFail": true,
-      "maxTries": 2,
-      "waitBetweenTries": 1000
-    },
-    {
       "id": "wki-context-0001",
       "name": "Event-Kontext zusammenführen",
       "parameters": {
-        "jsCode": "const req = $('Validieren & Slot').first().json;\nconst event = $json || {};\nconst meetLink = event.hangoutLink || event.conferenceData?.entryPoints?.find(e => e.entryPointType === 'video')?.uri || '';\nreturn [{ json: { ...req, eventId: event.id || '', eventHtmlLink: event.htmlLink || '', meetLink } }];"
+        "jsCode": "const req = $('Validieren & Slot').first().json;\nconst ctx = $json || {};\nreturn [{ json: { ...req, booking_id: ctx.booking_id || '', booked: ctx.booked === true } }];"
       },
       "position": [
         1792,
@@ -284,7 +203,7 @@
       "id": "wki-extract-0002",
       "name": "KI-Mail extrahieren",
       "parameters": {
-        "jsCode": "const ctx = $('Event-Kontext zusammenführen').first().json;\nconst raw = $json?.message?.content || $json?.body?.message?.content || $json?.content || '';\n\nfunction esc(v = '') {\n  return String(v)\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;')\n    .replace(/'/g, '&#039;');\n}\n\nlet personal = String(raw).trim();\npersonal = personal\n  .replace(/```[\\s\\S]*?```/g, ' ')\n  .replace(/<[^>]*>/g, ' ')\n  .replace(/https?:\\/\\/\\S+/gi, ' ')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\nif (personal.length > 500) personal = personal.slice(0, 500).trim();\nif (!personal) personal = 'Danke für die kurze Einordnung. Ich schaue mir Ihre Ausgangslage vor unserem Gespräch an.';\n\nconst when = `${ctx.displayDate} um ${ctx.displayTime} Uhr`;\nconst meet = ctx.meetLink\n  ? `<p><strong>Google Meet:</strong> <a href=\"${esc(ctx.meetLink)}\">${esc(ctx.meetLink)}</a></p>`\n  : '<p>Die Zugangsdaten finden Sie in der Kalendereinladung.</p>';\n\nconst aiEmail = [\n  `<p>Hallo ${esc(ctx.name)},</p>`,\n  `<p>Ihr Erstgespräch mit Skalantech ist für <strong>${esc(when)}</strong> eingetragen. Geplant sind 30 Minuten.</p>`,\n  `<p>${esc(personal)}</p>`,\n  meet,\n  '<p>Bis dann.<br>Xavier Escalante<br>Skalantech</p>'\n].join('');\n\nreturn [{ json: { ...ctx, aiEmail, aiPersonal: personal } }];"
+        "jsCode": "const ctx = $('Event-Kontext zusammenführen').first().json;\nconst raw = $json?.message?.content || $json?.body?.message?.content || $json?.content || '';\n\nfunction esc(v = '') {\n  return String(v)\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;')\n    .replace(/'/g, '&#039;');\n}\n\nlet personal = String(raw).trim();\npersonal = personal\n  .replace(/```[\\s\\S]*?```/g, ' ')\n  .replace(/<[^>]*>/g, ' ')\n  .replace(/https?:\\/\\/\\S+/gi, ' ')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\nif (personal.length > 500) personal = personal.slice(0, 500).trim();\nif (!personal) personal = 'Danke für die kurze Einordnung. Ich schaue mir Ihre Ausgangslage vor unserem Gespräch an.';\n\nconst when = `${ctx.displayDate} um ${ctx.displayTime} Uhr`;\nconst meet = '<p>Die Kalendereinladung (ICS) liegt dieser E-Mail bei.</p>';\n\nconst aiEmail = [\n  `<p>Hallo ${esc(ctx.name)},</p>`,\n  `<p>Ihr Erstgespräch mit Skalantech ist für <strong>${esc(when)}</strong> eingetragen. Geplant sind 30 Minuten.</p>`,\n  `<p>${esc(personal)}</p>`,\n  meet,\n  '<p>Bis dann.<br>Xavier Escalante<br>Skalantech</p>'\n].join('');\n\nreturn [{ json: { ...ctx, aiEmail, aiPersonal: personal } }];"
       },
       "position": [
         2464,
@@ -294,76 +213,11 @@
       "typeVersion": 2
     },
     {
-      "id": "wki-37c47bbc",
-      "name": "Bestätigung an Kunde",
-      "parameters": {
-        "authentication": "oAuth2",
-        "resource": "message",
-        "operation": "send",
-        "sendTo": "={{ $json.email }}",
-        "subject": "={{ 'Ihr Skalantech-Erstgespräch am ' + $json.displayDate + ' um ' + $json.displayTime + ' Uhr' }}",
-        "emailType": "html",
-        "message": "={{ $json.aiEmail }}",
-        "options": {
-          "senderName": "Xavier Escalante · Skalantech",
-          "replyTo": "xyesca1989@googlemail.com"
-        }
-      },
-      "position": [
-        2688,
-        -320
-      ],
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "a06hhqHnYwuiVbBU",
-          "name": "Gmail account"
-        }
-      },
-      "retryOnFail": true,
-      "maxTries": 2,
-      "waitBetweenTries": 1500,
-      "onError": "continueRegularOutput",
-      "webhookId": "43d68209-84c6-45e5-8d01-eda6829784ae"
-    },
-    {
-      "id": "wki-4e8d2b6f",
-      "name": "Benachrichtigung Xavier",
-      "parameters": {
-        "authentication": "oAuth2",
-        "resource": "message",
-        "operation": "send",
-        "sendTo": "xyesca1989@googlemail.com",
-        "subject": "={{ 'Neue bestätigte Buchung: ' + $json.name + ' · ' + $json.displayDate + ' ' + $json.displayTime }}",
-        "emailType": "html",
-        "message": "={{ '<p>Neue bestätigte Buchung über skalantech.store:</p><p><strong>' + $json.name + '</strong>' + ($json.company ? ' (' + $json.company + ')' : '') + '<br>' + $json.email + '</p><p><strong>Termin:</strong> ' + $json.displayDate + ' um ' + $json.displayTime + ' Uhr<br><strong>Thema:</strong> ' + $json.topic + '</p>' + ($json.message ? '<p><strong>Nachricht:</strong><br>' + $json.message + '</p>' : '') + ($json.meetLink ? '<p><strong>Meet:</strong> <a href=\"' + $json.meetLink + '\">' + $json.meetLink + '</a></p>' : '') }}",
-        "options": {}
-      },
-      "position": [
-        2016,
-        192
-      ],
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "a06hhqHnYwuiVbBU",
-          "name": "Gmail account"
-        }
-      },
-      "retryOnFail": true,
-      "maxTries": 2,
-      "waitBetweenTries": 1500,
-      "onError": "continueRegularOutput",
-      "webhookId": "b4223142-98c6-46ed-8af6-f0f7d5c655c2"
-    },
-    {
       "id": "wki-6f1a3c8d",
       "name": "Antwort: Erfolg",
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { success: true, message: 'Termin reserviert. Die Kalendereinladung wurde an ' + $json.email + ' gesendet.', booked: true, date: $json.displayDate, time: $json.displayTime } }}",
+        "responseBody": "={{ { success: true, message: 'Termin bestätigt. Die Einladung (ICS) wurde an ' + $json.email + ' gesendet.', booked: true, date: $json.displayDate, time: $json.displayTime } }}",
         "options": {}
       },
       "position": [
@@ -419,62 +273,6 @@
       ],
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2
-    },
-    {
-      "id": "wki-3b7d5f9a",
-      "name": "Info Xavier (ohne Termin)",
-      "parameters": {
-        "authentication": "oAuth2",
-        "resource": "message",
-        "operation": "send",
-        "sendTo": "xyesca1989@googlemail.com",
-        "subject": "={{ 'Neue Anfrage (ohne Termin): ' + $json.name }}",
-        "emailType": "html",
-        "message": "={{ '<p>Neue Anfrage über skalantech.store (ohne Terminwunsch):</p><p><strong>' + $json.name + '</strong>' + ($json.company ? ' (' + $json.company + ')' : '') + '<br>' + $json.email + '</p><p>Thema: ' + $json.topic + '</p>' + ($json.message ? '<p>Nachricht: ' + $json.message + '</p>' : '') }}",
-        "options": {}
-      },
-      "position": [
-        896,
-        512
-      ],
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "a06hhqHnYwuiVbBU",
-          "name": "Gmail account"
-        }
-      },
-      "onError": "continueRegularOutput",
-      "webhookId": "0fc2b80a-a70a-4ed8-b654-5322217030da"
-    },
-    {
-      "id": "wki-5e1f3a8c",
-      "name": "Info Xavier (belegt)",
-      "parameters": {
-        "authentication": "oAuth2",
-        "resource": "message",
-        "operation": "send",
-        "sendTo": "xyesca1989@googlemail.com",
-        "subject": "={{ 'Terminkonflikt: ' + $json.name }}",
-        "emailType": "html",
-        "message": "={{ '<p>Anfrage über skalantech.store: gewünschter Termin war bereits belegt.</p><p><strong>' + $json.name + '</strong> (' + $json.email + ')<br>Wunschtermin: ' + $json.displayDate + ' um ' + $json.displayTime + ' Uhr</p><p>Bitte bei Bedarf einen Alternativtermin vorschlagen.</p>' }}",
-        "options": {}
-      },
-      "position": [
-        1568,
-        464
-      ],
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "a06hhqHnYwuiVbBU",
-          "name": "Gmail account"
-        }
-      },
-      "onError": "continueRegularOutput",
-      "webhookId": "8542762c-a517-4212-bcc9-105c5542ede3"
     },
     {
       "id": "wki-fallback-check-0001",
@@ -549,12 +347,6 @@
       ],
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "7IagYDgNYUewRxw1",
-          "name": "DeepSeek API Header"
-        }
-      },
       "onError": "continueRegularOutput",
       "retryOnFail": true,
       "maxTries": 2,
@@ -578,7 +370,7 @@
       "name": "Telegram: Buchung bestätigt",
       "parameters": {
         "chatId": "-1003956152501",
-        "text": "={{ '✅ Neue Terminbuchung über skalantech.store\\n\\n' + $json.name + ($json.company ? ' · ' + $json.company : '') + '\\n' + $json.email + '\\n\\n' + $json.displayDate + ' · ' + $json.displayTime + ' Uhr · 30 Min\\nThema: ' + $json.topic + ($json.message ? '\\n\\n' + $json.message : '') + ($json.meetLink ? '\\n\\nMeet: ' + $json.meetLink : '') }}",
+        "text": "={{ '✅ Neue Terminbuchung über skalantech.store\\n\\n' + $json.name + ($json.company ? ' · ' + $json.company : '') + '\\n' + $json.email + '\\n\\n' + $json.displayDate + ' · ' + $json.displayTime + ' Uhr · 30 Min\\nThema: ' + $json.topic + ($json.message ? '\\n\\n' + $json.message : '') }}",
         "additionalFields": {}
       },
       "position": [
@@ -587,17 +379,152 @@
       ],
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
-      "credentials": {
-        "telegramApi": {
-          "id": "u9Q39TmSaAZEhFTX",
-          "name": "Telegram Bot (HermesGambito)"
-        }
-      },
       "onError": "continueRegularOutput",
       "retryOnFail": true,
       "maxTries": 2,
       "waitBetweenTries": 1500,
       "webhookId": "e425b267-e3a7-4d3f-abc7-c493df1b06d2"
+    },
+    {
+      "id": "wki-4c8d1e5f",
+      "name": "Slot reservieren",
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5000/api/crm/bookings/reserve",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ start_at_utc: $json.startIso, end_at_utc: $json.endIso, name: $json.name, email: $json.email, company: $json.company || '', topic: $json.topic || 'Erstgespräch', message: $json.message || '', booking_id: ($json.requestedLocal || '').replace(/[-:]/g, '') }) }}",
+        "options": {
+          "timeout": 10000,
+          "response": {
+            "response": {
+              "responseFormat": "json",
+              "neverError": true
+            }
+          }
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "position": [
+        896,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 1000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "wki-37c47bbc",
+      "name": "Bestätigung an Kunde",
+      "parameters": {
+        "fromEmail": "Xavier Escalante <xyesca@skalantech.store>",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ 'Ihr Skalantech-Erstgespräch am ' + $json.displayDate + ' um ' + $json.displayTime + ' Uhr' }}",
+        "emailFormat": "html",
+        "html": "={{ $json.aiEmail }}",
+        "options": {
+          "replyTo": "xyesca@skalantech.store",
+          "attachments": "data"
+        }
+      },
+      "position": [
+        2688,
+        -320
+      ],
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 1500,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "wki-4e8d2b6f",
+      "name": "Benachrichtigung Xavier",
+      "parameters": {
+        "fromEmail": "Xavier Escalante <xyesca@skalantech.store>",
+        "toEmail": "xyesca@skalantech.store",
+        "subject": "={{ 'Neue bestätigte Buchung: ' + $json.name + ' · ' + $json.displayDate + ' ' + $json.displayTime }}",
+        "emailFormat": "html",
+        "html": "={{ '<p>Neue bestätigte Buchung über skalantech.store:</p><p><strong>' + $json.name + '</strong>' + ($json.company ? ' (' + $json.company + ')' : '') + '<br>' + $json.email + '</p><p><strong>Termin:</strong> ' + $json.displayDate + ' um ' + $json.displayTime + ' Uhr<br><strong>Thema:</strong> ' + $json.topic + '</p>' + ($json.message ? '<p><strong>Nachricht:</strong><br>' + $json.message + '</p>' : '') + '<p><strong>Booking-ID:</strong> ' + ($json.booking_id || '') + '</p>' }}",
+        "options": {
+          "replyTo": "xyesca@skalantech.store"
+        }
+      },
+      "position": [
+        2016,
+        192
+      ],
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 1500,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "wki-3b7d5f9a",
+      "name": "Info Xavier (ohne Termin)",
+      "parameters": {
+        "fromEmail": "Xavier Escalante <xyesca@skalantech.store>",
+        "toEmail": "xyesca@skalantech.store",
+        "subject": "={{ 'Neue Anfrage (ohne Termin): ' + $json.name }}",
+        "emailFormat": "html",
+        "html": "={{ '<p>Neue Anfrage über skalantech.store (ohne Terminwunsch):</p><p><strong>' + $json.name + '</strong>' + ($json.company ? ' (' + $json.company + ')' : '') + '<br>' + $json.email + '</p><p>Thema: ' + $json.topic + '</p>' + ($json.message ? '<p>Nachricht: ' + $json.message + '</p>' : '') }}",
+        "options": {
+          "replyTo": "xyesca@skalantech.store"
+        }
+      },
+      "position": [
+        896,
+        512
+      ],
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "wki-5e1f3a8c",
+      "name": "Info Xavier (belegt)",
+      "parameters": {
+        "fromEmail": "Xavier Escalante <xyesca@skalantech.store>",
+        "toEmail": "xyesca@skalantech.store",
+        "subject": "={{ 'Terminkonflikt: ' + $json.name }}",
+        "emailFormat": "html",
+        "html": "={{ '<p>Anfrage über skalantech.store: gewünschter Termin war bereits belegt.</p><p><strong>' + $json.name + '</strong> (' + $json.email + ')<br>Wunschtermin: ' + $json.displayDate + ' um ' + $json.displayTime + ' Uhr</p><p>Bitte bei Bedarf einen Alternativtermin vorschlagen.</p>' }}",
+        "options": {
+          "replyTo": "xyesca@skalantech.store"
+        }
+      },
+      "position": [
+        1568,
+        464
+      ],
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "wki-ics-0001",
+      "name": "ICS erzeugen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2592,
+        -320
+      ],
+      "parameters": {
+        "jsCode": "const ctx = $json || {};\nfunction fmtIcs(iso) {\n  const d = new Date(iso);\n  if (Number.isNaN(d.getTime())) return '';\n  return d.toISOString().replace(/[-:]/g, '').replace(/\\.\\d{3}/, ''); // 20261001T090000Z\n}\nconst uid = (ctx.booking_id || ('bk-' + ctx.email + '-' + ctx.startIso)).replace(/[^a-zA-Z0-9@._-]/g, '-');\nconst summary = 'Skalantech Erstgespräch · ' + (ctx.name || '') + (ctx.company ? ' · ' + ctx.company : '');\nconst ics = [\n  'BEGIN:VCALENDAR',\n  'VERSION:2.0',\n  'PRODID:-//Skalantech//Terminbuchung//DE',\n  'CALSCALE:GREGORIAN',\n  'METHOD:REQUEST',\n  'BEGIN:VEVENT',\n  'UID:' + uid + '@skalantech.store',\n  'DTSTAMP:' + fmtIcs(new Date().toISOString()),\n  'DTSTART:' + fmtIcs(ctx.startIso),\n  'DTEND:' + fmtIcs(ctx.endIso),\n  'SUMMARY:' + summary,\n  'DESCRIPTION:' + (ctx.topic || 'Erstgespräch').replace(/[\\r\\n]+/g, ' '),\n  'LOCATION:Online (Details folgen)',\n  'ORGANIZER;CN=Xavier Escalante:mailto:xyesca@skalantech.store',\n  'ATTENDEE;CN=' + (ctx.name || '') + ';ROLE=REQ-PARTICIPANT;RSVP=TRUE:mailto:' + (ctx.email || ''),\n  'END:VEVENT',\n  'END:VCALENDAR'\n].join('\\r\\n');\nreturn [{ json: ctx, binary: { data: { data: Buffer.from(ics, 'utf8').toString('base64'), mimeType: 'text/calendar', fileName: 'skalantech-erstgespraech.ics' } } }];"
+      },
+      "onError": "continueRegularOutput"
     }
   ],
   "connections": {
@@ -645,7 +572,7 @@
       "main": [
         [
           {
-            "node": "Verfügbarkeit prüfen",
+            "node": "Slot reservieren",
             "type": "main",
             "index": 0
           }
@@ -658,17 +585,6 @@
           },
           {
             "node": "Info Xavier (ohne Termin)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Verfügbarkeit prüfen": {
-      "main": [
-        [
-          {
-            "node": "Kontext wiederherstellen",
             "type": "main",
             "index": 0
           }
@@ -690,7 +606,7 @@
       "main": [
         [
           {
-            "node": "Event anlegen",
+            "node": "Event-Kontext zusammenführen",
             "type": "main",
             "index": 0
           }
@@ -703,17 +619,6 @@
           },
           {
             "node": "Info Xavier (belegt)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Event anlegen": {
-      "main": [
-        [
-          {
-            "node": "Event-Kontext zusammenführen",
             "type": "main",
             "index": 0
           }
@@ -761,7 +666,7 @@
       "main": [
         [
           {
-            "node": "Bestätigung an Kunde",
+            "node": "ICS erzeugen",
             "type": "main",
             "index": 0
           }
@@ -829,6 +734,28 @@
           }
         ]
       ]
+    },
+    "Slot reservieren": {
+      "main": [
+        [
+          {
+            "node": "Kontext wiederherstellen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ICS erzeugen": {
+      "main": [
+        [
+          {
+            "node": "Bestätigung an Kunde",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -838,5 +765,9 @@
     "timeSavedMode": "fixed",
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
+  },
+  "versionMetadata": {
+    "name": null,
+    "description": null
   }
 }
