@@ -421,6 +421,100 @@ WEBSITES_APPS_COPY = {
     "tracking": {"hero": "hero_cta_click", "faq": "faq_open", "check": "check_cta_click"},
 }
 
+# ── P1 ROI-Rechner (/rechner + Homepage-Sektion) — VELA-Endfassung ─────
+# Copy 1:1 aus VELA (Kanban t_8a6f04a7, roi_rechner_copy.py). Endfassung,
+# keine Drafts. FAQPage-Schema wird 1:1 aus ROI_RECHNER_FAQS gerendert
+# (Template rechner.html), damit kein Text-Drift entsteht.
+ROI_RECHNER_COPY = {
+    # ── 1. Standalone-Seite /rechner ────────────────────────────────────────
+    "roi_meta_title": "ROI-Rechner: Was kostet manuelle Arbeit? | Skalantech",
+    "roi_meta_description": "Manuelle Prozesse kosten Zeit und Geld. Rechnen Sie in 30 Sekunden aus, was ein wiederkehrender Ablauf Ihr Unternehmen pro Jahr kostet.",
+    "roi_h1": "Was kostet Sie manuelle Arbeit?",
+    "roi_subline": "Sechs Angaben, eine Zahl: Wählen Sie einen wiederkehrenden Ablauf, schätzen Sie Aufwand und Fehlerquote — und sehen Sie sofort, was er pro Jahr kostet und wie viel Automatisierung davon wegnimmt.",
+    "roi_trust_line": "Ihre Angaben bleiben auf Ihrem Gerät. Der Rechner speichert nichts und sendet nichts an einen Server.",
+
+    # ── 2. Homepage-Sektion (Block nach Pain, vor Services) ─────────────────
+    "roi_section_label": "Rechner",
+    "roi_h2": "Was kostet Sie manuelle Arbeit?",
+    "roi_section_subline": "Ein wiederkehrender Prozess kostet mehr, als es sich anfühlt. Rechnen Sie selbst — in 30 Sekunden, ohne Anmeldung.",
+    "roi_see_more": "Zum vollständigen ROI-Rechner →",
+
+    # ── 3. Widget-Inputs ─────────────────────────────────────────────────────
+    "roi_step1_legend": "Welcher Prozess kostet Zeit?",
+    "roi_process_label": "Prozess",
+    "roi_process_placeholder": "Prozess auswählen …",
+    "roi_process_angebote": "Angebote erstellen",
+    "roi_process_rechnungen": "Rechnungen & Belege",
+    "roi_process_termine": "Terminvergabe & -erinnerung",
+    "roi_process_daten": "Daten übertragen / erfassen",
+    "roi_process_berichte": "Berichte & Recherche",
+    "roi_process_kommunikation": "E-Mails & Nachverfolgung",
+    "roi_process_sonstiges": "Anderer Prozess",
+
+    "roi_step2_legend": "Wie viel Aufwand ist das?",
+    "roi_minutes_label": "Zeit pro Durchlauf",
+    "roi_minutes_unit": "Minuten",
+    "roi_frequency_label": "Wie oft pro Woche",
+    "roi_frequency_unit": "× pro Woche",
+    "roi_error_label": "Fehlerquote / Nacharbeit",
+    "roi_error_hint": "Der Anteil, der wegen Fehlern oder Korrekturen ein zweites Mal anfällt.",
+
+    "roi_step3_legend": "Was kostet eine Stunde?",
+    "roi_rate_label": "Stundensatz (Vollkosten)",
+    "roi_rate_hint": "Lohn plus Arbeitgeberanteile und Nebenkosten — der reale Preis einer Arbeitsstunde.",
+    "roi_rate_unit": "€/h",
+
+    "roi_step4_legend": "Wie viel davon lässt sich automatisieren?",
+    "roi_auto_label": "Automatisierungsgrad",
+    "roi_auto_note": "Das ist Ihre Annahme — kein Versprechen. Im Erstgespräch prüfen wir, welcher Wert für Ihren Prozess realistisch ist.",
+
+    # ── 4. Ergebnis-Panel ────────────────────────────────────────────────────
+    "roi_result_kicker": "Ihre Schätzung",
+    "roi_result_cost": "≈ 28.400 €",  # dynamisch gerendert (Beispielwert)
+    "roi_result_cost_unit": "pro Jahr",
+    "roi_result_auto_label": "davon automatisierbar",
+    "roi_result_detail": "19.900 € · 610 h pro Jahr",  # dynamisch gerendert (Beispielwert)
+    "roi_result_cta": "Kostenloses Erstgespräch",
+    "roi_result_note": "Schätzung auf Basis Ihrer Angaben. Der echte Wert hängt von Prozess, Daten und Team ab. Im kostenlosen Erstgespräch analysieren wir ihn.",
+
+    # ── 5. /rechner — „So funktioniert's" ────────────────────────────────────
+    "roi_how_title": "So kommen Sie zur Zahl",
+    "roi_how_step1_title": "Prozess wählen",
+    "roi_how_step1_text": "Wählen Sie den wiederkehrenden Ablauf, der Ihrem Team am meisten Zeit kostet.",
+    "roi_how_step2_title": "Aufwand schätzen",
+    "roi_how_step2_text": "Schätzen Sie Dauer, Häufigkeit und Fehlerquote — grobe Werte genügen für die Größenordnung.",
+    "roi_how_step3_title": "Einsparpotenzial sehen",
+    "roi_how_step3_text": "Sie sehen sofort die Jahreskosten und was Automatisierung davon wegnimmt.",
+
+    # ── FAQ (6 Fragen aus 05 §5, Antworten Endfassung) ───────────────────────
+    "roi_faq_q1": "Wie genau ist diese Berechnung?",
+    "roi_faq_a1": "Die Rechnung basiert auf Ihren Angaben und konservativen Annahmen (47 Wochen pro Jahr, Vollkosten-Stundensatz). Sie ersetzt keine Prozessanalyse — sie zeigt die Größenordnung. Den genauen Wert ermitteln wir im Erstgespräch.",
+    "roi_faq_q2": "Was passiert mit meinen Eingaben?",
+    "roi_faq_a2": "Nichts. Die Berechnung läuft komplett in Ihrem Browser. Ihre Angaben werden nicht gespeichert und nicht an einen Server übertragen.",
+    "roi_faq_q3": "Was ist der „Stundensatz (Vollkosten)“?",
+    "roi_faq_a3": "Der Stundensatz (Vollkosten) ist Lohn plus Arbeitgeberanteile plus Nebenkosten — also das, was eine Arbeitsstunde Ihr Unternehmen wirklich kostet, nicht das Bruttogehalt.",
+    "roi_faq_q4": "Warum 47 Arbeitswochen?",
+    "roi_faq_a4": "Der Rechner rechnet mit 47 Arbeitswochen pro Jahr. Damit sind Urlaub, Feiertage und durchschnittliche Krankheitstage bereits berücksichtigt.",
+    "roi_faq_q5": "Wie viel lässt sich wirklich automatisieren?",
+    "roi_faq_a5": "Das hängt vom Prozess, den Daten und den Schnittstellen ab. Der Schieberegler ist Ihre Annahme, kein Versprechen. Im Erstgespräch bewerten wir, welcher Automatisierungsgrad für Ihren konkreten Ablauf realistisch ist.",
+    "roi_faq_q6": "Was kostet die Analyse?",
+    "roi_faq_a6": "Das Erstgespräch ist kostenlos und unverbindlich. Sie bekommen eine ehrliche Einschätzung — auch wenn die Antwort lautet, dass sich Automatisierung für Sie nicht lohnt. Kosten entstehen erst, wenn Sie ein Projekt beauftragen.",
+
+    # ── Abschluss-CTA ────────────────────────────────────────────────────────
+    "roi_cta_title": "Klingt nach einem lohnenden Projekt?",
+    "roi_cta_text": "30 Minuten, unverbindlich: Wir analysieren Ihren Prozess und sagen Ihnen ehrlich, ob sich Automatisierung lohnt — und wo nicht.",
+}
+
+# FAQPage-Schema 1:1 — identisch zu den Slots im Dict (kein Drift möglich).
+ROI_RECHNER_FAQS = [
+    (ROI_RECHNER_COPY["roi_faq_q1"], ROI_RECHNER_COPY["roi_faq_a1"]),
+    (ROI_RECHNER_COPY["roi_faq_q2"], ROI_RECHNER_COPY["roi_faq_a2"]),
+    (ROI_RECHNER_COPY["roi_faq_q3"], ROI_RECHNER_COPY["roi_faq_a3"]),
+    (ROI_RECHNER_COPY["roi_faq_q4"], ROI_RECHNER_COPY["roi_faq_a4"]),
+    (ROI_RECHNER_COPY["roi_faq_q5"], ROI_RECHNER_COPY["roi_faq_a5"]),
+    (ROI_RECHNER_COPY["roi_faq_q6"], ROI_RECHNER_COPY["roi_faq_a6"]),
+]
+
 # ── Branchen-Landingpages (Stage 5 der Pipeline) ───────────────────────
 # Copy 1:1 aus VELA (Kanban t_7ccdf6ff). Schlüssel "branchen-{slug}" →
 # Routen /branchen/{slug} (explizit, kein Catch-All). In LANDING_ORDER

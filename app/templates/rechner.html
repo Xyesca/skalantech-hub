@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{# P1 ROI-Rechner — /rechner (LUMINA t_ce7fda15, VELA-Copy t_8a6f04a7).
+   Formel/Events in app/static/js/roi-rechner.js (exakt 03_FORMEL §1/§5).
+   Widget-Markup identisch zur Homepage-Sektion (index.html). #}
+{% set page_url = "https://skalantech.store/rechner" %}
+
+{% block title %}{{ copy.roi_meta_title }}{% endblock %}
+{% block description %}{{ copy.roi_meta_description }}{% endblock %}
+{% block canonical %}{{ page_url }}{% endblock %}
+{% block og_title %}{{ copy.roi_meta_title }}{% endblock %}
+{% block og_description %}{{ copy.roi_meta_description }}{% endblock %}
+{% block og_url %}{{ page_url }}{% endblock %}
+{% block twitter_title %}{{ copy.roi_meta_title }}{% endblock %}
+{% block twitter_description %}{{ copy.roi_meta_description }}{% endblock %}
+{% block body_class %}page-rechner{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      "@id": "{{ page_url }}#service",
+      "name": "ROI-Rechner — Was kostet manuelle Arbeit?",
+      "description": "{{ copy.roi_meta_description }}",
+      "serviceType": "ROI-Rechner",
+      "provider": {"@id": "https://skalantech.store/#business"},
+      "areaServed": {"@type": "Country", "name": "Deutschland"},
+      "url": "{{ page_url }}"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "{{ page_url }}#breadcrumb",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://skalantech.store/"},
+        {"@type": "ListItem", "position": 2, "name": "ROI-Rechner", "item": "{{ page_url }}"}
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "{{ page_url }}#faq",
+      "mainEntity": [
+        {% for q, a in faqs %}
+        {"@type": "Question", "name": {{ q|tojson }}, "acceptedAnswer": {"@type": "Answer", "text": {{ a|tojson }}}}{{ "," if not loop.last }}
+        {% endfor %}
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block body %}
+<main id="main-content">
+  {# ── 1 · HERO ── #}
+  <section class="roi-hero">
+    <div class="shell roi-hero__inner">
+      <nav class="landing-breadcrumb" aria-label="Brotkrumen-Navigation">
+        <a href="{{ url_for('public.index') }}">Startseite</a>
+        <span aria-hidden="true">/</span>
+        <span>ROI-Rechner</span>
+      </nav>
+      <p class="section-label">{{ copy.roi_section_label }}</p>
+      <h1>{{ copy.roi_h1 }}</h1>
+      <p class="roi-hero__lead">{{ copy.roi_subline }}</p>
+    </div>
+  </section>
+
+  {# ── 2 · WIDGET ── #}
+  <section class="section section--rechner" aria-label="ROI-Rechner">
+    <div class="shell">
+      {% set roi_source = "rechner" %}
+      {% include "partials/roi_rechner_widget.html" %}
+      <p class="roi-trust-line">{{ copy.roi_trust_line }}</p>
+    </div>
+  </section>
+
+  {# ── 3 · SO FUNKTIONIERT'S ── #}
+  <section class="section section--landing section--tint" aria-labelledby="how-title">
+    <div class="shell">
+      <div class="section-heading" data-reveal>
+        <div>
+          <p class="section-label">Ablauf</p>
+          <h2 id="how-title">{{ copy.roi_how_title }}</h2>
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step" data-reveal><span>01</span><h3>{{ copy.roi_how_step1_title }}</h3><p>{{ copy.roi_how_step1_text }}</p></div>
+        <div class="step" data-reveal><span>02</span><h3>{{ copy.roi_how_step2_title }}</h3><p>{{ copy.roi_how_step2_text }}</p></div>
+        <div class="step" data-reveal><span>03</span><h3>{{ copy.roi_how_step3_title }}</h3><p>{{ copy.roi_how_step3_text }}</p></div>
+      </div>
+    </div>
+  </section>
+
+  {# ── 4 · FAQ (FAQPage-Schema 1:1 sichtbar) ── #}
+  <section class="section section--landing section--faq" aria-labelledby="faq-title">
+    <div class="shell faq-grid">
+      <div data-reveal>
+        <p class="section-label">FAQ</p>
+        <h2 id="faq-title">Häufige Fragen</h2>
+        <p>Kurz und ehrlich beantwortet — ohne Kleingedrucktes.</p>
+      </div>
+      <div class="faq-list" data-reveal>
+        {% for q, a in faqs %}
+        <details>
+          <summary>{{ q }}</summary>
+          <p>{{ a }}</p>
+        </details>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  {# ── 5 · ABSCHLUSS-CTA ── #}
+  <section class="section section--landing section--dark landing-cta" aria-labelledby="cta-title">
+    <div class="shell">
+      <h2 id="cta-title">{{ copy.roi_cta_title }}</h2>
+      <p>{{ copy.roi_cta_text }}</p>
+      <div class="landing-hero__actions">
+        <a class="button button--accent" href="{{ url_for('public.index') }}?utm_source=organic&amp;utm_medium=rechner&amp;utm_campaign=roi-rechner&amp;utm_content=page#termin">
+          {{ copy.roi_result_cta }} <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

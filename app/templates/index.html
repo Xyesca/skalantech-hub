@@ -126,6 +126,21 @@
     </div>
   </section>
 
+  <section class="section section--roi" id="rechner" aria-label="ROI-Rechner">
+    <div class="shell">
+      <div class="section-heading" data-reveal>
+        <div>
+          <p class="section-label">{{ copy.roi_section_label }}</p>
+          <h2>{{ copy.roi_h2 }}</h2>
+        </div>
+        <p>{{ copy.roi_section_subline }}</p>
+      </div>
+      {% set roi_source = "homepage" %}
+      {% include "partials/roi_rechner_widget.html" %}
+      <p class="roi-see-more"><a href="{{ url_for('public.landing_rechner') }}">{{ copy.roi_see_more }}</a></p>
+    </div>
+  </section>
+
   <section class="section section--services" id="services">
     <div class="shell">
       <div class="section-heading" data-reveal>

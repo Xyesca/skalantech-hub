@@ -394,6 +394,55 @@ class AnalyticsEventTests(unittest.TestCase):
             lead = self.Lead.query.filter_by(email="analytics@example.com").first()
             self.assertEqual(lead.status, "lead")  # nicht qualifiziert
 
+    # ── ROI-Rechner (roi_calculated, P1 /rechner) ───────────────────────
+
+    def test_roi_calculated_full_props_recalc_and_cta_stored(self):
+        """P1 ROI-Rechner (04_EVENT-SPEC §2): POST /analytics/event mit
+        roi_calculated + voller Props-Liste (action=recalc UND action=cta)
+        → 204 + DB-Read-back: props-JSON exakt gespeichert, Zahlentypen
+        (int/float) bleiben erhalten — Basis des „gerechnet → gehandelt“-Funnels."""
+        props_recalc = {
+            "process": "angebote",
+            "source": "rechner",
+            "minutes": 60,
+            "frequency": 5,
+            "error_share": 10,
+            "rate": 55,
+            "automation_share": 70,
+            "hours_per_week": 5.5,
+            "hours_per_year": 258.5,
+            "annual_cost": 14200,
+            "savings_hours": 181,
+            "savings_euro": 10000,
+            "action": "recalc",
+        }
+        props_cta = dict(props_recalc, action="cta")
+
+        for props in (props_recalc, props_cta):
+            with self.subTest(action=props["action"]):
+                response = self._post_event({
+                    "event": "roi_calculated",
+                    "page": "/rechner",
+                    "session_id": "sess-roi-p1",
+                    "props": props,
+                })
+                self.assertEqual(response.status_code, 204)
+
+        events = self._events()
+        roi_events = [e for e in events if e.event == "roi_calculated"]
+        self.assertEqual(len(roi_events), 2)
+        self.assertEqual([e.page for e in roi_events], ["/rechner", "/rechner"])
+        self.assertEqual(json.loads(roi_events[0].props), props_recalc)
+        self.assertEqual(json.loads(roi_events[1].props), props_cta)
+
+        # Zahlentypen überstehen den JSON-Roundtrip (Props nur Zahlen/Slugs, keine PII)
+        stored = json.loads(roi_events[0].props)
+        self.assertIsInstance(stored["hours_per_week"], float)
+        self.assertIsInstance(stored["hours_per_year"], float)
+        self.assertIsInstance(stored["annual_cost"], int)
+        self.assertIsInstance(stored["savings_hours"], int)
+        self.assertIsInstance(stored["savings_euro"], int)
+
     # ── Client-Kontrakt (analytics.js / main.js) ────────────────────────
 
     def test_client_event_allowlist_matches_spec(self):
@@ -410,6 +459,26 @@ class AnalyticsEventTests(unittest.TestCase):
         main_js = (repo_root / "app" / "static" / "js" / "main.js").read_text(encoding="utf-8")
         self.assertIn("bookingConfirmedTracked", main_js)
         self.assertIn('"booking_confirmed"', main_js)
+
+    def test_roi_rechner_js_emits_full_props_contract(self):
+        """P1 ROI-Rechner (04 §2): roi-rechner.js sendet die volle Props-Liste
+        inkl. action (recalc|cta); analytics.js-Allowlist enthält
+        roi_calculated. Regression-Guard: Props-Drift bricht den Test,
+        nicht erst die Doku."""
+        from pathlib import Path
+
+        repo_root = Path(__file__).resolve().parent.parent
+        roi_js = (repo_root / "app" / "static" / "js" / "roi-rechner.js").read_text(encoding="utf-8")
+        analytics_js = (repo_root / "app" / "static" / "js" / "analytics.js").read_text(encoding="utf-8")
+
+        for key in ("process", "source", "minutes", "frequency", "error_share",
+                    "rate", "automation_share", "hours_per_week", "hours_per_year",
+                    "annual_cost", "savings_hours", "savings_euro", "action"):
+            with self.subTest(key=key):
+                self.assertIn(key + ":", roi_js)
+        self.assertIn('"recalc"', roi_js)
+        self.assertIn('"cta"', roi_js)
+        self.assertIn('"roi_calculated"', analytics_js)
 
     # ── Template-Integration ────────────────────────────────────────────
 
