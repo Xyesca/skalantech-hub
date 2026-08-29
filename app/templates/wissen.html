@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% from "partials/wissen_next_step.html" import next_step_url %}
 {% block title %}Wissen – KI, Automatisierung & IT-Infrastruktur | Skalantech{% endblock %}
-{% block description %}Praxisnahe Artikel zu KI-Agenten, Automatisierung, n8n, lokaler KI und IT-Infrastruktur – geschrieben für Entscheider, ohne Marketing-Floskeln.{% endblock %}
+{% block description %}Praxisnahe Artikel zu KI-Agenten, Automatisierung, n8n, lokaler KI und IT-Infrastruktur – gegliedert in fünf Schwerpunkte, geschrieben für Entscheider.{% endblock %}
 {% block canonical %}https://skalantech.store/wissen{% endblock %}
 {% block og_title %}Wissen · Skalantech{% endblock %}
 {% block og_description %}Praxisnahe Artikel zu KI, Automatisierung und IT-Infrastruktur.{% endblock %}
@@ -38,28 +39,75 @@
   <div class="shell">
     <header class="legal-page__header">
       <p class="section-label">Wissen</p>
-      <h1>KI, Automatisierung &amp; IT-Infrastruktur – sachlich erklärt.</h1>
-      <p>Artikel für Entscheider: kein Buzzword-Bingo, sondern technisch sauberer Kontext.</p>
+      <h1>Wissen für Entscheider – in fünf Schwerpunkten.</h1>
+      <p>Kein Buzzword-Bingo, sondern technisch sauberer Kontext. Erst der Nutzen, dann die Technik: Jeder Artikel endet mit einem klaren nächsten Schritt.</p>
     </header>
 
-    <div class="wissen-grid">
-      {% for slug in article_order %}
-      {% set article = article_map[slug] %}
-      <article class="wissen-card" data-reveal>
-        <div class="wissen-card__meta">
-          <span>{{ article.published or article_published }}</span>
-          {% if article.related_service in landing_map %}
-          <span>{{ landing_map[article.related_service].nav_label }}</span>
-          {% endif %}
+    {% for pillar in pillars %}
+    <section class="wissen-pillar" id="{{ pillar.id }}" aria-labelledby="{{ pillar.id }}-title" data-reveal>
+      <header class="wissen-pillar__head">
+        <span class="wissen-pillar__num" aria-hidden="true">{{ pillar.num }}</span>
+        <div class="wissen-pillar__head-copy">
+          <h2 id="{{ pillar.id }}-title">{{ pillar.title }}</h2>
+          <p>{{ pillar.tagline }}</p>
         </div>
-        <h2><a href="{{ url_for('public.article', slug=slug) }}">{{ article.title }}</a></h2>
-        <p>{{ article.description }}</p>
-        <a class="wissen-card__link" href="{{ url_for('public.article', slug=slug) }}">
-          Artikel lesen <span aria-hidden="true">↗</span>
-        </a>
-      </article>
-      {% endfor %}
-    </div>
+      </header>
+
+      <div class="wissen-grid">
+        {% for slug in pillar.articles %}
+        {% set article = article_map[slug] %}
+        <article class="wissen-card" data-reveal>
+          <div class="wissen-card__meta">
+            <span>{{ article.published or article_published }}</span>
+            {% if article.related_service in landing_map %}
+            <span>{{ landing_map[article.related_service].nav_label }}</span>
+            {% endif %}
+          </div>
+          <h2><a href="{{ url_for('public.article', slug=slug) }}">{{ article.title }}</a></h2>
+          <p>{{ article.description }}</p>
+          {% if article.next_step %}
+          <div class="wissen-card__step">
+            <span class="wissen-card__step-label">Nächster Schritt</span>
+            <a href="{{ next_step_url(article.next_step, landing_map) }}">{{ article.next_step.label }} <span aria-hidden="true">↗</span></a>
+          </div>
+          {% endif %}
+          <a class="wissen-card__link" href="{{ url_for('public.article', slug=slug) }}">
+            Artikel lesen <span aria-hidden="true">↗</span>
+          </a>
+        </article>
+        {% endfor %}
+
+        {% for branch in pillar.branches %}
+        {% set bp = landing_map['branchen-' + branch] %}
+        <article class="wissen-card wissen-card--action" data-reveal>
+          <div class="wissen-card__meta">
+            <span>Branchenseite</span>
+            <span>{{ bp.nav_label }}</span>
+          </div>
+          <h2><a href="{{ bp.url }}">Automatisierung für {{ bp.nav_label }}</a></h2>
+          <p>{{ bp.lead or bp.description }}</p>
+          <a class="wissen-card__link" href="{{ bp.url }}">
+            Branchenseite öffnen <span aria-hidden="true">↗</span>
+          </a>
+        </article>
+        {% endfor %}
+
+        {% for card in pillar.cards %}
+        <article class="wissen-card wissen-card--action" data-reveal>
+          <div class="wissen-card__meta">
+            <span>Direkt loslegen</span>
+            {% if card.kind == 'potenzial' %}<span>Potenzial-Check</span>{% endif %}
+          </div>
+          <h2><a href="{{ next_step_url(card, landing_map) }}">{{ card.title }}</a></h2>
+          <p>{{ card.text }}</p>
+          <a class="wissen-card__link" href="{{ next_step_url(card, landing_map) }}">
+            {{ card.label }} <span aria-hidden="true">↗</span>
+          </a>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
 
     <a class="legal-back" href="{{ url_for('public.index') }}#contact">Thema besprechen →</a>
   </div>

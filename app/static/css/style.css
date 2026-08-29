@@ -4079,6 +4079,101 @@ p:last-child {
   margin-bottom: 10px;
 }
 
+/* ── Wissen: 5-Säulen (Issue #16) ─────────────────────────────────── */
+
+.wissen-pillar {
+  margin: 0 0 42px;
+}
+
+.wissen-pillar__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.wissen-pillar__num {
+  flex-shrink: 0;
+  margin-top: 3px;
+  padding: 3px 11px;
+  color: var(--accent-mos-deep);
+  border: 1px solid rgba(0, 188, 212, 0.45);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.wissen-pillar__head-copy h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.55rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.wissen-pillar__head-copy p {
+  margin: 5px 0 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.wissen-card__step {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+  font-size: 0.9rem;
+}
+
+.wissen-card__step-label {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.wissen-card__step a {
+  color: var(--accent-mos-deep);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.wissen-card__step a:hover {
+  text-decoration: underline;
+}
+
+.wissen-card--action {
+  border-color: rgba(0, 188, 212, 0.35);
+}
+
+.wissen-card--action h2 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.wissen-card--action h2 a:hover {
+  color: var(--accent-mos-deep);
+}
+
+.article-cta__secondary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+}
+
 /* ── 404 ────────────────────────────────────────────────────────────── */
 
 .error-actions {
@@ -4179,6 +4274,20 @@ p:last-child {
 
   .article-cta .button {
     margin-right: 0;
+  }
+
+  .article-cta__secondary .button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .wissen-pillar__head {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .wissen-pillar__num {
+    align-self: flex-start;
   }
 }
 

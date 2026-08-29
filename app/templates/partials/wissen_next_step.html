@@ -1,0 +1,13 @@
+{# Nächster-Schritt-URL für Wissen-Artikel & Säulen-Karten (Issue #16).
+   kinds: potenzial -> /rechner | demo -> /demos | branche -> /branchen/<target>
+          | prozess -> Landingpage <target> (ki-agenten, n8n-automatisierung, …)
+   Landet eine Karte mit target="automationen"/"rechner" hier (Säulen-Karten),
+   wird der Route-Name direkt aufgelöst. #}
+{% macro next_step_url(step, landing_map) -%}
+{%- if step.kind == 'potenzial' -%}{{ url_for('public.landing_rechner') }}
+{%- elif step.kind == 'demo' -%}{{ url_for('showcase.demos') }}
+{%- elif step.kind == 'branche' -%}{{ landing_map['branchen-' + step.target].url }}
+{%- elif step.target == 'automationen' -%}{{ url_for('showcase.automations') }}
+{%- else -%}{{ landing_map[step.target].url }}
+{%- endif -%}
+{%- endmacro %}

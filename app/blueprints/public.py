@@ -12,7 +12,7 @@ from app.models import Settings, Link, Project, ContactMessage, Lead, SERVICE_LA
 from app.extensions import db, limiter
 from app.seo_pages import LANDING_PAGES, LANDING_ORDER, ROI_RECHNER_COPY, ROI_RECHNER_FAQS
 from app.branchen import BRANCH_ORDER
-from app.wissen import ARTICLES, ARTICLE_ORDER, ARTICLE_PUBLISHED
+from app.wissen import ARTICLES, ARTICLE_ORDER, ARTICLE_PUBLISHED, PILLARS
 from app.blueprints.analytics import _record_event
 
 public_bp = Blueprint("public", __name__)
@@ -428,6 +428,7 @@ def wissen():
         article_map=ARTICLES,
         article_order=ARTICLE_ORDER,
         article_published=ARTICLE_PUBLISHED,
+        pillars=PILLARS,
         landing_map=_landing_map(),
     )
 

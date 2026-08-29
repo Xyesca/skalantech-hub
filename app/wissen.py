@@ -58,6 +58,12 @@ ARTICLES = {
         ],
         "related_service": "ki-agenten",
         "cta_text": "Einsatz von KI-Agenten prüfen",
+        "next_step": {
+            "kind": "prozess",
+            "label": "KI-Agenten im Überblick",
+            "target": "ki-agenten",
+            "hint": "Prozessseite: Was Skalantech bei KI-Agenten konkret umsetzt – von RAG bis InvoiceFlow.",
+        },
     },
     "n8n-selbst-hosten": {
         "title": "n8n selbst hosten: Vorteile, Risisen und was Sie beachten sollten",
@@ -107,6 +113,12 @@ ARTICLES = {
         "related_service": "n8n-automatisierung",
         "related_branche": "branchen-handwerk",
         "cta_text": "n8n-Automatisierung besprechen",
+        "next_step": {
+            "kind": "prozess",
+            "label": "n8n-Automatisierung im Überblick",
+            "target": "n8n-automatisierung",
+            "hint": "Prozessseite: Aufbau, Backups und Betrieb Ihrer selbst gehosteten n8n-Instanz.",
+        },
     },
     "lokale-ki-vs-cloud-ki": {
         "title": "Lokale KI vs. Cloud-KI: Was Unternehmen wissen müssen",
@@ -156,6 +168,12 @@ ARTICLES = {
         ],
         "related_service": "lokale-ki",
         "cta_text": "KI-Architektur für Ihr Unternehmen klären",
+        "next_step": {
+            "kind": "prozess",
+            "label": "Lokale KI im Überblick",
+            "target": "lokale-ki",
+            "hint": "Prozessseite: Selbst gehostete Modelle in Ihrer Infrastruktur – ohne Datenabfluss.",
+        },
     },
     "n8n-vs-power-automate": {
         "title": "n8n vs. Power Automate für Unternehmen: Der ehrliche Vergleich",
@@ -238,6 +256,12 @@ ARTICLES = {
         ],
         "related_service": "n8n-automatisierung",
         "cta_text": "n8n-Automatisierung besprechen",
+        "next_step": {
+            "kind": "potenzial",
+            "label": "Potenzial-Check starten",
+            "target": "rechner",
+            "hint": "In 30 Sekunden: Was Ihre manuellen Prozesse pro Jahr kosten – mit Ihren Zahlen.",
+        },
         "published": "2026-08-28",
     },
     "welche-prozesse-ki-automatisierung": {
@@ -324,6 +348,12 @@ ARTICLES = {
         ],
         "related_service": "ki-automatisierung",
         "cta_text": "KI-Potenzial in Ihren Prozessen prüfen",
+        "next_step": {
+            "kind": "potenzial",
+            "label": "Potenzial-Check starten",
+            "target": "rechner",
+            "hint": "Prüfen Sie mit Ihren Zahlen, welche Prozesse sich für die Automatisierung lohnen.",
+        },
         "published": "2026-08-28",
     },
     "rag-wissensassistenten": {
@@ -405,6 +435,12 @@ ARTICLES = {
         ],
         "related_service": "ki-agenten",
         "cta_text": "Wissensassistenten mit Ihren Daten prüfen",
+        "next_step": {
+            "kind": "prozess",
+            "label": "KI-Agenten im Überblick",
+            "target": "ki-agenten",
+            "hint": "Prozessseite: Wissensassistenten und RAG im Unternehmenseinsatz.",
+        },
         "published": "2026-08-28",
     },
     "kosten-roi-ki-automatisierung": {
@@ -501,6 +537,12 @@ ARTICLES = {
         ],
         "related_service": "ki-automatisierung",
         "cta_text": "KI-Potenzial in Ihren Prozessen prüfen",
+        "next_step": {
+            "kind": "potenzial",
+            "label": "Potenzial-Check starten",
+            "target": "rechner",
+            "hint": "Rechnen Sie den ROI mit Ihren eigenen Zahlen durch – ohne Anmeldung.",
+        },
         "published": "2026-08-28",
     },
 }
@@ -517,3 +559,69 @@ ARTICLE_ORDER = [
 
 # Publikationsdatum (Fallback; Artikel können eigenes "published" tragen)
 ARTICLE_PUBLISHED = "2026-08-16"
+
+# ── 5 Content-Säulen für /wissen (Issue #16) ────────────────────────────
+# Anzeige-Reihenfolge = Reihenfolge in PILLARS. Technik steht bewusst an
+# letzter Stelle: Der Einstieg läuft über Nutzen (Praxis, Branche, Datenschutz,
+# Kosten), Technik ist für alle, die tiefer einsteigen wollen.
+# Jeder Artikel trägt ein eigenes "next_step" (Demo / Prozess- / Branchenseite
+# / Potenzial-Check); Säulen-Karten ("cards") ergänzen dort, wo keine Artikel
+# liegen (Branchen) oder ein direkter Tool-Einstieg sinnvoll ist.
+PILLARS = [
+    {
+        "id": "praxis-prozesse",
+        "num": "01",
+        "title": "Praxis & Prozesse",
+        "tagline": "Welche Abläufe sich lohnen – und wie der Einstieg gelingt.",
+        "articles": ["welche-prozesse-ki-automatisierung", "rag-wissensassistenten"],
+        "cards": [
+            {
+                "kind": "prozess",
+                "title": "Automationen im Überblick",
+                "text": "Wiederkehrende Muster, die sich fast immer lohnen – mit Beispielen aus Handwerk, Kfz, Kanzlei und Immobilien.",
+                "label": "Prozessseite ansehen",
+                "target": "automationen",
+            },
+        ],
+    },
+    {
+        "id": "branchen",
+        "num": "02",
+        "title": "Branchen",
+        "tagline": "Was Automatisierung für Ihre Branche konkret bedeutet – mit Branchendaten und passenden Prozessen.",
+        "articles": [],
+        "branches": ["handwerk", "kfz", "kanzleien", "immobilien"],
+    },
+    {
+        "id": "datenschutz-kontrolle",
+        "num": "03",
+        "title": "Datenschutz & Kontrolle",
+        "tagline": "Wo Ihre Daten bleiben und wie Sie die Kontrolle über Systeme, Kosten und Abhängigkeiten behalten.",
+        "articles": ["lokale-ki-vs-cloud-ki", "n8n-selbst-hosten"],
+        "cards": [],
+    },
+    {
+        "id": "kosten-entscheidung",
+        "num": "04",
+        "title": "Kosten & Entscheidung",
+        "tagline": "Ehrliche Zahlen statt Hype – damit die Entscheidung auf Fakten basiert.",
+        "articles": ["kosten-roi-ki-automatisierung", "n8n-vs-power-automate"],
+        "cards": [
+            {
+                "kind": "potenzial",
+                "title": "Potenzial-Check",
+                "text": "Rechnen Sie in 30 Sekunden aus, was ein wiederkehrender Prozess Ihr Unternehmen pro Jahr kostet.",
+                "label": "Potenzial-Check starten",
+                "target": "rechner",
+            },
+        ],
+    },
+    {
+        "id": "technik-erklaert",
+        "num": "05",
+        "title": "Technik erklärt",
+        "tagline": "Wie die Technik funktioniert – für alle, die tiefer einsteigen wollen.",
+        "articles": ["was-ist-ein-ki-agent"],
+        "cards": [],
+    },
+]
