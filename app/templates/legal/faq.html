@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}FAQ · Skalantech{% endblock %}
-{% block description %}Antworten zu IT-Infrastruktur, Automatisierung, KI-Agenten, Self-Hosting und der Zusammenarbeit mit Skalantech.{% endblock %}
+{% block description %}Antworten zu Zusammenarbeit, Integration, Datenschutz, KI, Kosten und Betrieb bei Skalantech.{% endblock %}
 {% block canonical %}https://skalantech.store/faq{% endblock %}
 {% block og_title %}FAQ · Zusammenarbeit mit Skalantech{% endblock %}
 {% block og_url %}https://skalantech.store/faq{% endblock %}
@@ -15,36 +15,13 @@
       "@type": "FAQPage",
       "@id": "https://skalantech.store/faq#faq",
       "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Welche Themen übernimmt Skalantech?",
-          "acceptedAnswer": { "@type": "Answer", "text": "IT-Infrastruktur und Cloud, Plattform- und Systemmigrationen, Prozessautomatisierung, produktive KI-Agenten sowie der verlässliche Betrieb mit Monitoring, Backups und Dokumentation." }
-        },
-        {
-          "@type": "Question",
-          "name": "Kannst du bestehende Systeme übernehmen?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Gewachsene Umgebungen werden zuerst strukturiert aufgenommen. Darauf basierend entsteht ein realistischer Plan für Stabilisierung, Migration oder schrittweise Modernisierung." }
-        },
-        {
-          "@type": "Question",
-          "name": "Arbeitest du remote?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Projekte sind remote in Deutschland und im DACH-Raum möglich. Für geeignete Termine und Projektphasen ist auch Zusammenarbeit vor Ort nach Absprache möglich." }
-        },
-        {
-          "@type": "Question",
-          "name": "Wie beginnt ein Projekt?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Mit einer kurzen Beschreibung der Ausgangslage und des gewünschten Ergebnisses. Danach klären wir, ob ein System-Check, ein abgegrenztes Delivery-Projekt oder eine laufende Begleitung am sinnvollsten ist." }
-        },
-        {
-          "@type": "Question",
-          "name": "Ist Self-Hosting möglich?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Open-Source- und Self-Hosting-Optionen werden bevorzugt geprüft, wenn sie zu Anforderungen, Budget und Betrieb passen. Cloud-Dienste werden gezielt statt reflexartig eingesetzt." }
-        },
-        {
-          "@type": "Question",
-          "name": "Welche Technologien setzt du ein?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Unter anderem Microsoft 365, Azure, VMware, Hyper-V, Linux, Docker, n8n, Python, PowerShell sowie moderne Agenten-, RAG- und LLM-Architekturen." }
-        }
+        {"@type":"Question","name":"Für welche Unternehmen ist Skalantech geeignet?","acceptedAnswer":{"@type":"Answer","text":"Besonders passend sind kleine und mittelständische Unternehmen mit wiederkehrender Verwaltungsarbeit, vielen Kundenanfragen, Dokumenten, E-Mails oder Medienbrüchen zwischen bestehenden Systemen. Entscheidend ist nicht die Branche, sondern ob ein klarer, wiederkehrender Prozess verbessert werden kann."}},
+        {"@type":"Question","name":"Müssen wir unsere bestehende Software ersetzen?","acceptedAnswer":{"@type":"Answer","text":"Nein. Zuerst wird geprüft, welche Systeme sinnvoll weiterverwendet und verbunden werden können. Neue Software kommt nur hinzu, wenn sie einen klaren fachlichen oder wirtschaftlichen Nutzen bringt."}},
+        {"@type":"Question","name":"Was passiert, wenn eine Automatisierung unsicher ist oder Informationen fehlen?","acceptedAnswer":{"@type":"Answer","text":"Kritische Entscheidungen können bewusst beim Menschen bleiben. Fehlende Informationen werden markiert, Freigaben werden eingebaut und Automatisierungen dürfen nur innerhalb definierter Grenzen handeln."}},
+        {"@type":"Question","name":"Werden unsere Daten immer an externe KI-Anbieter gesendet?","acceptedAnswer":{"@type":"Answer","text":"Nein. Ob ein externer KI-Dienst eingesetzt wird, hängt vom Anwendungsfall und den Datenschutzanforderungen ab. Sensible Prozesse können so gestaltet werden, dass Daten minimiert, pseudonymisiert oder lokal verarbeitet werden. Der konkrete Datenweg wird vor der Umsetzung transparent festgelegt."}},
+        {"@type":"Question","name":"Wie startet die Zusammenarbeit?","acceptedAnswer":{"@type":"Answer","text":"Mit einem kostenlosen Potenzial-Check. Dabei wird ein konkreter Engpass betrachtet, der heutige Ablauf verstanden und entschieden, ob sich ein abgegrenzter erster Schritt lohnt."}},
+        {"@type":"Question","name":"Was kostet ein Projekt?","acceptedAnswer":{"@type":"Answer","text":"Der Preis hängt von Prozess, Schnittstellen, Datenlage und Betriebsanforderungen ab. Skalantech klärt zuerst den Umfang und erstellt dann einen transparenten Umsetzungsvorschlag. Es werden keine pauschalen Einsparungen oder Projektkosten versprochen, bevor der Prozess verstanden ist."}},
+        {"@type":"Question","name":"Was passiert nach der Umsetzung?","acceptedAnswer":{"@type":"Answer","text":"Je nach Bedarf umfasst die Übergabe Dokumentation, Monitoring, Wartung und klar definierte Verantwortlichkeiten. Ziel ist ein nachvollziehbarer Betriebsprozess und keine undurchsichtige Blackbox."}}
       ]
     }
   ]
@@ -57,42 +34,56 @@
   <div class="shell">
     <header class="legal-page__header">
       <p class="section-label">Häufige Fragen</p>
-      <h1>Gut zu wissen.</h1>
-      <p>Leistungen, Technik und Zusammenarbeit</p>
+      <h1>Was Unternehmen vor dem ersten Projekt wissen wollen.</h1>
+      <p>Integration, Kontrolle, Datenschutz, Kosten und Zusammenarbeit</p>
     </header>
 
     <div class="legal-layout">
       <nav class="legal-layout__aside" aria-label="FAQ-Themen">
-        <a href="#services">Leistungen</a>
-        <a href="#delivery">Zusammenarbeit</a>
-        <a href="#technology">Technologie</a>
+        <a href="#fit">Passt Skalantech?</a>
+        <a href="#integration">Integration</a>
+        <a href="#privacy">Datenschutz &amp; Kontrolle</a>
+        <a href="#commercial">Kosten &amp; Betrieb</a>
       </nav>
 
       <article class="legal-content">
-        <h2 id="services">Leistungen</h2>
-        <h3>Welche Themen übernimmt Skalantech?</h3>
-        <p>IT-Infrastruktur und Cloud, Plattform- und Systemmigrationen, Prozessautomatisierung, produktive KI-Agenten sowie der verlässliche Betrieb mit Monitoring, Backups und Dokumentation.</p>
+        <h2 id="fit">Passt Skalantech zu unserem Betrieb?</h2>
+        <h3>Für welche Unternehmen ist Skalantech geeignet?</h3>
+        <p>Besonders passend sind kleine und mittelständische Unternehmen, in denen wiederkehrende Verwaltungsarbeit Zeit bindet: viele Kundenanfragen, E-Mails, Dokumente, Terminabstimmungen oder Informationen, die zwischen mehreren Programmen übertragen werden. Entscheidend ist weniger die Branche als die Frage, ob ein klarer Prozess regelmäßig Arbeit erzeugt.</p>
 
-        <h3>Kannst du bestehende Systeme übernehmen?</h3>
-        <p>Ja. Gewachsene Umgebungen werden zuerst strukturiert aufgenommen. Darauf basierend entsteht ein realistischer Plan für Stabilisierung, Migration oder schrittweise Modernisierung.</p>
+        <h3>Ist jeder Prozess ein guter Automatisierungskandidat?</h3>
+        <p>Nein. Seltene Abläufe, stark wechselnde Sonderfälle oder Entscheidungen mit viel fachlichem Ermessen eignen sich oft nicht für eine weitgehende Automatisierung. In solchen Fällen ist ein kleiner Assistenzschritt, eine bessere Datenübergabe oder bewusst gar keine Automatisierung die bessere Lösung.</p>
 
-        <h2 id="delivery">Zusammenarbeit</h2>
-        <h3>Arbeitest du remote?</h3>
-        <p>Ja. Projekte sind remote in Deutschland und im DACH-Raum möglich. Für geeignete Termine und Projektphasen ist auch Zusammenarbeit vor Ort nach Absprache möglich.</p>
+        <h2 id="integration">Integration &amp; bestehende Systeme</h2>
+        <h3>Müssen wir unsere bestehende Software ersetzen?</h3>
+        <p>Nein. Zuerst wird geprüft, was sinnvoll weiterverwendet und verbunden werden kann. Eine neue Anwendung ist nur dann sinnvoll, wenn sie einen klaren fachlichen oder wirtschaftlichen Vorteil bringt.</p>
 
-        <h3>Wie beginnt ein Projekt?</h3>
-        <p>Mit einer kurzen Beschreibung der Ausgangslage und des gewünschten Ergebnisses. Danach klären wir, ob ein System-Check, ein abgegrenztes Delivery-Projekt oder eine laufende Begleitung am sinnvollsten ist.</p>
+        <h3>Was passiert, wenn Informationen fehlen oder ein Fall nicht eindeutig ist?</h3>
+        <p>Dann darf die Automatisierung nicht raten. Fehlende Angaben werden markiert, offene Fragen werden sichtbar gemacht und der Vorgang kann an einen Menschen zur Prüfung übergeben werden.</p>
 
-        <h2 id="technology">Technologie</h2>
+        <h2 id="privacy">Datenschutz, KI &amp; menschliche Kontrolle</h2>
+        <h3>Werden unsere Daten immer an externe KI-Anbieter gesendet?</h3>
+        <p>Nein. Der Datenweg wird je Anwendungsfall festgelegt. Externe KI-Dienste kommen nur dort in Betracht, wo sie fachlich und datenschutzrechtlich vertretbar sind. Sensible Prozesse können mit Datenminimierung, Pseudonymisierung oder lokalen Komponenten umgesetzt werden.</p>
+
+        <h3>Bleiben kritische Entscheidungen beim Menschen?</h3>
+        <p>Ja. Angebote, medizinische Inhalte, Rechts- oder Steuerfragen, Zahlungen und andere geschäftskritische Entscheidungen dürfen nur innerhalb klarer Grenzen automatisiert werden. Skalantech baut Freigabepunkte dort ein, wo sie organisatorisch oder rechtlich notwendig sind.</p>
+
         <h3>Ist Self-Hosting möglich?</h3>
-        <p>Ja. Open-Source- und Self-Hosting-Optionen werden bevorzugt geprüft, wenn sie zu Anforderungen, Budget und Betrieb passen. Cloud-Dienste werden gezielt statt reflexartig eingesetzt.</p>
+        <p>Ja. Wenn Datenschutz, Integrationsbedarf oder Kontrolle es sinnvoll machen, können Anwendungen und Automationen auf eigener oder europäischer Infrastruktur betrieben werden. Self-Hosting ist dabei kein Selbstzweck, sondern eine mögliche Betriebsform.</p>
 
-        <h3>Welche Technologien setzt du ein?</h3>
-        <p>Unter anderem Microsoft 365, Azure, VMware, Hyper-V, Linux, Docker, n8n, Python, PowerShell sowie moderne Agenten-, RAG- und LLM-Architekturen.</p>
+        <h2 id="commercial">Kosten, Einstieg &amp; Betrieb</h2>
+        <h3>Wie startet die Zusammenarbeit?</h3>
+        <p>Mit einem kostenlosen Potenzial-Check. Dabei wird ein konkreter Engpass betrachtet, der heutige Ablauf verstanden und entschieden, ob sich ein klar abgegrenzter erster Schritt lohnt.</p>
+
+        <h3>Was kostet ein Projekt?</h3>
+        <p>Das hängt von Prozess, Schnittstellen, Datenlage und Betriebsanforderungen ab. Erst nach der Analyse entsteht ein transparenter Umsetzungsvorschlag. Skalantech verspricht keine pauschalen Einsparungen oder Projektpreise, bevor der Prozess verstanden ist.</p>
+
+        <h3>Was passiert nach der Umsetzung?</h3>
+        <p>Je nach Projekt gehören Dokumentation, Monitoring, Wartung, Backups und klar definierte Verantwortlichkeiten zur Übergabe. Ziel ist ein nachvollziehbarer Betriebsprozess und keine Blackbox.</p>
       </article>
     </div>
 
-    <a class="legal-back" href="{{ url_for('public.index') }}#contact">Projekt anfragen →</a>
+    <a class="legal-back" href="{{ url_for('public.index') }}#termin">Potenzial-Check buchen →</a>
   </div>
 </main>
 {% endblock %}
