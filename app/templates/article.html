@@ -79,12 +79,12 @@
       <aside class="article-cta">
         <h2>Sie wollen das in Ihrem Unternehmen umsetzen?</h2>
         <p>{{ service.h1 }}</p>
-        <a class="button button--accent" href="{{ url_for('public.index') }}#termin">{{ article.cta_text }} <span aria-hidden="true">↗</span></a>
-        <a class="button button--quiet" href="{{ service.url }}">{{ service.nav_label }} im Überblick <span aria-hidden="true">↗</span></a>
+        <a class="button button--accent" href="{{ url_for('public.index') }}#termin" data-track="article_cta_clicked" data-track-label="potenzial-check">{{ article.cta_text }} <span aria-hidden="true">↗</span></a>
+        <a class="button button--quiet" href="{{ service.url }}" data-track="article_cta_clicked" data-track-label="prozess">{{ service.nav_label }} im Überblick <span aria-hidden="true">↗</span></a>
         {% if article.related_branche %}
         {% set branche = landing_map.get(article.related_branche) %}
         {% if branche %}
-        <a class="button button--quiet" href="{{ branche.url }}">Für Handwerksbetriebe: {{ branche.nav_label }} <span aria-hidden="true">↗</span></a>
+        <a class="button button--quiet" href="{{ branche.url }}" data-track="article_cta_clicked" data-track-label="branche">Für Handwerksbetriebe: {{ branche.nav_label }} <span aria-hidden="true">↗</span></a>
         {% endif %}
         {% endif %}
       </aside>

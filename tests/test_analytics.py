@@ -481,7 +481,7 @@ class AnalyticsEventTests(unittest.TestCase):
     def test_homepage_loads_analytics_script(self):
         response = self.client.get("/")
         html = response.get_data(as_text=True)
-        self.assertIn("js/analytics.js?v=19", html)
+        self.assertIn("js/analytics.js?v=20", html)
         # Reihenfolge: analytics.js VOR main.js (Attribution vor Formular-Submit)
         self.assertLess(html.index("analytics.js"), html.index("main.js"))
 
@@ -585,6 +585,61 @@ class AnalyticsEventTests(unittest.TestCase):
                     self.assertEqual(events["meeting_booked"]["service"], "Potenzial-Check")
         finally:
             self.public_module._forward_to_n8n = original
+
+    # ── Issue #16: Navigation, Zielgruppen & Wissensbereich (PULSE) ─────
+
+    def test_issue16_events_accepted_by_allowlist(self):
+        """Issue #16 (PULSE): Die 5 neuen Mapping-Events (nav_click,
+        target_group_viewed, target_group_click, article_cta_clicked,
+        wissen_pillar_click) sind serverseitig erlaubt und werden mit
+        props gespeichert — Voraussetzung dafür, dass die neue IA
+        (Für-wen-Navigation, Zielgruppen-Profile A–E, /wissen-Säulen,
+        Artikel-Nächster-Schritt) ab dem ersten Release messbar ist."""
+        payloads = [
+            {"event": "nav_click", "page": "/", "props": {"label": "wissen"}},
+            {"event": "target_group_viewed", "page": "/", "props": {"label": "a-viele-anfragen"}},
+            {"event": "target_group_click", "page": "/fuer-wen", "props": {"label": "c-dokumente-wissen"}},
+            {"event": "article_cta_clicked", "page": "/wissen/ki-kosten", "props": {"label": "potenzial-check"}},
+            {"event": "wissen_pillar_click", "page": "/wissen", "props": {"label": "praxis-prozesse"}},
+        ]
+        for payload in payloads:
+            with self.subTest(event=payload["event"]):
+                response = self._post_event(payload)
+                self.assertEqual(response.status_code, 204)
+
+        stored = {e.event: json.loads(e.props) for e in self._events()}
+        self.assertEqual(stored["nav_click"], {"label": "wissen"})
+        self.assertEqual(stored["target_group_viewed"], {"label": "a-viele-anfragen"})
+        self.assertEqual(stored["target_group_click"], {"label": "c-dokumente-wissen"})
+        self.assertEqual(stored["article_cta_clicked"], {"label": "potenzial-check"})
+        self.assertEqual(stored["wissen_pillar_click"], {"label": "praxis-prozesse"})
+
+    def test_issue16_client_hooks_present(self):
+        """Issue #16 (PULSE): Der Client-Kontrakt für die neuen Strukturen
+        ist implementiert — (1) analytics.js-Allowlist enthält die 5 neuen
+        Events, (2) generische .site-nav-Verdrahtung (überlebt Nav-Umbau),
+        (3) Zielgruppen-Selektoren (.profile-card/.target-group-card),
+        (4) article.html-CTA-Hooks (nächster Schritt: potenzial-check/
+        prozess/branche). Regression-Guard: NOVA/LUMINA dürfen die Hooks
+        beim Umbau nicht stillschweigend entfernen (docs §8.2)."""
+        from pathlib import Path
+
+        repo_root = Path(__file__).resolve().parent.parent
+        analytics_js = (repo_root / "app" / "static" / "js" / "analytics.js").read_text(encoding="utf-8")
+        article_html = (repo_root / "app" / "templates" / "article.html").read_text(encoding="utf-8")
+
+        for event in ("nav_click", "target_group_viewed", "target_group_click",
+                      "article_cta_clicked", "wissen_pillar_click"):
+            with self.subTest(event=event):
+                self.assertIn('"' + event + '"', analytics_js)
+        # Generische Nav-Verdrahtung (kein base.html-Zwang)
+        self.assertIn(".site-nav a", analytics_js)
+        # Zielgruppen-Karten (View + CTA-Konvention)
+        self.assertIn('".profile-card, .target-group-card"', analytics_js)
+        # Artikel-Nächster-Schritt-Hooks
+        self.assertIn('data-track="article_cta_clicked" data-track-label="potenzial-check"', article_html)
+        self.assertIn('data-track="article_cta_clicked" data-track-label="prozess"', article_html)
+        self.assertIn('data-track="article_cta_clicked" data-track-label="branche"', article_html)
 
 
 if __name__ == "__main__":

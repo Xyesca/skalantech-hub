@@ -1,6 +1,6 @@
 # Analytics & Conversion Tracking — Event-Spezifikation (PULSE)
 
-**Stand:** 2026-08-28 · **Verantwortlich:** PULSE (Analytics) · **Status:** implementiert + verifiziert (P0) — Lead-Funnel-Erweiterung (booking_error/booking_confirmed) verifiziert (t_14c947e2); Rebrand-Review Issue #3 (t_debcb0eb): `case_study_click`/`demo_clicked` ergänzt, `service_viewed`-/`case_study_viewed`-Selektoren auf aktuelle Karten-Klassen erweitert (`.usecase-card`/`.pain-card`/`.project-card`); P1 `roi_calculated` für ROI-Rechner `/rechner` finalisiert + live verifiziert (t_28ab613d); Customer-First: Footer-CTA neu getrackt (demo_started/footer, t_345e37a3) und **C15 (t_5d32a4a3): service-Label kanonisch „Potenzial-Check“ — Alt-Labels „Business-Analyse“/„Erstgespräch“ werden serverseitig gemappt (§0), keine Breaking-Change an Event-Namen**
+**Stand:** 2026-08-29 · **Verantwortlich:** PULSE (Analytics) · **Status:** implementiert + verifiziert (P0) — Lead-Funnel-Erweiterung (booking_error/booking_confirmed) verifiziert (t_14c947e2); Rebrand-Review Issue #3 (t_debcb0eb): `case_study_click`/`demo_clicked` ergänzt, `service_viewed`-/`case_study_viewed`-Selektoren auf aktuelle Karten-Klassen erweitert (`.usecase-card`/`.pain-card`/`.project-card`); P1 `roi_calculated` für ROI-Rechner `/rechner` finalisiert + live verifiziert (t_28ab613d); Customer-First: Footer-CTA neu getrackt (demo_started/footer, t_345e37a3) und **C15 (t_5d32a4a3): service-Label kanonisch „Potenzial-Check“ — Alt-Labels „Business-Analyse“/„Erstgespräch“ werden serverseitig gemappt (§0), keine Breaking-Change an Event-Namen**; Issue #16 (t_1a33186c): **Analytics-Mappings für Navigation, Zielgruppen-Profile A–E und Wissensbereich — 5 neue Events (`nav_click`, `target_group_viewed`, `target_group_click`, `article_cta_clicked`, `wissen_pillar_click`), §8**
 
 ## 0. service-Label „Potenzial-Check“ — Kanonisierung & Kompatibilität (C15, t_5d32a4a3)
 
@@ -82,6 +82,11 @@ SQLite: analytics_events  (Modell AnalyticsEvent)
 | `roi_slider_start` | Erste Slider-Interaktion im ROI-Rechner (1×/Session) — **Legacy** (roi-calculator.js, Branchen-Landingpages) | Client (roi-calculator.js) | — |
 | `roi_calculated` | Rechner-Ergebnis als Bucket — **Legacy** (roi-calculator.js, Branchen-Landingpages); namensgleich mit dem P1-Event, unterscheidbar an `props.bucket` (P1-Events haben `props.action`) | Client (roi-calculator.js) | `{"bucket": "h_lt_150"\|"h_150_400"\|"h_gt_400"}` |
 | `roi_cta_click` | Personalisierter Ergebnis-CTA (Legacy-Widget) bzw. Angebots-Karten-CTA (`/websites-apps`) | Client (data-track) | `{"label": "<bucket>"\|"offer-<n>"}` |
+| `nav_click` | Hauptnavigation geklickt (Issue #16; generisch über `.site-nav a`, überlebt Nav-Umbauten) | Client (click) | `{"label": "services"\|"fuer-wen"\|"wissen"\|…}` — Label aus `data-track-label`, sonst Anker/Pfad/Linktext |
+| `target_group_viewed` | Zielgruppen-Profil-Karte im Viewport (A–E, 1×/Session; Issue #16) | Client (IntersectionObserver, `.profile-card`/`.target-group-card`) | `{"label": "a-viele-anfragen"\|…\|"e-projekte-vertrieb"}` |
+| `target_group_click` | Klick auf Zielgruppen-Profil/-CTA (Issue #16) | Client (data-track) | `{"label": "<Profil-Slug A–E>"}` |
+| `article_cta_clicked` | Wissen-Artikel: „nächster Schritt“ geklickt (Issue #16; jeder Artikel braucht einen klaren nächsten Schritt) | Client (data-track in `article.html`) | `{"label": "potenzial-check"\|"prozess"\|"branche"}` |
+| `wissen_pillar_click` | /wissen: Säulen-Interaktion (5 Säulen, Issue #16) | Client (data-track) | `{"label": "praxis-prozesse"\|"branchen"\|"datenschutz-kontrolle"\|"kosten-entscheidung"\|"technik-erklaert"}` |
 
 **ROI-Kontext:** Das P1-Widget (`roi-rechner.js`, `/rechner` + Homepage) sendet `roi_calculated` mit der vollen Props-Liste — nur Zahlen/Slugs, keine personenbezogenen Daten; `source` = `rechner`\|`homepage`, `action` = `recalc`\|`cta`. Der P1-CTA baut `/?utm_source=organic&utm_medium=rechner&utm_campaign=roi-rechner&utm_content=<page\|homepage>#termin` (Query VOR Fragment, **kein** `roi_context`-Param). Das Legacy-Widget (`roi-calculator.js`, Branchen-Landingpages) sendet dagegen NUR den Bucket (`roi_calculated` mit `props.bucket`, `roi_cta_click`) und übergibt `roi_context` ans Buchungsformular (Server-Whitelist `{h_lt_150, h_150_400, h_gt_400}`, Lead-Message „ROI-Rechner: &lt;bucket&gt;“). **Quelle der Wahrheit bleiben serverseitige Conversions** (`form_submit`, `lead_created`); ROI-Events sind anonyme Dashboard-Signale, nicht an Leads gestitcht.
 
@@ -180,3 +185,109 @@ CSRF-exempt (Beacon hat kein Session-Token); stattdessen Allowlist + Limits.
 Disclosure in `app/templates/legal/datenschutz.html` („Technische Bereitstellung & anonyme
 Nutzungsauswertung“). Footer-Trust-Line („Keine externen Tracker“, „Keine Tracking-Cookies“)
 bleibt wahr: First-Party-Endpoint, keine Cookies.
+
+## 8. Issue #16 — Navigation, Zielgruppen & Wissensbereich (Analytics-Mappings)
+
+**Kontext:** Issue #16 konsolidiert Positionierung über wiederkehrende Prozessmuster
+(Zielgruppen-Profile A–E) statt Branchenliste, stellt die Navigation auf
+`Lösungen → Für wen → Live-Demos → Wissen → Über uns → Potenzial-Check` um und ordnet
+`/wissen` in fünf redaktionelle Säulen. Damit die neuen Strukturen **ab dem ersten
+Release messbar** sind, ergänzt PULSE fünf Events (keine Breaking-Change an bestehenden
+Events/Props — die Funnel-Events `demo_started`/`contact_clicked`/`meeting_booked`/
+`roi_calculated` bleiben unverändert, §0).
+
+### 8.1 Kanonische Label-Slugs
+
+**Zielgruppen-Profile (A–E)** — für `target_group_viewed`/`target_group_click`:
+
+| Profil (Issue #16) | Kanonischer Slug |
+|---|---|
+| A — Viele Anfragen & Termine | `a-viele-anfragen` |
+| B — Außendienst, Service & Flotte | `b-aussendienst-service-flotte` |
+| C — Dokumenten- und wissensintensive Büros | `c-dokumente-wissen` |
+| D — Handel, E-Commerce & Auftragsabwicklung | `d-handel-ecommerce` |
+| E — Projekt- und Vertriebsdienstleister | `e-projekte-vertrieb` |
+
+**Wissen-Säulen** — für `wissen_pillar_click`:
+
+| Säule (Issue #16) | Kanonischer Slug |
+|---|---|
+| 1. Praxis & Prozesse | `praxis-prozesse` |
+| 2. Branchen | `branchen` |
+| 3. Datenschutz & Kontrolle | `datenschutz-kontrolle` |
+| 4. Kosten & Entscheidung | `kosten-entscheidung` |
+| 5. Technik erklärt | `technik-erklaert` |
+
+**Artikel-Nächster-Schritt** — für `article_cta_clicked`: `potenzial-check` (Buchung),
+`prozess` (Lösungs-/Prozessseite), `branche` (Branchenseite), `demo` (Live-Demo).
+
+### 8.2 Implementierung & Konventionen (Vertrag mit NOVA/LUMINA)
+
+- **`nav_click`** wird generisch über `.site-nav a` gefeuert (analytics.js) — keine
+  `data-track`-Attribute in `base.html` nötig, ein Nav-Umbau wird automatisch getrackt.
+  Label-Auflösung: `data-track-label` → Anker (`href="#services"` → `services`) → Pfad
+  (`/wissen` → `wissen`) → Linktext. **Wichtig:** Der Potenzial-Check-CTA muss außerhalb
+  von `.site-nav` bleiben bzw. seine `header-cta`-Klasse oder `href="#termin"` behalten,
+  sonst geht `demo_started` (§0) verloren. Alternativ: `data-track="demo_started"
+  data-track-label="nav"`.
+- **`target_group_viewed`** feuert über IntersectionObserver auf `.profile-card`/
+  `.target-group-card` (1×/Session, Label aus `data-track-label` oder h2/h3).
+  **`target_group_click`** über `data-track="target_group_click" data-track-label="<slug>"`
+  auf Karte/CTA. Die Profile können auf der Homepage ODER auf `/fuer-wen` liegen —
+  die Selektoren sind seitenunabhängig.
+- **`article_cta_clicked`** ist bereits in `article.html` verdrahtet (Potenzial-Check/
+  Prozess/Branche). Der `potenzial-check`-CTA verlinkt auf `/#termin`, feuert aber **kein**
+  `demo_started` (Href-Selektor matcht nur exakt `#termin`); der Buchungs-Funnel startet
+  erst an der Termin-Sektion selbst — bewusst getrennt, damit der Wissen-Funnel
+  (`article_cta_clicked`) den Demo-Funnel (`demo_started`) nicht verfälscht.
+- **`wissen_pillar_click`** über `data-track="wissen_pillar_click" data-track-label="<slug>"`
+  auf den Säulen-Navigationselementen von `/wissen` (LUMINA setzt die Attribute nach §8.1).
+
+### 8.3 Neue Funnel-Definitionen
+
+**Wissen-Mikro-Funnel „gelesen → gehandelt“:**
+`page_view (/wissen/<slug>) → article_cta_clicked {potenzial-check|prozess|branche|demo}`
+— Anteil der Artikel-Leser, die den nächsten Schritt gehen (DoD: „Jeder Artikel braucht
+einen klaren nächsten Schritt“).
+
+**Zielgruppen-Funnel „Profil → Anfrage“:**
+`target_group_viewed → target_group_click → demo_started/lead_created`
+— welche Prozessprofile (A–E) Interesse erzeugen und in den Lead-Funnel münden.
+
+**Nav-Verteilung:** `nav_click {label}` — wie oft führen die Einstiege
+(Lösungen/Für wen/Live-Demos/Wissen/Über uns) in den Funnel; Nenner für die
+Frage „reduziert die Navigation Kaufentscheidungen?“.
+
+SQLite-Snippet (Wissen-Funnel, Exec-Report):
+
+```sql
+SELECT
+  pv.n AS article_views,
+  COALESCE(cta.n, 0) AS cta_clicks,
+  ROUND(100.0 * COALESCE(cta.n, 0) / NULLIF(pv.n, 0), 1) AS cta_quote_pct
+FROM (
+  SELECT COUNT(*) AS n
+  FROM analytics_events
+  WHERE event = 'page_view' AND page LIKE '/wissen/%'
+    AND created_at >= datetime('now', '-7 days')
+) pv
+LEFT JOIN (
+  SELECT COUNT(*) AS n
+  FROM analytics_events
+  WHERE event = 'article_cta_clicked'
+    AND created_at >= datetime('now', '-7 days')
+) cta ON 1 = 1;
+```
+
+### 8.4 Verifikation
+
+- `tests/test_analytics.py`: 5 neue Events sind serverseitig erlaubt (204 + DB-Read-back);
+  Client-Kontrakt (analytics.js-Allowlist + `.site-nav`-Verdrahtung + Zielgruppen-Selektoren);
+  `article.html`-CTA-Hooks vorhanden; Cache-Buster v20.
+- Bestehende Guards laufen unverändert (151 Tests grün, Stand 2026-08-29) — Funnel-Events
+  `demo_started`/`contact_clicked`/`meeting_booked`/`roi_calculated` inkl. C15-Kanonisierung
+  (§0) bleiben intakt. Produktions-DB: alle Funnel-Events in den letzten 7 Tagen belegt
+  (page_view 171, service_viewed 57, roi_calculated 10, lead_created 8, demo_started 3,
+  meeting_booked 1, …); Alt-Labels nur in historischen Zeilen vor dem C15-Deploy
+  (Mapping-Regel §0: „Potenzial-Check“ ≡ „Business-Analyse“ ≡ „Erstgespräch“).
+
