@@ -177,7 +177,7 @@ LANDING_PAGES = {
         ],
         "use_cases": [
             ("Recherche-Agent", "Sammelt und strukturiert Informationen aus Quellen und liefert eine belegte Zusammenfassung."),
-            ("Wissens-Assistent", "Beantwortet Fragen auf Basis Ihrer internen Dokumente – DSGVO-konform, ohne Datenabfluss."),
+            ("Wissens-Assistent", "Beantwortet Fragen auf Basis Ihrer internen Dokumente – lokal betreibbar, ohne Datenabfluss."),
             ("Dokumentations-Agent", "Erstellt aus Meetings, Chats und Notizen strukturierte, ablagefähige Dokumente."),
             ("Automatisierungs-Agent", "Löst Aufgaben in Workflows aus: Daten prüfen, Status aktualisieren, nächste Schritte anstoßen."),
         ],
@@ -310,7 +310,7 @@ WEBSITES_APPS_COPY = {
     "description": "Corporate Websites, die Anfragen bringen, und Business-Apps, die Prozesse automatisieren: gebaut, integriert und betreut von Skalantech in Köln.",
     "h1": "Websites, die verkaufen. Apps, die Prozesse beschleunigen.",
     "lead": "Skalantech baut keine Visitenkarten, sondern digitale Werkzeuge: High-Performance-Websites, die Anfragen bringen, und interne Business-Apps, die wiederkehrende Arbeit übernehmen – tief integriert in Ihre Prozesse.",
-    "hero_trust": "Server-gerendert · DSGVO-konform · Kein Vendor-Lock-in",
+    "hero_trust": "Server-gerendert · Datenschutzkonform betreibbar · Kein Vendor-Lock-in",
     "cta_primary": "Kostenlosen Potenzial-Check buchen",
     "cta_secondary": "Projekt besprechen",
     "cta_mid": "Jetzt Potenzial-Check buchen",
@@ -366,7 +366,7 @@ WEBSITES_APPS_COPY = {
     "cases_heading": "Gebaut. Nicht versprochen.",
     "use_cases": [
         ("Lead-Funnel mit Terminbuchung (Handwerk / Immobilien)", "Eine Website, die qualifizierte Anfragen generiert, mit integrierter Terminbuchung, die automatisch im Kalender landet – inklusive Erinnerungen."),
-        ("Mandanten-Portal & ROI-Rechner (Kanzleien / B2B)", "Hochsichere Portale für Mandanten und interaktive ROI-Rechner, die den Nutzen Ihrer Leistung sofort beziffern – DSGVO-konform, lokal betreibbar."),
+        ("Mandanten-Portal & ROI-Rechner (Kanzleien / B2B)", "Hochsichere Portale für Mandanten und interaktive ROI-Rechner, die den Nutzen Ihrer Leistung sofort beziffern – datenschutzkonform, lokal betreibbar."),
     ],
     "pricing_title": "Klare Preise. Zwei Stufen. Kein Kleingedrucktes.",
     "pricing": [
@@ -410,7 +410,7 @@ WEBSITES_APPS_COPY = {
         ("Arbeitet ihr mit unserem CRM zusammen?", "Ja. Formulare, Buchungen und Funnels binden wir per n8n an gängige CRMs und Systeme an. Welche Schnittstellen bei Ihnen nötig sind, prüfen wir im Audit."),
     ],
     "trust": [
-        ("Security-First", "TLS, DSGVO-konforme Verarbeitung, gehärtete Server – Sicherheit ist Teil des Builds, kein Extra."),
+        ("Security-First", "TLS, datenschutzkonforme Verarbeitung, gehärtete Server – Sicherheit ist Teil des Builds, kein Extra."),
         ("Keine externen Tracker", "First-Party-Analytics statt Tracking-Krake – die Daten bleiben bei Ihnen."),
         ("Eigentum bleibt bei Ihnen", "Code, Daten und Domains gehören Ihnen. Kein Vendor-Lock-in."),
         ("Ein Ansprechpartner", "Skalantech baut und betreut die Systeme selbst – persönlich erreichbar, keine Blackbox."),

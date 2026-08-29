@@ -272,11 +272,11 @@ class BranchenLandingTests(unittest.TestCase):
     def test_handwerk_new_copy_meta(self):
         html = self._get("/branchen/handwerk").get_data(as_text=True)
         self.assertIn(
-            "<title>KI-Prozessautomatisierung für Handwerk: Angebote in Minuten, Rechnungen automatisch | Skalantech</title>",
+            "<title>KI-Prozessautomatisierung für Handwerk: Angebotsentwürfe in Minuten, Rechnungen automatisch | Skalantech</title>",
             html,
         )
         self.assertIn(
-            'name="description" content="Angebote in Minuten statt Stunden, Rechnungen automatisch',
+            'name="description" content="Angebotsentwürfe in Minuten statt Stunden, Rechnungen automatisch',
             html,
         )
 
@@ -284,7 +284,7 @@ class BranchenLandingTests(unittest.TestCase):
         html = self._get("/branchen/handwerk").get_data(as_text=True)
         self.assertIn("landing-quickwins", html)
         self.assertIn("Drei Prozesse, die Ihrem Betrieb sofort Zeit zurückgeben.", html)
-        self.assertIn("Angebote in Minuten statt Stunden.", html)
+        self.assertIn("Angebotsentwürfe in Minuten statt Stunden.", html)
         self.assertIn("Rechnungen gehen automatisch raus. Geld kommt schneller.", html)
         self.assertIn("Kein Kunde geht verloren, keine Anfrage bleibt liegen.", html)
         # Hero-Microcopy + Trust-Zeile (LUMINA-Struktur)

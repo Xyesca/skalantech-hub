@@ -14,7 +14,7 @@
     { text: '[OK] Tailscale mesh secure', status: 'ok', delay: 40 },
     { text: '[OK] Docker 14 containers up', status: 'ok', delay: 40 },
     { text: '[OK] Hermes Agent connected', status: 'ok', delay: 40 },
-    { text: '[OK] n8n — 50 workflows live', status: 'ok', delay: 40 },
+    { text: '[OK] n8n — Kern-Workflows live', status: 'ok', delay: 40 },
     { text: '[ACTIVE] AI Agent fleet ready', status: 'active', delay: 50 },
     { text: '', status: 'info', delay: 30 },
     { text: 'All systems operational.', status: 'ok', delay: 60 },
