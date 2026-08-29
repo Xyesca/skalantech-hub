@@ -86,7 +86,7 @@ class PublicSiteTests(unittest.TestCase):
             "brand/skalantech-mark.svg",
             "about-system",
             'id="services"',
-            'id="branchen"',
+            'id="fuer-wen"',
             'id="demos"',
             'id="about"',
             'id="contact"',
@@ -175,11 +175,55 @@ class PublicSiteTests(unittest.TestCase):
         self.assertIn('href="/automationen"', html)
         self.assertIn('href="/demos"', html)
         self.assertIn("Potenzial-Check buchen", html)
-        # Customer-First-Navigation: Lösungen · Branchen · Live-Demos · Projekte · Über uns
+        # Issue #16-Navigation: Lösungen · Für wen · Live-Demos · Wissen · Über uns
         self.assertIn('href="/#services"', html)
-        self.assertIn('href="/#branchen"', html)
-        self.assertIn('href="/#work"', html)
+        self.assertIn('href="/#fuer-wen"', html)
+        self.assertIn('href="/wissen"', html)
         self.assertIn('href="/#about"', html)
+        # Projekte/Gebaute Lösungen bleibt über den Footer erreichbar (keine Regression)
+        self.assertIn('href="/#work"', html)
+
+    def test_issue16_nav_order_and_fuer_wen_profiles(self):
+        """Issue #16 (NOVA): Navigation in verbindlicher Reihenfolge
+        Lösungen → Für wen → Live-Demos → Wissen → Über uns; Homepage bildet die
+        Zielgruppen-Profile A–E als Prozessprofile ab (ATLAS-Vorgabe)."""
+        html = self.client.get("/").get_data(as_text=True)
+        nav_start = html.index('id="site-nav"')
+        nav_end = html.index("</nav>", nav_start)
+        nav = html[nav_start:nav_end]
+        labels = ("Lösungen", "Für wen", "Live-Demos", "Wissen", "Über uns")
+        positions = [nav.index(label) for label in labels]
+        self.assertEqual(positions, sorted(positions), "Navigation muss in verbindlicher Reihenfolge sein")
+        self.assertNotIn("Branchen", nav, "Alte Branchen-Navigation darf nicht mehr im Hauptmenü stehen")
+        self.assertNotIn("Projekte", nav, "Projekte ist kein gleichwertiger Hauptmenüpunkt mehr (Footer bleibt)")
+        for profile in (
+            "Viele Anfragen &amp; Termine",
+            "Außendienst, Service &amp; Flotte",
+            "Dokumenten- &amp; wissensintensive Büros",
+            "Handel, E-Commerce &amp; Auftragsabwicklung",
+            "Projekt- &amp; Vertriebsdienstleister",
+        ):
+            with self.subTest(profile=profile):
+                self.assertIn(profile, html)
+        self.assertIn("Welche Arbeit wiederholt sich bei Ihnen jede Woche?", html)
+
+    def test_issue16_faq_customer_oriented(self):
+        """Issue #16 (VELA-Copy, NOVA-Integration): FAQ kundenorientiert —
+        Kaufhindernisse statt Technikfragen; keine Tool-/Technikfragen als Hauptthema."""
+        html = self.client.get("/faq").get_data(as_text=True)
+        for q in (
+            "Passt Skalantech zu unserem Betrieb?",
+            "Muss bestehende Software ersetzt werden?",
+            "Wie werden Daten verarbeitet?",
+            "Bleibt der Mensch bei kritischen Entscheidungen beteiligt?",
+            "Was kostet ein Projekt?",
+            "Wie läuft die Zusammenarbeit?",
+        ):
+            with self.subTest(q=q):
+                self.assertIn(q, html)
+        for removed in ("Welche Technologien setzt du ein?", "Arbeitest du remote?"):
+            with self.subTest(removed=removed):
+                self.assertNotIn(removed, html)
 
     def test_brand_assets_are_served(self):
         expected_types = {
