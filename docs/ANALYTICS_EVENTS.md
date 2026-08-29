@@ -1,6 +1,38 @@
 # Analytics & Conversion Tracking — Event-Spezifikation (PULSE)
 
-**Stand:** 2026-08-28 · **Verantwortlich:** PULSE (Analytics) · **Status:** implementiert + verifiziert (P0) — Lead-Funnel-Erweiterung (booking_error/booking_confirmed) verifiziert (t_14c947e2); Rebrand-Review Issue #3 (t_debcb0eb): `case_study_click`/`demo_clicked` ergänzt, `service_viewed`-/`case_study_viewed`-Selektoren auf aktuelle Karten-Klassen erweitert (`.usecase-card`/`.pain-card`/`.project-card`); P1 `roi_calculated` für ROI-Rechner `/rechner` finalisiert + live verifiziert (t_28ab613d)
+**Stand:** 2026-08-28 · **Verantwortlich:** PULSE (Analytics) · **Status:** implementiert + verifiziert (P0) — Lead-Funnel-Erweiterung (booking_error/booking_confirmed) verifiziert (t_14c947e2); Rebrand-Review Issue #3 (t_debcb0eb): `case_study_click`/`demo_clicked` ergänzt, `service_viewed`-/`case_study_viewed`-Selektoren auf aktuelle Karten-Klassen erweitert (`.usecase-card`/`.pain-card`/`.project-card`); P1 `roi_calculated` für ROI-Rechner `/rechner` finalisiert + live verifiziert (t_28ab613d); Customer-First: Footer-CTA neu getrackt (demo_started/footer, t_345e37a3) und **C15 (t_5d32a4a3): service-Label kanonisch „Potenzial-Check“ — Alt-Labels „Business-Analyse“/„Erstgespräch“ werden serverseitig gemappt (§0), keine Breaking-Change an Event-Namen**
+
+## 0. service-Label „Potenzial-Check“ — Kanonisierung & Kompatibilität (C15, t_5d32a4a3)
+
+Die sichtbare CTA-Copy wurde im Rahmen des Customer-First-Relaunchs (Branch
+`feat/customer-first-website`, Referenz `docs/CUSTOMER_FIRST_WEBSITE_PROPOSAL.md`)
+von „Business-Analyse buchen“ auf „Potenzial-Check buchen“ umbenannt. Damit auch
+Analytics-Events, CRM-Pipeline und Follow-up-Texte dieselbe Sprache sprechen, ist
+**„Potenzial-Check“ das kanonische service-Label des Buchungs-Funnels**. Alt-Labels
+werden serverseitig beim Formular-POST kanonisiert (CLOSER C15 / ATLAS F15):
+
+| Eingang (Formular/API) | Kanonisches Label | Wo |
+|---|---|---|
+| `Business-Analyse` (Booking-Hidden-Field, alte Landingpages) | `Potenzial-Check` | `SERVICE_LABEL_MAP` in `app/models.py`, angewendet in `public.contact()` + `crm_api.reserve_booking()` |
+| `Erstgespräch` (CRM-Historie, Alt-Formulare) | `Potenzial-Check` | dito |
+
+**Konsequenzen für die Events** (eine Buchung, ein Label):
+- `lead_created.props.service`, `demo_completed.props.service` und
+  `meeting_booked.props.service` tragen nach der Kanonisierung denselben Wert
+  („Potenzial-Check“) — vorher war die Kette inkonsistent (`Business-Analyse`
+  → `Erstgespräch` → `Erstgespräch`).
+- Das n8n-`topic` und `Booking.topic` verwenden ebenfalls das kanonische Label
+  (`BOOKING_SERVICE_LABEL`), ebenso der Default in `crm_api` und `models.Booking`.
+- Historische Daten behalten ihre alten Werte — für Reports gilt die Mapping-
+  Tabelle oben („Potenzial-Check“ ≡ „Business-Analyse“ ≡ „Erstgespräch“/30-min-Check).
+
+**Keine Breaking-Change:** Alle Event-Namen (`booking_confirmed`, `lead_created`,
+`demo_*`, …) und die Props-Kontrakte bleiben unverändert — nur der service-Wert
+ist vereinheitlicht. `demo_started` wird weiterhin über Klassen-/Href-Selektoren
+gefeuert (`.header-cta`, `a[href='#termin']`), nicht über den sichtbaren Text;
+die Labels (`header`/`hero`/`section`/`footer`) sind positionsbasiert.
+Der Footer-CTA „Potenzial-Check“ (`base.html`, Kontakt-Spalte, `/#termin`) wird
+als `demo_started` mit `label: "footer"` getrackt (t_345e37a3).
 
 ## 1. Architektur
 
@@ -27,11 +59,11 @@ SQLite: analytics_events  (Modell AnalyticsEvent)
 | Event | Bedeutung | Quelle | props (Beispiele) |
 |---|---|---|---|
 | `page_view` | Seite geladen (Funnel-Nenner) | Client (on load) | — |
-| `demo_started` | CTA „Erstgespräch“ geklickt (Header/Hero/Sektion) | Client (click) | `{"label": "header"\|"hero"\|"section"}` |
-| `demo_completed` | Termin-Anfrage erfolgreich abgeschickt (Formular ok) | **Server** (Formular-POST) | `{"service": "Erstgespräch"}` |
+| `demo_started` | CTA „Potenzial-Check“ geklickt (Header/Hero/Sektion) | Client (click) | `{"label": "header"\|"hero"\|"section"\|"footer"}` |
+| `demo_completed` | Termin-Anfrage erfolgreich abgeschickt (Formular ok) | **Server** (Formular-POST) | `{"service": "Potenzial-Check"}` |
 | `contact_clicked` | Kontakt-CTA / mailto geklickt | Client (click) | `{"label": "mailto"\|"nav"\|"<Service>"}` |
 | `calendar_opened` | Datumsauswahl im Buchungsformular geöffnet (1×/Session) | Client (focus/click `#booking-day`) | — |
-| `meeting_booked` | n8n-Terminwebhook bestätigt Buchung (`success:true`) | **Server** (n8n-Response) | `{"day": "...", "time": "...", "service": "Erstgespräch"}` |
+| `meeting_booked` | n8n-Terminwebhook bestätigt Buchung (`success:true`) | **Server** (n8n-Response) | `{"day": "...", "time": "...", "service": "Potenzial-Check"}` |
 | `booking_error` | n8n down/timeout oder ungültige Antwort — **nur** bei echter Störung, **nie** bei „Slot belegt“ (normaler Nutzerpfad) | **Server** (n8n-Fehlerklassifikation) | `{"reason": "unreachable"\|"invalid_response"}` |
 | `booking_confirmed` | Bestätigungsansicht im `.booking-box` sichtbar (Erfolg oder queued) — 1×/Submit | Client (main.js `showBookingSuccess`) | `{"status": "confirmed"\|"queued"}` |
 | `service_viewed` | Leistungs-Karte im Viewport (1×/Session) | Client (IntersectionObserver) | `{"label": "<Karten-Titel>"}` |
@@ -39,7 +71,7 @@ SQLite: analytics_events  (Modell AnalyticsEvent)
 | `case_study_click` | Klick auf Projekt-Link im Nachweise-Bereich (Issue #3, Studio-Rebrand) | Client (data-track) | `{"label": "DeepDive"}` |
 | `demo_clicked` | Live-Demo geöffnet — Hero, Demo-Karten oder Projekt-Nachweis (Issue #3) | Client (data-track) | `{"label": "hero"\|"invoiceflow"\|"offerai"\|"mailagent"}` |
 | `roi_calculated` | ROI-Rechner ausgelöst (P1-Widget `/rechner` + Homepage; Debounce 800 ms, Throttle 3 s, Session-Cap 20, **nicht** beim Seiten-Load) | Client (roi-rechner.js) | `{"process":"angebote","source":"rechner","minutes":30,"frequency":5,"error_share":10,"rate":55,"automation_share":70,"hours_per_week":2.75,"hours_per_year":129.25,"annual_cost":7100,"savings_hours":90,"savings_euro":5000,"action":"recalc"\|"cta"}` |
-| `lead_created` | Kontaktanfrage erfolgreich gespeichert (Lead in CRM) | **Server** (Formular-POST) | `{"service": "<Anliegen>"}` |
+| `lead_created` | Kontaktanfrage erfolgreich gespeichert (Lead in CRM); `service` ist kanonisiert (Buchung → „Potenzial-Check“, §0) | **Server** (Formular-POST) | `{"service": "<Anliegen>"}` |
 | `hero_cta_click` | Hero-Primär-CTA auf Landingpages (LUMINA-Spez) | Client (data-track) | `{"label": "hero"}` |
 | `quickwin_cta_click` | Quick-Win-Karten-CTA Angebot/Termine (LUMINA-Spez) | Client (data-track) | `{"label": "quickwin-1\|quickwin-3"}` |
 | `erechnung_cta_click` | E-Rechnung-CTA, Stufe 3 Dringlichkeit (LUMINA-Spez) | Client (data-track) | `{"label": "quickwin-2"\|"erechnung"}` |
@@ -89,7 +121,7 @@ WHERE event = 'roi_calculated'
 ```
 
 Zusatz-KPI: Durchschnitt `savings_euro` (nur aggregiert auswerten — Events sind anonym und nicht
-an Leads gestitcht; hohe Werte = Qualifizierungs-Signal für Erstgespräche).
+an Leads gestitcht; hohe Werte = Qualifizierungs-Signal für Potenzial-Checks).
 
 ## 3. Attribution & Funnel-Stitching
 

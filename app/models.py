@@ -247,6 +247,17 @@ class LeadNote(db.Model):
 # Terminbuchung — Booking Source of Truth (Google-frei, concurrency-sicher)
 # ══════════════════════════════════════════════════════════════════════════
 
+# Customer-First (C15, PULSE): Kanonisches service-Label des Buchungs-Funnels.
+# Alt-Labels „Business-Analyse“ (Formular-Hidden-Field, alte Landingpages) und
+# „Erstgespräch“ (CRM-Historie) werden beim Formular-POST auf „Potenzial-Check“
+# kanonisiert, damit Analytics-Events, CRM-Lead und n8n-Topic dieselbe Sprache
+# sprechen. Mapping dokumentiert in docs/ANALYTICS_EVENTS.md §0.
+SERVICE_LABEL_MAP = {
+    "Business-Analyse": "Potenzial-Check",
+    "Erstgespräch": "Potenzial-Check",
+}
+BOOKING_SERVICE_LABEL = "Potenzial-Check"
+
 
 class Booking(db.Model):
     """Ein bestätigter Termin-Slot.
@@ -270,7 +281,7 @@ class Booking(db.Model):
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(254), nullable=False, index=True)
     company = db.Column(db.String(160), default="")
-    topic = db.Column(db.String(120), default="Erstgespräch")
+    topic = db.Column(db.String(120), default=BOOKING_SERVICE_LABEL)
     status = db.Column(db.String(24), default="confirmed", nullable=False, index=True)
     lead_id = db.Column(db.Integer, db.ForeignKey("leads.id"))
     created_at = db.Column(db.DateTime, default=_utcnow, index=True)

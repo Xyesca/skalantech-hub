@@ -18,17 +18,17 @@
           Entscheidend ist nicht der einzelne Bot, sondern dass ein realer Geschäftsprozess zuverlässig schneller wird.
         </p>
         <div class="showcase-actions">
-          <a class="button button--accent" href="{{ url_for('public.index') }}#termin">Kostenlose Business-Analyse <span aria-hidden="true">↗</span></a>
+          <a class="button button--accent" href="{{ url_for('public.index') }}#termin">Kostenlosen Potenzial-Check buchen <span aria-hidden="true">↗</span></a>
           <a class="button button--quiet" href="{{ url_for('showcase.demos') }}">Live-Demos testen <span aria-hidden="true">→</span></a>
         </div>
       </div>
       <aside class="showcase-proof" aria-label="Typischer Skalantech Automationsprozess">
         <p class="showcase-proof__label">Vom Eingang bis zur Aktion</p>
         <ol class="showcase-flow">
-          <li data-step="01">Trigger · Mail, Formular, Datei, API</li>
-          <li data-step="02">Prüfen · Regeln, Daten, Berechtigungen</li>
-          <li data-step="03">Verarbeiten · n8n, Python, KI</li>
-          <li data-step="04">Ausführen · CRM, Mail, Aufgabe, System</li>
+          <li data-step="01">Eingang · Anfrage, Mail oder Formular</li>
+          <li data-step="02">Prüfen · Regeln, Daten, Freigaben</li>
+          <li data-step="03">Verarbeiten · automatisiert &amp; fehlerfrei</li>
+          <li data-step="04">Erledigt · Ergebnis dort, wo Sie arbeiten</li>
         </ol>
       </aside>
     </div>
@@ -67,7 +67,7 @@
       <div class="demo-grid">
         {% for slug, demo in demos.items() %}
         <article class="demo-card">
-          <span class="demo-card__state">Live-Workflow</span>
+          <span class="demo-card__state">Live-Beispiel</span>
           <h3>{{ demo.name }}</h3>
           <p class="demo-card__eyebrow">{{ demo.eyebrow }}</p>
           <p class="demo-card__desc">{{ demo.description }}</p>

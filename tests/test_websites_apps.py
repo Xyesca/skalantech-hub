@@ -149,8 +149,8 @@ class WebsitesAppsTests(unittest.TestCase):
             html = resp.get_data(as_text=True)
             # Header-Nav (eine Stelle reicht, aber Footer nutzt dieselbe URL)
             self.assertIn('href="/websites-apps"', html)
-            # Nav-Label sichtbar
-            self.assertIn("Websites &amp; Apps", html)
+            # Nav-Label sichtbar (Customer-First: „Websites & Business Apps“)
+            self.assertIn("Websites &amp; Business Apps", html)
         finally:
             resp.close()
 

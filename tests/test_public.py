@@ -60,41 +60,126 @@ class PublicSiteTests(unittest.TestCase):
     def test_homepage_contains_conversion_and_seo_content(self):
         html = self.client.get("/").get_data(as_text=True)
         for phrase in (
-            "Arbeit, die heute Zeit frisst,",
-            "wird morgen zum digitalen Prozess.",
-            "Kostenlose Business-Analyse",
-            "Anfrage → Angebot",
-            "Rechnung → strukturierte Daten",
-            "E-Mail → CRM",
-            "Vier Bausteine. Ein digitaler Prozess.",
-            "Gebaut. Nicht nur beschrieben.",
+            "Digitale Prozesse für kleine und mittelständische Unternehmen",
+            "Weniger manuelle Arbeit.",
+            "Mehr Zeit für Kunden, Team und Wachstum.",
+            "Skalantech verbindet bestehende Systeme, automatisiert wiederkehrende Abläufe",
+            "Kostenlosen Potenzial-Check buchen",
+            "Live-Beispiele ansehen",
+            "Bestehende Systeme zuerst sinnvoll weiterverwenden",
+            "Nachvollziehbar umgesetzt und dokumentiert",
+            "Kundenanfragen bleiben liegen",
+            "Digitale Anwendungen für Ihren Ablauf",
+            "Eingangsrechnung → für Buchhaltung vorbereitet",
+            "Kundenanfrage → Angebot zur Prüfung",
+            "E-Mail → Bearbeitung + Antwortvorschlag",
             "InvoiceFlow",
             "OfferAI",
             "MailAgent",
-            "Gebaute Systeme statt Versprechen.",
+            "Nachweise, die man sehen und testen kann.",
+            "Technologie, die Arbeit abnimmt – statt neue Arbeit zu schaffen.",
+            "Xavier Escalante Castellar",
+            "30-minütigen Potenzial-Check",
             "Projektanfrage senden",
             "xyesca@skalantech.store",
             "skalantech-og.jpg",
             "brand/skalantech-mark.svg",
             "about-system",
             'id="services"',
+            'id="branchen"',
             'id="demos"',
             'id="about"',
             'id="contact"',
-            "Live-Automationen statt Konzepte",
-            "selbst gebaute Systeme",
-            "eigene Server und Daten",
+            'id="termin"',
+            "Keine externen Tracker",
         ):
             self.assertIn(phrase, html)
         self.assertNotIn("xyesca1989@googlemail.com", html)
         self.assertNotIn("fonts.googleapis.com", html)
         self.assertNotIn("cdnjs.cloudflare.com", html)
+        # Customer-First: keine alten Tool-/Stack-/Lebenslauf-Blöcke im Funnel
+        for removed in (
+            "Live-Stack",
+            "selbst gehostete Systeme im Mittelpunkt",
+            "100% Self-hosted",
+            "Vier Bausteine. Ein digitaler Prozess.",
+            "Gebaut. Nicht nur beschrieben.",
+        ):
+            self.assertNotIn(removed, html)
+
+    def test_customer_first_funnel_cta_guards(self):
+        """C13 (CLOSER Fix-Liste): Verbindliche Kerntexte + Alt-CTA-Regression.
+
+        Homepage-Funnel: „Kostenlosen Potenzial-Check buchen" (Hero) und
+        „30-Minuten-Potenzial-Check" (Booking-Section, inkl. „kostenlos &
+        unverbindlich") sind Pflicht-Copy. Die alten „Business-Analyse"-CTAs
+        („Kostenlose Business-Analyse"/„Business-Analyse buchen") dürfen auf
+        der Homepage nicht zurückkehren.
+
+        Bewusst NICHT hier: (1) „Erstgespräch"/„Kostenloses Erstgespräch"-
+        Absence — folgt in C14 (test_customer_first_funnel_cta_guards_all_pages);
+        (2) Negativ-Guards für /demos + /automationen + /koeln + Landingpages
+        (C1/C4/C6/C7/NOVA) — folgt in C14.
+        """
+        html = self.client.get("/").get_data(as_text=True)
+        for core in (
+            "Kostenlosen Potenzial-Check buchen",
+            "30-Minuten-Potenzial-Check",
+            "kostenlos &amp; unverbindlich",
+        ):
+            with self.subTest(core=core):
+                self.assertIn(core, html)
+        for old in (
+            "Kostenlose Business-Analyse",
+            "Business-Analyse buchen",
+        ):
+            with self.subTest(old=old):
+                self.assertNotIn(old, html)
+
+    def test_customer_first_funnel_cta_guards_all_pages(self):
+        """C14 (CLOSER Fix-Liste, nach NOVA C1–C11): Funnel-weite CTA-Sprache.
+
+        /demos, /automationen, /koeln und alle SEO-Landingpages
+        (seo_pages.py) tragen den kanonischen CTA „Kostenlosen Potenzial-Check
+        buchen". Alt-CTA-Phrasen („Kostenlose Business-Analyse",
+        „Business-Analyse buchen", „Kostenloses Erstgespräch") und das Wort
+        „Erstgespräch" dürfen im Funnel nicht zurückkehren. Das ROI-Widget
+        (seo_pages.py-Strings, C8/NOVA) erscheint AUCH auf der Homepage —
+        deshalb gilt der Erstgespräch-Guard hier für alle Funnel-Seiten.
+
+        Bewusst CTA-Phrasen statt rohem Substring „Business-Analyse": das
+        versteckte service-Feld (C11/NOVA, SERVICE_LABEL_MAP) und die
+        Server-Allowlist enthalten „Business-Analyse" weiterhin als Alt-Wert
+        für CRM/n8n-Kompatibilität — das ist kein Copy-Regress (PULSE C15).
+        """
+        pages = (
+            "/", "/demos", "/automationen", "/koeln",
+            "/ki-agenten", "/n8n-automatisierung", "/websites-apps",
+            "/it-infrastruktur", "/ki-integration", "/ki-automatisierung",
+            "/lokale-ki",
+        )
+        for path in pages:
+            with self.subTest(path=path):
+                html = self.client.get(path, buffered=True).get_data(as_text=True)
+                self.assertIn("Kostenlosen Potenzial-Check buchen", html)
+                for old in (
+                    "Kostenlose Business-Analyse",
+                    "Business-Analyse buchen",
+                    "Kostenloses Erstgespräch",
+                    "Erstgespräch",
+                ):
+                    self.assertNotIn(old, html)
 
     def test_navigation_surfaces_automation_and_demos(self):
         html = self.client.get("/").get_data(as_text=True)
         self.assertIn('href="/automationen"', html)
         self.assertIn('href="/demos"', html)
-        self.assertIn("Business-Analyse buchen", html)
+        self.assertIn("Potenzial-Check buchen", html)
+        # Customer-First-Navigation: Lösungen · Branchen · Live-Demos · Projekte · Über uns
+        self.assertIn('href="/#services"', html)
+        self.assertIn('href="/#branchen"', html)
+        self.assertIn('href="/#work"', html)
+        self.assertIn('href="/#about"', html)
 
     def test_brand_assets_are_served(self):
         expected_types = {
@@ -187,19 +272,19 @@ class PublicSiteTests(unittest.TestCase):
             return cm
 
         with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, b'{"success": true, "message": "ok"}')):
-            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Potenzial-Check", "m", "2026-09-10", "10:00")
         self.assertEqual(r["status"], "confirmed")
 
         with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, json.dumps({"success": False, "message": "Slot belegt"}).encode())):
-            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Potenzial-Check", "m", "2026-09-10", "10:00")
         self.assertEqual(r["status"], "slot_taken")
 
         with mock.patch.object(pub.urlrequest, "urlopen", return_value=_mock_urlopen(200, b"")):
-            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Potenzial-Check", "m", "2026-09-10", "10:00")
         self.assertEqual(r["status"], "invalid_response")
 
         with mock.patch.object(pub.urlrequest, "urlopen", side_effect=Exception("down")):
-            r = pub._forward_to_n8n("N", "e@x.de", "", "Erstgespräch", "m", "2026-09-10", "10:00")
+            r = pub._forward_to_n8n("N", "e@x.de", "", "Potenzial-Check", "m", "2026-09-10", "10:00")
         self.assertEqual(r["status"], "unreachable")
 
     def test_security_headers_are_present(self):

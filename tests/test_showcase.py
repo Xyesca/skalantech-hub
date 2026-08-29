@@ -47,6 +47,11 @@ class ShowcaseTests(unittest.TestCase):
             "Live-Demos testen",
         ):
             self.assertIn(phrase, html)
+        # Customer-First (PR #12): Demo-State-Label + CTA in Endkundensprache (ATLAS F10/F13).
+        self.assertIn("Live-Beispiel", html)
+        self.assertNotIn("Live-Workflow", html)
+        self.assertIn("Kostenlosen Potenzial-Check buchen", html)
+        self.assertNotIn("Kostenlose Business-Analyse", html)
 
     def test_demo_page_contains_three_interactive_workflows(self):
         response = self.client.get("/demos")
@@ -65,6 +70,12 @@ class ShowcaseTests(unittest.TestCase):
         self.assertIn("Alle Beispiele sind vollständig fiktiv.", html)
         self.assertIn("Typische Arbeit aus Handwerk, Praxis, Werkstatt und Büro.", html)
         self.assertIn("Sicherer Datenweg", html)
+        # Customer-First (PR #12): /demos spricht dieselbe Endkundensprache wie die Homepage —
+        # kein 'Live-Workflow', CTA = Potenzial-Check statt Business-Analyse (ATLAS F10/F13).
+        self.assertEqual(html.count("Live-Beispiel"), 3)
+        self.assertNotIn("Live-Workflow", html)
+        self.assertIn("Kostenlosen Potenzial-Check buchen", html)
+        self.assertNotIn("Kostenlose Business-Analyse", html)
         # Ergebnisstatus pro Demo (Spec E4)
         self.assertIn("Für Prüfung vorbereitet", html)
         self.assertIn("Angebot zur Prüfung", html)

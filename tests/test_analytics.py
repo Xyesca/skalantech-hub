@@ -259,7 +259,7 @@ class AnalyticsEventTests(unittest.TestCase):
         self.assertEqual(len(meeting), 1)
         self.assertEqual(
             json.loads(meeting[0].props),
-            {"day": "2026-09-15", "time": "10:00", "service": "Erstgespräch"},
+            {"day": "2026-09-15", "time": "10:00", "service": "Potenzial-Check"},
         )
         self.assertIn("demo_completed", {e.event for e in events})
 
@@ -327,7 +327,7 @@ class AnalyticsEventTests(unittest.TestCase):
         self.assertEqual(len(meeting_events), 1)
         self.assertEqual(
             json.loads(meeting_events[0].props),
-            {"day": "2026-09-15", "time": "10:00", "service": "Erstgespräch"},
+            {"day": "2026-09-15", "time": "10:00", "service": "Potenzial-Check"},
         )
 
     def test_booking_error_invalid_response_reason(self):
@@ -492,7 +492,7 @@ class AnalyticsEventTests(unittest.TestCase):
         self.assertIn("keine Cookies", html)
 
     def test_rebrand_project_demo_hooks_present(self):
-        """Issue #3 (Studio-Rebrand): Projekt-Karten und Demo-Klicks sind
+        """Issue #3 (Studio-Rebrand) + Customer-First: Demo-Klicks sind
         trackbar — data-track-Hooks in index.html + Client-Selektoren.
         Regression-Guard: ein künftiger Rebrand darf diese Hooks nicht
         stillschweigend entfernen."""
@@ -500,15 +500,21 @@ class AnalyticsEventTests(unittest.TestCase):
 
         repo_root = Path(__file__).resolve().parent.parent
         index_html = (repo_root / "app" / "templates" / "index.html").read_text(encoding="utf-8")
+        base_html = (repo_root / "app" / "templates" / "base.html").read_text(encoding="utf-8")
         analytics_js = (repo_root / "app" / "static" / "js" / "analytics.js").read_text(encoding="utf-8")
 
-        # Demo-Klicks trackbar (Hero + Demo-Karten + Projekt-Nachweise)
+        # Demo-Klicks trackbar (Hero + Demo-Karten)
         self.assertIn('data-track="demo_clicked" data-track-label="hero"', index_html)
         self.assertIn('data-track="demo_clicked" data-track-label="invoiceflow"', index_html)
         self.assertIn('data-track="demo_clicked" data-track-label="offerai"', index_html)
         self.assertIn('data-track="demo_clicked" data-track-label="mailagent"', index_html)
-        # Projekt-Klick trackbar (DeepDive-Repository im Nachweise-Bereich)
-        self.assertIn('data-track="case_study_click" data-track-label="DeepDive"', index_html)
+        # Customer-First: Projekt-Nachweise verlinken auf die Live-Demos
+        self.assertIn('data-track="demo_clicked" data-track-label="invoiceflow"', index_html)
+        self.assertIn('data-track="demo_clicked" data-track-label="offerai"', index_html)
+        self.assertIn('data-track="demo_clicked" data-track-label="mailagent"', index_html)
+        # case_study_click bleibt in der Event-Allowlist (Landingpages/Projekte),
+        # auch wenn die Homepage selbst keine DeepDive-Case-Study mehr trackt.
+        self.assertIn('"case_study_click"', analytics_js)
         # Neue Projekt-Karten zählen als Case Studies (Viewport)
         self.assertIn('".work-card, .project-card"', analytics_js)
         # Leistungs-Karten (usecase/pain) zählen als service_viewed
@@ -516,6 +522,69 @@ class AnalyticsEventTests(unittest.TestCase):
         # Client-Allowlist enthält die neuen Events
         self.assertIn('"case_study_click"', analytics_js)
         self.assertIn('"demo_clicked"', analytics_js)
+
+    def test_customer_first_service_label_canonical(self):
+        """Customer-First (C15, PULSE): Das service-Label des Buchungs-Funnels ist
+        kanonisch „Potenzial-Check“. (1) Header-CTA trägt weiterhin die Klasse
+        `header-cta` (demo_started-Label „header“), (2) alle „Potenzial-Check“-
+        CTA-Links zeigen weiterhin auf `#termin` (demo_started-Labels hero/section),
+        (3) das versteckte service-Feld im Buchungsformular ist vom dokumentierten
+        Label-Mapping abgedeckt (Legacy „Business-Analyse“ wird serverseitig auf
+        „Potenzial-Check“ kanonisiert), (4) der neue Footer-Potenzial-Check ist als
+        demo_started/footer getrackt. Regression-Guard gegen stillschweigende
+        Entkopplung von Copy und Tracking (Mapping: docs/ANALYTICS_EVENTS.md §0)."""
+        from pathlib import Path
+
+        repo_root = Path(__file__).resolve().parent.parent
+        index_html = (repo_root / "app" / "templates" / "index.html").read_text(encoding="utf-8")
+        base_html = (repo_root / "app" / "templates" / "base.html").read_text(encoding="utf-8")
+
+        # 1) Header-CTA: Klasse bleibt → analytics.js wireClick('.header-cta, …')
+        self.assertIn('class="header-cta"', base_html)
+        self.assertIn("Potenzial-Check buchen", base_html)
+        # 2) CTA-Links → #termin (hero + section)
+        self.assertIn('href="#termin"', index_html)
+        # 3) Hidden service-Feld: Wert ist vom Label-Mapping abgedeckt
+        #    („Business-Analyse“ → kanonisch „Potenzial-Check“; C15)
+        self.assertIn('name="service" value="', index_html)
+        hidden_service = index_html.split('name="service" value="', 1)[1].split('"', 1)[0]
+        self.assertIn(hidden_service, ("Business-Analyse", "Potenzial-Check"))
+        # 4) Footer-Potenzial-Check getrackt (demo_started, Label footer)
+        self.assertIn('data-track="demo_started" data-track-label="footer"', base_html)
+
+    def test_booking_service_label_canonicalized_to_potenzial_check(self):
+        """C15 (PULSE): Alt-Labels „Business-Analyse“ (Formular-Hidden-Field) und
+        „Erstgespräch“ (CRM-Historie) werden beim Formular-POST auf das kanonische
+        Label „Potenzial-Check“ gemappt — lead_created, demo_completed und
+        meeting_booked tragen damit in derselben Buchung ein einheitliches
+        service-Label. Event-Namen bleiben unverändert (keine Breaking-Change)."""
+        from app.extensions import db as _db
+
+        original = self.public_module._forward_to_n8n
+        self.public_module._forward_to_n8n = lambda *a, **kw: {
+            "success": True,
+            "status": "confirmed",
+            "message": "ok",
+        }
+        try:
+            for legacy in ("Business-Analyse", "Erstgespräch"):
+                with self.subTest(legacy=legacy):
+                    with self.app.app_context():
+                        self.AnalyticsEvent.query.delete()
+                        _db.session.commit()
+                    response = self._submit_contact(extra={
+                        "book_slot": "1",
+                        "preferred_day": "2026-09-15",
+                        "preferred_time": "10:00",
+                        "service": legacy,
+                    })
+                    self.assertEqual(response.status_code, 200)
+                    events = {e.event: json.loads(e.props) for e in self._events()}
+                    self.assertEqual(events["lead_created"]["service"], "Potenzial-Check")
+                    self.assertEqual(events["demo_completed"]["service"], "Potenzial-Check")
+                    self.assertEqual(events["meeting_booked"]["service"], "Potenzial-Check")
+        finally:
+            self.public_module._forward_to_n8n = original
 
 
 if __name__ == "__main__":

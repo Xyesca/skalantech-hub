@@ -12,7 +12,7 @@
 | Für wen? | ✗ | Nur „Unternehmen“ — keine Zielgruppe (KMU/Mittelstand) im Hero |
 | Problem? | ✓ | Pain-Liste im Hero (manuelle Prozesse, Systeme, KI-Unsicherheit) |
 | Warum Skalantech? | ✗ | Kein Differenzierer im Hero; Signal-Bar zeigte schwache Claims („100% remote-fähig“, „3 echte Projekte“) |
-| Nächster Schritt? | ✓ | CTA „Kostenloses Erstgespräch“ prominent (Header + Hero) |
+| Nächster Schritt? | ✓ | CTA „Potenzial-Check buchen“ prominent (Header + Hero) — seit Customer-First-Relaunch (t_345e37a3); Events unverändert `demo_started` |
 
 ## 2. Conversion-Baseline (vor Optimierung, gemessen 2026-08-27)
 
@@ -52,7 +52,7 @@
 | Metrik | Baseline | Ziel (30 Tage nach Indexierung) |
 |---|---|---|
 | Besuch → Kontakt/Lead | 0 % | ≥ 1,0 % |
-| CTA-Klickrate Hero (Erstgespräch) | n/a | ≥ 2,5 % der Besucher |
+| CTA-Klickrate Hero (Potenzial-Check) | n/a | ≥ 2,5 % der Besucher |
 | Terminbuchungs-Startrate | n/a | ≥ 40 % der Formular-Besucher |
 | Absprungrate Homepage | n/a | < 60 % |
 

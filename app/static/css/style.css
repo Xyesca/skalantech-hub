@@ -4295,6 +4295,55 @@ p:last-child {
   text-underline-offset: 2px;
 }
 
+/* ── Customer-First (PR #12): Geschäftsführung bewusst klein (LUMINA) ── */
+.section--lead {
+  padding: 72px 0;
+}
+
+.section-heading--compact {
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+  gap: 48px;
+  margin-bottom: 34px;
+}
+
+.section-heading--compact h3 {
+  margin: 6px 0 0;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.project-card--quiet {
+  background: transparent;
+  border-color: var(--border);
+  box-shadow: none;
+  padding: 20px 22px;
+}
+
+/* ── Customer-First (PR #12): Gebaute Lösungen prominent (LUMINA) ── */
+.credential-grid--projects {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.credential-grid--projects .project-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  box-shadow: var(--shadow-sm);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.credential-grid--projects .project-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(79, 124, 255, 0.5);
+  box-shadow: var(--shadow-lg);
+}
+
+.credential-grid--projects .project-card h3 {
+  font-size: 20px;
+}
+
 .credential-actions {
   display: flex;
   flex-wrap: wrap;

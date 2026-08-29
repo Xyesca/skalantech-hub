@@ -311,9 +311,9 @@ WEBSITES_APPS_COPY = {
     "h1": "Websites, die verkaufen. Apps, die Prozesse beschleunigen.",
     "lead": "Skalantech baut keine Visitenkarten, sondern digitale Werkzeuge: High-Performance-Websites, die Anfragen bringen, und interne Business-Apps, die wiederkehrende Arbeit übernehmen – tief integriert in Ihre Prozesse.",
     "hero_trust": "Server-gerendert · DSGVO-konform · Kein Vendor-Lock-in",
-    "cta_primary": "Kostenlose Business-Analyse",
+    "cta_primary": "Kostenlosen Potenzial-Check buchen",
     "cta_secondary": "Projekt besprechen",
-    "cta_mid": "Jetzt Business-Analyse buchen",
+    "cta_mid": "Jetzt Potenzial-Check buchen",
     "problem_title": "Eine Website, die nichts bringt, kostet Geld.",
     "problem": [
         "Ihre Website zählt Besucher, aber keine Anfragen.",
@@ -415,9 +415,9 @@ WEBSITES_APPS_COPY = {
         ("Eigentum bleibt bei Ihnen", "Code, Daten und Domains gehören Ihnen. Kein Vendor-Lock-in."),
         ("Ein Ansprechpartner", "Skalantech baut und betreut die Systeme selbst – persönlich erreichbar, keine Blackbox."),
     ],
-    "cta_final_title": "Kostenlose Business-Analyse?",
+    "cta_final_title": "Kostenloser Potenzial-Check?",
     "cta_final_text": "30 Minuten, unverbindlich. Wir schauen uns Ihren Prozess an und sagen ehrlich, ob und wie eine Website oder Business-App Sie voranbringt.",
-    "cta_final": "Kostenlose Business-Analyse",
+    "cta_final": "Kostenlosen Potenzial-Check buchen",
     "tracking": {"hero": "hero_cta_click", "faq": "faq_open", "check": "check_cta_click"},
 }
 
@@ -466,7 +466,7 @@ ROI_RECHNER_COPY = {
 
     "roi_step4_legend": "Wie viel davon lässt sich automatisieren?",
     "roi_auto_label": "Automatisierungsgrad",
-    "roi_auto_note": "Das ist Ihre Annahme — kein Versprechen. Im Erstgespräch prüfen wir, welcher Wert für Ihren Prozess realistisch ist.",
+    "roi_auto_note": "Das ist Ihre Annahme — kein Versprechen. Im Potenzial-Check prüfen wir, welcher Wert für Ihren Prozess realistisch ist.",
 
     # ── 4. Ergebnis-Panel ────────────────────────────────────────────────────
     "roi_result_kicker": "Ihre Schätzung",
@@ -474,8 +474,8 @@ ROI_RECHNER_COPY = {
     "roi_result_cost_unit": "pro Jahr",
     "roi_result_auto_label": "davon automatisierbar",
     "roi_result_detail": "19.900 € · 610 h pro Jahr",  # dynamisch gerendert (Beispielwert)
-    "roi_result_cta": "Kostenloses Erstgespräch",
-    "roi_result_note": "Schätzung auf Basis Ihrer Angaben. Der echte Wert hängt von Prozess, Daten und Team ab. Im kostenlosen Erstgespräch analysieren wir ihn.",
+    "roi_result_cta": "Kostenlosen Potenzial-Check buchen",
+    "roi_result_note": "Schätzung auf Basis Ihrer Angaben. Der echte Wert hängt von Prozess, Daten und Team ab. Im Potenzial-Check analysieren wir ihn.",
 
     # ── 5. /rechner — „So funktioniert's" ────────────────────────────────────
     "roi_how_title": "So kommen Sie zur Zahl",
@@ -488,7 +488,7 @@ ROI_RECHNER_COPY = {
 
     # ── FAQ (6 Fragen aus 05 §5, Antworten Endfassung) ───────────────────────
     "roi_faq_q1": "Wie genau ist diese Berechnung?",
-    "roi_faq_a1": "Die Rechnung basiert auf Ihren Angaben und konservativen Annahmen (47 Wochen pro Jahr, Vollkosten-Stundensatz). Sie ersetzt keine Prozessanalyse — sie zeigt die Größenordnung. Den genauen Wert ermitteln wir im Erstgespräch.",
+    "roi_faq_a1": "Die Rechnung basiert auf Ihren Angaben und konservativen Annahmen (47 Wochen pro Jahr, Vollkosten-Stundensatz). Sie ersetzt keine Prozessanalyse — sie zeigt die Größenordnung. Den genauen Wert ermitteln wir im Potenzial-Check.",
     "roi_faq_q2": "Was passiert mit meinen Eingaben?",
     "roi_faq_a2": "Nichts. Die Berechnung läuft komplett in Ihrem Browser. Ihre Angaben werden nicht gespeichert und nicht an einen Server übertragen.",
     "roi_faq_q3": "Was ist der „Stundensatz (Vollkosten)“?",
@@ -496,9 +496,9 @@ ROI_RECHNER_COPY = {
     "roi_faq_q4": "Warum 47 Arbeitswochen?",
     "roi_faq_a4": "Der Rechner rechnet mit 47 Arbeitswochen pro Jahr. Damit sind Urlaub, Feiertage und durchschnittliche Krankheitstage bereits berücksichtigt.",
     "roi_faq_q5": "Wie viel lässt sich wirklich automatisieren?",
-    "roi_faq_a5": "Das hängt vom Prozess, den Daten und den Schnittstellen ab. Der Schieberegler ist Ihre Annahme, kein Versprechen. Im Erstgespräch bewerten wir, welcher Automatisierungsgrad für Ihren konkreten Ablauf realistisch ist.",
+    "roi_faq_a5": "Das hängt vom Prozess, den Daten und den Schnittstellen ab. Der Schieberegler ist Ihre Annahme, kein Versprechen. Im Potenzial-Check bewerten wir, welcher Automatisierungsgrad für Ihren konkreten Ablauf realistisch ist.",
     "roi_faq_q6": "Was kostet die Analyse?",
-    "roi_faq_a6": "Das Erstgespräch ist kostenlos und unverbindlich. Sie bekommen eine ehrliche Einschätzung — auch wenn die Antwort lautet, dass sich Automatisierung für Sie nicht lohnt. Kosten entstehen erst, wenn Sie ein Projekt beauftragen.",
+    "roi_faq_a6": "Der Potenzial-Check ist kostenlos und unverbindlich. Sie bekommen eine ehrliche Einschätzung — auch wenn die Antwort lautet, dass sich Automatisierung für Sie nicht lohnt. Kosten entstehen erst, wenn Sie ein Projekt beauftragen.",
 
     # ── Abschluss-CTA ────────────────────────────────────────────────────────
     "roi_cta_title": "Klingt nach einem lohnenden Projekt?",
