@@ -1,0 +1,556 @@
+{
+  "name": "Skalantech Terminanfrage (KI) v2",
+  "description": null,
+  "nodes": [
+    {
+      "id": "wki-86fdc8a4",
+      "name": "Webhook",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "skalantech-termin",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "position": [
+        0,
+        0
+      ],
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2
+    },
+    {
+      "id": "wki-8d636ebe",
+      "name": "Validieren & Slot",
+      "parameters": {
+        "jsCode": "let b = $json;\nif (b && typeof b.body === 'object' && b.body !== null && !Array.isArray(b.body)) {\n  b = b.body;\n} else if (b && typeof b.body === 'string' && b.body.trim().startsWith('{')) {\n  try { b = JSON.parse(b.body); } catch (e) {}\n}\n\nconst TZ = 'Europe/Berlin';\nconst MAX_DAYS_AHEAD = 90;\nconst ALLOWED_TIMES = new Set([\n  '09:00','09:30','10:00','10:30','11:00','11:30',\n  '13:00','13:30','14:00','14:30','15:00','15:30',\n  '16:00','16:30'\n]);\n\nconst clean = (v, max = 5000) => (v ?? '').toString().trim().slice(0, max);\nconst name = clean(b.name, 120);\nconst email = clean(b.email, 254).toLowerCase();\nconst company = clean(b.company, 160);\nconst topic = clean(b.topic || 'Erstgespräch', 120);\nconst message = clean(b.message, 2000);\nconst day = clean(b.preferred_day, 10);\nconst time = clean(b.preferred_time, 5);\n\nconst out = {\n  name, email, company, topic, message, day, time,\n  timezone: TZ,\n  valid: false,\n  hasSlot: false\n};\n\nif (!name || !email || !/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) {\n  out.error = 'Name und eine gültige E-Mail-Adresse sind erforderlich.';\n  return [{ json: out }];\n}\n\nif (!day && !time) {\n  out.valid = true;\n  return [{ json: out }];\n}\n\nif (!day || !time) {\n  out.error = 'Bitte wählen Sie Wunschtag und Wunschzeit vollständig aus.';\n  return [{ json: out }];\n}\n\nif (!/^\\d{4}-\\d{2}-\\d{2}$/.test(day) || !/^\\d{2}:\\d{2}$/.test(time)) {\n  out.error = 'Ungültiges Datums- oder Zeitformat.';\n  return [{ json: out }];\n}\n\nif (!ALLOWED_TIMES.has(time)) {\n  out.error = 'Diese Uhrzeit ist nicht buchbar. Bitte wählen Sie einen angebotenen 30-Minuten-Slot.';\n  return [{ json: out }];\n}\n\nconst [yy, mm, dd] = day.split('-').map(Number);\nconst [hh, mi] = time.split(':').map(Number);\n\nfunction partsAt(utcMs, timeZone) {\n  const fmt = new Intl.DateTimeFormat('en-CA', {\n    timeZone,\n    year: 'numeric', month: '2-digit', day: '2-digit',\n    hour: '2-digit', minute: '2-digit', second: '2-digit',\n    hourCycle: 'h23'\n  });\n  const obj = {};\n  for (const p of fmt.formatToParts(new Date(utcMs))) {\n    if (p.type !== 'literal') obj[p.type] = p.value;\n  }\n  return obj;\n}\n\nfunction offsetMsAt(utcMs, timeZone) {\n  const p = partsAt(utcMs, timeZone);\n  const localAsUtc = Date.UTC(\n    Number(p.year), Number(p.month) - 1, Number(p.day),\n    Number(p.hour), Number(p.minute), Number(p.second)\n  );\n  return localAsUtc - utcMs;\n}\n\nfunction localBerlinToUtc(y, m, d, h, min) {\n  const wallClockAsUtc = Date.UTC(y, m - 1, d, h, min, 0);\n  let offset = offsetMsAt(wallClockAsUtc, TZ);\n  let utcMs = wallClockAsUtc - offset;\n  const correctedOffset = offsetMsAt(utcMs, TZ);\n  if (correctedOffset !== offset) utcMs = wallClockAsUtc - correctedOffset;\n  return new Date(utcMs);\n}\n\nconst start = localBerlinToUtc(yy, mm, dd, hh, mi);\nif (Number.isNaN(start.getTime())) {\n  out.error = 'Der gewünschte Termin konnte nicht verarbeitet werden.';\n  return [{ json: out }];\n}\n\nconst roundTrip = partsAt(start.getTime(), TZ);\nconst sameLocalTime =\n  Number(roundTrip.year) === yy &&\n  Number(roundTrip.month) === mm &&\n  Number(roundTrip.day) === dd &&\n  Number(roundTrip.hour) === hh &&\n  Number(roundTrip.minute) === mi;\n\nif (!sameLocalTime) {\n  out.error = 'Der gewünschte Termin ist in der Zeitzone Europe/Berlin nicht gültig.';\n  return [{ json: out }];\n}\n\nconst weekday = new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'short' }).format(start);\nif (weekday === 'Sat' || weekday === 'Sun') {\n  out.error = 'Termine sind aktuell nur Montag bis Freitag buchbar.';\n  return [{ json: out }];\n}\n\nconst now = new Date();\nif (start.getTime() <= now.getTime() + 5 * 60 * 1000) {\n  out.error = 'Bitte wählen Sie einen Termin in der Zukunft.';\n  return [{ json: out }];\n}\n\nif (start.getTime() > now.getTime() + MAX_DAYS_AHEAD * 24 * 60 * 60 * 1000) {\n  out.error = `Termine können maximal ${MAX_DAYS_AHEAD} Tage im Voraus gebucht werden.`;\n  return [{ json: out }];\n}\n\nconst end = new Date(start.getTime() + 30 * 60 * 1000);\n\nout.valid = true;\nout.hasSlot = true;\nout.startIso = start.toISOString();\nout.endIso = end.toISOString();\nout.displayDate = `${String(dd).padStart(2,'0')}.${String(mm).padStart(2,'0')}.${yy}`;\nout.displayTime = `${String(hh).padStart(2,'0')}:${String(mi).padStart(2,'0')}`;\nout.requestedLocal = `${day}T${time}:00`;\nreturn [{ json: out }];"
+      },
+      "position": [
+        224,
+        0
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "id": "wki-9f5d6a1c",
+      "name": "Gültig?",
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-wki-1",
+              "leftValue": "={{ $json.valid }}",
+              "operator": {
+                "operation": "equals",
+                "type": "boolean"
+              },
+              "rightValue": true
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          }
+        }
+      },
+      "position": [
+        448,
+        0
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2
+    },
+    {
+      "id": "wki-7a3b9c2d",
+      "name": "Slot gewünscht?",
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-wki-2",
+              "leftValue": "={{ $json.hasSlot }}",
+              "operator": {
+                "operation": "equals",
+                "type": "boolean"
+              },
+              "rightValue": true
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          }
+        }
+      },
+      "position": [
+        672,
+        0
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2
+    },
+    {
+      "id": "wki-2b6d4f8a",
+      "name": "Kontext wiederherstellen",
+      "parameters": {
+        "jsCode": "const req = $('Validieren & Slot').first().json;\nconst r = $json || {};\nreturn [{ json: { ...req, booked: r.booked === true, booking_id: r.booking_id || '' } }];"
+      },
+      "position": [
+        1120,
+        0
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "id": "wki-8e1f3a7c",
+      "name": "Slot frei?",
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-wki-3",
+              "leftValue": "={{ $json.booked }}",
+              "operator": {
+                "operation": "equals",
+                "type": "boolean"
+              },
+              "rightValue": true
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          }
+        }
+      },
+      "position": [
+        1344,
+        0
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2
+    },
+    {
+      "id": "wki-context-0001",
+      "name": "Event-Kontext zusammenführen",
+      "parameters": {
+        "jsCode": "const req = $('Validieren & Slot').first().json;\nconst ctx = $json || {};\nreturn [{ json: { ...req, booking_id: ctx.booking_id || '', booked: ctx.booked === true } }];"
+      },
+      "position": [
+        1792,
+        0
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "id": "wki-6f1a3c8d",
+      "name": "Antwort: Erfolg",
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'Termin bestätigt. Die Einladung (ICS) wurde an ' + $json.email + ' gesendet.', booked: true, date: $json.displayDate, time: $json.displayTime } }}",
+        "options": {}
+      },
+      "position": [
+        2016,
+        0
+      ],
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2
+    },
+    {
+      "id": "wki-8c2e4a6d",
+      "name": "Antwort: Belegt",
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, message: 'Der gewünschte Termin ist leider bereits belegt. Bitte wählen Sie eine andere Zeit.' } }}",
+        "options": {}
+      },
+      "position": [
+        1568,
+        272
+      ],
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2
+    },
+    {
+      "id": "wki-9d4f6b8e",
+      "name": "Antwort: Ohne Termin",
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'Vielen Dank für Ihre Nachricht. Ich melde mich in der Regel innerhalb eines Werktages.' } }}",
+        "options": {}
+      },
+      "position": [
+        896,
+        304
+      ],
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2
+    },
+    {
+      "id": "wki-1a5c3e7f",
+      "name": "Antwort: Ungültig",
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, message: $json.error || 'Ungültige Eingabe.' } }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "position": [
+        448,
+        304
+      ],
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2
+    },
+    {
+      "id": "wki-tg-0001",
+      "name": "Telegram: Buchung bestätigt",
+      "parameters": {
+        "chatId": "-1003956152501",
+        "text": "={{ '✅ Neue Terminbuchung über skalantech.store\\n\\n' + $json.name + ($json.company ? ' · ' + $json.company : '') + '\\n' + $json.email + '\\n\\n' + $json.displayDate + ' · ' + $json.displayTime + ' Uhr · 30 Min\\nThema: ' + $json.topic + ($json.message ? '\\n\\n' + $json.message : '') }}",
+        "additionalFields": {}
+      },
+      "position": [
+        2200,
+        208
+      ],
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 1500
+    },
+    {
+      "id": "wki-4c8d1e5f",
+      "name": "Slot reservieren",
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5000/api/crm/bookings/reserve",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ start_at_utc: $json.startIso, end_at_utc: $json.endIso, name: $json.name, email: $json.email, company: $json.company || '', topic: $json.topic || 'Erstgespräch', message: $json.message || '', booking_id: ($json.requestedLocal || '').replace(/[-:]/g, '') }) }}",
+        "options": {
+          "timeout": 10000,
+          "response": {
+            "response": {
+              "responseFormat": "json",
+              "neverError": true
+            }
+          }
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "position": [
+        896,
+        0
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 1000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "wki-37c47bbc",
+      "name": "Bestätigung an Kunde",
+      "parameters": {
+        "fromEmail": "Xavier Escalante <xyesca@skalantech.store>",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ 'Ihr Skalantech-Erstgespräch am ' + $json.displayDate + ' um ' + $json.displayTime + ' Uhr' }}",
+        "emailFormat": "html",
+        "html": "={{ $json.aiEmail }}",
+        "options": {
+          "replyTo": "xyesca@skalantech.store",
+          "attachments": "data"
+        }
+      },
+      "position": [
+        2688,
+        -320
+      ],
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 1500,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "wki-4e8d2b6f",
+      "name": "Benachrichtigung Xavier",
+      "parameters": {
+        "fromEmail": "Xavier Escalante <xyesca@skalantech.store>",
+        "toEmail": "xyesca@skalantech.store",
+        "subject": "={{ 'Neue bestätigte Buchung: ' + $json.name + ' · ' + $json.displayDate + ' ' + $json.displayTime }}",
+        "emailFormat": "html",
+        "html": "={{ '<p>Neue bestätigte Buchung über skalantech.store:</p><p><strong>' + $json.name + '</strong>' + ($json.company ? ' (' + $json.company + ')' : '') + '<br>' + $json.email + '</p><p><strong>Termin:</strong> ' + $json.displayDate + ' um ' + $json.displayTime + ' Uhr<br><strong>Thema:</strong> ' + $json.topic + '</p>' + ($json.message ? '<p><strong>Nachricht:</strong><br>' + $json.message + '</p>' : '') + '<p><strong>Booking-ID:</strong> ' + ($json.booking_id || '') + '</p>' }}",
+        "options": {
+          "replyTo": "xyesca@skalantech.store"
+        }
+      },
+      "position": [
+        2016,
+        192
+      ],
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 1500,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "wki-3b7d5f9a",
+      "name": "Info Xavier (ohne Termin)",
+      "parameters": {
+        "fromEmail": "Xavier Escalante <xyesca@skalantech.store>",
+        "toEmail": "xyesca@skalantech.store",
+        "subject": "={{ 'Neue Anfrage (ohne Termin): ' + $json.name }}",
+        "emailFormat": "html",
+        "html": "={{ '<p>Neue Anfrage über skalantech.store (ohne Terminwunsch):</p><p><strong>' + $json.name + '</strong>' + ($json.company ? ' (' + $json.company + ')' : '') + '<br>' + $json.email + '</p><p>Thema: ' + $json.topic + '</p>' + ($json.message ? '<p>Nachricht: ' + $json.message + '</p>' : '') }}",
+        "options": {
+          "replyTo": "xyesca@skalantech.store"
+        }
+      },
+      "position": [
+        896,
+        512
+      ],
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "wki-5e1f3a8c",
+      "name": "Info Xavier (belegt)",
+      "parameters": {
+        "fromEmail": "Xavier Escalante <xyesca@skalantech.store>",
+        "toEmail": "xyesca@skalantech.store",
+        "subject": "={{ 'Terminkonflikt: ' + $json.name }}",
+        "emailFormat": "html",
+        "html": "={{ '<p>Anfrage über skalantech.store: gewünschter Termin war bereits belegt.</p><p><strong>' + $json.name + '</strong> (' + $json.email + ')<br>Wunschtermin: ' + $json.displayDate + ' um ' + $json.displayTime + ' Uhr</p><p>Bitte bei Bedarf einen Alternativtermin vorschlagen.</p>' }}",
+        "options": {
+          "replyTo": "xyesca@skalantech.store"
+        }
+      },
+      "position": [
+        1568,
+        464
+      ],
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "wki-ics-0001",
+      "name": "ICS erzeugen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2592,
+        -320
+      ],
+      "parameters": {
+        "jsCode": "const ctx = $json || {};\nfunction fmtIcs(iso) {\n  const d = new Date(iso);\n  if (Number.isNaN(d.getTime())) return '';\n  return d.toISOString().replace(/[-:]/g, '').replace(/\\.\\d{3}/, ''); // 20261001T090000Z\n}\nconst uid = (ctx.booking_id || ('bk-' + ctx.email + '-' + ctx.startIso)).replace(/[^a-zA-Z0-9@._-]/g, '-');\nconst summary = 'Skalantech Erstgespräch · ' + (ctx.name || '') + (ctx.company ? ' · ' + ctx.company : '');\nconst ics = [\n  'BEGIN:VCALENDAR',\n  'VERSION:2.0',\n  'PRODID:-//Skalantech//Terminbuchung//DE',\n  'CALSCALE:GREGORIAN',\n  'METHOD:REQUEST',\n  'BEGIN:VEVENT',\n  'UID:' + uid + '@skalantech.store',\n  'DTSTAMP:' + fmtIcs(new Date().toISOString()),\n  'DTSTART:' + fmtIcs(ctx.startIso),\n  'DTEND:' + fmtIcs(ctx.endIso),\n  'SUMMARY:' + summary,\n  'DESCRIPTION:' + (ctx.topic || 'Erstgespräch').replace(/[\\r\\n]+/g, ' '),\n  'LOCATION:Online (Details folgen)',\n  'ORGANIZER;CN=Xavier Escalante:mailto:xyesca@skalantech.store',\n  'ATTENDEE;CN=' + (ctx.name || '') + ';ROLE=REQ-PARTICIPANT;RSVP=TRUE:mailto:' + (ctx.email || ''),\n  'END:VEVENT',\n  'END:VCALENDAR'\n].join('\\r\\n');\nreturn [{ json: ctx, binary: { data: { data: Buffer.from(ics, 'utf8').toString('base64'), mimeType: 'text/calendar', fileName: 'skalantech-erstgespraech.ics' } } }];"
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "name": "Bestätigungstext bauen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2464,
+        -320
+      ],
+      "parameters": {
+        "jsCode": "// Deterministische Bestätigungsmail (kein LLM im Terminpfad — Issue #15)\nconst ctx = $('Event-Kontext zusammenführen').first().json;\n\nfunction esc(v = '') {\n  return String(v)\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;')\n    .replace(/'/g, '&#039;');\n}\n\nconst name = String(ctx.name || '').trim();\nconst company = String(ctx.company || '').trim();\nconst topic = String(ctx.topic || 'Erstgespräch').trim();\nconst message = String(ctx.message || '').trim();\nconst when = `${ctx.displayDate} um ${ctx.displayTime} Uhr`;\n\n// Persönlicher Absatz deterministisch aus Template-Bausteinen\nlet personal;\nif (message && topic && topic !== 'Erstgespräch') {\n  personal = `Vielen Dank für Ihre Nachricht zum Thema ${esc(topic)}. Ich schaue mir Ihre Ausgangslage vor unserem Gespräch an.`;\n} else if (message && company) {\n  personal = `Vielen Dank für Ihre Nachricht zu ${esc(company)}. Ich schaue mir Ihre Ausgangslage vor unserem Gespräch an.`;\n} else if (message) {\n  personal = 'Vielen Dank für Ihre Nachricht. Ich schaue mir Ihre Ausgangslage vor unserem Gespräch an.';\n} else if (topic && topic !== 'Erstgespräch') {\n  personal = `Ich freue mich auf unser Gespräch zum Thema ${esc(topic)}.`;\n} else if (company) {\n  personal = `Ich freue mich auf unser Gespräch zu ${esc(company)}.`;\n} else {\n  personal = 'Ich freue mich auf unser Gespräch.';\n}\n\nconst aiEmail = [\n  `<p>Hallo ${esc(name)},</p>`,\n  `<p>Ihr Erstgespräch mit Skalantech ist für <strong>${esc(when)}</strong> eingetragen. Geplant sind 30 Minuten.</p>`,\n  `<p>${personal}</p>`,\n  '<p>Die Kalendereinladung (ICS) liegt dieser E-Mail bei.</p>',\n  '<p>Bis dann.<br>Xavier Escalante<br>Skalantech</p>'\n].join('');\n\nreturn [{ json: { ...ctx, aiEmail, aiPersonal: personal } }];"
+      },
+      "id": "fdc4f454-fef0-480a-9db4-442b1c65a668"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validieren & Slot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validieren & Slot": {
+      "main": [
+        [
+          {
+            "node": "Gültig?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gültig?": {
+      "main": [
+        [
+          {
+            "node": "Slot gewünscht?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Antwort: Ungültig",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slot gewünscht?": {
+      "main": [
+        [
+          {
+            "node": "Slot reservieren",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Antwort: Ohne Termin",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Info Xavier (ohne Termin)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kontext wiederherstellen": {
+      "main": [
+        [
+          {
+            "node": "Slot frei?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slot frei?": {
+      "main": [
+        [
+          {
+            "node": "Event-Kontext zusammenführen",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Antwort: Belegt",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Info Xavier (belegt)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Event-Kontext zusammenführen": {
+      "main": [
+        [
+          {
+            "node": "Antwort: Erfolg",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Benachrichtigung Xavier",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram: Buchung bestätigt",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Bestätigungstext bauen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slot reservieren": {
+      "main": [
+        [
+          {
+            "node": "Kontext wiederherstellen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ICS erzeugen": {
+      "main": [
+        [
+          {
+            "node": "Bestätigung an Kunde",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bestätigungstext bauen": {
+      "main": [
+        [
+          {
+            "node": "ICS erzeugen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Berlin",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}
