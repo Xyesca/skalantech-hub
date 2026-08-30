@@ -28,7 +28,7 @@ class CrmTests(unittest.TestCase):
         # einen Admin mit leerem Username → Login unmöglich.
         os.environ["ADMIN_USERNAME"] = "admin"
         os.environ["SESSION_COOKIE_SECURE"] = "false"
-        os.environ["DATABASE_URL"] = "sqlite://"
+        os.environ["DATABASE_URL"] = f"sqlite:///{cls.temp_dir.name}/site.db"
         os.environ["RATELIMIT_STORAGE_URI"] = "memory://"  # hermetisch; zentraler Storage (Redis) wird in test_ratelimit_storage.py getestet
         os.environ["CRM_API_KEY"] = API_KEY
 
@@ -40,12 +40,6 @@ class CrmTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        try:
-            from app.extensions import db
-            db.session.remove()
-            db.engine.dispose()
-        except Exception:
-            pass
         cls.temp_dir.cleanup()
 
     def setUp(self):

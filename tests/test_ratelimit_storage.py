@@ -35,7 +35,6 @@ def _drop_app_modules():
 def _redis_reachable() -> bool:
     try:
         import redis as redis_lib
-openai
 
         client = redis_lib.Redis.from_url(REDIS_URI, socket_connect_timeout=1)
         client.ping()
@@ -66,7 +65,7 @@ class RateLimitStorageConfigTests(unittest.TestCase):
         os.environ["SECRET_KEY"] = "test-secret"
         os.environ["ADMIN_PASSWORD"] = "test-admin-password"
         os.environ["SESSION_COOKIE_SECURE"] = "false"
-        os.environ["DATABASE_URL"] = "sqlite://"
+        os.environ["DATABASE_URL"] = f"sqlite:///{cls.temp_dir.name}/site.db"
         # Default (kein explizites Override) prüfen:
         os.environ.pop("RATELIMIT_STORAGE_URI", None)
 
@@ -74,12 +73,6 @@ class RateLimitStorageConfigTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        try:
-            from app.extensions import db
-            db.session.remove()
-            db.engine.dispose()
-        except Exception:
-            pass
         cls.temp_dir.cleanup()
 
     def test_production_storage_defaults_to_redis(self):
@@ -112,7 +105,7 @@ class RateLimitCrossWorkerTests(unittest.TestCase):
         os.environ["SECRET_KEY"] = "test-secret"
         os.environ["ADMIN_PASSWORD"] = "test-admin-password"
         os.environ["SESSION_COOKIE_SECURE"] = "false"
-        os.environ["DATABASE_URL"] = "sqlite://"
+        os.environ["DATABASE_URL"] = f"sqlite:///{cls.temp_dir.name}/site.db"
         os.environ["RATELIMIT_STORAGE_URI"] = REDIS_URI
 
         # Test-DB 15 leeren (Produktions-DB 0 bleibt unberührt).
@@ -153,12 +146,6 @@ class RateLimitCrossWorkerTests(unittest.TestCase):
         from app.blueprints import automation_showcase as showcase
 
         showcase._call_internal_demo = cls._orig_call
-        try:
-            from app.extensions import db
-            db.session.remove()
-            db.engine.dispose()
-        except Exception:
-            pass
         cls.temp_dir.cleanup()
 
     def _post_demo(self, client):
