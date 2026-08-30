@@ -32,4 +32,6 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000/')" || exit 1
 
 # Production WSGI server (4 workers)
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "--access-logfile", "-", "run:app"]
+# --timeout 300 > Flask-Demo-Proxy-Timeout (280s): Worker darf lokale
+# Inferenz (Ollama lfm25, 50–240s) nicht vor der Antwort killen.
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "--access-logfile", "-", "--timeout", "300", "run:app"]

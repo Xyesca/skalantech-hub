@@ -153,7 +153,9 @@ def _call_internal_demo(slug: str, value: str) -> dict:
         method="POST",
     )
     try:
-        with urlrequest.urlopen(req, timeout=25) as resp:
+        # Timeout > n8n-Ollama-Node (240000ms) und < gunicorn --timeout 300:
+        # lokale Inferenz (lfm25 auf CPU) braucht 50–240s, sonst 503 auf /demos.
+        with urlrequest.urlopen(req, timeout=280) as resp:
             body = resp.read(32768).decode("utf-8", errors="replace")
             if resp.status >= 400:
                 return {"success": False, "status": "upstream_error"}

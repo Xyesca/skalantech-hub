@@ -201,7 +201,7 @@
         result.hidden = false;
       }
       if (resultOutput) {
-        renderNotice(resultOutput, 'Die Eingabe wird verarbeitet …');
+        renderNotice(resultOutput, 'Die Eingabe wird verarbeitet — die lokale KI-Analyse kann bis zu einigen Minuten dauern.');
       }
 
       try {
