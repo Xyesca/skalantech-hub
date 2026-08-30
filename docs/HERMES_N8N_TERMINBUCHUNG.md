@@ -125,4 +125,4 @@ Nach Umsetzung bitte zurückmelden:
 - ob die Slot-/Doppelbuchungslogik unverändert sicher ist (409-Pfad)
 - E2E-Testergebnisse
 - Git-Commit(s) der Website-Anpassungen
-- offene Risiken oder bewusst nicht umgesetzte Punkte (z. B. Demo-Workflows nutzen weiterhin DeepSeek — separates Ticket, PRIVACY_DATAFLOW_REMEDIATION.md)
+- offene Risiken oder bewusst nicht umgesetzte Punkte (Demo-Workflows 400/401/402 seit 30.08.2026 Modus A/Ollama lokal — siehe PRIVACY_DATAFLOW_REMEDIATION.md, t_57d9b794)

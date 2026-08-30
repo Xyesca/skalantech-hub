@@ -1,6 +1,6 @@
 // InvoiceFlow — "Prompt & Validierung" Code-Node (n8n Workflow 400, Demo: InvoiceFlow)
 // Quelle: Copy-&-Build-Spezifikation Xyesca/skalantech-hub Issue #10 (Sektion B + F)
-// Nur systemPrompt/Schema fachlich geändert — Node-Rahmen identisch zum bisherigen Stand.
+// Modus A (Issue #15): lokale Verarbeitung über Ollama (127.0.0.1:11434) — DeepSeek-Pfad entfernt, kein externer LLM-Call.
 let b = $json;
 if (b && typeof b.body === 'object' && b.body !== null && !Array.isArray(b.body)) {
   b = b.body;
@@ -10,7 +10,7 @@ if (b && typeof b.body === 'object' && b.body !== null && !Array.isArray(b.body)
 const clean = (v, max = 20000) => (v ?? '').toString().trim().slice(0, max);
 const input = clean(b.invoice, 20000);
 
-const out = { valid: false, provider: null, field: 'invoice' };
+const out = { valid: false, provider: 'ollama', field: 'invoice' };
 if (!input) {
   out.error = 'Feld "invoice" fehlt oder ist leer. Erwartet: { "field": "invoice" }.';
   return [{ json: out }];

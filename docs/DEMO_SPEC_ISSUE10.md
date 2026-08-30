@@ -32,6 +32,8 @@ Alle drei: Publikation verifiziert (`activeVersionId == versionId`), `n8n_valida
 
 ## 3. E2E-Verifikation (Live-Webhooks, 2026-08-28, DeepSeek primär)
 
+> **Nachtrag 30.08.2026 (Issue #15, NEXUS t_57d9b794):** Die Demo-Workflows 400/401/402 laufen seitdem in **Modus A** (lokales Ollama 127.0.0.1:11434, `lfm25`) — kein DeepSeek-/externer LLM-Pfad mehr. Die folgenden Verifikationsergebnisse (Beträge/Schemas/Safety) bleiben inhaltlich gültig, wurden am 30.08. mit `provider: 'ollama'` gegen die Live-Webhooks erneut bestätigt (siehe PRIVACY_DATAFLOW_REMEDIATION.md).
+
 ### InvoiceFlow — Beträge exakt (Spec B)
 | Beispiel | Lieferant | Nr. | Netto | USt. | Brutto | Ziel | Pos. |
 |---|---|---|---|---|---|---|---|

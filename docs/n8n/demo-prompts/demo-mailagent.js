@@ -11,7 +11,7 @@ if (b && typeof b.body === 'object' && b.body !== null && !Array.isArray(b.body)
 const clean = (v, max = 20000) => (v ?? '').toString().trim().slice(0, max);
 const input = clean(b.mail, 20000);
 
-const out = { valid: false, provider: null, field: 'mail' };
+const out = { valid: false, provider: 'ollama', field: 'mail' };
 if (!input) {
   out.error = 'Feld "mail" fehlt oder ist leer. Erwartet: { "field": "mail" }.';
   return [{ json: out }];

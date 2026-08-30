@@ -31,9 +31,9 @@ Die Entfernung lief im parallelen NEXUS-Task `t_22e3ac08`.
 Hinweis: Der Repo-Export `docs/n8n/workflow-terminbuchung-v2-IONOS.json` war zum Nachprüfzeitpunkt noch der Stand vom 28.08. 09:42 (mit DeepSeek) — Aktualisierung läuft bei NEXUS (t_22e3ac08, Status running).
 
 ### Live-Demos
-Die Demo-Workflows 400 (InvoiceFlow), 401 (OfferAI), 402 (MailAgent) rufen in den Exporten `docs/n8n/demo-*.json` DeepSeek primär auf und nutzen lokales Ollama als Fallback. Die UI weist zwar darauf hin, keine echten personenbezogenen/vertraulichen Daten einzugeben, technisch kann ein Besucher trotzdem Freitext übermitteln.
+Die Demo-Workflows 400 (InvoiceFlow), 401 (OfferAI), 402 (MailAgent) verarbeiten **Modus A** (lokales Ollama 127.0.0.1:11434, Modell `lfm25`) als einzigen Modellpfad. Die UI weist zwar darauf hin, keine echten personenbezogenen/vertraulichen Daten einzugeben, technisch kann ein Besucher trotzdem Freitext übermitteln — dieser wird jedoch **nur lokal** verarbeitet, es verlässt **kein** Inhalt die Skalantech-Infrastruktur.
 
-**SENTINEL-Befund 29.08.2026:** Exporte bestätigt: alle drei Demo-Workflows haben die Struktur `Prompt & Validierung → DeepSeek Antwort → DeepSeek prüfen → DeepSeek OK? → (false) Ollama Backup`. Damit ist DeepSeek im Demo-Standardpfad PRIMÄR — Abweichung von der Zielarchitektur „Modus A: lokale Modellverarbeitung als Standard" (siehe unten).
+**Stand 30.08.2026 (NEXUS t_57d9b794):** Alle drei Demo-Workflows umgestellt auf `Webhook → Prompt & Validierung → Eingabe gültig? → Ollama Antwort (127.0.0.1:11434) → Ollama übernehmen → Ergebnis parsen → Antwort`. Kein DeepSeek-/OpenRouter-/OpenAI-Node, kein automatischer Fallback auf externe LLM-Domains. `provider: 'ollama'` fest im Workflow. Ollama-Node: `timeout 240000ms`, `maxTries 1` (Cold-Start auf CPU dauert bis ~2–4 min). Exports `docs/n8n/demo-*.json` + `docs/n8n/demo-prompts/*.js` sind mit den Live-Workflows synchronisiert und committet.
 
 ## Warum der aktuelle Termin-Pfad unnötig riskant ist
 
@@ -194,9 +194,9 @@ Beispiel:
 |---|-----------|--------|
 | 1 | Terminworkflow enthält keinen externen LLM-Aufruf | ✅ ERFÜLLT (nach NEXUS-Cutover 10:37 UTC; aktiver Graph `e72a7a12` ohne LLM-Nodes) |
 | 2 | DeepSeek aus Booking-Datenfluss entfernt | ✅ ERFÜLLT (Live-Workflow; Export-Aktualisierung läuft bei NEXUS t_22e3ac08) |
-| 3 | Demo-Standardpfad lokal oder explizit getrennt | ❌ NOCH NICHT — Demos DeepSeek-primär (separater Punkt, siehe Offene Punkte) |
+| 3 | Demo-Standardpfad lokal oder explizit getrennt | ✅ ERFÜLLT (30.08.2026, NEXUS t_57d9b794 — Demos 400/401/402 Modus A: Ollama lokal primär, kein externer LLM-Call, Exports synchronisiert) |
 | 4 | IONOS Produkt/Region/AVV dokumentiert | ⚠️ Teilweise — Region/Mail verifiziert; AVV- und Backup-Nachweis im IONOS-Portal offen |
-| 5 | tatsächliche Empfänger/Provider inventarisiert | ✅ DeepSeek (nur noch Demos), IONOS Mail, Telegram (Buchungsbenachrichtigung), Redis lokal; Ollama im Terminpfad entfernt |
+| 5 | tatsächliche Empfänger/Provider inventarisiert | ✅ DeepSeek komplett aus produktiven Pfaden entfernt (Termin + Demos; nur noch technische Erwähnung in dieser Doku), IONOS Mail, Telegram (Buchungsbenachrichtigung), Redis lokal |
 | 6 | Retention n8n/DB/Logs festgelegt | ⚠️ Offen — n8n-Pruning nicht konfiguriert |
 | 7 | Datenschutzerklärung stimmt mit Code/Workflows überein | ⚠️ Text erwähnt DeepSeek noch (aktuell nur noch für Demos korrekt); NACH finalem Demo-Umbau durch VELA (t_28c1c61a) aktualisieren |
 | 8 | Rechtsgrundlagen/Drittlandtransfer juristisch geprüft | ⚠️ Offen (externe DS-Beratung) |
@@ -255,7 +255,7 @@ Ausgeführte Nodes (14/14, alle success): Webhook, Validieren & Slot, Gültig?, 
 
 1. **NEXUS (t_22e3ac08):** DeepSeek-Node aus aktivem Terminworkflow entfernen, Export `docs/n8n/workflow-terminbuchung-v2-IONOS.json` aktualisieren, Workflow aktivieren.
 2. **SENTINEL:** Privacy-E2E nach Cutover erneut ausführen (erwartet: GRÜN).
-3. **NEXUS/SENTINEL:** Demo-Workflows 400/401/402 auf Modus A (Ollama primär, DeepSeek nur explizit) umstellen oder getrennt dokumentieren.
+3. **NEXUS/SENTINEL:** Demo-Workflows 400/401/402 auf Modus A (Ollama primär, DeepSeek nur explizit) umstellen oder getrennt dokumentieren. → **ERLEDIGT (30.08.2026, NEXUS t_57d9b794):** Modus A live + Exports committet. **Offener Folgepunkt:** Flask-Demo-Proxy (`app/blueprints/automation_showcase.py`, `urlopen timeout=25`) und gunicorn (`--timeout`, Default 30s) können die lokale Inferenz (50–240s) nicht abwarten → öffentliche /demos-Seite würde 503 liefern, bis Proxy-Timeout angehoben UND Container neu gebaut/gestartet wird (CEO-Gate).
 4. **Xavier/CEO:** IONOS-Kundenportal — AVV-Nachweis (Vertrag), Backup-/Snapshot-Konfiguration und Region verifizieren; Nachweis intern ablegen.
 5. **NEXUS:** n8n-Pruning setzen (EXECUTIONS_DATA_PRUNE_ENABLED/MAX_AGE/MAX_COUNT) und dokumentieren.
 6. **VELA (t_28c1c61a):** Datenschutztext NACH technischem Cutover aktualisieren (DeepSeek-Absatz dann entfernen/anpassen).
