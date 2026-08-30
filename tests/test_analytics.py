@@ -31,7 +31,7 @@ class AnalyticsEventTests(unittest.TestCase):
         os.environ["SECRET_KEY"] = "test-secret"
         os.environ["ADMIN_PASSWORD"] = "test-admin-password"
         os.environ["SESSION_COOKIE_SECURE"] = "false"
-        os.environ["DATABASE_URL"] = f"sqlite:///{cls.temp_dir.name}/site.db"
+        os.environ["DATABASE_URL"] = "sqlite://"
 
         _drop_app_modules()
         from app import create_app
@@ -50,6 +50,12 @@ class AnalyticsEventTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        try:
+            from app.extensions import db
+            db.session.remove()
+            db.engine.dispose()
+        except Exception:
+            pass
         cls.temp_dir.cleanup()
 
     def setUp(self):

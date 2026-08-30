@@ -23,7 +23,7 @@ class ErrorPageLeakTests(unittest.TestCase):
         os.environ["SECRET_KEY"] = "leak-test-super-secret-value-42"
         os.environ["ADMIN_PASSWORD"] = "leak-test-admin-password"
         os.environ["SESSION_COOKIE_SECURE"] = "false"
-        os.environ["DATABASE_URL"] = f"sqlite:///{cls.temp_dir.name}/site.db"
+        os.environ["DATABASE_URL"] = "sqlite://"
         os.environ["RATELIMIT_STORAGE_URI"] = "memory://"  # hermetisch; zentraler Storage (Redis) wird in test_ratelimit_storage.py getestet
 
         _drop_app_modules()
@@ -42,6 +42,12 @@ class ErrorPageLeakTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        try:
+            from app.extensions import db
+            db.session.remove()
+            db.engine.dispose()
+        except Exception:
+            pass
         cls.temp_dir.cleanup()
 
     def setUp(self):
