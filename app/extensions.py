@@ -2,12 +2,16 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
+# Alembic-Migrationen (Issue #5): Schema-Änderungen laufen über versionierte
+# Migrationen (migrations/), NICHT über ad-hoc ALTER TABLE beim Start.
+migrate = Migrate()
 
 # Zentrales Rate-Limiting (Issue #4): KEIN storage_uri im Konstruktor setzen —
 # sonst gewinnt der Konstruktor-Wert in init_app() und die App-Config
