@@ -92,7 +92,7 @@ Absicherung:
 - UFW: public nur 80/443/8644 (Webhook); Rest nur tailscale0
 - DOCKER-USER: non-Tailscale-Traffic → DROP
 - gunicorn bindet 127.0.0.1:5000 (nur Caddy-Host)
-- Caddy: interne Sites (`:3443`, `:9443`) jetzt explizit `bind 100.119.11.64`
+- Caddy: interne Sites (`:3443`, `:9443`) jetzt explizit `bind <tailscale-ip>`
   (Defense-in-Depth: lauschen nicht mehr auf Public-Interfaces)
 
 **Tote Subdomains:** dashboard/n8n/vault.skalantech.store haben öffentliche
@@ -135,7 +135,7 @@ CNAME-Records selbst löschen (DNS-Änderung, benötigt IONOS-Zugriff).
 
 | Datei | Änderung |
 |-------|----------|
-| /etc/caddy/Caddyfile | Access-Log öffentliche Site, `bind 100.119.11.64` interne Sites, Catch-all `*.skalantech.store` → 404 |
+| /etc/caddy/Caddyfile | Access-Log öffentliche Site, `bind <tailscale-ip>` interne Sites, Catch-all `*.skalantech.store` → 404 |
 | /etc/fail2ban/filter.d/caddy-404.conf | Neu: 404-Filter für Caddy-JSON-Log |
 | /etc/fail2ban/jail.local | Neu: Jail caddy-404 (20×/10 min → 1 h) |
 | app/__init__.py | 500-Error-Handler (generische Seite) |
