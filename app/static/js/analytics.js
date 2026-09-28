@@ -45,7 +45,14 @@
     "roi_calculated",
     "roi_cta_click",
     "form_field_error",
-    "form_success_view"
+    "form_success_view",
+    // Issue #16 (Customer-First-Konsolidierung): Navigation, Zielgruppen-Profile,
+    // Wissensbereich. Konventionen: docs/ANALYTICS_EVENTS.md §8.
+    "nav_click",
+    "target_group_viewed",
+    "target_group_click",
+    "article_cta_clicked",
+    "wissen_pillar_click"
   ];
 
   // ── Storage (sessionStorage mit In-Memory-Fallback) ───────────────────
@@ -268,6 +275,32 @@
 
     wireView(".service-card, .usecase-card, .pain-card", "service_viewed", function (el) { return textOf(el, "h3"); });
     wireView(".work-card, .project-card", "case_study_viewed", function (el) { return textOf(el, "h3"); });
+
+    // Issue #16: Hauptnavigation messbar — generisch über .site-nav, damit
+    // künftige Nav-Umbauten („Für wen“, „Wissen“) automatisch getrackt werden.
+    // Label: data-track-label → Anker (href="#services" → "services") → Pfad
+    // (/demos → "demos") → Linktext. Der Potenzial-Check-CTA (.header-cta)
+    // liegt AUSSERHALB von .site-nav und feuert weiterhin demo_started (§0).
+    document.querySelectorAll(".site-nav a").forEach(function (el) {
+      el.addEventListener("click", function () {
+        var label = el.getAttribute("data-track-label") || "";
+        if (!label) {
+          var href = el.getAttribute("href") || "";
+          var hash = href.split("#")[1];
+          label = hash || href.split("/").filter(Boolean).pop() || "";
+        }
+        if (!label) label = (el.textContent || "").replace(/\s+/g, " ").trim();
+        track("nav_click", { label: label });
+      });
+    });
+
+    // Issue #16: Zielgruppen-Profile A–E (Homepage bzw. /fuer-wen) — Karten im
+    // Viewport zählen 1×/Session. Kanonische Label-Slugs: docs/ANALYTICS_EVENTS.md §8.
+    // Klicks auf Profil-Karten/CTAs laufen über data-track="target_group_click"
+    // (wireDataTrack) — keine zusätzliche Verkabelung nötig.
+    wireView(".profile-card, .target-group-card", "target_group_viewed", function (el) {
+      return el.getAttribute("data-track-label") || textOf(el, "h2") || textOf(el, "h3");
+    });
 
     wireDataTrack();
     wireForms();

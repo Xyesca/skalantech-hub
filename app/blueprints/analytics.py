@@ -53,6 +53,18 @@ ANALYTICS_EVENTS = frozenset({
     # Formular-Feedback (DSGVO-konformer Demo-/Booking-Pfad, Client-Events)
     "form_field_error",   # Feldvalidierung fehlgeschlagen (Client)
     "form_success_view",  # Erfolgsansicht nach Formular-Abschluss sichtbar (Client)
+    # Issue #16 (Customer-First-Konsolidierung): Navigation, Zielgruppen-Profile,
+    # Wissensbereich — neue Interaktionen der kundenorientierten IA messbar.
+    # Mappings: docs/ANALYTICS_EVENTS.md §8 (Kanonische Labels für Profile A–E,
+    # Wissen-Säulen, Artikel-Nächster-Schritt). Keine Breaking-Change an bestehenden
+    # Events — diese fünf ergänzen die Taxonomie, damit die neuen Strukturen
+    # (Nav „Für wen“/„Wissen“, Zielgruppen-Profile, /wissen-Säulen + Artikel-CTAs)
+    # ab dem ersten Release messbar sind.
+    "nav_click",              # Hauptnavigation geklickt (header .site-nav a; label = Ziel, z. B. fuer-wen|wissen)
+    "target_group_viewed",    # Zielgruppen-Profil-Karte im Viewport (1×/Session; label = Profil-Slug A–E)
+    "target_group_click",     # Klick auf Zielgruppen-Profil/-CTA (label = Profil-Slug A–E)
+    "article_cta_clicked",    # Wissen-Artikel: „nächster Schritt“ geklickt (label = potenzial-check|prozess|branche|demo)
+    "wissen_pillar_click",    # /wissen: Säulen-Interaktion (label = praxis-prozesse|branchen|datenschutz-kontrolle|kosten-entscheidung|technik-erklaert)
 })
 
 MAX_EVENT_BODY = 8192      # Payload-Limit (Bytes) — verhindert Missbrauch

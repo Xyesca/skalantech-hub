@@ -15,7 +15,7 @@ checks = {
     'demo_clicked hero': 'data-track="demo_clicked" data-track-label="hero"' in html,
     'demo_clicked invoiceflow': 'data-track="demo_clicked" data-track-label="invoiceflow"' in html,
     'roi widget': 'data-roi-rechner' in html and 'data-source="homepage"' in html,
-    'analytics.js v19': 'js/analytics.js?v=19' in html,
+    'analytics.js v20': 'js/analytics.js?v=20' in html,
     'id=rechner': 'id="rechner"' in html,
     'id=branchen': 'id="branchen"' in html,
     'id=termin': 'id="termin"' in html,
