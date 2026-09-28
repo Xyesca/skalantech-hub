@@ -383,7 +383,7 @@
       "retryOnFail": true,
       "maxTries": 2,
       "waitBetweenTries": 1500,
-      "webhookId": "e425b267-e3a7-4d3f-abc7-c493df1b06d2"
+      "webhookId": "REPLACE_WITH_WEBHOOK_ID"
     },
     {
       "id": "wki-4c8d1e5f",
