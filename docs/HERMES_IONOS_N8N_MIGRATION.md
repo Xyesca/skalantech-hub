@@ -4,7 +4,7 @@ Stand: 2026-08-28
 
 ## Status: UMGESETZT (E2E grün)
 
-- IONOS SMTP-Credential in n8n: `IONOS Skalantech Mail` (smtp.ionos.de:465 SSL, user xyesca@skalantech.store) — angelegt via API, Passwort aus `/root/.hermes/secrets/ionos_smtp.env`
+- IONOS SMTP-Credential in n8n: `IONOS Skalantech Mail` (smtp.ionos.de:465 SSL, user xyesca@skalantech.store) — angelegt via API, Passwort aus `<secure-secrets-dir>/ionos_smtp.env`
 - Gmail-Sende-Nodes ersetzt durch **Send Email / IONOS SMTP** (4 Nodes: Kundenbestätigung + 3 interne Benachrichtigungen)
 - Google Calendar **komplett entfernt**: `Verfügbarkeit prüfen` + `Event anlegen` raus
 - Slot-Speicherung: **Website-DB (SQLite) als Booking Source of Truth** — Model `Booking` mit UNIQUE-Constraint auf `start_at_utc`, atomarer Endpoint `POST /api/crm/bookings/reserve` (INSERT ... IntegrityError → 409), SQLite WAL + busy_timeout. n8n ruft ihn intern auf (localhost:5000). Kein neuer Container/Postgres nötig.
