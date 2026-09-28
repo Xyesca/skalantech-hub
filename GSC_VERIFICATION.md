@@ -3,20 +3,20 @@
 ## Status: KOMPLETT EINGERICHTET + VERIFIZIERT (Update 2026-08-27)
 
 1. ✅ Domain-Property `sc-domain:skalantech.store` verifiziert (DNS-TXT), Service Account mit `siteFullUser` (live bestätigt via Sites-API)
-2. ✅ Service Account `gsc-reader@skalantech-seo.iam.gserviceaccount.com` mit vollem Zugriff (API-Zugang für Hermes)
-   - Key: `/root/.hermes/gsc_service_account.json` (chmod 600, NIE committen)
-   - Python-venv: `/root/.venvs/gsc/` (google-auth)
+2. ✅ Service Account `gsc-reader@example-project.iam.gserviceaccount.com` mit vollem Zugriff (API-Zugang für Hermes)
+   - Key: `<secure-config>/gsc_service_account.json` (chmod 600, NIE committen)
+   - Python-venv: `<venv>/gsc/` (google-auth)
 3. ✅ Sitemap `https://skalantech.store/sitemap.xml` per API eingereicht (Status 204) und von Google verarbeitet: **16 URLs, 0 Fehler**
 4. ✅ URL-Inspektion für alle 16 indexierbaren Seiten angestoßen (per API); Status noch `UNSPECIFIED` — Property jung, Google verarbeitet asynchron
-5. ✅ Baseline unter `/root/.hermes/data/seo/gsc_YYYYMMDD.json` — **echte Daten seit 23.08.** (28d: 36 Queries, 136 Impressions, 0 Klicks, Ø-Pos 82,5); Details: `docs/GSC_BASELINE.md`
-6. ✅ Wochenreport-Cron (Sonntag 05:00 UTC, Job `7058bdbcb695`) nutzt echte GSC-Daten via `gsc_report.py`; SEO-Watchdog täglich 06:00 UTC (Job `5ad7f3904575`, `seo_monitor.py --quiet`)
+5. ✅ Baseline unter `<data-dir>/seo/gsc_YYYYMMDD.json` — **echte Daten seit 23.08.** (28d: 36 Queries, 136 Impressions, 0 Klicks, Ø-Pos 82,5); Details: `docs/GSC_BASELINE.md`
+6. ✅ Wochenreport-Cron (Sonntag 05:00 UTC, scheduled job) nutzt echte GSC-Daten via `gsc_report.py`; SEO-Watchdog täglich 06:00 UTC (scheduled job, `seo_monitor.py --quiet`)
 7. ✅ Technischer Monitor grün (27.08.): 16 Seiten 200 ohne noindex, Legal noindex, Canonical, JSON-LD, Sitemap/robots, 404-Seite mit noindex, keine Broken Links
 
 ## Skripte (VPS)
-- `/root/.hermes/scripts/gsc_report.py` — Baseline/Report (Search Analytics, Sitemaps, Inspection)
-- `/root/.hermes/scripts/gsc_inspect.py` — URL-Inspektion aller Hauptseiten
-- `/root/.hermes/scripts/gsc_submit_sitemap.py` — Sitemap einreichen
-- Aufruf immer mit `/root/.venvs/gsc/bin/python`
+- `<scripts-dir>/gsc_report.py` — Baseline/Report (Search Analytics, Sitemaps, Inspection)
+- `<scripts-dir>/gsc_inspect.py` — URL-Inspektion aller Hauptseiten
+- `<scripts-dir>/gsc_submit_sitemap.py` — Sitemap einreichen
+- Aufruf immer mit `<venv>/gsc/bin/python`
 
 ## Ersteinrichtung (falls neu durchzuführen)
 
