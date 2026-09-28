@@ -78,7 +78,7 @@ bereit. Der tägliche Poller ist **live** als Hermes-Cron:
 nach `~/.hermes/scripts/crm_followup.py`).
 
 **Ablauf:**
-1. `GET /api/crm/leads?due_followup=1` mit `X-API-Key` (aus `/root/skalantech-hub/.env`).
+1. `GET /api/crm/leads?due_followup=1` mit `X-API-Key` (aus `<app-dir>/.env`).
 2. Bei fälligen Leads: **Telegram-Alarm** an den internen Vertriebskanal
    (`TELEGRAM_HOME_CHANNEL` aus `~/.hermes/.env`, Fallback AiGents-Kanal
    `-1003956152501`) mit Name, Firma, Service, Stufe, Wert und Überfälligkeit.
@@ -94,7 +94,7 @@ Bewusst nicht aktiviert, bis Xavier das freigibt.
 
 **Manueller Lauf / Dry-Run:**
 ```bash
-cd /root/skalantech-hub
+cd <app-dir>
 python3 scripts/crm_followup.py --dry-run   # nichts senden/ändern
 python3 scripts/crm_followup.py             # echter Lauf
 ```
