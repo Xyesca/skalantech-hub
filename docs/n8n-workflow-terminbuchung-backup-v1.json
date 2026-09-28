@@ -1,607 +1,607 @@
 {
- "name": "Skalantech Terminanfrage (KI)",
- "versionId": "57ec36bd-4ec5-45a6-8837-42a47130cba4",
- "active": 1,
- "nodes": [
-  {
-   "parameters": {
-    "httpMethod": "POST",
-    "path": "skalantech-termin",
-    "responseMode": "responseNode",
-    "options": {}
-   },
-   "id": "wki-86fdc8a4",
-   "name": "Webhook",
-   "position": [
-    0,
-    0
-   ],
-   "type": "n8n-nodes-base.webhook",
-   "typeVersion": 2,
-   "webhookId": "3bfc4417-0e77-48ba-acf3-6778852bdcde"
-  },
-  {
-   "parameters": {
-    "jsCode": "let b = $json;\nif (b && typeof b.body === 'object' && b.body !== null && !Array.isArray(b.body)) {\n  b = b.body;\n} else if (b && typeof b.body === 'string' && b.body.trim().startsWith('{')) {\n  try { b = JSON.parse(b.body); } catch (e) {}\n}\nconst name = (b.name || '').toString().trim();\nconst email = (b.email || '').toString().trim();\nconst company = (b.company || '').toString().trim();\nconst topic = (b.topic || 'Erstgespräch').toString().trim();\nconst message = (b.message || '').toString().trim();\nconst day = (b.preferred_day || '').toString().trim();\nconst time = (b.preferred_time || '').toString().trim();\n\nconst out = { name, email, company, topic, message, day, time, valid: false };\nif (!name || !email || !/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) {\n  out.error = 'Name und gültige E-Mail sind erforderlich.';\n  return [out];\n}\nif (!day || !time) {\n  out.valid = true; out.hasSlot = false;\n  return [out];\n}\nconst [yy, mm, dd] = day.split('-').map(Number);\nconst [hh, mi] = time.split(':').map(Number);\nif (!yy || !mm || !dd || isNaN(hh) || isNaN(mi)) {\n  out.valid = true; out.hasSlot = false;\n  return [out];\n}\nconst start = new Date(Date.UTC(yy, mm - 1, dd, hh, mi));\nconst end = new Date(start.getTime() + 30 * 60000);\nout.valid = true; out.hasSlot = true;\nout.startIso = start.toISOString();\nout.endIso = end.toISOString();\nout.dayStartIso = new Date(Date.UTC(yy, mm - 1, dd, 0, 0)).toISOString();\nout.dayEndIso = new Date(Date.UTC(yy, mm - 1, dd, 23, 59)).toISOString();\nreturn [out];"
-   },
-   "id": "wki-8d636ebe",
-   "name": "Validieren & Slot",
-   "position": [
-    224,
-    0
-   ],
-   "type": "n8n-nodes-base.code",
-   "typeVersion": 2
-  },
-  {
-   "parameters": {
-    "conditions": {
-     "conditions": [
-      {
-       "id": "cond-fix-1",
-       "leftValue": "={{ $json.valid }}",
-       "operator": {
-        "operation": "equals",
-        "type": "boolean"
-       },
-       "rightValue": true
+  "name": "Skalantech Terminanfrage (KI)",
+  "versionId": "57ec36bd-4ec5-45a6-8837-42a47130cba4",
+  "active": 1,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "skalantech-termin",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wki-86fdc8a4",
+      "name": "Webhook",
+      "position": [
+        0,
+        0
+      ],
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "webhookId": "REPLACE_WITH_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "jsCode": "let b = $json;\nif (b && typeof b.body === 'object' && b.body !== null && !Array.isArray(b.body)) {\n  b = b.body;\n} else if (b && typeof b.body === 'string' && b.body.trim().startsWith('{')) {\n  try { b = JSON.parse(b.body); } catch (e) {}\n}\nconst name = (b.name || '').toString().trim();\nconst email = (b.email || '').toString().trim();\nconst company = (b.company || '').toString().trim();\nconst topic = (b.topic || 'Erstgespräch').toString().trim();\nconst message = (b.message || '').toString().trim();\nconst day = (b.preferred_day || '').toString().trim();\nconst time = (b.preferred_time || '').toString().trim();\n\nconst out = { name, email, company, topic, message, day, time, valid: false };\nif (!name || !email || !/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) {\n  out.error = 'Name und gültige E-Mail sind erforderlich.';\n  return [out];\n}\nif (!day || !time) {\n  out.valid = true; out.hasSlot = false;\n  return [out];\n}\nconst [yy, mm, dd] = day.split('-').map(Number);\nconst [hh, mi] = time.split(':').map(Number);\nif (!yy || !mm || !dd || isNaN(hh) || isNaN(mi)) {\n  out.valid = true; out.hasSlot = false;\n  return [out];\n}\nconst start = new Date(Date.UTC(yy, mm - 1, dd, hh, mi));\nconst end = new Date(start.getTime() + 30 * 60000);\nout.valid = true; out.hasSlot = true;\nout.startIso = start.toISOString();\nout.endIso = end.toISOString();\nout.dayStartIso = new Date(Date.UTC(yy, mm - 1, dd, 0, 0)).toISOString();\nout.dayEndIso = new Date(Date.UTC(yy, mm - 1, dd, 23, 59)).toISOString();\nreturn [out];"
+      },
+      "id": "wki-8d636ebe",
+      "name": "Validieren & Slot",
+      "position": [
+        224,
+        0
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-fix-1",
+              "leftValue": "={{ $json.valid }}",
+              "operator": {
+                "operation": "equals",
+                "type": "boolean"
+              },
+              "rightValue": true
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "wki-9328c004",
+      "name": "Gültig?",
+      "position": [
+        448,
+        0
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-fix-2",
+              "leftValue": "={{ $json.hasSlot }}",
+              "operator": {
+                "operation": "equals",
+                "type": "boolean"
+              },
+              "rightValue": true
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "wki-2fc4b107",
+      "name": "Slot gewünscht?",
+      "position": [
+        672,
+        0
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "resource": "calendar",
+        "operation": "availability",
+        "calendar": {
+          "__rl": true,
+          "cachedResultName": "owner@example.com",
+          "mode": "list",
+          "value": "owner@example.com"
+        },
+        "start": "={{ $json.startIso }}",
+        "end": "={{ $json.endIso }}",
+        "options": {}
+      },
+      "id": "wki-4cdfdf1d",
+      "name": "Verfügbarkeit prüfen",
+      "position": [
+        880,
+        0
+      ],
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Skalantech Kalender (Terminbuchung)"
+        }
+      },
+      "settings": {
+        "alwaysOutputData": true
       }
-     ],
-     "options": {
-      "caseSensitive": true,
-      "leftValue": "",
-      "typeValidation": "strict",
-      "version": 1
-     },
-     "combinator": "and"
     },
-    "options": {}
-   },
-   "id": "wki-9328c004",
-   "name": "Gültig?",
-   "position": [
-    448,
-    0
-   ],
-   "type": "n8n-nodes-base.if",
-   "typeVersion": 2
-  },
-  {
-   "parameters": {
-    "conditions": {
-     "conditions": [
-      {
-       "id": "cond-fix-2",
-       "leftValue": "={{ $json.hasSlot }}",
-       "operator": {
-        "operation": "equals",
-        "type": "boolean"
-       },
-       "rightValue": true
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "cond-avail-1",
+              "leftValue": "={{ $json.available }}",
+              "operator": {
+                "operation": "equals",
+                "type": "boolean"
+              },
+              "rightValue": true
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          }
+        }
+      },
+      "id": "wki-e8b0d26b",
+      "name": "Slot frei?",
+      "position": [
+        1328,
+        0
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "cachedResultName": "owner@example.com",
+          "mode": "list",
+          "value": "owner@example.com"
+        },
+        "start": "={{ $json.startIso }}",
+        "end": "={{ $json.endIso }}",
+        "additionalFields": {
+          "attendees": [
+            "={{ $json.email }}"
+          ],
+          "description": "={{ 'Anfrage von ' + $json.name + ' (' + $json.email + ')\\nThema: ' + $json.topic + ($json.message ? '\\nNachricht: ' + $json.message : '') }}",
+          "summary": "=Erstgespräch: {{ $json.name }}{{ $json.company ? ' / ' + $json.company : '' }}"
+        }
+      },
+      "id": "wki-2c367cec",
+      "name": "Event anlegen",
+      "position": [
+        1552,
+        0
+      ],
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Skalantech Kalender (Terminbuchung)"
+        }
       }
-     ],
-     "options": {
-      "caseSensitive": true,
-      "leftValue": "",
-      "typeValidation": "strict",
-      "version": 1
-     },
-     "combinator": "and"
     },
-    "options": {}
-   },
-   "id": "wki-2fc4b107",
-   "name": "Slot gewünscht?",
-   "position": [
-    672,
-    0
-   ],
-   "type": "n8n-nodes-base.if",
-   "typeVersion": 2
-  },
-  {
-   "parameters": {
-    "resource": "calendar",
-    "operation": "availability",
-    "calendar": {
-     "__rl": true,
-     "cachedResultName": "xyescaescalante@gmail.com",
-     "mode": "list",
-     "value": "xyescaescalante@gmail.com"
-    },
-    "start": "={{ $json.startIso }}",
-    "end": "={{ $json.endIso }}",
-    "options": {}
-   },
-   "id": "wki-4cdfdf1d",
-   "name": "Verfügbarkeit prüfen",
-   "position": [
-    880,
-    0
-   ],
-   "type": "n8n-nodes-base.googleCalendar",
-   "typeVersion": 1.3,
-   "credentials": {
-    "googleCalendarOAuth2Api": {
-     "id": "GDSnPRh9olMLb8hC",
-     "name": "Skalantech Kalender (Terminbuchung)"
-    }
-   },
-   "settings": {
-    "alwaysOutputData": true
-   }
-  },
-  {
-   "parameters": {
-    "conditions": {
-     "conditions": [
-      {
-       "id": "cond-avail-1",
-       "leftValue": "={{ $json.available }}",
-       "operator": {
-        "operation": "equals",
-        "type": "boolean"
-       },
-       "rightValue": true
+    {
+      "parameters": {
+        "sendTo": "={{ $('Validieren & Slot').first().json.email }}",
+        "subject": "={{ 'Terminanfrage Skalantech: ' + $('Validieren & Slot').first().json.name }}",
+        "message": "={{ $json.aiEmail }}",
+        "options": {}
+      },
+      "id": "wki-37c47bbc",
+      "name": "Bestätigung an Kunde",
+      "position": [
+        1760,
+        0
+      ],
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "webhookId": "REPLACE_WITH_WEBHOOK_ID",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Gmail account"
+        }
       }
-     ],
-     "options": {
-      "caseSensitive": true,
-      "leftValue": "",
-      "typeValidation": "strict"
-     }
-    }
-   },
-   "id": "wki-e8b0d26b",
-   "name": "Slot frei?",
-   "position": [
-    1328,
-    0
-   ],
-   "type": "n8n-nodes-base.if",
-   "typeVersion": 2
-  },
-  {
-   "parameters": {
-    "calendar": {
-     "__rl": true,
-     "cachedResultName": "xyescaescalante@gmail.com",
-     "mode": "list",
-     "value": "xyescaescalante@gmail.com"
     },
-    "start": "={{ $json.startIso }}",
-    "end": "={{ $json.endIso }}",
-    "additionalFields": {
-     "attendees": [
-      "={{ $json.email }}"
-     ],
-     "description": "={{ 'Anfrage von ' + $json.name + ' (' + $json.email + ')\\nThema: ' + $json.topic + ($json.message ? '\\nNachricht: ' + $json.message : '') }}",
-     "summary": "=Erstgespräch: {{ $json.name }}{{ $json.company ? ' / ' + $json.company : '' }}"
-    }
-   },
-   "id": "wki-2c367cec",
-   "name": "Event anlegen",
-   "position": [
-    1552,
-    0
-   ],
-   "type": "n8n-nodes-base.googleCalendar",
-   "typeVersion": 1.3,
-   "credentials": {
-    "googleCalendarOAuth2Api": {
-     "id": "GDSnPRh9olMLb8hC",
-     "name": "Skalantech Kalender (Terminbuchung)"
-    }
-   }
-  },
-  {
-   "parameters": {
-    "sendTo": "={{ $('Validieren & Slot').first().json.email }}",
-    "subject": "={{ 'Terminanfrage Skalantech: ' + $('Validieren & Slot').first().json.name }}",
-    "message": "={{ $json.aiEmail }}",
-    "options": {}
-   },
-   "id": "wki-37c47bbc",
-   "name": "Bestätigung an Kunde",
-   "position": [
-    1760,
-    0
-   ],
-   "type": "n8n-nodes-base.gmail",
-   "typeVersion": 2.2,
-   "webhookId": "200e2366-5955-473f-8091-993c6a8a2f15",
-   "credentials": {
-    "gmailOAuth2": {
-     "id": "a06hhqHnYwuiVbBU",
-     "name": "Gmail account"
-    }
-   }
-  },
-  {
-   "parameters": {
-    "sendTo": "xyesca1989@googlemail.com",
-    "subject": "={{ 'Neue Terminanfrage: ' + $('Validieren & Slot').first().json.name }}",
-    "message": "={{ '<p>Neue Terminanfrage über skalantech.store:</p><p><strong>' + $json.name + '</strong>' + ($json.company ? ' (' + $json.company + ')' : '') + '<br>' + $json.email + '</p><p>Wunschtermin: ' + new Date($json.startIso).toLocaleString('de-DE', {timeZone:'Europe/Berlin'}) + ' Uhr<br>Thema: ' + $json.topic + '</p>' + ($json.message ? '<p>Nachricht: ' + $json.message + '</p>' : '') + '<p>Kalendereintrag angelegt. Bitte bestätigen.</p>' }}",
-    "options": {}
-   },
-   "id": "wki-7e004a6c",
-   "name": "Benachrichtigung Xavier",
-   "position": [
-    1760,
-    208
-   ],
-   "type": "n8n-nodes-base.gmail",
-   "typeVersion": 2.2,
-   "webhookId": "344085d6-e04e-44f5-aa44-e3726589ad6c",
-   "credentials": {
-    "gmailOAuth2": {
-     "id": "a06hhqHnYwuiVbBU",
-     "name": "Gmail account"
-    }
-   }
-  },
-  {
-   "parameters": {
-    "respondWith": "json",
-    "responseBody": "={{ { success: true, message: 'Ihre Terminanfrage ist eingegangen. Sie erhalten eine Bestätigung per E-Mail.' } }}",
-    "options": {}
-   },
-   "id": "wki-315afc02",
-   "name": "Antwort: Erfolg",
-   "position": [
-    1984,
-    0
-   ],
-   "type": "n8n-nodes-base.respondToWebhook",
-   "typeVersion": 1.2
-  },
-  {
-   "parameters": {
-    "respondWith": "json",
-    "responseBody": "={{ { success: false, message: 'Der gewünschte Termin ist leider belegt. Bitte wählen Sie eine andere Zeit – oder senden Sie Ihre Anfrage ohne Terminwunsch.' } }}",
-    "options": {}
-   },
-   "id": "wki-0ba8cfc8",
-   "name": "Antwort: Belegt",
-   "position": [
-    1552,
-    272
-   ],
-   "type": "n8n-nodes-base.respondToWebhook",
-   "typeVersion": 1.2
-  },
-  {
-   "parameters": {
-    "respondWith": "json",
-    "responseBody": "={{ { success: true, message: 'Vielen Dank für Ihre Nachricht. Ich melde mich in der Regel innerhalb eines Werktages.' } }}",
-    "options": {}
-   },
-   "id": "wki-170c2f95",
-   "name": "Antwort: Ohne Termin",
-   "position": [
-    880,
-    304
-   ],
-   "type": "n8n-nodes-base.respondToWebhook",
-   "typeVersion": 1.2
-  },
-  {
-   "parameters": {
-    "respondWith": "json",
-    "responseBody": "={{ { success: false, message: $json.error || 'Ungültige Eingabe.' } }}",
-    "options": {}
-   },
-   "id": "wki-65daad8e",
-   "name": "Antwort: Ungültig",
-   "position": [
-    448,
-    304
-   ],
-   "type": "n8n-nodes-base.respondToWebhook",
-   "typeVersion": 1.2
-  },
-  {
-   "parameters": {
-    "sendTo": "xyesca1989@googlemail.com",
-    "subject": "={{ 'Neue Anfrage (ohne Termin): ' + $json.name }}",
-    "message": "={{ '<p>Neue Anfrage über skalantech.store (ohne Terminwunsch):</p><p><strong>' + $json.name + '</strong>' + ($json.company ? ' (' + $json.company + ')' : '') + '<br>' + $json.email + '</p><p>Thema: ' + $json.topic + '</p>' + ($json.message ? '<p>Nachricht: ' + $json.message + '</p>' : '') }}",
-    "options": {}
-   },
-   "id": "wki-c24d3517",
-   "name": "Info Xavier (ohne Termin)",
-   "position": [
-    880,
-    512
-   ],
-   "type": "n8n-nodes-base.gmail",
-   "typeVersion": 2.2,
-   "webhookId": "26474fc3-be86-4c50-9a73-2f72d66ae33b",
-   "credentials": {
-    "gmailOAuth2": {
-     "id": "a06hhqHnYwuiVbBU",
-     "name": "Gmail account"
-    }
-   }
-  },
-  {
-   "parameters": {
-    "sendTo": "xyesca1989@googlemail.com",
-    "subject": "={{ 'Terminkonflikt: ' + $('Validieren & Slot').first().json.name }}",
-    "message": "={{ '<p>Anfrage über skalantech.store: gewünschter Termin war belegt.</p><p><strong>' + $json.name + '</strong> (' + $json.email + ')<br>Wunschtermin: ' + new Date($json.startIso).toLocaleString('de-DE', {timeZone:'Europe/Berlin'}) + ' Uhr<br>Konflikt mit: ' + $json.conflict + '</p><p>Bitte Alternativtermin vorschlagen.</p>' }}",
-    "options": {}
-   },
-   "id": "wki-96c083ac",
-   "name": "Info Xavier (belegt)",
-   "position": [
-    1552,
-    464
-   ],
-   "type": "n8n-nodes-base.gmail",
-   "typeVersion": 2.2,
-   "webhookId": "c5ab9dc4-3885-4153-bd8d-fb7ed3fe1cd2",
-   "credentials": {
-    "gmailOAuth2": {
-     "id": "a06hhqHnYwuiVbBU",
-     "name": "Gmail account"
-    }
-   }
-  },
-  {
-   "id": "wki-httpki-0002",
-   "name": "KI-Antwort schreiben",
-   "parameters": {
-    "method": "POST",
-    "url": "http://172.22.0.2:11434/api/chat",
-    "sendHeaders": true,
-    "headerParameters": {
-     "parameters": [
-      {
-       "name": "Content-Type",
-       "value": "application/json"
+    {
+      "parameters": {
+        "sendTo": "owner@example.com",
+        "subject": "={{ 'Neue Terminanfrage: ' + $('Validieren & Slot').first().json.name }}",
+        "message": "={{ '<p>Neue Terminanfrage über skalantech.store:</p><p><strong>' + $json.name + '</strong>' + ($json.company ? ' (' + $json.company + ')' : '') + '<br>' + $json.email + '</p><p>Wunschtermin: ' + new Date($json.startIso).toLocaleString('de-DE', {timeZone:'Europe/Berlin'}) + ' Uhr<br>Thema: ' + $json.topic + '</p>' + ($json.message ? '<p>Nachricht: ' + $json.message + '</p>' : '') + '<p>Kalendereintrag angelegt. Bitte bestätigen.</p>' }}",
+        "options": {}
+      },
+      "id": "wki-7e004a6c",
+      "name": "Benachrichtigung Xavier",
+      "position": [
+        1760,
+        208
+      ],
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "webhookId": "REPLACE_WITH_WEBHOOK_ID",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Gmail account"
+        }
       }
-     ]
     },
-    "sendBody": true,
-    "specifyBody": "json",
-    "jsonBody": "={{ $json.ollamaBody }}"
-   },
-   "position": [
-    1760,
-    -320
-   ],
-   "type": "n8n-nodes-base.httpRequest",
-   "typeVersion": 4.2
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'Ihre Terminanfrage ist eingegangen. Sie erhalten eine Bestätigung per E-Mail.' } }}",
+        "options": {}
+      },
+      "id": "wki-315afc02",
+      "name": "Antwort: Erfolg",
+      "position": [
+        1984,
+        0
+      ],
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, message: 'Der gewünschte Termin ist leider belegt. Bitte wählen Sie eine andere Zeit – oder senden Sie Ihre Anfrage ohne Terminwunsch.' } }}",
+        "options": {}
+      },
+      "id": "wki-0ba8cfc8",
+      "name": "Antwort: Belegt",
+      "position": [
+        1552,
+        272
+      ],
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'Vielen Dank für Ihre Nachricht. Ich melde mich in der Regel innerhalb eines Werktages.' } }}",
+        "options": {}
+      },
+      "id": "wki-170c2f95",
+      "name": "Antwort: Ohne Termin",
+      "position": [
+        880,
+        304
+      ],
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, message: $json.error || 'Ungültige Eingabe.' } }}",
+        "options": {}
+      },
+      "id": "wki-65daad8e",
+      "name": "Antwort: Ungültig",
+      "position": [
+        448,
+        304
+      ],
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "sendTo": "owner@example.com",
+        "subject": "={{ 'Neue Anfrage (ohne Termin): ' + $json.name }}",
+        "message": "={{ '<p>Neue Anfrage über skalantech.store (ohne Terminwunsch):</p><p><strong>' + $json.name + '</strong>' + ($json.company ? ' (' + $json.company + ')' : '') + '<br>' + $json.email + '</p><p>Thema: ' + $json.topic + '</p>' + ($json.message ? '<p>Nachricht: ' + $json.message + '</p>' : '') }}",
+        "options": {}
+      },
+      "id": "wki-c24d3517",
+      "name": "Info Xavier (ohne Termin)",
+      "position": [
+        880,
+        512
+      ],
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "webhookId": "REPLACE_WITH_WEBHOOK_ID",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "owner@example.com",
+        "subject": "={{ 'Terminkonflikt: ' + $('Validieren & Slot').first().json.name }}",
+        "message": "={{ '<p>Anfrage über skalantech.store: gewünschter Termin war belegt.</p><p><strong>' + $json.name + '</strong> (' + $json.email + ')<br>Wunschtermin: ' + new Date($json.startIso).toLocaleString('de-DE', {timeZone:'Europe/Berlin'}) + ' Uhr<br>Konflikt mit: ' + $json.conflict + '</p><p>Bitte Alternativtermin vorschlagen.</p>' }}",
+        "options": {}
+      },
+      "id": "wki-96c083ac",
+      "name": "Info Xavier (belegt)",
+      "position": [
+        1552,
+        464
+      ],
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "webhookId": "REPLACE_WITH_WEBHOOK_ID",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "id": "wki-httpki-0002",
+      "name": "KI-Antwort schreiben",
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/chat",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.ollamaBody }}"
+      },
+      "position": [
+        1760,
+        -320
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    },
+    {
+      "id": "wki-merge-0001",
+      "name": "Kontext wiederherstellen",
+      "parameters": {
+        "jsCode": "const req = $('Validieren & Slot').first().json;\nreturn [{ ...req, available: $json.available }];"
+      },
+      "position": [
+        1250,
+        0
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "id": "wki-extract-0002",
+      "name": "KI-Mail extrahieren",
+      "parameters": {
+        "jsCode": "const req = $('Validieren & Slot').first().json;\nconst content = $json.message?.content || $json.content || '';\nlet aiEmail = content.trim();\nlet aiError = '';\nif (!aiEmail) aiError = 'Ollama lieferte keinen Content';\n\nif (!aiEmail) {\n  aiEmail = `<p>Hallo ${req.name},</p><p>vielen Dank für Ihre Anfrage. Ihr Wunschtermin ist eingetragen:</p><p><strong>${new Date(req.startIso).toLocaleString('de-DE', {timeZone:'Europe/Berlin'})} Uhr</strong> (30 Minuten, online).</p><p>Die Einwahldaten erhalten Sie mit der endgültigen Bestätigung.</p><p>Mit freundlichen Grüßen<br>Xavier Escalante · Skalantech</p>`;\n}\n\nreturn [{ ...req, aiEmail, aiError }];"
+      },
+      "position": [
+        1980,
+        -320
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "id": "wki-prompt-0001",
+      "name": "KI-Prompt bauen",
+      "parameters": {
+        "jsCode": "const req = $('Validieren & Slot').first().json;\n\nconst systemPrompt = `Du bist der persönliche Assistent von Xavier Escalante, Inhaber von Skalantech (IT, Automatisierung und KI für Unternehmen, Köln). Du beantwortest Terminanfragen von Interessenten, die über die Website skalantech.store hereinkommen.\n\nSTIL-REGELN (unbedingt einhalten):\n- Schreibe auf Deutsch, natürlich und direkt.\n- KEINE KI-Floskeln: kein \"Ich hoffe, diese Nachricht erreicht Sie gut\", kein \"Gerne stehe ich für Fragen zur Verfügung\", kein \"Zögern Sie nicht\", kein \"In der heutigen digitalen Welt\".\n- Kein Pathos, keine Übertreibungen, keine Marketing-Sprache.\n- Kurze, klare Sätze. Professionell, persönlich und warm. Wie ein erfahrener Dienstleister, der seinen Job kennt.\n- Antworte NUR mit dem E-Mail-Text als einfaches HTML mit <p>-Absätzen. Keine Betreffzeile, kein doppeltes \"Mit freundlichen Grüßen\".\n\nAUFGABE:\nSchreibe eine kurze Bestätigungs-E-Mail (3-5 Sätze) an den Kunden.`;\n\nconst userPrompt = `KUNDENANFRAGE:\nName: ${req.name}\nFirma: ${req.company || 'nicht angegeben'}\nE-Mail: ${req.email}\nThema: ${req.topic}\nNachricht: ${req.message || 'keine'}\n\nBESTÄTIGTER TERMIN:\n${new Date(req.startIso).toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })} Uhr (30 Minuten, online).\n\nSchreibe jetzt die Bestätigungs-E-Mail.`;\n\nreturn [{\n  json: {\n    ...req,\n    ollamaBody: {\n      model: 'lfm25',\n      stream: false,\n      messages: [\n        { role: 'system', content: systemPrompt },\n        { role: 'user', content: userPrompt }\n      ]\n    }\n  }\n}];"
+      },
+      "position": [
+        1540,
+        -320
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    }
+  ],
+  "connections": {
+    "Benachrichtigung Xavier": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Antwort: Erfolg",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Bestätigung an Kunde": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Benachrichtigung Xavier",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Event anlegen": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "KI-Prompt bauen",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Gültig?": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Slot gewünscht?",
+            "type": "main"
+          }
+        ],
+        [
+          {
+            "index": 0,
+            "node": "Antwort: Ungültig",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Info Xavier (belegt)": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Antwort: Belegt",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Info Xavier (ohne Termin)": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Antwort: Ohne Termin",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Verfügbarkeit prüfen": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Kontext wiederherstellen",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Slot frei?": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Event anlegen",
+            "type": "main"
+          }
+        ],
+        [
+          {
+            "index": 0,
+            "node": "Info Xavier (belegt)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Slot gewünscht?": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Verfügbarkeit prüfen",
+            "type": "main"
+          }
+        ],
+        [
+          {
+            "index": 0,
+            "node": "Info Xavier (ohne Termin)",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Validieren & Slot": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Gültig?",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Validieren & Slot",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "KI-Antwort schreiben": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "KI-Mail extrahieren",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Kontext wiederherstellen": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Slot frei?",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "KI-Mail extrahieren": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Bestätigung an Kunde",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "KI-Prompt bauen": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "KI-Antwort schreiben",
+            "type": "main"
+          }
+        ]
+      ]
+    }
   },
-  {
-   "id": "wki-merge-0001",
-   "name": "Kontext wiederherstellen",
-   "parameters": {
-    "jsCode": "const req = $('Validieren & Slot').first().json;\nreturn [{ ...req, available: $json.available }];"
-   },
-   "position": [
-    1250,
-    0
-   ],
-   "type": "n8n-nodes-base.code",
-   "typeVersion": 2
-  },
-  {
-   "id": "wki-extract-0002",
-   "name": "KI-Mail extrahieren",
-   "parameters": {
-    "jsCode": "const req = $('Validieren & Slot').first().json;\nconst content = $json.message?.content || $json.content || '';\nlet aiEmail = content.trim();\nlet aiError = '';\nif (!aiEmail) aiError = 'Ollama lieferte keinen Content';\n\nif (!aiEmail) {\n  aiEmail = `<p>Hallo ${req.name},</p><p>vielen Dank für Ihre Anfrage. Ihr Wunschtermin ist eingetragen:</p><p><strong>${new Date(req.startIso).toLocaleString('de-DE', {timeZone:'Europe/Berlin'})} Uhr</strong> (30 Minuten, online).</p><p>Die Einwahldaten erhalten Sie mit der endgültigen Bestätigung.</p><p>Mit freundlichen Grüßen<br>Xavier Escalante · Skalantech</p>`;\n}\n\nreturn [{ ...req, aiEmail, aiError }];"
-   },
-   "position": [
-    1980,
-    -320
-   ],
-   "type": "n8n-nodes-base.code",
-   "typeVersion": 2
-  },
-  {
-   "id": "wki-prompt-0001",
-   "name": "KI-Prompt bauen",
-   "parameters": {
-    "jsCode": "const req = $('Validieren & Slot').first().json;\n\nconst systemPrompt = `Du bist der persönliche Assistent von Xavier Escalante, Inhaber von Skalantech (IT, Automatisierung und KI für Unternehmen, Köln). Du beantwortest Terminanfragen von Interessenten, die über die Website skalantech.store hereinkommen.\n\nSTIL-REGELN (unbedingt einhalten):\n- Schreibe auf Deutsch, natürlich und direkt.\n- KEINE KI-Floskeln: kein \"Ich hoffe, diese Nachricht erreicht Sie gut\", kein \"Gerne stehe ich für Fragen zur Verfügung\", kein \"Zögern Sie nicht\", kein \"In der heutigen digitalen Welt\".\n- Kein Pathos, keine Übertreibungen, keine Marketing-Sprache.\n- Kurze, klare Sätze. Professionell, persönlich und warm. Wie ein erfahrener Dienstleister, der seinen Job kennt.\n- Antworte NUR mit dem E-Mail-Text als einfaches HTML mit <p>-Absätzen. Keine Betreffzeile, kein doppeltes \"Mit freundlichen Grüßen\".\n\nAUFGABE:\nSchreibe eine kurze Bestätigungs-E-Mail (3-5 Sätze) an den Kunden.`;\n\nconst userPrompt = `KUNDENANFRAGE:\nName: ${req.name}\nFirma: ${req.company || 'nicht angegeben'}\nE-Mail: ${req.email}\nThema: ${req.topic}\nNachricht: ${req.message || 'keine'}\n\nBESTÄTIGTER TERMIN:\n${new Date(req.startIso).toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })} Uhr (30 Minuten, online).\n\nSchreibe jetzt die Bestätigungs-E-Mail.`;\n\nreturn [{\n  json: {\n    ...req,\n    ollamaBody: {\n      model: 'lfm25',\n      stream: false,\n      messages: [\n        { role: 'system', content: systemPrompt },\n        { role: 'user', content: userPrompt }\n      ]\n    }\n  }\n}];"
-   },
-   "position": [
-    1540,
-    -320
-   ],
-   "type": "n8n-nodes-base.code",
-   "typeVersion": 2
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Berlin"
   }
- ],
- "connections": {
-  "Benachrichtigung Xavier": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Antwort: Erfolg",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "Bestätigung an Kunde": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Benachrichtigung Xavier",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "Event anlegen": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "KI-Prompt bauen",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "Gültig?": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Slot gewünscht?",
-      "type": "main"
-     }
-    ],
-    [
-     {
-      "index": 0,
-      "node": "Antwort: Ungültig",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "Info Xavier (belegt)": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Antwort: Belegt",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "Info Xavier (ohne Termin)": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Antwort: Ohne Termin",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "Verfügbarkeit prüfen": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Kontext wiederherstellen",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "Slot frei?": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Event anlegen",
-      "type": "main"
-     }
-    ],
-    [
-     {
-      "index": 0,
-      "node": "Info Xavier (belegt)",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "Slot gewünscht?": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Verfügbarkeit prüfen",
-      "type": "main"
-     }
-    ],
-    [
-     {
-      "index": 0,
-      "node": "Info Xavier (ohne Termin)",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "Validieren & Slot": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Gültig?",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "Webhook": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Validieren & Slot",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "KI-Antwort schreiben": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "KI-Mail extrahieren",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "Kontext wiederherstellen": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Slot frei?",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "KI-Mail extrahieren": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "Bestätigung an Kunde",
-      "type": "main"
-     }
-    ]
-   ]
-  },
-  "KI-Prompt bauen": {
-   "main": [
-    [
-     {
-      "index": 0,
-      "node": "KI-Antwort schreiben",
-      "type": "main"
-     }
-    ]
-   ]
-  }
- },
- "settings": {
-  "executionOrder": "v1",
-  "timezone": "Europe/Berlin"
- }
 }
