@@ -1,7 +1,7 @@
 # GSC-Baseline skalantech.store
 
 > P0-Verifikation 2026-08-27 — echte Google-Search-Console-Daten, keine Schätzungen.
-> Datenquelle: `/root/.hermes/data/seo/gsc_20260827.json` (generiert von `gsc_report.py`).
+> Datenquelle: `<data-dir>/seo/gsc_YYYYMMDD.json` (generiert von `gsc_report.py`).
 
 ## Status-Übersicht (27.08.2026)
 
@@ -58,8 +58,8 @@
 
 ## Infrastruktur (wiederholbar)
 
-- Skripte: `/root/.hermes/scripts/gsc_report.py` (Report/Baseline), `gsc_inspect.py` (URL-Inspektion), `gsc_submit_sitemap.py` (Sitemap) — Aufruf: `/root/.venvs/gsc/bin/python`
-- Daten: `/root/.hermes/data/seo/gsc_YYYYMMDD.json` (root-lesbar, enthält Nutzer-Suchanfragen)
+- Skripte: `<scripts-dir>/gsc_report.py` (Report/Baseline), `gsc_inspect.py` (URL-Inspektion), `gsc_submit_sitemap.py` (Sitemap) — Aufruf: `<venv>/gsc/bin/python`
+- Daten: `<data-dir>/seo/gsc_YYYYMMDD.json` (root-lesbar, enthält Nutzer-Suchanfragen)
 - Cron: **SEO-Wochenreport** (So 05:00 UTC, Job `7058bdbcb695`, Skill google-search-console) | **SEO-Watchdog** täglich 06:00 UTC (Job `5ad7f3904575`, no_agent, `seo_watchdog.sh` → `seo_monitor.py --quiet`)
 - KB: diese Datei + `GSC_VERIFICATION.md` (Hub) | Obsidian `03 Knowledge/SEO/GSC-Baseline-skalantech.md` (RAG)
 
